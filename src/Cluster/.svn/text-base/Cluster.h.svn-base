@@ -1,0 +1,17 @@
+#ifndef CLUSTER_H
+#define CLUSTER_H
+
+#include "std.h"
+
+class Cluster {
+public:
+	Cluster();
+	void operator ()(const MatrixXf &diffs);
+};
+
+
+#endif
+
+
+
+

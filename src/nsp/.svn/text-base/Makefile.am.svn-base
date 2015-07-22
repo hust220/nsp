@@ -1,0 +1,4 @@
+bin_PROGRAMS=nsp
+nsp_SOURCES=nsp.cpp
+nsp_LDADD = ../Score_/libScore.a ../Nuc3D/libnuc3d.a ../Nuc2D/libnuc2d.a ../Pdb/libPdb.a ../DG/libdgsol.a /home/jian/work/nsp/lib/dgsol-1.3/src/blas/d-linux.a /home/jian/work/nsp/lib/dgsol-1.3/src/csrch/d-linux.a /home/jian/work/nsp/lib/dgsol-1.3/src/dgvmlm/d-linux.a /home/jian/work/nsp/lib/dgsol-1.3/src/utils/d-linux.a /home/jian/work/nsp/lib/dgsol-1.3/src/vmlm/d-linux.a ../Tools_/libTools.a
+

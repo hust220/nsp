@@ -1,0 +1,115 @@
+#ifndef LIST_H
+#define LIST_H
+
+#include "iostream"
+#include "cstdlib"
+#include "Obj.h"
+using namespace std;
+
+namespace Tools_ {
+
+template<class T>
+class List {
+public:
+	List();
+	List(T *);
+	List(const List<T> &);
+	~List();
+	void init(T *);
+	List<T> &operator =(const List<T> &);
+	T &operator *() const;
+	T *operator ->() const;
+	int getCounts();
+	T *get() const;
+private:
+	int len_;
+	T **p;
+	int **counts;
+};
+
+template<class T>
+List<T>::List() {
+	p = NULL;
+	counts = new int(0);
+}
+
+template<class T>
+List<T>::List(T *t) {
+	p = t;
+	counts = new int(1);
+}
+
+template<class T>
+List<T>::List(const List<T> &_List) {
+	p = _List.p;
+	counts = _List.counts;
+	(*counts)++;
+}
+
+template<class T>
+void List<T>::init(T *t) {
+	if (p != NULL) {
+		cerr << "List init error!" << endl;
+		exit(1);
+	}
+	p = t;
+	(*counts)++;
+}
+
+template<class T>
+List<T> &List<T>::operator =(const List<T> &_List) {
+	if ((*_List.counts) == 0) {
+		cerr << "List operator= error!" << endl;
+		exit(1);
+	}
+	if ((*counts) == 0) {
+		delete counts;
+	} else {
+		(*counts)--;
+		if ((*counts) == 0) {
+			delete p;
+		}
+	}
+	(*_List.counts)++;
+	p = _List.p;
+	counts = _List.counts;
+}
+
+template<class T>
+T &List<T>::operator *() const {
+	return *p;
+}
+
+template<class T>
+T *List<T>::operator ->() const {
+	return p;
+}
+
+template<class T>
+List<T>::~List() {
+	(*counts)--;
+	if ((*counts) == 0) {
+		delete p;
+		delete counts;
+	}
+}
+
+template<class T>
+int List<T>::getCounts() {
+	return *counts;
+}
+
+template<class T>
+T *List<T>::get() const {
+	return p;
+}
+
+
+} // namespace Tools_
+
+#endif
+
+
+
+
+

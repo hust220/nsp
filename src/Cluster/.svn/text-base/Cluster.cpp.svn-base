@@ -1,0 +1,9 @@
+#include "Cluster.h"
+
+void Cluster::operator ()(const MatrixXf &diffs) {
+	
+}
+
+
+
+

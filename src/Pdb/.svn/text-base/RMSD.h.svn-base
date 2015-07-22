@@ -1,0 +1,45 @@
+#ifndef RMSD_H
+#define RMSD_H
+
+#include "RNA.h"
+
+namespace jian {
+
+class RMSD {
+public:
+	RMSD();
+	RMSD(string);
+	RMSD(Obj<RNA>);
+	RMSD(Obj<RNA>, Obj<RNA>);
+	RMSD(char *, char *);
+
+	void readRef(Obj<RNA>);
+	void readObj(Obj<RNA>);
+	void readSeq1(string);
+	void readSeq2(string);
+	void setXY();
+	double run();
+
+private:
+	Obj<RNA> refRNA;
+	Obj<RNA> objRNA;
+	int isRNA1;
+	int isRNA2;
+	int isSeq1;
+	int isSeq2;
+	vector<int> seqFlags1;
+	vector<int> seqFlags2;
+//	RNA *refRNA;
+//	RNA *objRNA;
+	int numRes;
+	int len;
+	MatrixXf x;
+	MatrixXf y;
+	Matrix3f r;
+	double rmsd;
+};
+
+} /// namespace jian
+
+#endif
+

@@ -1,0 +1,179 @@
+#include "RMSD.h"
+
+
+RMSD::RMSD() {
+}
+
+void RMSD::setXY() {
+	int len1 = refRNA->getNumOfResidues();
+	int len2 = objRNA->getNumOfResidues();
+	if (len1 != len2) {
+		cerr << "RMSD::setXY error! The number of residues of these two RNAs must be equal!" << endl;
+		exit(1);
+	}
+	numRes = len1;
+
+	int a[numRes];
+	int b[numRes];
+	string aa[numRes];
+	string bb[numRes];
+
+	int temp = 0;
+	for (auto &chain : refRNA->_chains) {
+		for (auto &residue : chain._residues) {
+			aa[temp] = residue._name;
+			if (residue._atoms[0]._name == "P") {
+				a[temp] = 0;
+			} else {
+				a[temp] = 1;
+			}
+			temp++;
+		}
+	}
+
+	temp = 0;
+	for (auto &chain : objRNA->_chains) {
+		for (auto &residue : chain._residues) {
+			bb[temp] = residue._name;
+			if (residue._atoms[0]._name == "P") {
+				b[temp] = 0;
+			} else {
+				b[temp] = 1;
+			}
+			temp++;
+		}
+	}
+
+	/* each element of integer array 'c' indicates if the corresponding residue has or has not 'P', 'O1P', 'O2P' */ 
+	int c[numRes];
+	len = 0;
+	for (int i = 0; i < numRes; i++) {
+		if (aa[i] != bb[i]) {
+			std::cerr << "RMSD::setXY error! The sequences of these two RNAs must be same!" << std::endl;
+			std::cerr << "Number " << i + 1 << " residue in the first RNA is " << aa[i] << ", while number " << i + 1 << " residue in the second RNA is " << bb[i] << "." << std::endl;
+			exit(1);
+		}
+		c[i] = (a[i] > b[i]) ? a[i] : b[i];
+		if (aa[i] == "A") {
+			len += 22;
+		} else if (aa[i] == "U") {
+			len += 20;
+		} else if (aa[i] == "G") {
+			len += 23;
+		} else {
+			len += 20;
+		}
+		if (c[i] == 1) {
+			len -= 3;
+		}
+	}
+	x.resize(3, len);
+	y.resize(3, len);
+
+	/* set X */
+	double c1[3];
+	c1[0] = 0; c1[1] = 0; c1[2] = 0;
+	int ir = 0, ia = 0;
+	for (Chain &chain : refRNA->_chains) {
+		for (Residue &residue : chain._residues) {
+			for (Atom &atom : residue._atoms) {
+				if (c[ir] == 1 && (atom._name == "P" || atom._name == "O1P" || atom._name == "O2P")) {
+					continue;
+				}
+				x(0, ia) = atom._x;
+				c1[0] += x(0, ia);
+				x(1, ia) = atom._y;
+				c1[1] += x(1, ia);
+				x(2, ia) = atom._z;
+				c1[2] += x(2, ia);
+				ia++;
+			}
+			ir++;
+		}
+	}
+	c1[0] = c1[0] / len;
+	c1[1] = c1[1] / len;
+	c1[2] = c1[2] / len;
+
+	/* set Y */
+	double c2[3];
+	c2[0] = 0; c2[1] = 0; c2[2] = 0;
+	ir = 0;
+	ia = 0;
+	for (Chain &chain : objRNA->_chains) {
+		for (Residue &residue : chain._residues) {
+			for (Atom &atom : residue._atoms) {
+				if (c[ir] == 1 && (atom._name == "P" || atom._name == "O1P" || atom._name == "O2P")) {
+					continue;
+				}
+				y(0, ia) = atom._x;
+				c2[0] += y(0, ia);
+				y(1, ia) = atom._y;
+				c2[1] += y(1, ia);
+				y(2, ia) = atom._z;
+				c2[2] += y(2, ia);
+				ia++;
+			}
+			ir++;
+		}
+	}
+	c2[0] = c2[0] / len;
+	c2[1] = c2[1] / len;
+	c2[2] = c2[2] / len;
+
+	/* translate the center of X and Y to origin */
+	for (int i = 0; i < len; i++) {
+		for (int j = 0; j < 3; j++) {
+			x(j, i) = x(j, i) - c1[j];
+			y(j, i) = y(j, i) - c2[j];
+		}
+	}
+}
+
+double RMSD::run(RNA &rna1, RNA &rna2) {
+	refRNA = new RNA(rna1);
+	objRNA = new RNA(rna2);
+	setXY();
+
+	Matrix3f g = x * y.transpose();
+
+	JacobiSVD<Matrix3f> svd(g, ComputeFullU|ComputeFullV);
+	Matrix3f u = svd.matrixU();
+	Matrix3f v = svd.matrixV();
+
+	double det = g.determinant();
+	Matrix3f I;
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			if (i == j) {
+				I(i, j) = 1;
+			} else {
+				I(i, j) = 0;
+			}
+		}
+	}
+	if (det < 0) {
+		I(2, 2) = -1;
+	}
+	Matrix3f r = v * I * u.transpose();
+
+	MatrixXf x_ = r * x;
+
+	rmsd = 0;
+	for (int i = 0; i < len; i++) {
+		for (int j = 0; j < 3; j++) {
+			rmsd += (x_(j, i) - y(j, i)) * (x_(j, i) - y(j, i));
+		}
+	}
+	rmsd /= len;
+	rmsd = sqrt(rmsd);
+	return rmsd;
+}
+
+
+
+
+
+
+
+

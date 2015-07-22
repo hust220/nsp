@@ -1,0 +1,31 @@
+TOOLS_SRC  := $(wildcard Tools_/*.cpp)
+TOOLS_OBJ  := $(patsubst %.cpp,%.o,$(TOOLS_SRC))
+PDB_SRC    := $(wildcard Pdb/*.cpp)
+PDB_OBJ    := $(patsubst %.cpp,%.o,$(PDB_SRC))
+LM_SRC     := $(wildcard LoopModelling/*.cpp)
+LM_OBJ     := $(patsubst %.cpp,%.o,$(LM_SRC))
+SCORE_SRC  := $(wildcard Score_/*.cpp)
+SCORE_OBJ  := $(patsubst %.cpp,%.o,$(SCORE_SRC))
+ASS_SRC    := $(wildcard Assemble_/*.cpp)
+ASS_OBJ    := $(patsubst %.cpp,%.o,$(ASS_SRC))
+NUC2D_SRC    := $(wildcard Nuc2D/*.cpp)
+NUC2D_OBJ    := $(patsubst %.cpp,%.o,$(NUC2D_SRC))
+NUC3D_SRC    := $(wildcard Nuc3D/*.cpp)
+NUC3D_OBJ    := $(patsubst %.cpp,%.o,$(NUC3D_SRC))
+
+all:
+	cd Tools_; make; cd ..
+	cd Pdb; make; cd ..
+#	cd LoopModelling; make; cd ..
+	cd Score_; make; cd ..
+#	cd Assemble_; make; cd ..
+	cd Nuc2D; make; cd ..
+	cd Nuc3D; make; cd ..
+	ar -rc lib3dRNA.a $(TOOLS_OBJ) $(PDB_OBJ) $(SCORE_OBJ) $(NUC2D_OBJ) $(NUC3D_OBJ)
+#	cd 3dRNA; make clean; make; cd ..
+#	cd LM; make clean; make; cd ..
+	cd nsp; make clean; make; cd ..
+
+clean:
+	@rm -f $(TOOLS_OBJ) $(PDB_OBJ) $(LM_OBJ) $(SCORE_OBJ) $(NUC2D_OBJ) $(NUC3D_OBJ) lib3dRNA.a
+

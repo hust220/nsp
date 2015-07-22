@@ -1,0 +1,32 @@
+#ifndef RMSD_H
+#define RMSD_H
+
+#include "RNA.h"
+
+class RMSD {
+public:
+	RMSD();
+
+	double run(RNA &, RNA &);
+	void setXY();
+
+	double rmsd;
+
+	Obj<RNA> refRNA;
+	Obj<RNA> objRNA;
+	int numRes;
+	int len;
+	MatrixXf x;
+	MatrixXf y;
+	Matrix3f r;
+};
+
+
+
+#endif
+
+
+
+
+
+

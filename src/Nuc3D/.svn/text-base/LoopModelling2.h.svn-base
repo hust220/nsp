@@ -1,0 +1,109 @@
+/**
+ * @file LoopModelling22.cpp
+ * @brief Modelling loop by using distance geometry algorithm.
+ *
+ * Each nucleotide is represented by 5 atoms.
+ *   A: C5* O3* C1* N6 C2
+ *   U: C5* O3* C1* O2 O4
+ *   G: C5* O3* C1* O6 N2
+ *   C: C5* O3* C1* O2 N4
+ *
+ * @author wj_hust08@163.com
+ * @version 1.0
+ * @date 2015-5-25
+*/
+
+#ifndef LOOPMODELLING2_H
+#define LOOPMODELLING2_H
+
+#include "../Pdb.h"
+#include "../Nuc2D.h"
+#include "Connect.h"
+
+namespace jian {
+
+namespace nuc3d {
+
+class LoopModelling2 {
+public:
+	LoopModelling2(string type = "RNA"): _type(type) {
+		char *lib = getenv("NSP");
+		assert(lib);
+		_lib = string() + lib;
+		_lib += "/" + boost::to_upper_copy(_type);
+
+		/// read mononucleotide parameters
+		string file_name = _lib + "/pars/5p/mono_nuc_pars";
+		ifstream ifile(file_name.c_str());
+		assert(ifile);
+		for (int ii = 0; ii < 4; ii++) {
+			string c;
+			ifile >> c;
+			_mono_nuc_pars[c].resize(_atom_nums_per_nuc, _atom_nums_per_nuc);
+			for (int i = 0; i < _atom_nums_per_nuc; i++) {
+				for (int j = 0; j < _atom_nums_per_nuc; j++) {
+					ifile >> _mono_nuc_pars[c](i, j);
+				}
+			}
+		}
+		ifile.close();
+
+		/// read adjacent nucleotides parameters
+		file_name = _lib + "/pars/5p/adj_nuc_pars";
+		ifile.open(file_name.c_str());
+		for (int ii = 0; ii < 16; ii++) {
+			string str;
+			ifile >> str;
+			_adj_nuc_pars[str].resize(_atom_nums_per_nuc, _atom_nums_per_nuc);
+			for (int i = 0; i < _atom_nums_per_nuc; i++) {
+				for (int j = 0; j < _atom_nums_per_nuc; j++) {
+					ifile >> _adj_nuc_pars[str](i, j);
+				}
+			}
+		}
+		ifile.close();
+	}
+
+	Model operator ()(string seq, string ss, string constraint_file, int num = 1);
+	Model to_all_atom(const MatrixXf &);
+
+	map<string, MatrixXf> _mono_nuc_pars;
+	map<string, MatrixXf> _adj_nuc_pars;
+	map<string, MatrixXf> _aa_pars;
+
+	void init();
+	void set_base_pairs(nuc2d::loop *);
+
+	MatrixXf get_helix_par(const R5P &);
+	R5P get_helix(const nuc2d::helix &);
+	R5P create_helix(const string &);
+
+	string _seq;
+	string _ss;
+	MatrixXf _bound;
+	DG dg;
+	int _atom_nums_per_nuc = 5;
+	double _err_radius = 0.001;
+	string _lib;
+	string _type = "RNA";
+	int _view = 0;
+
+	/////////////////////////////////////
+	/// Constraints
+	void set_constraints();
+	MatrixXf apply_constraints(const MatrixXf &);
+	std::vector<std::vector<std::vector<int>>> read_constraints_file();
+	MatrixXf read_constraints_pos(std::string, int);
+	MatrixXf read_constraints_par(std::string, int);
+
+	string _constraint_file;
+	//////////////////////////////////////
+
+};
+
+} // namespace nuc3d
+
+} // namespace jian
+
+#endif
+

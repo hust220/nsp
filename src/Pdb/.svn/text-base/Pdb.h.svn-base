@@ -1,0 +1,29 @@
+#ifndef Pdb_H
+#define Pdb_H
+
+#include "Model.h"
+
+namespace jian {
+
+class Pdb
+{
+public:
+	Pdb() {}
+	Pdb(string pdbfile) {
+		readPDB(pdbfile);
+	}
+
+	void push(const Model &);
+	void readPDB(string);
+	Model &operator [](int);
+
+	/* attributes */
+	string name = "none";
+	vector<Model> models;
+
+};
+
+} /// namespace jian
+
+#endif // Pdb_H
+

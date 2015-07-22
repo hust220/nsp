@@ -1,0 +1,33 @@
+#include "Refine.h"
+
+Refine::Refine() {
+}
+
+Refine::Refine(RNA &rna) {
+	_old_rna = rna.copy();
+}
+
+void Refine::read(RNA &rna) {
+	_old_rna = rna.copy();
+}
+
+void Refine::run() {
+	double old_en;
+	MRand mrand;
+	while (1) {
+		old_en = _en;
+		move();
+		if (_en < old_en) {
+		} else {
+			double temp = mrand.run();
+			double delta_en = _en - old_en;
+			if (temp < ) {
+			}
+		}
+	}
+}
+
+void Refine::move() {
+}
+
+

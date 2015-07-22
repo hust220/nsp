@@ -1,0 +1,63 @@
+Making install in src
+make[1]: Entering directory `/home/jian/work/nsp/build/src'
+Making install in Utils
+make[2]: Entering directory `/home/jian/work/nsp/build/src/Utils'
+make[3]: Entering directory `/home/jian/work/nsp/build/src/Utils'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/home/jian/work/nsp/build/src/Utils'
+make[2]: Leaving directory `/home/jian/work/nsp/build/src/Utils'
+Making install in DG
+make[2]: Entering directory `/home/jian/work/nsp/build/src/DG'
+make[3]: Entering directory `/home/jian/work/nsp/build/src/DG'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/home/jian/work/nsp/build/src/DG'
+make[2]: Leaving directory `/home/jian/work/nsp/build/src/DG'
+Making install in Cluster
+make[2]: Entering directory `/home/jian/work/nsp/build/src/Cluster'
+make[3]: Entering directory `/home/jian/work/nsp/build/src/Cluster'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/home/jian/work/nsp/build/src/Cluster'
+make[2]: Leaving directory `/home/jian/work/nsp/build/src/Cluster'
+Making install in Pdb
+make[2]: Entering directory `/home/jian/work/nsp/build/src/Pdb'
+make[3]: Entering directory `/home/jian/work/nsp/build/src/Pdb'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/home/jian/work/nsp/build/src/Pdb'
+make[2]: Leaving directory `/home/jian/work/nsp/build/src/Pdb'
+Making install in MC
+make[2]: Entering directory `/home/jian/work/nsp/build/src/MC'
+make[3]: Entering directory `/home/jian/work/nsp/build/src/MC'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/home/jian/work/nsp/build/src/MC'
+make[2]: Leaving directory `/home/jian/work/nsp/build/src/MC'
+Making install in Score_
+make[2]: Entering directory `/home/jian/work/nsp/build/src/Score_'
+make[3]: Entering directory `/home/jian/work/nsp/build/src/Score_'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/home/jian/work/nsp/build/src/Score_'
+make[2]: Leaving directory `/home/jian/work/nsp/build/src/Score_'
+Making install in Nuc2D
+make[2]: Entering directory `/home/jian/work/nsp/build/src/Nuc2D'
+make[3]: Entering directory `/home/jian/work/nsp/build/src/Nuc2D'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/home/jian/work/nsp/build/src/Nuc2D'
+make[2]: Leaving directory `/home/jian/work/nsp/build/src/Nuc2D'
+Making install in Nuc3D
+make[2]: Entering directory `/home/jian/work/nsp/build/src/Nuc3D'
+g++-4.9 -DPACKAGE_NAME=\"nsp\" -DPACKAGE_TARNAME=\"nsp\" -DPACKAGE_VERSION=\"2.0\" -DPACKAGE_STRING=\"nsp\ 2.0\" -DPACKAGE_BUGREPORT=\"wj_hust08@163.com\" -DPACKAGE_URL=\"\" -DPACKAGE=\"nsp\" -DVERSION=\"2.0\" -I. -I../../../src/Nuc3D     -g -std=c++14 -MT find_templates.o -MD -MP -MF .deps/find_templates.Tpo -c -o find_templates.o ../../../src/Nuc3D/find_templates.cpp
+../../../src/Nuc3D/find_templates.cpp: In member function ‘std::vector<jian::Model> jian::nuc3d::Assemble::find_helices(jian::nuc2d::helix*, int)’:
+../../../src/Nuc3D/find_templates.cpp:274:40: error: ‘__gnu_cxx::__alloc_traits<std::allocator<jian::nuc3d::Assemble::find_helices(jian::nuc2d::helix*, int)::HelixItem> >::value_type’ has no member named ‘family’
+         log("source: " + helix_sets[i].family, 6);
+                                        ^
+make[2]: *** [find_templates.o] Error 1
+make[2]: Leaving directory `/home/jian/work/nsp/build/src/Nuc3D'
+make[1]: *** [install-recursive] Error 1
+make[1]: Leaving directory `/home/jian/work/nsp/build/src'
+make: *** [install-recursive] Error 1

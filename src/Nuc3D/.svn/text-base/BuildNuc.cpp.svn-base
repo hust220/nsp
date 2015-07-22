@@ -1,0 +1,54 @@
+#include "BuildNuc.h"
+
+namespace jian {
+
+namespace nuc3d {
+
+Residue BuildNuc::operator ()(const string &name, const MatrixXf &scaffold) {
+	/// Base coordinates
+	auto base_coords = _base_aa_par[name];
+	auto temp_coords = _base_cg_par[name];
+	MatrixXf temp_scaffold(3, 3);
+	temp_scaffold = scaffold.block<3, 3>(2, 0);
+	SupPos()(base_coords, temp_coords, temp_scaffold);
+
+	/// Phosphate and sugar coordinates
+	auto par = _phos_sugar_par[name];
+	vector<int> vec{4, 8, 10};
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			double dist = (scaffold.row(i) - scaffold.row(j)).norm();
+			par(vec[i], vec[j]) = par(vec[j], vec[i]) = dist;
+		}
+	}
+	DG dg(par);
+	auto phos_sugar_coords = dg();
+	temp_coords.resize(3, 3);
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			temp_coords(i, j) = phos_sugar_coords(vec[i], j);
+		}
+	}
+	temp_scaffold = scaffold.block<3, 3>(0, 0);
+	SupPos()(phos_sugar_coords, temp_coords, temp_scaffold);
+
+	/// Merge base coordinates and phosphate-sugar coordinates
+	MatrixXf coords(phos_sugar_coords.rows() + base_coords.rows() - 1, 3);
+	coords << phos_sugar_coords.block(0, 0, phos_sugar_coords.rows() - 1, 3), base_coords;
+
+	return make_residue(name, coords);
+}
+
+Residue BuildNuc::make_residue(const string &name, const MatrixXf &coords) {
+	Residue residue;
+	residue.name = name;
+	for (int i = 0; i < coords.rows(); i++) {
+		residue.atoms.push_back(Atom(_atom_names[name][i], coords(i, 0), coords(i, 1), coords(i, 2)));
+	}
+	return residue;
+}
+
+} /// namespace nuc3d
+
+} /// namespace jian
+

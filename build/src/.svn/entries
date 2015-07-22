@@ -1,0 +1,80 @@
+10
+
+dir
+45
+svn+ssh://hust220@svn.code.sf.net/p/xiaolab-3drna/svn/trunk/build/src
+svn+ssh://hust220@svn.code.sf.net/p/xiaolab-3drna/svn
+
+
+
+2015-06-26T02:19:42.516114Z
+45
+hust220
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+219dbe39-64e6-4e79-abc2-1f8622354b92
+
+Pdb
+dir
+
+Score_
+dir
+
+Nuc2D
+dir
+
+Nuc3D
+dir
+
+Makefile
+file
+50
+
+
+
+2015-06-29T11:49:18.352569Z
+599dc7f45185681bc213ae158ae3d1ad
+2015-07-04T03:39:55.047843Z
+50
+hust220
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+16391
+
+Tools_
+dir
+
+nsp
+dir
+

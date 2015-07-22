@@ -1,0 +1,26 @@
+#ifndef PAR_H
+#define PAR_H
+
+#include "std.h"
+#include "MLib.h"
+
+namespace jian {
+
+class Par {
+public:
+	Par() {}
+	Par(int argc, char **argv) {
+		_par = read(argc, argv);
+	}
+	Par(string str) {
+		_par = read(str);
+	}
+	static map<string, vector<string>> read(int, char **);
+	static map<string, vector<string>> read(string);
+
+	map<string, vector<string>> _par;
+};
+
+} /// namespace jian
+
+#endif

@@ -1,0 +1,113 @@
+#ifndef ASSEMBLE_H
+#define ASSEMBLE_H
+
+#include "../Nuc2D.h"
+#include "../Pdb.h"
+#include "Connect.h"
+
+namespace jian {
+
+namespace nuc3d {
+
+class Assemble {
+public:
+	Assemble(string parfile) {
+		/// set default parameter
+		char *lib_path = getenv("NSP");
+		lib = (lib_path ? lib_path : ".");
+
+		/// read parameter file
+		auto pars = Par::read(parfile);
+		pars.count("sequence") && (seq = pars["sequence"][0], 1);
+		transform(begin(seq), end(seq), begin(seq), ::toupper);
+		pars.count("secondary_structure") && (ss = pars["secondary_structure"][0], 1);
+		pars.count("library_path") && (lib = pars["library_path"][0], 1);
+		pars.count("job_name") && (job = pars["job_name"][0], 1);
+		pars.count("number") && (num = stoi(pars["number"][0]), 1);
+		pars.count("view") && (view = stoi(pars["view"][0]), 1);
+		pars.count("family") && (family = pars["family"][0], 1);
+		pars.count("type") && (type = pars["type"][0], 1);
+		pars.count("constraints") && (constraints = pars["constraints"][0], 1);
+
+		/// set library path
+		if (upper(type) == "RNA") {
+			lib += "/RNA/";
+		} else if (upper(type) == "DNA") {
+			lib += "/DNA/";
+		} else if (lower(type) == "protein") {
+			lib += "protein/";
+		}
+
+		ss != "" || die("Please tell me the secondary structure!");
+		seq != "" || die("Please tell me the sequence!");
+
+		/// check the length of the secondary structure and sequence
+		count_if(begin(ss), end(ss), [](const char &c) {
+			return c == '.' || c == '(' || c == ')' || c == '[' || c == ']';
+		}) == seq.size() || die("The length of the secondary structure and sequence should be equal!");
+	}
+
+	Assemble(string seq, string ss) {
+		/// set default parameter
+		char *lib_path = getenv("NSP");
+		lib = (lib_path ? lib_path : ".");
+
+		/// set secondary structure and sequence
+		this->ss = ss;
+		this->seq = seq;
+
+		/// check the length of the secondary structure and sequence
+		count_if(begin(ss), end(ss), [](const char &c) {
+			return c == '.' || c == '(' || c == ')' || c == '[' || c == ']';
+		}) == seq.size() || die("The length of the secondary structure and sequence should be equal!");
+	}
+	
+	void operator ()();
+
+	string ss;
+	string seq;
+	string job = "assemble";
+	string lib;
+	string family = "other";
+	string type = "RNA";
+	Log log {"nsp.log"};
+	nuc2d::N2D mol;
+	string constraints;
+	int num = 10;
+	int is_test = 0; // Is this a test case or not?
+	int view = 0;
+
+	/////////////////////////////////////
+	/// Find templates
+	int find_templates(nuc2d::loop *);
+	vector<Model> find_loops(nuc2d::loop *, int = 1);
+	vector<Model> find_helices(nuc2d::helix *, int = 1);
+	void create_loops();
+
+	int _max_loop_nums = 1000;
+	map<nuc2d::loop *, pair<vector<Model>, vector<Model>>> templates;
+	vector<tuple<nuc2d::loop *, int, int>> loop_nums_table;
+	//////////////////////////////////////
+
+	//////////////////////////////////////
+	/// Assemble templates
+	void ass_templates(int = 1);
+	Model ass_templates(nuc2d::loop *);
+	void rebuild_chains(Model &);
+	Model createHelix(nuc2d::helix *);
+	Model createHelix(string);
+
+	map<nuc2d::loop *, pair<int, int>> templ;
+	Connect connect;
+	//////////////////////////////////////
+};
+
+} /// namespace nuc3d
+
+} /// namespace jian
+
+#endif
+
+
+
+
