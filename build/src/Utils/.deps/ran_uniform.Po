@@ -1,19 +1,14 @@
 ran_uniform.o: ../../../src/Utils/ran_uniform.cpp \
  ../../../src/Utils/ran_uniform.h /usr/include/stdio.h \
- /usr/include/features.h /usr/include/i386-linux-gnu/bits/predefs.h \
- /usr/include/i386-linux-gnu/sys/cdefs.h \
- /usr/include/i386-linux-gnu/bits/wordsize.h \
- /usr/include/i386-linux-gnu/gnu/stubs.h \
- /usr/include/i386-linux-gnu/gnu/stubs-32.h \
- /usr/lib/gcc/i686-linux-gnu/4.9/include/stddef.h \
- /usr/include/i386-linux-gnu/bits/types.h \
- /usr/include/i386-linux-gnu/bits/typesizes.h /usr/include/libio.h \
- /usr/include/_G_config.h /usr/include/wchar.h \
- /usr/lib/gcc/i686-linux-gnu/4.9/include/stdarg.h \
- /usr/include/i386-linux-gnu/bits/stdio_lim.h \
- /usr/include/i386-linux-gnu/bits/sys_errlist.h /usr/include/time.h \
- /usr/include/i386-linux-gnu/bits/time.h \
- /usr/include/i386-linux-gnu/bits/timex.h /usr/include/xlocale.h
+ /usr/include/features.h /usr/include/sys/cdefs.h \
+ /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h \
+ /usr/include/gnu/stubs-64.h \
+ /home/wangjian/lab/gcc-4.9.2/lib/gcc/x86_64-unknown-linux-gnu/4.9.2/include/stddef.h \
+ /usr/include/bits/types.h /usr/include/bits/typesizes.h \
+ /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
+ /home/wangjian/lab/gcc-4.9.2/lib/gcc/x86_64-unknown-linux-gnu/4.9.2/include/stdarg.h \
+ /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
+ /usr/include/time.h /usr/include/bits/time.h /usr/include/xlocale.h
 
 ../../../src/Utils/ran_uniform.h:
 
@@ -21,21 +16,19 @@ ran_uniform.o: ../../../src/Utils/ran_uniform.cpp \
 
 /usr/include/features.h:
 
-/usr/include/i386-linux-gnu/bits/predefs.h:
+/usr/include/sys/cdefs.h:
 
-/usr/include/i386-linux-gnu/sys/cdefs.h:
+/usr/include/bits/wordsize.h:
 
-/usr/include/i386-linux-gnu/bits/wordsize.h:
+/usr/include/gnu/stubs.h:
 
-/usr/include/i386-linux-gnu/gnu/stubs.h:
+/usr/include/gnu/stubs-64.h:
 
-/usr/include/i386-linux-gnu/gnu/stubs-32.h:
+/home/wangjian/lab/gcc-4.9.2/lib/gcc/x86_64-unknown-linux-gnu/4.9.2/include/stddef.h:
 
-/usr/lib/gcc/i686-linux-gnu/4.9/include/stddef.h:
+/usr/include/bits/types.h:
 
-/usr/include/i386-linux-gnu/bits/types.h:
-
-/usr/include/i386-linux-gnu/bits/typesizes.h:
+/usr/include/bits/typesizes.h:
 
 /usr/include/libio.h:
 
@@ -43,16 +36,14 @@ ran_uniform.o: ../../../src/Utils/ran_uniform.cpp \
 
 /usr/include/wchar.h:
 
-/usr/lib/gcc/i686-linux-gnu/4.9/include/stdarg.h:
+/home/wangjian/lab/gcc-4.9.2/lib/gcc/x86_64-unknown-linux-gnu/4.9.2/include/stdarg.h:
 
-/usr/include/i386-linux-gnu/bits/stdio_lim.h:
+/usr/include/bits/stdio_lim.h:
 
-/usr/include/i386-linux-gnu/bits/sys_errlist.h:
+/usr/include/bits/sys_errlist.h:
 
 /usr/include/time.h:
 
-/usr/include/i386-linux-gnu/bits/time.h:
-
-/usr/include/i386-linux-gnu/bits/timex.h:
+/usr/include/bits/time.h:
 
 /usr/include/xlocale.h:
