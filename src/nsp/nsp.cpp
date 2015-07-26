@@ -41,17 +41,18 @@ int main(int argc, char **argv) {
             }
             std::cout << std::endl;
         }
-    } else if (!strcmp(argv[1], "score")) {
+    //} else if (!strcmp(argv[1], "score")) {
+    } else if (par["global"][0] == "score") {
         jian::Score score;
-        if (!strcmp(argv[2], "-list")) {
-            std::ifstream ifile(argv[3]);
+        if (par.count("list")) {
+            std::ifstream ifile(par["list"][0].c_str());
             std::string line;
             while (std::getline(ifile, line)) {
                 std::cout << score(jian::RNA(boost::trim_copy(line))) << std::endl;
             }
             ifile.close();
         } else {
-            std::cout << score(argv[2]) << std::endl;
+            std::cout << score(par["global"][1]) << std::endl;
         }
     } else if (par["global"][0] == "train_junction") {
         jian::nuc3d::JunctBuild jb;
