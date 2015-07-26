@@ -62,11 +62,13 @@ int main(int argc, char **argv) {
         jian::D5P model(argv[2]);
         cout << model << endl;
     } else if (boost::to_lower_copy(par["global"][0]) == "dna") {
-        jian::DNA model(argv[2]);
-        cout << model << endl;
+        jian::DNA mol(par["global"][1]);
+        jian::SortAtoms()(mol);
+        cout << mol << endl;
     } else if (boost::to_lower_copy(par["global"][0]) == "rna") {
-        jian::RNA model(argv[2]);
-        cout << model << endl;
+        jian::RNA mol(par["global"][1]);
+        jian::SortAtoms()(mol);
+        cout << mol << endl;
     } else if (!strcmp(argv[1], "-test")) {
         jian::D5P model(argv[2]);
         for (auto &chain: model.chains) {

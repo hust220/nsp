@@ -17,7 +17,7 @@ public:
         residues = chain.residues;
         return *this;
     }
-    Chain(vector<string> &, string = "");
+    Chain(vector<string> &lines, string rna_name = "",  string type = "RNA");
     int atom_nums();
 
     void push(Residue *);
