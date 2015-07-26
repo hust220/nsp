@@ -2,8 +2,7 @@
 
 int main(int argc, char **argv) {
     jian::Par par(argc, argv);
-    std::string par_type = boost::to_lower_copy(par["global"][0]);
-    if (par_type == "3drna") {
+    if (boost::to_lower_copy(par["global"][0]) == "3drna") {
         if (par.count("par")) {
             jian::Par pars(par["par"][0]);
             jian::nuc3d::Assemble ass(pars);
@@ -12,9 +11,9 @@ int main(int argc, char **argv) {
             jian::nuc3d::Assemble ass(par);
             ass();
         }
-    } else if (par_type == "rmsd") {
+    } else if (boost::to_lower_copy(par["global"][0]) == "rmsd") {
         std::cout << jian::pdb::RMSD()(jian::Model(argv[2]), jian::Model(argv[3])) << std::endl;
-    } else if (!strcmp(argv[1], "lm")) {
+    } else if (boost::to_lower_copy(par["global"][0]) == "lm") {
         std::string type = par["type"][0];
         std::string seq = par["seq"][0];
         std::string ss = par["ss"][0];
@@ -41,7 +40,6 @@ int main(int argc, char **argv) {
             }
             std::cout << std::endl;
         }
-    //} else if (!strcmp(argv[1], "score")) {
     } else if (par["global"][0] == "score") {
         jian::Score score;
         if (par.count("list")) {
@@ -63,8 +61,11 @@ int main(int argc, char **argv) {
     } else if (!strcmp(argv[1], "-d5p")) {
         jian::D5P model(argv[2]);
         cout << model << endl;
-    } else if (!strcmp(argv[1], "-dna")) {
+    } else if (boost::to_lower_copy(par["global"][0]) == "dna") {
         jian::DNA model(argv[2]);
+        cout << model << endl;
+    } else if (boost::to_lower_copy(par["global"][0]) == "rna") {
+        jian::RNA model(argv[2]);
         cout << model << endl;
     } else if (!strcmp(argv[1], "-test")) {
         jian::D5P model(argv[2]);
