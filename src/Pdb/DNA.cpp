@@ -30,7 +30,7 @@ void DNA::readPDB(string pdbfile) {
     /* set chains */
     ifstream ifile(pdbfile.c_str());
     if (!ifile) {
-        cout << "DNA::readPDB error! Open file \"" << pdbfile << "\" failed!" << endl;
+        cerr << "DNA::readPDB error! Open file \"" << pdbfile << "\" failed!" << endl;
         exit(1);
     }
     string line;
@@ -50,16 +50,17 @@ void DNA::readPDB(string pdbfile) {
         }
     }
 
-    if (n == 0) {
-        cerr << "The file '" << pdbfile << "' has nothing!" << endl;
-        exit(1);
-    }
-
     Chain chain(lines, name, "DNA");
     lines.clear();
     if (!chain.residues.empty()) {
         chains.push_back(chain);
     }
+
+    if (chains.empty()) {
+        cerr << "The file '" << pdbfile << "' has nothing!" << endl;
+        exit(1);
+    }
+
     ifile.close();
 }
 

@@ -4,11 +4,11 @@ using namespace jian;
 
 RNA::RNA(char *pdbfile) {
     string str(pdbfile);
-    readPDB(pdbfile);
+    read(pdbfile);
 }
 
 RNA::RNA(string pdbfile) {
-    readPDB(pdbfile);
+    read(pdbfile);
 }
 
 RNA *RNA::copy() {
@@ -19,18 +19,24 @@ RNA *RNA::copy() {
     return rna;
 }
 
-void RNA::readPDB(string pdbfile) {
-    /* set name */
-    if (pdbfile.size() <= 4 || pdbfile.substr(pdbfile.size() - 4, 4).compare(".pdb")) {
-        cerr << "Please give me a file ended with '.pdb'\n";
-        exit(1);
+void RNA::read(string pdbfile) {
+    if (pdbfile.size() > 4 && pdbfile.substr(pdbfile.size() - 4, 4) == ".pdb") {
+        read_pdb(pdbfile);
+    } else if (pdbfile.size() > 4 && pdbfile.substr(pdbfile.size() - 4, 4) == ".cif") {
+        read_cif(pdbfile);
+    } else {
+        die("Please give me a file ended with '.pdb' or '.cif'!");
     }
-    name = pdbfile.substr(0, pdbfile.size() - 4);
+}
 
-    /* set chains */
-    ifstream ifile(pdbfile.c_str());
+void RNA::read_pdb(string pdb_file) {
+    /// set name
+    name = pdb_file.substr(0, pdb_file.size() - 4);
+
+    /// set chains
+    ifstream ifile(pdb_file.c_str());
     if (!ifile) {
-        cout << "RNA::readPDB error! Open file \"" << pdbfile << "\" failed!" << endl;
+        cerr << "RNA::read error! Open file \"" << pdb_file << "\" failed!" << endl;
         exit(1);
     }
     string line;
@@ -40,7 +46,6 @@ void RNA::readPDB(string pdbfile) {
         if (!line.compare(0, 4, "ATOM")) {
             n++;
             if (lines.size() != 0 && line[21] != lines.back()[21]) {
-                //Obj<Chain> chain = new Chain(lines, name, "RNA");
                 Chain chain(lines, name, "RNA");
                 lines.clear();
                 if (!chain.residues.empty()) {
@@ -51,23 +56,86 @@ void RNA::readPDB(string pdbfile) {
         }
     }
 
-    if (n == 0) {
-        cerr << "The file '" << pdbfile << "' has nothing!" << endl;
-        exit(1);
-    }
-
     Chain chain(lines, name, "RNA");
     lines.clear();
     if (!chain.residues.empty()) {
         chains.push_back(chain);
     }
 
+    if (chains.empty()) {
+        cerr << "The file '" << pdb_file << "' has nothing!" << endl;
+        exit(1);
+    }
+
+    ifile.close();
+
+    /// set length
+    setLen();
+}
+
+void RNA::read_cif(string cif_file) {
+    /// set name
+    name = cif_file.substr(0, cif_file.size() - 4);
+
+    /// set chains
+    ifstream ifile(cif_file.c_str());
+    if (!ifile) {
+        cerr << "RNA::read error! Open file \"" << cif_file << "\" failed!" << endl;
+        exit(1);
+    }
+    string line;
+    vector<string> lines;
+    int n = 0;
+    Residue res;
+    string res_name;
+    string res_num;
+    Chain chain;
+    string chain_name;
+    string chain_num;
+    while (getline(ifile, line, '\n')) {
+        if (!line.compare(0, 4, "ATOM")) {
+            n++;
+            vector<string> array;
+            tokenize(line, array, " \"");
+            if (array[2] == "H") continue;
+            if (!set<string>{"A", "U", "G", "C"}.count(array[5])) continue;
+
+            if (array[7] != chain_num && chain_num != "") {
+                chain.name = chain_name;
+                chains.push_back(chain);
+                chain.residues.clear();
+            }
+            if (array[8] != res_num && res_num != "") {
+                res.name = res_name;
+                chain.residues.push_back(res);
+                res.atoms.clear();
+            }
+
+            Atom atom(array[3], stod(array[10]), stod(array[11]), stod(array[12]));
+            chain_name = array[6];
+            chain_num = array[7];
+            res_name = array[5];
+            res_num = array[8];
+            res.atoms.push_back(atom);
+        }
+    }
+    if (!res.atoms.empty()) {
+        res.name = res_name;
+        chain.residues.push_back(res);
+    }
+    if (!chain.residues.empty()) {
+        chain.name = chain_name;
+        chains.push_back(chain);
+    }
+    if (chains.empty()) {
+        cerr << "The file '" << cif_file << "' has nothing!" << endl;
+        exit(1);
+    }
+
     ifile.close();
 
     /* set length */
     setLen();
-
-//    init();
 }
 
 Chain &RNA::operator [](int n) {

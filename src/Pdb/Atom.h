@@ -32,12 +32,7 @@ public:
         z = point.z;
         this->name = name;
     }
-    Atom(const string &name, double x, double y, double z) {
-        this->name = name;
-        this->x = x;
-        this->y = y;
-        this->z = z;
-    }
+    Atom(const string &name, double x, double y, double z);
     Atom(string &, string);
     Atom(Point, string, string, int);
     friend ostream &operator <<(ostream &, const Atom &);
