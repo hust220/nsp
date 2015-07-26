@@ -63,7 +63,7 @@ double Score::operator ()(const RNA &rna) {
     // cerr << rna->name << ' ' << distScore << ' ' << dihScore << endl;
     // double *score = distAnal->getScore();
     // cerr << rna->name << ' ' << score[0] << ' ' << score[1] << ' ' << score[2] << ' ' << score[3] << ' ' << score[4] << ' ' << dihScore << endl;
-    std::cout << distScore << ' ' << dihScore << std::endl;
+    //std::cout << distScore << ' ' << dihScore << std::endl;
     return _constant + _distWeight * distScore + _dihWeight * dihScore;
 }
 

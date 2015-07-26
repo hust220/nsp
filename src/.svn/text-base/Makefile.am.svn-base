@@ -1,2 +1,0 @@
-SUBDIRS=Tools_ DG Pdb Score_ Nuc2D Nuc3D nsp
-
