@@ -1,0 +1,218 @@
+##########################################################################
+##
+##  File:    make.platform.sgi6
+##  Purpose: This file is an SGI 6.5 platform makefile.
+##
+##########################################################################
+
+#-----Lexer and Parser section-------------------------------------------#
+
+# Lexer executable
+LEX=flex
+
+# Lexer flags
+LEXFLAGS=-Cfr -L
+
+# Parser executable
+YACC=bison
+
+# Parser flags
+YACCFLAGS=-d -v -l
+
+#------------------------------------------------------------------------#
+
+#-----Compilers section--------------------------------------------------#
+
+## ABI
+## This part defines an application binary interface to be used with the
+## compiler suite.
+## In case of SGI, this is set to instruct the compiler to generate
+## the default ABI (which is most often the new 32-bit).
+ABI=
+
+## Warnings flags
+## This part defines warnings related flags
+
+# WARNINGS_AS_ERRORS defines flags to instruct all compilers to treat all
+# warnings as errors.
+# RCSB compiler does not support this feature.
+
+# ALL_WARNINGS defines flags to instruct all compilers to report all
+# warnings.
+ALL_WARNINGS=-w2
+
+# NO_DEPRECATED defines flags to instruct C++ compiler not to report
+# warnings about deprecated constructs still used in C++ code.
+# This is not used on SGI platform.
+NO_DEPRECATED=
+
+# Collect all warnings related flags
+WARNINGS=$(WARNINGS_AS_ERRORS) $(ALL_WARNINGS) $(NO_DEPRECATED)
+
+## Platform specifics
+## This part defines platform specific information
+ 
+# Endianess.
+# Should be defined only for big endian platforms. Otherwise
+# it must be left undefined, which indicates little endian platform.
+# SGI is a big endian platform.
+ENDIANESS=-DBIG_ENDIAN_PLATFORM
+ 
+# OS indicator. Should be defined only if platform requires special handling.
+PLATFORM_OS=-DIRIX_OS
+
+# Collect all platform related flags
+PLATFORM=$(ENDIANESS) $(PLATFORM_OS)
+
+## Compiler capabilities/restrictions related defines
+## This part defines variables based on the capabilities or restrictions
+## of the compiler suite used on the platform.
+
+# If STRCASECMP_OPTION is defined, that indicates that the compiler
+# suite/supporting libraries support strcasecmp() function.
+# SGI compiler does not support this, so this is undefined.
+#STRCASECMP_OPTION=-DHAVE_STRCASECMP
+
+# If INCL_TEMPLATE_SRC_OPTION is defined, that indicates that
+# compiler must include template method definition in template
+# header files in order to properly compile templates.
+# Not needed with SGI compiler, so this is undefined.
+#INCL_TEMPLATE_SRC_OPTION=-DINCL_TEMPLATE_SRC
+
+# If PLACEMENT_NEW_OPTION is defined, that indicates that the compiler
+# suite/supporting libraries support placement new/delete operators.
+# SGI compiler does not support this, so this is undefined.
+#PLACEMENT_NEW_OPTION=-DHAVE_PLACEMENT_NEW
+
+# Collect all compiler capabilities/restrictions
+COMPILER=$(STRCASECMP_OPTION) $(INCL_TEMPLATE_SRC_OPTION) \
+  $(PLACEMENT_NEW_OPTION)
+
+# Collect all global defines
+GDEFINES=$(PLATFORM) $(COMPILER)
+
+# Collect all defines from global defines and defines specified in
+# module makefile
+DEFINES=$(GDEFINES) $(LDEFINES)
+
+## Global include directories
+GINCLUDES= 
+
+# Collect all include directories from global include directories and
+# include directories specified in module makefile
+INCLUDES=$(LINCLUDES) $(GINCLUDES) 
+
+## C compiler
+## This part defines C compiler information
+
+# C compiler executable
+CC=cc
+
+# C compiler ANSI/NON-ANSI flags
+ANSI_C_FLAG=-ansi
+NON_ANSI_C_FLAG=-xansi
+C_WARNINGS=$(WARNINGS)
+
+# C compiler flags
+CFLAGS=$(OPT) $(ABI) $(ANSI_C_FLAG) $(C_WARNINGS) $(DEFINES) $(INCLUDES)
+CFLAGS_NONANSI=$(OPT) $(ABI) $(NON_ANSI_C_FLAG) $(C_WARNINGS) $(DEFINES) \
+               $(INCLUDES) 
+
+## C++ compiler
+## This part defines C++ compiler information
+
+# C++ compiler executable
+CCC=CC
+
+# C++ compiler ANSI/NON-ANSI flags
+ANSI_C_PLUS_FLAG=-LANG:std
+NON_ANSI_C_PLUS_FLAG=-xansi
+# Only the default warnings are used.
+C_PLUS_WARNINGS=
+
+# This variable specifies how to compile the C code. If it is set to C,
+# that indicates that C code will be compiled with the C++ compiler.
+# Otherwise it will be compiled with C compiler.
+EXT=C
+
+# This limits the maximum size to 6000 basic blocks of an optimized routine.
+LIMIT=-OPT:Olimit=7000
+
+# This instructs the compiler to instantiate only the templates used in
+# the compilation unit.
+TEMPL=-ptused
+
+# C++ compiler flags
+C++FLAGS=$(OPT) $(ABI) $(ANSI_C_PLUS_FLAG) $(C_PLUS_WARNINGS) $(LIMIT) \
+         $(DEFINES) $(INCLUDES) $(TEMPL)
+C++FLAGS_NONANSI=$(OPT) $(ABI) $(NON_ANSI_C_PLUS_FLAG) $(C_PLUS_WARNINGS) \
+                 $(LIMIT) $(DEFINES) $(INCLUDES) $(TEMPL)
+# C++FLAGS_RELAXED should be set to avoid warnings reported by third party
+# source code that is not maintained by PDB
+# In case of SGI, eliminate the warning #3203 that reports non-reachable
+# code statements.
+C++FLAGS_RELAXED=-woff 3203 $(C++FLAGS_NONANSI)
+
+## Fortran compiler
+## This part defines Fortran compiler information
+
+# Fortran compiler executable
+F77=f77
+
+# Fortran compiler flags
+FFLAGS=-O -u
+
+# Additional Fortran libraries
+F77LIBS=
+
+#------------------------------------------------------------------------#
+
+#-----Linkers section----------------------------------------------------#
+
+# Static linking option. If not defined, dynamic linking is used.
+# On SGI, static linking is not supported.
+STATIC_LINKING=
+
+# Linker flags
+LDFLAGS=$(ABI) -LANG:std -Wl,-w $(STATIC_LINKING)
+
+# Fortran linker
+F77_LINKER=f77
+
+#------------------------------------------------------------------------#
+
+#-----Archiver section---------------------------------------------------#
+
+# Archiver executable
+AR=ar
+
+# Archiver flags
+AR_GETFLAGS=xv
+AR_PUTFLAGS=rcvs
+
+#------------------------------------------------------------------------#
+
+#-----Ranlib-------------------------------------------------------------#
+
+RANLIB=true
+
+#------------------------------------------------------------------------#
+
+#-----Installer----------------------------------------------------------#
+
+INSTALL=../etc/cifinstall
+INSTALLOPTS=-m 0444 
+
+#------------------------------------------------------------------------#
+
+#-----Stripper-----------------------------------------------------------#
+
+STRIP=strip
+
+#------------------------------------------------------------------------#
+
+#-----Shell--------------------------------------------------------------#
+
+SHELL=/bin/sh
+
+#------------------------------------------------------------------------#

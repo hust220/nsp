@@ -1,0 +1,67 @@
+##
+##  File:  make.platform.darwin2
+##
+#-----------------------------------------------------------------------------
+#  ANSI C/C++ compiler flags
+#-----------------------------------------------------------------------------
+# Definitions:
+#
+# -DINCL_TEMPLATE_SRC to include template method definitions in 
+#                     template header files. (needed for GNU compilers)
+CC        = gcc
+CCC       = g++
+EXT       = C
+ABI       = -DBIG_ENDIAN_PLATFORM
+G++INCL   = -I/usr/include/gcc/darwin/2.95.2
+#G++INCL   = 
+
+HAVE_STRCASECMP = -DHAVE_STRCASECMP
+#HAVE_STRCASECMP =
+CFLAGS            =  $(OPT) -ansi  $(ABI)  $(LDEFINES) $(LINCLUDES) $(G++INCL) $(HAVE_STRCASECMP)
+CFLAGS_NONANSI    =  $(OPT) -traditional-cpp $(ABI)  $(LDEFINES) $(LINCLUDES)$(G++INCL) $(HAVE_STRCASECMP)
+CFLAGS_NONANSI    =  $(OPT) $(ABI)  $(LDEFINES) $(LINCLUDES) $(G++INCL) $(HAVE_STRCASECMP)
+C++FLAGS          =  $(OPT) -ansi  -DINCL_TEMPLATE_SRC $(ABI) $(LDEFINES) $(LINCLUDES) $(G++INCL) $(HAVE_STRCASECMP)
+C++FLAGS_NONANSI  =  $(OPT) -traditional-cpp -DINCL_TEMPLATE_SRC $(ABI) $(LDEFINES) $(LINCLUDES) $(G++INCL) $(HAVE_STRCASECMP)
+C++FLAGS_RELAXED = $(C++FLAGS)
+
+LDFLAGS   = $(ABI) -w
+
+XLIBS       = -lX11 -lXext
+
+AR          = ar
+AR_GETFLAGS = xv
+AR_PUTFLAGS = rcvs
+
+#-----------------------------------------------------------------------------
+#  Fortran 77 compiler flags
+#-----------------------------------------------------------------------------
+
+F77         = /usr/bin/f77
+F77_LINKER  = /usr/bin/f77
+FFLAGS      = -O -u
+F77LIBS     = 
+
+#-----------------------------------------------------------------------------
+# Other utilities
+#-----------------------------------------------------------------------------
+
+INSTALL     = ../etc/cifinstall
+INSTALLOPTS = -m 0444 
+STRIP       = strip
+RANLIB      = ar ts
+SHELL       = /bin/sh
+
+##
+##
+
+#BISON++     = /local/bin/bison++
+BISON++	= ../bin/bison++
+YACC        = bison
+YACCFLAGS   = -d -v
+LEX	    = flex
+LEXFLAGS    = -Cfr
+##
+##
+EXPORT      = perl ../etc/fileUpdate.pl
+EXPORT_LIST = ../etc/export_list
+EXPORT_DIR  = export_dir

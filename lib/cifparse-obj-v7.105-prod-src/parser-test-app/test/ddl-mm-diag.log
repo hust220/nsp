@@ -1,0 +1,32 @@
+ERROR - In block "ddl_core", key item "_item_examples.case" is defined as non-mandatory
+ERROR - In block "ddl_core", key item "_item_range.minimum" is defined as non-mandatory
+ERROR - In block "ddl_core", key item "_item_range.maximum" is defined as non-mandatory
+ERROR - In block "ddl_core", in item "_datablock.description", in row #1, value "
+     This data block holds the core DDL." does not correspond to item's type. The expected type is "code".
+ERROR PARCHILD "item_description:item:1" - In block "ddl_core", in category "item_description", in row# 86, unmatched value in the parent "item"
+  "_item_description.name" -> "_item.name" value ="'_dictionary.datablock_id"
+ERROR - In block "ddl_core", in item "_item_description.name", in row #86, value "'_dictionary.datablock_id" does not correspond to item's type. The expected type is "name".
+ERROR - In block "ddl_core", in category "item_range", item "ordinal" is not defined in the reference file
+ERROR - Key item "_item_range.maximum" has invalid value "." in row having:
+  item "_item_range.name" with value = "_item_structure_list.index"
+  item "_item_range.minimum" with value = "1"
+ERROR - Key item "_item_range.maximum" has invalid value "." in row having:
+  item "_item_range.name" with value = "_item_structure_list.dimension"
+  item "_item_range.minimum" with value = "1"
+
+ERROR - In block "ddl_core", key item "_item_examples.case" is defined as non-mandatory
+ERROR - In block "ddl_core", key item "_item_range.minimum" is defined as non-mandatory
+ERROR - In block "ddl_core", key item "_item_range.maximum" is defined as non-mandatory
+ERROR - In block "ddl_core", in item "_datablock.description", in row #1, value "
+     This data block holds the core DDL." does not correspond to item's type. The expected type is "code".
+ERROR PARCHILD "item_description:item:1" - In block "ddl_core", in category "item_description", in row# 86, unmatched value in the parent "item"
+  "_item_description.name" -> "_item.name" value ="'_dictionary.datablock_id"
+ERROR - In block "ddl_core", in item "_item_description.name", in row #86, value "'_dictionary.datablock_id" does not correspond to item's type. The expected type is "name".
+ERROR - In block "ddl_core", in category "item_range", item "ordinal" is not defined in the reference file
+ERROR - Key item "_item_range.maximum" has invalid value "." in row having:
+  item "_item_range.name" with value = "_item_structure_list.index"
+  item "_item_range.minimum" with value = "1"
+ERROR - Key item "_item_range.maximum" has invalid value "." in row having:
+  item "_item_range.name" with value = "_item_structure_list.dimension"
+  item "_item_range.minimum" with value = "1"
+

@@ -1,0 +1,205 @@
+##########################################################################
+##
+##  File:    make.platform.sunos5
+##  Purpose: This file is a SunOS 5.x platform makefile.
+##
+##########################################################################
+
+#-----Lexer and Parser section-------------------------------------------#
+
+# Lexer executable
+LEX=flex
+
+# Lexer flags
+LEXFLAGS=-Cfr -L
+
+# Parser executable
+YACC=bison
+
+# Parser flags
+YACCFLAGS=-d -v -l
+
+#------------------------------------------------------------------------#
+
+#-----Compilers section--------------------------------------------------#
+
+## ABI
+## This part defines an application binary interface to be used with the
+## compiler suite.
+ABI= 
+
+## Warnings flags
+## This part defines warnings related flags
+
+# WARNINGS_AS_ERRORS defines flags to instruct all compilers to treat all
+# warnings as errors.
+
+# ALL_WARNINGS defines flags to instruct all compilers to report all
+# warnings.
+# Default warning level is used.
+ALL_WARNINGS=
+
+# NO_DEPRECATED defines flags to instruct C++ compiler not to report
+# warnings about deprecated constructs still used in C++ code.
+# This is not used on SunOS platform.
+NO_DEPRECATED=
+
+# Collect all warnings related flags
+WARNINGS=$(WARNINGS_AS_ERRORS) $(ALL_WARNINGS) $(NO_DEPRECATED)
+
+## Platform specifics
+## This part defines platform specific information
+
+# Endianess.
+# Should be defined only for big endian platforms. Otherwise
+# it must be left undefined, which indicates little endian platform.
+# Sun is a big endian platform.
+ENDIANESS=-DBIG_ENDIAN_PLATFORM
+
+# OS indicator. Should be defined only if SunOS is the platform
+PLATFORM_OS=-DSUN_OS
+
+# Collect all platform related flags
+PLATFORM=$(ENDIANESS) $(PLATFORM_OS)
+
+## Compiler capabilities/restrictions related defines
+## This part defines variables based on the capabilities or restrictions
+## of the compiler suite used on the platform.
+
+# If STRCASECMP_OPTION is defined, that indicates that the compiler
+# suite/supporting libraries support strcasecmp() function.
+# Sun compiler does not support this, so this is undefined.
+# STRCASECMP_OPTION=-DHAVE_STRCASECMP
+
+# If INCL_TEMPLATE_SRC_OPTION is defined, that indicates that
+# compiler must include template method definition in template
+# header files in order to properly compile templates.
+# Not needed with Sun compiler, so this is undefined.
+#INCL_TEMPLATE_SRC_OPTION=-DINCL_TEMPLATE_SRC
+
+# If PLACEMENT_NEW_OPTION is defined, that indicates that the compiler
+# suite/supporting libraries support placement new/delete operators.
+# Sun compiler supports this, so this is defined.
+PLACEMENT_NEW_OPTION=-DHAVE_PLACEMENT_NEW
+
+# Collect all compiler capabilities/restrictions
+COMPILER=$(STRCASECMP_OPTION) $(INCL_TEMPLATE_SRC_OPTION) \
+  $(PLACEMENT_NEW_OPTION)
+
+# Collect all global defines
+GDEFINES=$(PLATFORM) $(COMPILER)
+
+# Collect all defines from global defines and defines specified in
+# module makefile
+DEFINES=$(GDEFINES) $(LDEFINES)
+
+## Global include directories
+GINCLUDES= 
+
+# Collect all include directories from global include directories and
+# include directories specified in module makefile
+INCLUDES=$(LINCLUDES) $(GINCLUDES) 
+
+## C compiler
+## This part defines C compiler information
+
+# C compiler executable
+CC=cc
+
+# C compiler ANSI/NON-ANSI flags
+ANSI_C_FLAG=
+NON_ANSI_C_FLAG=
+C_WARNINGS=
+
+# C compiler flags
+CFLAGS=$(OPT) $(ABI) $(ANSI_C_FLAG) $(C_WARNINGS) $(DEFINES) $(INCLUDES)
+CFLAGS_NONANSI=$(OPT) $(ABI) $(NON_ANSI_C_FLAG) $(C_WARNINGS) $(DEFINES) \
+               $(INCLUDES) 
+
+## C++ compiler
+## This part defines C++ compiler information
+
+# C++ compiler executable
+CCC=CC
+
+# C++ compiler ANSI/NON-ANSI flags
+ANSI_C_PLUS_FLAG=
+NON_ANSI_C_PLUS_FLAG=
+C_PLUS_WARNINGS=$(WARNINGS)
+
+# This variable specifies how to compile the C code. If it is set to C,
+# that indicates that C code will be compiled with the C++ compiler.
+# Otherwise it will be compiled with C compiler.
+EXT=C
+
+# C++ compiler flags
+C++FLAGS=$(OPT) $(ABI) $(ANSI_C_PLUS_FLAG) $(C_PLUS_WARNINGS) $(DEFINES) \
+        $(INCLUDES)
+C++FLAGS_NONANSI=$(OPT) $(ABI) $(NON_ANSI_C_PLUS_FLAG) $(C_PLUS_WARNINGS) \
+                 $(DEFINES) $(INCLUDES)
+# C++FLAGS_RELAXED should be set to avoid warnings reported by third party
+# source code that is not maintained by PDB
+C++FLAGS_RELAXED=$(C++FLAGS)
+
+## Fortran compiler
+## This part defines Fortran compiler information
+
+# Fortran compiler executable
+F77=f77
+
+# Fortran compiler flags
+FFLAGS=-O -u
+
+# Additional Fortran libraries
+F77LIBS=
+
+#------------------------------------------------------------------------#
+
+#-----Linkers section----------------------------------------------------#
+
+# Static linking option. If not defined, dynamic linking is used.
+STATIC_LINKING=-dn
+
+# Linker flags
+LDFLAGS=$(ABI) $(STATIC_LINKING)
+
+# Fortran linker
+F77_LINKER=f77
+
+#------------------------------------------------------------------------#
+
+#-----Archiver section---------------------------------------------------#
+
+# Archiver executable
+AR=/usr/ccs/bin/ar
+
+# Archiver flags
+AR_GETFLAGS=-xv
+AR_PUTFLAGS=-rv
+
+#------------------------------------------------------------------------#
+
+#-----Ranlib-------------------------------------------------------------#
+
+RANLIB=true
+
+#------------------------------------------------------------------------#
+
+#-----Installer----------------------------------------------------------#
+
+INSTALL=../etc/cifinstall
+INSTALLOPTS=-m 0444 
+
+#------------------------------------------------------------------------#
+
+#-----Stripper-----------------------------------------------------------#
+
+STRIP=strip
+
+#------------------------------------------------------------------------#
+
+#-----Shell--------------------------------------------------------------#
+
+SHELL=/bin/sh
+
+#------------------------------------------------------------------------#

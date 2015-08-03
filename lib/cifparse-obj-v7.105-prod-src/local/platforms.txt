@@ -1,0 +1,10 @@
+gnu2
+gnu3
+gnu4
+darwin2
+darwin3
+darwin4
+sunos5
+osf
+sgi6
+cygwin

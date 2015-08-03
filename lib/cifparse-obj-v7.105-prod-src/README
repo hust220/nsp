@@ -1,0 +1,45 @@
+
+                          Installation Notes for the
+       CIFPARSE-OBJ - C++ Language Class Library of mmCIF Access Tools
+
+
+This version of CIFPARSE-OBJ is being distributed as a source library with a 
+set of example programs. 
+
+To build CIFPARSE-OBJ library do the following:
+
+a.  Uncompress and unbundle this distribution using the following command:
+
+        zcat cifparse-obj-vxxx-prod.tar.gz | tar -xf -
+
+    The result of this command is a directory named cifparse-obj-vxxx-prod.
+    Move into this directory.    
+
+
+b.  Check that there is a machine dependent makefile for your system in
+    ./etc subdirectory.
+
+    NOTE: If working on SUN platform, go to ets/make.platform.sunos5 and check
+    compiler flags. You might need to change them depending on compiler
+    version.
+
+    Build the library by typing:
+
+        make
+
+
+c.  Test programs are provided to illustrate some of the basic
+    features of the library. Run the test programs by typing:
+
+        make test
+
+    The output from the example programs is located in the subdirectory, 
+    cifparse-obj-vxxx/test
+
+    NOTE: The errors appearing in execution of Test 14 are expected. This
+    is because Test 14 illustrates a feature where improper loop_ statements
+    are ignored and still properly processed by the CIF parser. The errors
+    seen during the Test 14 execution are caused by the improper loop_
+    statements. All categories which are defined by the improper loop_
+    statements are not present in the resulting file Test14.ocif.
+

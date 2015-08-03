@@ -1,0 +1,9 @@
+ERROR - In block "ADH041", in category "atom_site", item "cartn_x" is not defined in the reference file
+ERROR - In block "ADH041", in category "atom_site", item "cartn_y" is not defined in the reference file
+ERROR - In block "ADH041", in category "atom_site", item "cartn_z" is not defined in the reference file
+ERROR - In block "ADH041", mandatory item "type_symbol" is not in category "atom_site"
+ERROR - In block "ADH041", mandatory item "type" is not in category "chem_comp"
+++ERROR - In block "ADH041", parent category "exptl_crystal", of category "diffrn", is missing.
+++ERROR - In block "ADH041", parent category "exptl_crystal", of category "exptl_crystal_grow", is missing.
+++ERROR - In block "ADH041", parent category "exptl_crystal", of category "exptl_crystal_grow_comp", is missing.
+

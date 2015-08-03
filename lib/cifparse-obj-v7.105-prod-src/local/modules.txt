@@ -1,0 +1,7 @@
+svn https://svn-dev.wwpdb.org/svn-rcsb/core/modules/etc etc Latest
+svn https://svn-dev.wwpdb.org/svn-rcsb/core/modules/common common Latest
+svn https://svn-dev.wwpdb.org/svn-rcsb/core/modules/tables tables Latest
+svn https://svn-dev.wwpdb.org/svn-rcsb/third-party/modules/regex regex Latest
+svn https://svn-dev.wwpdb.org/svn-rcsb/core/modules/cif-file cif-file Latest
+svn https://svn-dev.wwpdb.org/svn-rcsb/core/modules/cif-parser cif-parser Latest
+svn https://svn-dev.wwpdb.org/svn-rcsb/core/test-apps/parser-test-app parser-test-app Latest
