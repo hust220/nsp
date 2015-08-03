@@ -1,6 +1,7 @@
 #ifndef PDB
 #define PDB
 
+#include "Pdb/Cif.h"
 #include "Pdb/Atom.h"
 #include "Pdb/Residue.h"
 #include "Pdb/Chain.h"

@@ -12,6 +12,7 @@ using namespace std;
 namespace jian {
 
 void tokenize(const string &, vector<string> &, const string & = " ");
+void tokenize(const string &, vector<string> &, const string &, const string &temp);
 string upper(string);
 string lower(string);
 int die(string str);

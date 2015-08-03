@@ -13,9 +13,6 @@ RNA::RNA(string pdbfile) {
 
 RNA *RNA::copy() {
     RNA *rna = new RNA(*this);
-//    rna->name = name;
-//    rna->len = len;
-//    rna->chains = chains;
     return rna;
 }
 
@@ -55,6 +52,7 @@ void RNA::read_pdb(string pdb_file) {
             lines.push_back(line);
         }
     }
+    ifile.close();
 
     Chain chain(lines, name, "RNA");
     lines.clear();
@@ -66,11 +64,6 @@ void RNA::read_pdb(string pdb_file) {
         cerr << "The file '" << pdb_file << "' has nothing!" << endl;
         exit(1);
     }
-
-    ifile.close();
-
-    /// set length
-    setLen();
 }
 
 void RNA::read_cif(string cif_file) {
@@ -84,41 +77,35 @@ void RNA::read_cif(string cif_file) {
         exit(1);
     }
     string line;
-    vector<string> lines;
-    int n = 0;
     Residue res;
-    string res_name;
-    string res_num;
+    string res_name, res_num;
     Chain chain;
-    string chain_name;
-    string chain_num;
+    string chain_name, chain_num;
     while (getline(ifile, line, '\n')) {
-        if (!line.compare(0, 4, "ATOM")) {
-            n++;
-            vector<string> array;
-            tokenize(line, array, " \"");
-            if (array[2] == "H") continue;
-            if (!set<string>{"A", "U", "G", "C"}.count(array[5])) continue;
-
-            if (array[7] != chain_num && chain_num != "") {
-                chain.name = chain_name;
-                chains.push_back(chain);
-                chain.residues.clear();
-            }
-            if (array[8] != res_num && res_num != "") {
-                res.name = res_name;
-                chain.residues.push_back(res);
-                res.atoms.clear();
-            }
-
-            Atom atom(array[3], stod(array[10]), stod(array[11]), stod(array[12]));
-            chain_name = array[6];
-            chain_num = array[7];
-            res_name = array[5];
-            res_num = array[8];
-            res.atoms.push_back(atom);
+        if (line.compare(0, 4, "ATOM")) continue;
+        vector<string> array;
+        tokenize(line, array, " \"");
+        if (array[2] == "H") continue;
+        if (!set<string>{"A", "U", "G", "C"}.count(array[5])) continue;
+        if (array[8] != res_num && res_num != "") {
+            res.name = res_name;
+            chain.residues.push_back(res);
+            res.atoms.clear();
         }
+        if (array[7] != chain_num && chain_num != "") {
+            chain.name = chain_name;
+            chains.push_back(chain);
+            chain.residues.clear();
+        }
+
+        res.atoms.push_back(Atom(array[3], stod(array[10]), stod(array[11]), stod(array[12])));
+        chain_name = array[6];
+        chain_num = array[7];
+        res_name = array[5];
+        res_num = array[8];
     }
+    ifile.close();
+
     if (!res.atoms.empty()) {
         res.name = res_name;
         chain.residues.push_back(res);
@@ -131,11 +118,6 @@ void RNA::read_cif(string cif_file) {
         cerr << "The file '" << cif_file << "' has nothing!" << endl;
         exit(1);
     }
-
-    ifile.close();
-
-    /* set length */
-    setLen();
 }
 
 Chain &RNA::operator [](int n) {

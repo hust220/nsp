@@ -4,33 +4,36 @@ namespace jian {
 
 DNA::DNA(char *pdbfile) {
     string str(pdbfile);
-    readPDB(pdbfile);
+    read(pdbfile);
 }
 
 DNA::DNA(string pdbfile) {
-    readPDB(pdbfile);
+    read(pdbfile);
 }
 
 DNA *DNA::copy() {
-    DNA *dna = new DNA;
-    dna->name = name;
-    dna->len = len;
-    dna->chains = chains;
+    DNA *dna = new DNA(*this);
     return dna;
 }
 
-void DNA::readPDB(string pdbfile) {
-    /* set name */
-    if (pdbfile.size() <= 4 || pdbfile.substr(pdbfile.size() - 4, 4).compare(".pdb")) {
-        cerr << "Please give me a file ended with '.pdb'\n";
-        exit(1);
+void DNA::read(string pdbfile) {
+    if (pdbfile.size() > 4 && pdbfile.substr(pdbfile.size() - 4, 4) == ".pdb") {
+        read_pdb(pdbfile);
+    } else if (pdbfile.size() > 4 && pdbfile.substr(pdbfile.size() - 4, 4) == ".cif") {
+        read_cif(pdbfile);
+    } else {
+        die("Please give me a file ended with '.pdb' or '.cif'!");
     }
-    name = pdbfile.substr(0, pdbfile.size() - 4);
+}
 
-    /* set chains */
-    ifstream ifile(pdbfile.c_str());
+void DNA::read_pdb(string pdb_file) {
+    /// set name
+    name = pdb_file.substr(0, pdb_file.size() - 4);
+
+    /// set chains
+    ifstream ifile(pdb_file.c_str());
     if (!ifile) {
-        cerr << "DNA::readPDB error! Open file \"" << pdbfile << "\" failed!" << endl;
+        cerr << "DNA::read error! Open file \"" << pdb_file << "\" failed!" << endl;
         exit(1);
     }
     string line;
@@ -49,6 +52,7 @@ void DNA::readPDB(string pdbfile) {
             lines.push_back(line);
         }
     }
+    ifile.close();
 
     Chain chain(lines, name, "DNA");
     lines.clear();
@@ -57,11 +61,63 @@ void DNA::readPDB(string pdbfile) {
     }
 
     if (chains.empty()) {
-        cerr << "The file '" << pdbfile << "' has nothing!" << endl;
+        cerr << "The file '" << pdb_file << "' has nothing!" << endl;
         exit(1);
     }
+}
 
+void DNA::read_cif(string cif_file) {
+    /// set name
+    name = cif_file.substr(0, cif_file.size() - 4);
+
+    /// set chains
+    ifstream ifile(cif_file.c_str());
+    if (!ifile) {
+        cerr << "DNA::read error! Open file \"" << cif_file << "\" failed!" << endl;
+        exit(1);
+    }
+    string line;
+    Residue res;
+    string res_name, res_num;
+    Chain chain;
+    string chain_name, chain_num;
+    while (getline(ifile, line, '\n')) {
+        if (line.compare(0, 4, "ATOM")) continue;
+        vector<string> array;
+        tokenize(line, array, " \"");
+        if (array[2] == "H") continue;
+        if (!set<string>{"DA", "DT", "DG", "DC"}.count(array[5])) continue;
+        if (array[8] != res_num && res_num != "") {
+            res.name = res_name;
+            chain.residues.push_back(res);
+            res.atoms.clear();
+        }
+        if (array[7] != chain_num && chain_num != "") {
+            chain.name = chain_name;
+            chains.push_back(chain);
+            chain.residues.clear();
+        }
+
+        res.atoms.push_back(Atom(array[3], stod(array[10]), stod(array[11]), stod(array[12])));
+        chain_name = array[6];
+        chain_num = array[7];
+        res_name = array[5];
+        res_num = array[8];
+    }
     ifile.close();
+
+    if (!res.atoms.empty()) {
+        res.name = res_name;
+        chain.residues.push_back(res);
+    }
+    if (!chain.residues.empty()) {
+        chain.name = chain_name;
+        chains.push_back(chain);
+    }
+    if (chains.empty()) {
+        cerr << "The file '" << cif_file << "' has nothing!" << endl;
+        exit(1);
+    }
 }
 
 Chain &DNA::operator [](int n) {

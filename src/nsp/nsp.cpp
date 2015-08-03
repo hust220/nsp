@@ -55,6 +55,17 @@ int main(int argc, char **argv) {
     } else if (par["global"][0] == "train_junction") {
         jian::nuc3d::JunctBuild jb;
         jb.train(jian::Model(par["pdb"][0]), par["ss"][0]);
+    } else if (par["global"][0] == "cif") {
+        jian::Cif cif(par["global"][1]);
+        for (int i = 0; i < cif._loop["_atom_site.group_PDB"].size(); i++) {
+            std::cout << cif._loop["_atom_site.label_atom_id"][i] << ' ' << cif._loop["_atom_site.label_comp_id"][i] << ' ' << cif._loop["_atom_site.label_asym_id"][i] << ' ' << cif._loop["_atom_site.Cartn_x"][i] << ' ' << cif._loop["_atom_site.Cartn_y"][i] << ' ' << cif._loop["_atom_site.Cartn_z"][i] << std::endl;
+        }
+    } else if (par["global"][0] == "tokenize") {
+        std::vector<std::string> frags;
+        jian::tokenize(par["global"][1], frags, " ", "''\"\"");
+        std::cout << frags.size() << ' ';
+        std::copy(frags.begin(), frags.end(), std::ostream_iterator<std::string>(std::cout, ":"));
+        std::cout << std::endl;
     } else if (!strcmp(argv[1], "-mol2d")) {
         jian::nuc2d::N2D mol2d(argv[2], 1);
         mol2d.print();
