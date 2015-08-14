@@ -11,6 +11,35 @@ int main(int argc, char **argv) {
             jian::nuc3d::Assemble ass(par);
             ass();
         }
+    } else if (boost::to_lower_copy(par["global"][0]) == "n2d") {
+        jian::nuc2d::N2D n2d;
+        if (par.count("h")) n2d.hinge_base_pair_num = std::stoi(par["h"][0]);
+        n2d(par["ss"][0]);
+        n2d.print();
+    } else if (boost::to_lower_copy(par["global"][0]) == "sub") {
+        jian::Model model(par["global"][1]);
+        std::vector<int> nums;
+        for (int i = 2; i < par["global"].size(); i++) {
+            std::vector<std::string> array;
+            jian::tokenize(par["global"][i], array, "-");
+            if (array.size() == 1) {
+                nums.push_back(std::stoi(array[0]) - 1);
+            } else if (array.size() == 2) {
+                for (int j = std::stoi(array[0]); j <= std::stoi(array[1]); j++) {
+                    nums.push_back(j - 1);
+                }
+            }
+        }
+        std::cout << model.sub(nums) << std::endl;
+    } else if (boost::to_lower_copy(par["global"][0]) == "split") {
+        if (par.count("par")) {
+            jian::Par pars(par["par"][0]);
+            jian::nuc3d::Split split(pars);
+            split();
+        } else {
+            jian::nuc3d::Split split(par);
+            split();
+        }
     } else if (boost::to_lower_copy(par["global"][0]) == "rmsd") {
         std::cout << jian::pdb::RMSD()(jian::Model(argv[2]), jian::Model(argv[3])) << std::endl;
     } else if (boost::to_lower_copy(par["global"][0]) == "lm") {
@@ -58,7 +87,7 @@ int main(int argc, char **argv) {
     } else if (par["global"][0] == "cif") {
         jian::Cif cif(par["global"][1]);
         for (int i = 0; i < cif._loop["_atom_site.group_PDB"].size(); i++) {
-            std::cout << cif._loop["_atom_site.label_atom_id"][i] << ' ' << cif._loop["_atom_site.label_comp_id"][i] << ' ' << cif._loop["_atom_site.label_asym_id"][i] << ' ' << cif._loop["_atom_site.Cartn_x"][i] << ' ' << cif._loop["_atom_site.Cartn_y"][i] << ' ' << cif._loop["_atom_site.Cartn_z"][i] << std::endl;
+            std::cout << cif._loop["_atom_site.label_seq_id"][i] << ' ' << cif._loop["_atom_site.label_atom_id"][i] << ' ' << cif._loop["_atom_site.label_comp_id"][i] << ' ' << cif._loop["_atom_site.label_asym_id"][i] << ' ' << cif._loop["_atom_site.Cartn_x"][i] << ' ' << cif._loop["_atom_site.Cartn_y"][i] << ' ' << cif._loop["_atom_site.Cartn_z"][i] << std::endl;
         }
     } else if (par["global"][0] == "tokenize") {
         std::vector<std::string> frags;
@@ -161,11 +190,16 @@ int main(int argc, char **argv) {
 //
 //        jian::dg::Dgsol dgsol;
 //        std::cout << dgsol(dists, 3) << std::endl;
+    } else if (boost::to_lower_copy(par["global"][0]) == "len") {
+        std::cout << jian::Model(par["global"][1]).res_nums() << std::endl;
     } else if (!strcmp(argv[1], "seq")) {
         jian::Model model(argv[2]);
+        std::string delimiter = "";
+        if (par["global"].size() == 3)
+            delimiter = par["global"][2];
         for (auto &&chain: model.chains) {
             for (auto &&residue: chain.residues) {
-                std::cout << residue.name.substr(residue.name.size() - 1, 1);
+                std::cout << residue.name << delimiter;
             }
         }
         std::cout << std::endl;

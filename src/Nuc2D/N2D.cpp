@@ -1,7 +1,121 @@
 #include "N2D.h"
 
-using namespace jian;
-using namespace jian::nuc2d;
+namespace jian {
+
+namespace nuc2d {
+
+N2D::N2D() {
+}
+
+void N2D::operator ()() {
+    if (line == "") {
+        std::cerr << "N2D::operator () error! Please provide the 2D structure. " << std::endl;
+    }
+
+    stringstream sstr;
+    std::set<char> temp_set{'.', '(', ')', '[', ']', '{', '}'};
+    for (int i = 0; i < line.size(); i++) {
+        if (temp_set.count(line[i])) {
+            sstr << line[i];
+        } else {
+            if (line[i] != '&') {
+                cerr << "N2D::N2D() error! Nucleotide secondary structure should only includes "
+                     << "'.', '(', ')', '[', ']', '{', '}' and '&', but not includes '" 
+                     << line[i] << "'." << endl;
+                cerr << "But This secondary structure is: " << endl;
+                cerr << line << endl;
+                exit(1);
+            }
+        }
+    }
+    sstr >> ss;
+
+    // set 2d structure tree
+    res *r = new res('^', 0);
+    vector<res> v;
+    v.push_back(*r);
+    int i = 0;
+    for (i = 0; i < (int) line.size(); i++) {
+        v.push_back(res(line[i], i + 1));
+    }
+    r = new res('&', i + 1);
+    v.push_back(*r);
+
+    // set tree
+    setTree(v, view);
+}
+
+void N2D::operator ()(std::string ss_) {
+    // set ss 
+    line = ss_;
+    (*this)();
+}
+
+void N2D::operator ()(std::string seq_, std::string ss_) {
+    (*this)(ss_);
+    readSeq(seq_);
+}
+
+N2D::N2D(string ss_, int view_) : line(ss_), view(view_) {
+    // set ss 
+    stringstream sstr;
+    std::set<char> temp_set{'.', '(', ')', '[', ']', '{', '}'};
+    for (int i = 0; i < line.size(); i++) {
+        if (temp_set.count(line[i])) {
+            sstr << line[i];
+        } else {
+            if (line[i] != '&') {
+                cerr << "N2D::N2D() error! Nucleotide secondary structure should only includes "
+                     << "'.', '(', ')', '[', ']', '{', '}' and '&', but not includes '" 
+                     << line[i] << "'." << endl;
+                cerr << "But This secondary structure is: " << endl;
+                cerr << line << endl;
+                exit(1);
+            }
+        }
+    }
+    sstr >> ss;
+
+    // set 2d structure tree
+    res *r = new res('^', 0);
+    vector<res> v;
+    v.push_back(*r);
+    int i = 0;
+    for (i = 0; i < (int) line.size(); i++) {
+        v.push_back(res(line[i], i + 1));
+    }
+    r = new res('&', i + 1);
+    v.push_back(*r);
+
+    // set tree
+    setTree(v, view);
+}
+
+N2D::N2D(string ss_, string seq_, int view_) : N2D(ss_, view_) {
+    readSeq(seq_);
+}
+
+N2D::N2D(N2D *mol2d) : line(mol2d->line), seq(mol2d->seq), ss(mol2d->ss), 
+                            head(loop::copy(mol2d->head)), pseudo_head(loop::copy(mol2d->pseudo_head)), 
+                            mol(Model(mol2d->mol)), view(mol2d->view) {}
+N2D::N2D(const N2D &mol2d) : line(mol2d.line), seq(mol2d.seq), ss(mol2d.ss), 
+                            head(loop::copy(mol2d.head)), pseudo_head(loop::copy(mol2d.pseudo_head)), 
+                            mol(Model(mol2d.mol)), view(mol2d.view) {}
+N2D &N2D::operator =(const N2D &mol2d) {
+    line = mol2d.line;
+    seq = mol2d.seq;
+    ss = mol2d.ss;
+    loop::del(head);
+    loop::del(pseudo_head);
+    head = loop::copy(mol2d.head);
+    pseudo_head = loop::copy(mol2d.pseudo_head);
+    mol = DNA(mol2d.mol);
+    view = mol2d.view;
+}
+N2D::~N2D() {
+    loop::del(head);
+    loop::del(pseudo_head);
+}
 
 string N2D::del_single_pair(string ss) {
 	string line = ss;
@@ -1233,5 +1347,9 @@ int N2D::pseudo_tree(loop *root, loop *src, set<loop *> loop_set, loop *pseudo) 
 	}
 	return 0;
 }
+
+} /// namespace nuc2d
+
+} /// namespace jian
 
 

@@ -2,7 +2,46 @@
 
 namespace jian {
 
-void Pdb::readPDB(string pdbfile) {
+Pdb::Pdb() {
+}
+
+Pdb::Pdb(MolFile &pdb_file) {
+    name = pdb_file._name;   
+    while (!pdb_file.eof()) {
+        models.push_back(Model(pdb_file));
+    }
+}
+
+//Pdb::Pdb(PdbFile &pdb_file) {
+//    name = pdb_file._name;   
+//    while (!pdb_file.eof()) {
+//        models.push_back(Model(pdb_file));
+//    }
+//}
+//
+//Pdb::Pdb(Cif &cif) {
+//    name = cif._name;   
+//    while (!cif.eof()) {
+//        models.push_back(Model(cif));
+//    }
+//}
+//
+Pdb::Pdb(string file_name) {
+    read(file_name);
+}
+
+void Pdb::read(string file_name) {
+    if (file_name.size() > 4 && file_name.substr(file_name.size() - 4, 4) == ".pdb") {
+        read_pdb(file_name);
+    } else if (file_name.size() > 4 && file_name.substr(file_name.size() - 4, 4) == ".cif") {
+        Cif cif(file_name);
+        (*this) = Pdb(cif);
+    } else {
+        die("Please give me a file ended with '.pdb' or '.cif'!");
+    }
+}
+
+void Pdb::read_pdb(string pdbfile) {
 	/* set name */
 	if (pdbfile.size() > 4 && (pdbfile.substr(pdbfile.size() - 4, 4) == ".pdb" || pdbfile.substr(pdbfile.size() - 4, 4) == ".ent")) {
 		name = pdbfile.substr(0, pdbfile.size() - 4);

@@ -2,22 +2,26 @@
 #define ATOM_H_INCLUDED
 
 #include "../Utils.h"
+#include "PdbFile.h"
+#include "Cif.h"
 
 namespace jian {
 
 class Atom {
 public:
-    Atom() {}
-    Atom(Atom *atom) : name(atom->name), resName(atom->resName), rnaName(atom->rnaName), 
+    Atom();
+    Atom(MolFile &mol_file);
+//    Atom(PdbFile &pdb_file);
+//    Atom(Cif &cif);
+    Atom(Atom *atom) : name(atom->name), resName(atom->resName),
                             line(atom->line), num(atom->num), mass(atom->mass), 
                             x(atom->x), y(atom->y), z(atom->z), flag(atom->flag) {}
-    Atom(const Atom &atom) : name(atom.name), resName(atom.resName), rnaName(atom.rnaName), 
+    Atom(const Atom &atom) : name(atom.name), resName(atom.resName), 
                             line(atom.line), num(atom.num), mass(atom.mass), 
                             x(atom.x), y(atom.y), z(atom.z), flag(atom.flag) {}
     Atom &operator =(const Atom &atom) {
         name = atom.name;
         resName = atom.resName;
-        rnaName = atom.rnaName;
         line = atom.line;
         num = atom.num;
         mass = atom.mass;
@@ -32,9 +36,11 @@ public:
         z = point.z;
         this->name = name;
     }
-    Atom(const string &name, double x, double y, double z);
-    Atom(string &, string);
+    Atom(string name, double x, double y, double z);
+    Atom(string &);
     Atom(Point, string, string, int);
+    void set_name(std::string);
+    void set_mass();
     friend ostream &operator <<(ostream &, const Atom &);
     Point *coord();
 
@@ -71,7 +77,6 @@ public:
 
     string name;
     string resName;
-    string rnaName;
     string line;
     int num;
     double mass;

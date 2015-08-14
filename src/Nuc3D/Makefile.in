@@ -49,7 +49,7 @@ libnuc3d_a_LIBADD =
 am_libnuc3d_a_OBJECTS = Assemble.$(OBJEXT) ass_templates.$(OBJEXT) \
 	Connect.$(OBJEXT) find_templates.$(OBJEXT) \
 	LoopModelling2.$(OBJEXT) Transform.$(OBJEXT) AddPhos.$(OBJEXT) \
-	BuildNuc.$(OBJEXT) JunctBuild.$(OBJEXT)
+	BuildNuc.$(OBJEXT) JunctBuild.$(OBJEXT) Split.$(OBJEXT)
 libnuc3d_a_OBJECTS = $(am_libnuc3d_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -157,7 +157,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 noinst_LIBRARIES = libnuc3d.a
-libnuc3d_a_SOURCES = Assemble.cpp Assemble.h ass_templates.cpp Connect.cpp Connect.h find_templates.cpp LoopModelling2.cpp LoopModelling2.h Transform.cpp Transform.h AddPhos.cpp AddPhos.h BuildNuc.h BuildNuc.cpp JunctBuild.cpp JunctBuild.h
+libnuc3d_a_SOURCES = Assemble.cpp Assemble.h ass_templates.cpp Connect.cpp Connect.h find_templates.cpp LoopModelling2.cpp LoopModelling2.h Transform.cpp Transform.h AddPhos.cpp AddPhos.h BuildNuc.h BuildNuc.cpp JunctBuild.cpp JunctBuild.h Split.cpp Split.h
 all: all-am
 
 .SUFFIXES:
@@ -212,6 +212,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Connect.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JunctBuild.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LoopModelling2.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Split.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Transform.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ass_templates.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/find_templates.Po@am__quote@

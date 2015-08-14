@@ -8,15 +8,18 @@ namespace jian {
 class Model
 {
 public:
-    Model() {}
+    Model();
+    Model(MolFile &mol_file);
+//    Model(PdbFile &pdb_file);
+//    Model(Cif &cif);
     Model(Model *model) : name(model->name), chains(model->chains) {}
     Model(const Model &model) : name(model.name), chains(model.chains) {}
-    Model &operator =(const Model &model) {
-        name = model.name;
-        chains = model.chains;
-    }
+    Model &operator =(const Model &model);
     Model(vector<string>);
     Model(std::string pdbfile);
+    void read(std::string);
+    virtual void read_pdb(std::string);
+    virtual void read_cif(std::string);
 
     vector<Chain>::iterator begin();
     vector<Chain>::iterator end();
@@ -44,6 +47,26 @@ public:
     }
 
 
+    virtual std::string seq(std::string delimiter = "");
+    template<class T>
+    Model sub(const T &t) {
+        Model model;
+        int res_num = 0;
+        for (auto &&chain: chains) {
+            Chain temp_chain;
+            temp_chain.name = chain.name;
+            for (auto &&res: chain.residues) {
+                if (std::count(std::begin(t), std::end(t), res_num)) {
+                    temp_chain.residues.push_back(res);
+                }
+                res_num++;
+            }
+            if (!temp_chain.residues.empty())
+                model.chains.push_back(temp_chain);
+        }
+        return model;
+    }
+    int empty();
     void push(const Chain &);
     Chain &operator [](int);
     const Chain &operator [](int) const;

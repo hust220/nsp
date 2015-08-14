@@ -5,13 +5,13 @@
 
 namespace jian {
 
-class Pdb
-{
+class Pdb {
 public:
-    Pdb() {}
-    Pdb(string pdbfile) {
-        readPDB(pdbfile);
-    }
+    Pdb();
+    Pdb(MolFile &mol_file);
+//    Pdb(PdbFile &pdb_file);
+//    Pdb(Cif &cif);
+    Pdb(string file_name);
 
     vector<Model>::iterator begin() {
         return models.begin();
@@ -21,7 +21,8 @@ public:
     }
 
     void push(const Model &);
-    void readPDB(string);
+    void read(string);
+    void read_pdb(string);
     Model &operator [](int);
     const Model &operator [](int) const;
 

@@ -61,8 +61,10 @@ public:
 	int getLoopCounts();
 	int isVirtual();
 	string getFlag();
-	string getSS();
-	string getSeq();
+	string getSS() const;
+	string getSeq() const;
+	string ss() const;
+	string seq() const;
 
 	int type = 0; // -2:pseudoknot
 	int len = 0;

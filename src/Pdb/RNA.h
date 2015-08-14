@@ -7,8 +7,8 @@ namespace jian {
 
 class RNA :public Model {
 public:
-    RNA() : Model() {}
-    RNA(const Model &model): Model(model) {}
+    RNA();
+    RNA(const Model &model);
     RNA(RNA *rna) {
         len = rna->len;
         chains = rna->chains;
@@ -17,17 +17,13 @@ public:
         len = rna.len;
         chains = rna.chains;
     }
-    RNA &operator =(const RNA &rna) {
-        len = rna.len;
-        chains = rna.chains;
-        return *this;
-    }
+    RNA &operator =(const Model &model);
+    RNA &operator =(const RNA &rna);
     RNA(char *);
-    RNA(string);
+    RNA(std::string);
     RNA *copy();
-    void read(string);
-    void read_pdb(string);
-    void read_cif(string);
+    void read_pdb(std::string);
+    void read_cif(std::string);
     void push(Chain *);
     void push(Chain &);
     Chain &operator [](int);

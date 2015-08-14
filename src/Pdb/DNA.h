@@ -8,8 +8,8 @@ namespace jian {
 
 class DNA :public Model {
 public:
-    DNA() : Model() {}
-    DNA(const Model &model): Model(model) {}
+    DNA();
+    DNA(const Model &model);
     DNA(DNA *dna) {
         name = dna->name;
         chains = dna->chains;
@@ -29,7 +29,6 @@ public:
     DNA(char *);
     DNA(string);
     DNA *copy();
-    void read(string);
     void read_pdb(string);
     void read_cif(string);
     void push(Chain *);

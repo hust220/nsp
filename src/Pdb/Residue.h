@@ -8,22 +8,24 @@ namespace jian {
 class Residue
 {
 public:
-	Residue() {}
+	Residue();
+    Residue(MolFile &mol_file);
+//    Residue(PdbFile &pdb_file);
+//    Residue(Cif &cif);
 	Residue(Residue *r) : num(r->num), number(r->number), atomNum(r->atomNum), 
-	                      rnaName(r->rnaName), name(r->name), atoms(r->atoms) {}
+	                      name(r->name), atoms(r->atoms) {}
 	Residue(const Residue &r) : num(r.num), number(r.number), atomNum(r.atomNum), 
-	                            rnaName(r.rnaName), name(r.name), atoms(r.atoms) {}
+	                            name(r.name), atoms(r.atoms) {}
 	Residue &operator =(const Residue &r) {
 		num = r.num;
 		number = r.number;
 		atomNum = r.atomNum;
-		rnaName = r.rnaName;
 		name = r.name;
 		atoms = r.atoms;
 		return *this;
 	}
 	friend ostream &operator <<(ostream &, const Residue &);
-	Residue(vector<string> &, string);
+	Residue(vector<string> &);
 	Residue(Point *, int, int);
 	Atom &operator [](int);
 	const Atom &operator [](int) const;
@@ -42,7 +44,6 @@ public:
 	int num;
 	string number;
 	int atomNum;
-	string rnaName;
 	string name = "X";
 	vector<Atom> atoms;
 };

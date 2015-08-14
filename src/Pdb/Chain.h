@@ -8,16 +8,18 @@ namespace jian {
 class Chain
 {
 public:
-    Chain() {}
-    Chain(Chain *chain) : name(chain->name), rnaName(chain->rnaName), residues(chain->residues) {}
-    Chain(const Chain &chain) : name(chain.name), rnaName(chain.rnaName), residues(chain.residues) {}
+    Chain();
+    Chain(MolFile &mol_file);
+//    Chain(PdbFile &pdb_file);
+//    Chain(Cif &cif);
+    Chain(Chain *chain) : name(chain->name), residues(chain->residues) {}
+    Chain(const Chain &chain) : name(chain.name), residues(chain.residues) {}
     Chain &operator =(const Chain &chain) {
         name = chain.name;
-        rnaName = chain.rnaName;
         residues = chain.residues;
         return *this;
     }
-    Chain(vector<string> &lines, string rna_name = "",  string type = "RNA");
+    Chain(vector<string> &lines,  string type = "");
     int atom_nums();
 
     void push(Residue *);
@@ -26,7 +28,6 @@ public:
     const Residue &operator [](int) const;
 
     string name = "A";
-    string rnaName;
     vector<Residue> residues;
 
     vector<Residue>::iterator begin();
