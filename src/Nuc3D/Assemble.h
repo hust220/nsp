@@ -17,6 +17,7 @@ public:
 
     string ss;
     string seq;
+    int hinge_size = 2;
     string job = "assemble";
     string lib;
     string family = "other";

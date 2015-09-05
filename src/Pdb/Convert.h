@@ -3,7 +3,7 @@
 
 #include "Pdb.h"
 #include "../Geom.h"
-#include "SortAtoms.h"
+#include "Format.h"
 
 namespace jian {
 

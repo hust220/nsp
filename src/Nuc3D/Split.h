@@ -22,6 +22,7 @@ public:
     std::string type = "RNA";
     std::string seq;
     Model mol;
+    int _hinge_size = 2;
     int _helix_num = 0;
     int _loop_num = 0;
 };

@@ -27,6 +27,11 @@ Assemble::Assemble(Par pars) {
     pars.count("number") && (num = stoi(pars["number"][0]), 1);
     pars.count("num") && (num = stoi(pars["num"][0]), 1);
 
+    if (pars.count("hinge")) {
+        hinge_size = stoi(pars["hinge"][0]);
+        connect._hinge_size = hinge_size;
+    }
+
     pars.count("family") && (family = pars["family"][0], 1);
     pars.count("type") && (type = pars["type"][0], 1);
     pars.count("constraints") && (constraints = pars["constraints"][0], 1);
@@ -77,7 +82,8 @@ void Assemble::operator ()() {
     log("----------------------------------------");
 
     log("Construct 2D structures...");
-    mol = N2D(ss, seq);
+    mol.hinge_base_pair_num = hinge_size;
+    mol(seq, ss);
 
     log("Find templates...");
     find_templates(mol.pseudo_head);

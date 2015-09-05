@@ -22,6 +22,7 @@ Split::Split(Par par) {
     if (par.count("lib")) lib = par["lib"][0];
     if (par.count("family")) lib = par["family"][0];
     if (par.count("type")) type = boost::to_upper_copy(par["type"][0]);
+    if (par.count("hinge")) _hinge_size = std::stoi(par["hinge"][0]);
 
     lib += "/";
     lib += type;
@@ -33,7 +34,9 @@ Split::Split(Par par) {
 }
 
 void Split::operator ()() {
-    N2D n2d(ss, seq);
+    N2D n2d;
+    n2d.hinge_base_pair_num = _hinge_size;
+    n2d(seq, ss);
     splitMol(n2d.pseudo_head);
 }
 
@@ -42,7 +45,8 @@ void Split::splitMol(loop *l) {
     if (l->s.head != NULL) {
         _helix_num++;
 
-        std::string helix_file_name = lib + "/helix/" + "helix_" + mol.name + "_" + std::to_string(_helix_num) + ".pdb";
+        /// write helix pdb file
+        std::string helix_file_name = lib + "/helix-" + std::to_string(_hinge_size) + "/helix_" + mol.name + "_" + std::to_string(_helix_num) + ".pdb";
         std::vector<int> nums;
         for (auto b = l->s.head; b != NULL; b = b->next) {
             nums.push_back(b->res1.num - 1);
@@ -51,7 +55,8 @@ void Split::splitMol(loop *l) {
         Model model = mol.sub(nums);
         model.write(helix_file_name);
 
-        std::string helix_info_file = lib + "/info/helix";
+        /// write to information file
+        std::string helix_info_file = lib + "/info-" + std::to_string(_hinge_size) + "/helix";
         std::ofstream ofile(helix_info_file.c_str(), ios::app);
         ofile << "helix_" + mol.name + "_" + std::to_string(_helix_num) << ' ' << l->s.getLen() << ' ' << l->s.seq() << ' ' << l->s.ss() << ' ' << mol.name << endl;
         ofile.close();
@@ -62,7 +67,7 @@ void Split::splitMol(loop *l) {
         _loop_num++;
 
         std::string loop_name = "loop_" + mol.name + "_" + std::to_string(_loop_num);
-        std::string loop_file_name = lib + "/loop/" + loop_name + ".pdb";
+        std::string loop_file_name = lib + "/loop-" + std::to_string(_hinge_size) + "/" + loop_name + ".pdb";
         std::vector<int> nums;
         for (auto r = l->head; r != NULL; r = r->next) {
             nums.push_back(r->num - 1);
@@ -72,7 +77,7 @@ void Split::splitMol(loop *l) {
 
         /// write to info file
         string l_ss = l->ss();
-        std::string loop_info_file = lib + "/info";
+        std::string loop_info_file = lib + "/info-" + std::to_string(_hinge_size);
         if (std::count_if(l_ss.begin(), l_ss.end(), [](char c) {
             return c == '[' || c == ']';
         })) {

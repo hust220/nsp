@@ -18,7 +18,7 @@
 #include "Pdb/R5P.h"
 #include "Pdb/D5P.h"
 #include "Pdb/RMSD.h"
-#include "Pdb/SortAtoms.h"
+#include "Pdb/Format.h"
 #include "Pdb/Convert.h"
 #include "Pdb/Manipulate.h"
 

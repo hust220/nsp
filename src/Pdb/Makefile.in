@@ -49,7 +49,7 @@ libPdb_a_LIBADD =
 am_libPdb_a_OBJECTS = Atom.$(OBJEXT) Chain.$(OBJEXT) connect.$(OBJEXT) \
 	DNA.$(OBJEXT) Frag.$(OBJEXT) Model.$(OBJEXT) P2B.$(OBJEXT) \
 	Pdb.$(OBJEXT) R2D.$(OBJEXT) Residue.$(OBJEXT) RMSD.$(OBJEXT) \
-	RNA.$(OBJEXT) SortAtoms.$(OBJEXT) Convert.$(OBJEXT) \
+	RNA.$(OBJEXT) Format.$(OBJEXT) Convert.$(OBJEXT) \
 	Manipulate.$(OBJEXT) Cif.$(OBJEXT) PdbFile.$(OBJEXT)
 libPdb_a_OBJECTS = $(am_libPdb_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
@@ -158,7 +158,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 noinst_LIBRARIES = libPdb.a
-libPdb_a_SOURCES = Atom.cpp Atom.h Chain.cpp Chain.h connect.cpp D5P.h DNA.cpp DNA.h Frag.cpp Frag.h Model.cpp Model.h Nuc.h P2B.cpp P2B.h Pdb.cpp Pdb.h R2D.cpp R2D.h R5P.h R6P.h Residue.cpp Residue.h RMSD.cpp RMSD.h RNA.cpp RNA.h SortAtoms.cpp SortAtoms.h Convert.cpp Convert.h Manipulate.cpp Manipulate.h Cif.cpp Cif.h PdbFile.cpp PdbFile.h MolFile.h
+libPdb_a_SOURCES = Atom.cpp Atom.h Chain.cpp Chain.h connect.cpp D5P.h DNA.cpp DNA.h Frag.cpp Frag.h Model.cpp Model.h Nuc.h P2B.cpp P2B.h Pdb.cpp Pdb.h R2D.cpp R2D.h R5P.h R6P.h Residue.cpp Residue.h RMSD.cpp RMSD.h RNA.cpp RNA.h Format.cpp Format.h Convert.cpp Convert.h Manipulate.cpp Manipulate.h Cif.cpp Cif.h PdbFile.cpp PdbFile.h MolFile.h
 all: all-am
 
 .SUFFIXES:
@@ -212,6 +212,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Cif.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Convert.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DNA.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Format.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Frag.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Manipulate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Model.Po@am__quote@
@@ -222,7 +223,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RMSD.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RNA.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Residue.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SortAtoms.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/connect.Po@am__quote@
 
 .cpp.o:

@@ -61,7 +61,7 @@ void Pdb::read_pdb(string pdbfile) {
 	while (getline(ifile, line, '\n')) {
 		if (!line.compare(0, 5, "MODEL")) {
 		} else if (!line.compare(0, 6, "ENDMDL")) {
-			push(Model(lines));
+			models.push_back(Model(lines));
 			lines.clear();
 		} else if (!line.compare(0, 4, "ATOM")) {
 			atom_num++;
@@ -69,7 +69,7 @@ void Pdb::read_pdb(string pdbfile) {
 		}
 	}
 	if (lines.size() != 0) {
-		push(Model(lines));
+		models.push_back(Model(lines));
 		lines.clear();
 	}
 

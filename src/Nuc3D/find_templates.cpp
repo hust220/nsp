@@ -89,9 +89,9 @@ vector<Model> Assemble::find_loops(loop *l, int nums) {
     if (count_if(l_ss.begin(), l_ss.end(), [](char c) {
         return c == '[' || c == ']';
     })) {
-        info_file += "/info/pseudo_knot";
+        info_file += "/info-" + std::to_string(hinge_size) + "/pseudo_knot";
     } else {
-        info_file += "/info/loop-" + to_string(hinge_num);
+        info_file += "/info-" + std::to_string(hinge_size) + "/loop-" + to_string(hinge_num);
     }
 
     ifstream ifile(info_file.c_str());
@@ -159,7 +159,7 @@ vector<Model> Assemble::find_loops(loop *l, int nums) {
     vector<Model> loop_models;
     for (int i = 0; i < loop_sets.size(); i++) {
         // get loop name
-        string file_name = lib + "/loop/" + loop_sets[i].name + ".pdb";
+        string file_name = lib + "/loop-" + std::to_string(hinge_size) + "/" + loop_sets[i].name + ".pdb";
 
         // log
         log("find: " + loop_sets[i].name, 4);
@@ -185,7 +185,7 @@ vector<Model> Assemble::find_helices(helix *s, int nums) {
     // find helix info
     int len = s->getLen();
     string name = lib;
-    name += "info/helix";
+    name += "info-" + std::to_string(hinge_size) + "/helix";
     ifstream ifile(name.c_str());
     helixInfo *hi = new helixInfo;
     helixInfoList *hiList = new helixInfoList;
@@ -266,7 +266,7 @@ vector<Model> Assemble::find_helices(helix *s, int nums) {
     vector<Model> helices;
     for (int i = 0; i < helix_sets.size(); i++) {
         // get loop name
-        string file_name = lib + "/helix/" + helix_sets[i].name + ".pdb";
+        string file_name = lib + "/helix-" + std::to_string(hinge_size) + "/" + helix_sets[i].name + ".pdb";
 
         // log
         log("find: " + helix_sets[i].name, 4);

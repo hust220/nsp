@@ -52,6 +52,35 @@ int main(int argc, char **argv) {
         jian::nuc3d::LoopModelling2 lm(type);
         lm._view = view;
         std::cout << lm(seq, ss) << std::endl;
+    } else if (par["global"][0] == "rebuild" && par["global"][1] == "chain") {
+        jian::RNA rna(par["global"][2]);
+        std::set<int> break_points;
+        jian::Residue old_res;
+        int res_num = 0;
+        for (auto &&chain: rna.chains) {
+            for (auto &&residue: chain.residues) {
+                if (! old_res.atoms.empty()) {
+                    if (residue["O5*"].dist(old_res["O3*"]) > 3.5) {
+                        break_points.insert(res_num - 1);
+                    }
+                }
+                old_res = residue;
+                res_num++;
+            }
+        }
+        std::string ss;
+        res_num = 0;
+        for (int i = 0; i < par["global"][3].size(); i++) {
+            if (par["global"][3][i] == '&') {
+                continue;    
+            }
+            ss += par["global"][3][i];
+            if (break_points.count(res_num)) {
+                ss += '&';
+            }
+            res_num++;
+        }
+        std::cout << ss;
     } else if (!strcmp(argv[1], "cluster")) {
         std::ifstream ifile(argv[2]);
         std::string line;
@@ -103,12 +132,12 @@ int main(int argc, char **argv) {
         cout << model << endl;
     } else if (boost::to_lower_copy(par["global"][0]) == "dna") {
         jian::DNA mol(par["global"][1]);
-        jian::SortAtoms()(mol);
-        cout << mol << endl;
+        jian::pdb::Format format;
+        cout << format(mol);
     } else if (boost::to_lower_copy(par["global"][0]) == "rna") {
         jian::RNA mol(par["global"][1]);
-        jian::SortAtoms()(mol);
-        cout << mol << endl;
+        jian::pdb::Format format;
+        cout << format(mol);
     } else if (!strcmp(argv[1], "-test")) {
         jian::D5P model(argv[2]);
         for (auto &chain: model.chains) {
@@ -154,8 +183,8 @@ int main(int argc, char **argv) {
         std::cout << new_mol;
     } else if (!strcmp(argv[1], "sort")) {
         jian::Model mol(argv[2]);
-        jian::SortAtoms()(mol);
-        std::cout << mol;
+        jian::pdb::Format format;
+        std::cout << format(mol);
     } else if (!strcmp(argv[1], "convert")) {
         jian::Convert cvt;
         jian::Model mol(argv[2]);

@@ -9,17 +9,14 @@ namespace nuc3d {
 
 class Connect {
 public:
-//	~Connect() {
-//		if (_a) delete _a;
-//		if (_b) delete _b;
-//	}
-	Model operator ()(const Model &, const Model &, int, int);
-	static void translate(Model &, const Point &);
-	static void rotate(Model &, const Matrix3f &);
+    Model operator ()(const Model &, const Model &, int, int);
+    static void translate(Model &, const Point &);
+    static void rotate(Model &, const Matrix3f &);
 
-	Model _model_1;
-	Model _model_2;
-	set<string> _superposed_atoms{"C5*", "O3*", "C1*"};
+    Model _model_1;
+    Model _model_2;
+    int _hinge_size = 2;
+    set<string> _superposed_atoms{"C5*", "O3*", "C1*"};
 
 }; // Connect
 
