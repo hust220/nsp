@@ -1,4 +1,6 @@
-#include "../nsp.h"
+#include <nuc3d/util.h>
+#include <cluster/Cluster.h>
+#include <scoring/util.h>
 
 int main(int argc, char **argv) {
     jian::Par par(argc, argv);
@@ -98,18 +100,22 @@ int main(int argc, char **argv) {
             }
             std::cout << std::endl;
         }
+    } else if (par["global"][0] == "train") {
+        jian::scoring::Train train(par);
+        train();
     } else if (par["global"][0] == "score") {
-        jian::Score score;
-        if (par.count("list")) {
-            std::ifstream ifile(par["list"][0].c_str());
-            std::string line;
-            while (std::getline(ifile, line)) {
-                std::cout << score(jian::RNA(boost::trim_copy(line))) << std::endl;
-            }
-            ifile.close();
-        } else {
-            std::cout << score(par["global"][1]) << std::endl;
-        }
+        jian::scoring::Score score(par);
+        score();
+//        if (par.count("list")) {
+//            std::ifstream ifile(par["list"][0].c_str());
+//            std::string line;
+//            while (std::getline(ifile, line)) {
+//                std::cout << score(jian::RNA(boost::trim_copy(line))) << std::endl;
+//            }
+//            ifile.close();
+//        } else {
+//            std::cout << score(par["global"][1]) << std::endl;
+//        }
     } else if (par["global"][0] == "train_junction") {
         jian::nuc3d::JunctBuild jb;
         jb.train(jian::Model(par["pdb"][0]), par["ss"][0]);

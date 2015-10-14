@@ -1,2 +1,0 @@
-noinst_LIBRARIES = libTools.a
-libTools_a_SOURCES = DG.cpp DG.h List.h Log.h Matr_.cpp Matr_.h MLib.cpp MLib.h MRand.cpp MRand.h Obj.h Par.cpp Par.h Point.cpp Point.h ran_uniform.cpp ran_uniform.h std.h SupPos.cpp SupPos.h Time.cpp Time.h

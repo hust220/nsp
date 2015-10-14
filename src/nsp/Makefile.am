@@ -1,4 +1,4 @@
 bin_PROGRAMS=nsp
 nsp_SOURCES=nsp.cpp
-nsp_LDADD = ../Score_/libScore.a ../Nuc3D/libnuc3d.a ../Nuc2D/libnuc2d.a ../MC/libmc.a ../Pdb/libPdb.a ../Cluster/libcluster.a ../DG/libdg.a ../Utils/libutils.a
+nsp_LDADD = ../scoring/libscoring.a ../nuc3d/libnuc3d.a ../nuc2d/libnuc2d.a ../mc/libmc.a ../pdb/libpdb.a ../cluster/libcluster.a ../dg/libdg.a ../util/libutil.a
 

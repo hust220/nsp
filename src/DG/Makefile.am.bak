@@ -1,3 +1,0 @@
-noinst_LIBRARIES = libdgsol.a
-libdgsol_a_SOURCES = Dgsol.cpp Dgsol.h
-libdgsol_a_LIBADD = /home/jian/work/nsp/lib/dgsol-1.3/src/blas/d-linux.a /home/jian/work/nsp/lib/dgsol-1.3/src/csrch/d-linux.a /home/jian/work/nsp/lib/dgsol-1.3/src/dgvmlm/d-linux.a /home/jian/work/nsp/lib/dgsol-1.3/src/utils/d-linux.a /home/jian/work/nsp/lib/dgsol-1.3/src/vmlm/d-linux.a /usr/lib/gcc/i686-linux-gnu/4.6/libgfortran.a

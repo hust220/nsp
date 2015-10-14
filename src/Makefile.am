@@ -1,2 +1,2 @@
-SUBDIRS=Utils DG Cluster Pdb MC Score_ Nuc2D Nuc3D nsp
+SUBDIRS=util dg cluster pdb mc scoring nuc2d nuc3d nsp
 

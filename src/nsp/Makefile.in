@@ -46,9 +46,9 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_nsp_OBJECTS = nsp.$(OBJEXT)
 nsp_OBJECTS = $(am_nsp_OBJECTS)
-nsp_DEPENDENCIES = ../Score_/libScore.a ../Nuc3D/libnuc3d.a \
-	../Nuc2D/libnuc2d.a ../MC/libmc.a ../Pdb/libPdb.a \
-	../Cluster/libcluster.a ../DG/libdg.a ../Utils/libutils.a
+nsp_DEPENDENCIES = ../scoring/libscoring.a ../nuc3d/libnuc3d.a \
+	../nuc2d/libnuc2d.a ../mc/libmc.a ../pdb/libpdb.a \
+	../cluster/libcluster.a ../dg/libdg.a ../util/libutil.a
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -151,7 +151,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 nsp_SOURCES = nsp.cpp
-nsp_LDADD = ../Score_/libScore.a ../Nuc3D/libnuc3d.a ../Nuc2D/libnuc2d.a ../MC/libmc.a ../Pdb/libPdb.a ../Cluster/libcluster.a ../DG/libdg.a ../Utils/libutils.a
+nsp_LDADD = ../scoring/libscoring.a ../nuc3d/libnuc3d.a ../nuc2d/libnuc2d.a ../mc/libmc.a ../pdb/libpdb.a ../cluster/libcluster.a ../dg/libdg.a ../util/libutil.a
 all: all-am
 
 .SUFFIXES:

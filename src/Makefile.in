@@ -170,7 +170,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = Utils DG Cluster Pdb MC Score_ Nuc2D Nuc3D nsp
+SUBDIRS = util dg cluster pdb mc scoring nuc2d nuc3d nsp
 all: all-recursive
 
 .SUFFIXES:

@@ -4037,7 +4037,7 @@ fi
 
 # Checks for library functions.
 
-ac_config_files="$ac_config_files Makefile src/Makefile src/Utils/Makefile src/DG/Makefile src/Cluster/Makefile src/Pdb/Makefile src/MC/Makefile src/Score_/Makefile src/Nuc2D/Makefile src/Nuc3D/Makefile src/nsp/Makefile"
+ac_config_files="$ac_config_files Makefile src/Makefile src/util/Makefile src/dg/Makefile src/cluster/Makefile src/pdb/Makefile src/mc/Makefile src/scoring/Makefile src/nuc2d/Makefile src/nuc3d/Makefile src/nsp/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -4692,14 +4692,14 @@ do
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
-    "src/Utils/Makefile") CONFIG_FILES="$CONFIG_FILES src/Utils/Makefile" ;;
-    "src/DG/Makefile") CONFIG_FILES="$CONFIG_FILES src/DG/Makefile" ;;
-    "src/Cluster/Makefile") CONFIG_FILES="$CONFIG_FILES src/Cluster/Makefile" ;;
-    "src/Pdb/Makefile") CONFIG_FILES="$CONFIG_FILES src/Pdb/Makefile" ;;
-    "src/MC/Makefile") CONFIG_FILES="$CONFIG_FILES src/MC/Makefile" ;;
-    "src/Score_/Makefile") CONFIG_FILES="$CONFIG_FILES src/Score_/Makefile" ;;
-    "src/Nuc2D/Makefile") CONFIG_FILES="$CONFIG_FILES src/Nuc2D/Makefile" ;;
-    "src/Nuc3D/Makefile") CONFIG_FILES="$CONFIG_FILES src/Nuc3D/Makefile" ;;
+    "src/util/Makefile") CONFIG_FILES="$CONFIG_FILES src/util/Makefile" ;;
+    "src/dg/Makefile") CONFIG_FILES="$CONFIG_FILES src/dg/Makefile" ;;
+    "src/cluster/Makefile") CONFIG_FILES="$CONFIG_FILES src/cluster/Makefile" ;;
+    "src/pdb/Makefile") CONFIG_FILES="$CONFIG_FILES src/pdb/Makefile" ;;
+    "src/mc/Makefile") CONFIG_FILES="$CONFIG_FILES src/mc/Makefile" ;;
+    "src/scoring/Makefile") CONFIG_FILES="$CONFIG_FILES src/scoring/Makefile" ;;
+    "src/nuc2d/Makefile") CONFIG_FILES="$CONFIG_FILES src/nuc2d/Makefile" ;;
+    "src/nuc3d/Makefile") CONFIG_FILES="$CONFIG_FILES src/nuc3d/Makefile" ;;
     "src/nsp/Makefile") CONFIG_FILES="$CONFIG_FILES src/nsp/Makefile" ;;
 
   *) { { $as_echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
