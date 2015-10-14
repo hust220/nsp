@@ -1,0 +1,680 @@
+#include "DG.h"
+
+DG::DG(Obj<Matr_> b) {
+	if (b->row != b->col) {
+		cerr << "class DG initialization error!" << endl;
+		exit(1);
+	}
+	len = b->row;
+	bound = b;
+	d = NULL;
+	m = NULL;
+	c = NULL;
+	g = NULL;
+	g2 = 0;
+	E = 0;
+	CH = 0;
+	chir = NULL;
+	_min_en = 999999;
+	_min_conf = NULL;
+	smooth();
+}
+
+DG::DG(Matr_ *b, Matr_ *ch) {
+	if (b->row != b->col) {
+		cerr << "class DG initialization error!" << endl;
+		exit(1);
+	}
+	len = b->row;
+	bound = b;
+	d = NULL;
+	m = NULL;
+	c = NULL;
+	g = NULL;
+	g2 = 0;
+	E = 0;
+	CH = 0;
+	chir = ch;
+	_min_en = 999999;
+	_min_conf = NULL;
+	smooth();
+}
+
+Matr_ *DG::run() {
+	double m1 = 0.001 * ((10 + 10 * sstmm()) % 1000);
+	if (m1 < 0.001) m1 = 0.001;
+	if (m1 > 0.999) m1 = 0.999;
+	genrand(&m1);
+	
+	delete _min_conf;
+	_min_conf = NULL;
+	_min_en = 999999;
+	for (int i = 0; i < 20; i++) {
+		b2d();
+//		d->print(8);
+	
+		metric();
+//		m->print(8);
+		d2c();
+//		c->print(15);
+//		gradient();
+//		g->print(15);
+
+		cg();
+		if (_min_en > E) {
+			delete _min_conf;
+			_min_conf = c->copy();
+			_min_en = E;
+		}
+		if (E < 10) break;
+	}
+
+	//mc();
+//	c2d();
+//	d->print();
+//	bound->print();
+//	g->print(15);
+	return _min_conf->copy();
+}
+
+void DG::smooth() {
+	/*
+	for (int i = 0; i < len; i++) {
+		double a = at(bound, i, i + 1, len);
+		double b = at(bound, i + 1, i + 2, len);
+		double c = at(bound, i + 2, i + 3, len);
+		double d = at(bound, i, i + 2, len);
+		double e = at(bound, i + 1, i + 3, len);
+		double min = Point::gmMin(a, b, c, d, e);
+		double max = Point::gmMax(a, b, c, d, e);
+		assign(bound, i, i + 3, max, len);
+		assign(bound, i + 3, i, min, len);
+	}
+
+	for (int i = 0; i < len; i++) {
+		double a = at(bound, i, i + 1, len);
+		double b = at(bound, i + 1, i + 2, len);
+		double c = at(bound, i + 2, i + 4, len);
+		double d = at(bound, i, i + 2, len);
+		double e1 = at(bound, i + 4, i + 1, len);
+		double e2 = at(bound, i + 1, i + 4, len);
+		double temp1 = sqrt(b * b + c * c - 2 * b * c * (b * b + d * d - a * a) / (2 * b * d));
+		double temp2 = sqrt(b * b + c * c + 2 * b * c * (b * b + d * d - a * a) / (2 * b * d));
+		double min1 = fabs(d - c);
+		double max1 = d + c;
+		if (temp1 < e1) {
+			min1 = Point::gmMin(a, b, c, d, e1);
+		}
+		if (temp2 > e2) {
+			max1 = Point::gmMax(a, b, c, d, e2);
+		}
+
+		a = at(bound, i, i + 1, len);
+		b = at(bound, i + 1, i + 3, len);
+		c = at(bound, i + 3, i + 4, len);
+		double d1 = at(bound, i + 3, i, len);
+		double d2 = at(bound, i, i + 3, len);
+		e1 = at(bound, i + 4, i + 1, len);
+		e2 = at(bound, i + 1, i + 4, len);
+		double min2 = Point::gmMin(a, b, c, d1, d2, e1, e2);
+		cout << a << ' ' << b << ' ' << c << ' ' << d1 << ' ' << d2 << ' ' << e1 << ' ' << e2 << endl;
+		double max2 = Point::gmMax(a, b, c, d2, e2);
+
+		a = at(bound, i, i + 2, len);
+		b = at(bound, i + 2, i + 3, len);
+		c = at(bound, i + 3, i + 4, len);
+		d1 = at(bound, i + 3, i, len);
+		d2 = at(bound, i, i + 3, len);
+		double e = at(bound, i + 2, i + 4, len);
+		temp1 = sqrt(a * a + b * b - 2 * a * b * (b * b + e * e - c * c) / (2 * b * e));
+		temp2 = sqrt(a * a + b * b + 2 * a * b * (b * b + e * e - c * c) / (2 * b * e));
+		double min3 = fabs(e - a);
+		double max3 = e + a;
+		if (temp1 < d1) {
+			min3 = Point::gmMin(a, b, c, d1, e);
+		}
+		if (temp2 > d2) {
+			max3 = Point::gmMax(a, b, c, d2, e);
+		}
+
+		double min = 3, max = 999;
+		cout << min1 << ' ' << min2 << ' ' << min3 <<endl;
+		if (max > max1) {
+			max = max1;
+		}
+		if (max > max2) {
+			max = max2;
+		}
+		if (max > max3) {
+			max = max3;
+		}
+		if (min < min1) {
+			min = min1;
+		}
+		if (min < min2) {
+			min = min2;
+		}
+		if (min < min3) {
+			min = min3;
+		}
+		cout << "min: " << min << endl;
+
+		assign(bound, i, i + 4, max, len);
+		assign(bound, i + 4, i, min, len);
+	}
+	
+	for (int t = 4; t < (len - 1) / 2 + 2; t++) {
+		for (int i = 0; i < len; i++) {
+			for (int j = i + 1; j < i + t; j++) {
+				double min = 3;
+				if (at(bound, j, i, len) > at(bound, j, i + t, len)) {
+					min = at(bound, j, i, len) - at(bound, j, i + t, len);
+				} else if (at(bound, i + t, j, len) > at(bound, i, j, len)) {
+					min = at(bound, i + t, j, len) - at(bound, i, j, len);
+				}
+				if (at(bound, i + t, i, len) < min) {
+					assign(bound, i + t, i, min, len);
+				}
+				if (j == i + t - 1) continue;
+				continue;
+				for (int k = j + 1; k < i + t; k++) {
+					double max = Point::gmMax(at(bound, i, j, len), at(bound, j, k, len), at(bound, k, i + t, len), at(bound, i, k, len), at(bound, j, i + t, len));
+					if (at(bound, i, i + t, len) > max) {
+						assign(bound, i, i + t, max, len);
+					}
+				}
+			}
+		}
+	}
+	*/
+
+	int flag = 0, temp = 999;
+	int n = 0;
+	while (temp && n < 5) {
+		flag = 0;
+		for (int i = 0; i < len - 2; i++) {
+			for (int j = i + 1; j < len - 1; j++) {
+				for (int k = j + 1; k < len; k++) {
+					/** max **/
+					double max;
+					/* i, j */
+					max = at(bound, j, k, len) + at(bound, i, k, len);
+					if (at(bound, i, j, len) > max && at(bound, j, i, len) < max) {
+						assign(bound, i, j, max, len);
+						flag++;
+					}
+					/* j, k */
+					max = at(bound, i, j, len) + at(bound, i, k, len);
+					if (at(bound, j, k, len) > max && at(bound, k, j, len) < max) {
+						assign(bound, j, k, max, len);
+						flag++;
+					}
+					/* i, k */
+					max = at(bound, i, j, len) + at(bound, j, k, len);
+					if (at(bound, i, k, len) > max && at(bound, k, i, len) < max) {
+						assign(bound, i, k, max, len);
+						flag++;
+					}
+
+					/** min **/
+					/* i, j */
+					double min = 0;
+					double min1 = at(bound, k, j, len) - at(bound, i, k, len);
+					double min2 = at(bound, k, i, len) - at(bound, j, k, len);
+					if (min1 > 0) {
+						min = min1;
+					} else if (min2 > 0) {
+						min = min2;
+					}
+					if (at(bound, j, i, len) < min && at(bound, i, j, len) > min) {
+					//	cout << j << ' ' << i << ' ' << k << ' ' << at(bound, j, i, len) << ' ' << at(bound, k, i, len) << ' ' << at(bound, k, j, len) << endl;
+						assign(bound, j, i, min, len);
+						flag++;
+					}
+					/* j, k */
+					min = 0;
+					min1 = at(bound, j, i, len) - at(bound, i, k, len);
+					min2 = at(bound, k, i, len) - at(bound, i, j, len);
+					if (min1 > 0) {
+						min = min1;
+					} else if (min2 > 0) {
+						min = min2;
+					}
+					if (at(bound, k, j, len) < min && at(bound, j, k, len) > min) {
+					//	cout << k << ' ' << j << ' ' << i << ' ' << at(bound, k, j, len) << ' ' << at(bound, k, i, len) << ' ' << at(bound, j, i, len) << endl;
+						assign(bound, k, j, min, len);
+						flag++;
+					}
+					/* i, k */
+					min = 0;
+					min1 = at(bound, j, i, len) - at(bound, j, k, len);
+					min2 = at(bound, k, j, len) - at(bound, i, j, len);
+					if (min1 > 0) {
+						min = min1;
+					} else if (min2 > 0) {
+						min = min2;
+					}
+					if (at(bound, k, i, len) < min && at(bound, i, k, len) > min) {
+					//	cout << k << ' ' << i << ' ' << j << ' ' << at(bound, k, i, len) << ' ' << at(bound, k, j, len) << ' ' << at(bound, j, i, len) << endl;
+						assign(bound, k, i, min, len);
+						flag++;
+					}
+				}
+			}
+		}
+	//	cout << "flag: " << flag << endl;
+		if (flag == temp) {
+			n++;
+		}
+		temp = flag;
+	}
+//	cout << "flag: " << flag << endl;
+
+}
+
+void DG::b2d() {
+	/* randomly assign values to the boundance matrix */
+	delete d;
+	d = new Matr_(len, len);
+	for (int i = 0; i < len; i++) {
+		for (int j = i; j < len; j++) {
+			if (j == i) {
+				d->data[i][j] = 0;
+			} else {
+				d->data[i][j] = ran_uniform() * (bound->data[i][j] - bound->data[j][i]) + bound->data[j][i];
+				d->data[j][i] = d->data[i][j];
+			}
+		}
+	}
+}
+
+void DG::metric() {
+	/* set metric matrix */
+	double temp = 0;
+	for (int j = 0; j < len; j++) {
+		for (int k = j + 1; k < len; k++) {
+			temp += d->data[j][k] * d->data[j][k];
+		}
+	}
+	temp /= double(len * len);
+	double a[len];
+	for (int i = 0; i < len; i++) {
+		a[i] = 0;
+		for (int j = 0; j < len; j++) {
+			a[i] += d->data[i][j] * d->data[i][j];
+		}
+		a[i] /= double(len);
+		a[i] -= temp;
+	}
+	delete m;
+	m = new Matr_(len, len);
+	for (int i = 0; i < len; i++) {
+		for (int j = i; j < len; j++) {
+			/*
+			if (i == j) {
+				m->data[i][j] = 0;
+			} else {
+				m->data[i][j] = ((a[i] - temp) + (a[j] - temp) - d->data[i][j] * d->data[i][j]) / 2;
+				m->data[j][i] = m->data[i][j];
+			}
+			*/
+			m->data[i][j] = (a[i] + a[j] - d->data[i][j] * d->data[i][j]) / 2.;
+			m->data[j][i] = m->data[i][j];
+		}
+	}
+}
+
+void DG::d2c() {
+	/* transform boundance matrix to coordinates matrix */
+	MatrixXf A(len, len);
+	for (int i = 0; i < len; i++) {
+		for (int j = 0; j < len; j++) {
+			A(i, j) = m->data[i][j];
+		}
+	}
+	SelfAdjointEigenSolver<MatrixXf> eigensolver(A);
+//	cout << eigensolver.eigenvalues() << endl;
+//	cout << eigensolver.eigenvectors() << endl;
+	double max1 = 0, max2 = 0, max3 = 0;
+	int m1 = 0, m2 = 0, m3 = 0;
+	for (int i = 0; i < len; i++) {
+		double temp = abs(eigensolver.eigenvalues()[i]);
+		if (temp > max1) {
+			max3 = max2;
+			m3 = m2;
+			max2 = max1;
+			m2 = m1;
+			max1 = temp;
+			m1 = i;
+		} else if (temp > max2) {
+			max3 = max2;
+			m3 = m2;
+			max2 = temp;
+			m2 = i;
+		} else if (temp > max3) {
+			max3 = temp;
+			m3 = i;
+		}
+	}
+	delete c;
+	c = new Matr_(len, 3);
+	//MatrixXf B(len, 3);
+	for (int i = 0; i < len; i++) {
+		//for (int j = len - 1; j >= len - 3; j--) {
+			/*
+			double temp = eigensolver.eigenvalues()[j] * eigensolver.eigenvectors()(i, j);
+			if (temp > 0) {
+				temp = sqrt(temp);
+			} else if (temp < 0) {
+				temp = -sqrt(-temp);
+			}
+			c->data[i][len - 1 - j] = temp;
+			*/
+			double temp = eigensolver.eigenvalues()[m1];
+			//double temp = eigensolver.eigenvalues()[m1] * eigensolver.eigenvectors()(i, m1);
+			if (temp > 0) {
+				temp = sqrt(temp);
+			} else if (temp < 0) {
+				temp = -sqrt(-temp);
+			}
+			c->data[i][0] = temp * eigensolver.eigenvectors()(i, m1);
+			//c->data[i][0] = temp;
+			//B(i, len - 1 - j) = temp;
+			temp = eigensolver.eigenvalues()[m2];
+			//temp = eigensolver.eigenvalues()[m2] * eigensolver.eigenvectors()(i, m2);
+			if (temp > 0) {
+				temp = sqrt(temp);
+			} else if (temp < 0) {
+				temp = -sqrt(-temp);
+			}
+			c->data[i][1] = temp * eigensolver.eigenvectors()(i, m2);
+			//c->data[i][1] = temp;
+			//B(i, len - 1 - j) = temp;
+			temp = eigensolver.eigenvalues()[m3];
+			//temp = eigensolver.eigenvalues()[m3] * eigensolver.eigenvectors()(i, m3);
+			if (temp > 0) {
+				temp = sqrt(temp);
+			} else if (temp < 0) {
+				temp = -sqrt(-temp);
+			}
+			c->data[i][2] = temp * eigensolver.eigenvectors()(i, m3);
+			//c->data[i][2] = temp;
+			//B(i, len - 1 - j) = temp;
+		//}
+	}
+}
+
+void DG::c2d() {
+	for (int i = 0; i < len; i++) {
+		for (int j = i; j < len; j++) {
+			if (i == j) {
+				d->data[i][j] = 0;
+			} else {
+				d->data[i][j] = sqrt((c->data[i][0] - c->data[j][0]) * (c->data[i][0] - c->data[j][0]) + (c->data[i][1] - c->data[j][1]) * (c->data[i][1] - c->data[j][1]) + (c->data[i][2] - c->data[j][2]) * (c->data[i][2] - c->data[j][2]));
+				d->data[j][i] = d->data[i][j];
+			}
+		}
+	}
+}
+
+void DG::gradient() {
+	E = 0;
+	MatrixXf C(3 * len, 3);
+	double err = 1.e-6;
+	for (int i = 0; i < len; i++) {
+		for (int t = 0; t < 3; t++) {
+			C(3 * i + t, 0) = 0;
+			C(3 * i + t, 1) = 0;
+			C(3 * i + t, 2) = 0;
+		}
+		for (int j = 0; j < len; j++) {
+			if (i == j) continue;
+			double d2_l, d2, d2_r, u2, l2;
+			/* d2 */
+			d2 = (c->data[i][0] - c->data[j][0]) * (c->data[i][0] - c->data[j][0]) + (c->data[i][1] - c->data[j][1]) * (c->data[i][1] - c->data[j][1]) + (c->data[i][2] - c->data[j][2]) * (c->data[i][2] - c->data[j][2]);
+			if (i < j) {
+				u2 = bound->data[i][j] * bound->data[i][j];
+				l2 = bound->data[j][i] * bound->data[j][i];
+			} else{
+				u2 = bound->data[j][i] * bound->data[j][i];
+				l2 = bound->data[i][j] * bound->data[i][j];
+			}
+			for (int t = 0; t < 3; t++) {
+				/* d2_l */
+				if (t == 0) {
+					d2_l = (c->data[i][0] - err - c->data[j][0]) * (c->data[i][0] - err - c->data[j][0]) + (c->data[i][1] - c->data[j][1]) * (c->data[i][1] - c->data[j][1]) + (c->data[i][2] - c->data[j][2]) * (c->data[i][2] - c->data[j][2]);
+				} else if (t == 1) {
+					d2_l = (c->data[i][0] - c->data[j][0]) * (c->data[i][0] - c->data[j][0]) + (c->data[i][1] - err - c->data[j][1]) * (c->data[i][1] - err - c->data[j][1]) + (c->data[i][2] - c->data[j][2]) * (c->data[i][2] - c->data[j][2]);
+				} else {
+					d2_l = (c->data[i][0] - c->data[j][0]) * (c->data[i][0] - c->data[j][0]) + (c->data[i][1] - c->data[j][1]) * (c->data[i][1] - c->data[j][1]) + (c->data[i][2] - err - c->data[j][2]) * (c->data[i][2] - err - c->data[j][2]);
+				}
+				/* d2_r */
+				if (t == 0) {
+					d2_r = (c->data[i][0] + err - c->data[j][0]) * (c->data[i][0] + err - c->data[j][0]) + (c->data[i][1] - c->data[j][1]) * (c->data[i][1] - c->data[j][1]) + (c->data[i][2] - c->data[j][2]) * (c->data[i][2] - c->data[j][2]);
+				} else if (t == 1) {
+					d2_r = (c->data[i][0] - c->data[j][0]) * (c->data[i][0] - c->data[j][0]) + (c->data[i][1] + err - c->data[j][1]) * (c->data[i][1] + err - c->data[j][1]) + (c->data[i][2] - c->data[j][2]) * (c->data[i][2] - c->data[j][2]);
+				} else {
+					d2_r = (c->data[i][0] - c->data[j][0]) * (c->data[i][0] - c->data[j][0]) + (c->data[i][1] - c->data[j][1]) * (c->data[i][1] - c->data[j][1]) + (c->data[i][2] + err - c->data[j][2]) * (c->data[i][2] + err - c->data[j][2]);
+				}
+
+				/* d2_l */
+				if (d2_l > u2) {
+					C(3 * i + t, 0) += (d2_l - u2) * (d2_l - u2) / u2 / u2;
+				} else if (d2_l < u2 && d2_l > l2) {
+					C(3 * i + t, 0) += 0;
+				} else {
+					C(3 * i + t, 0) += (l2 - d2_l) * (l2 - d2_l) / d2_l / d2_l;
+				}
+				/* d2 */
+				if (d2 > u2) {
+					C(3 * i + t, 1) += (d2 - u2) * (d2 - u2) / u2 / u2;
+				} else if (d2 < u2 && d2 > l2) {
+					C(3 * i + t, 1) += 0;
+				} else {
+					C(3 * i + t, 1) += (l2 - d2) * (l2 - d2) / d2 / d2;
+				}
+				/* d2_r */
+				if (d2_r > u2) {
+					C(3 * i + t, 2) += (d2_r - u2) * (d2_r - u2) / u2 / u2;
+				} else if (d2_r < u2 && d2_r > l2) {
+					C(3 * i + t, 2) += 0;
+				} else {
+					C(3 * i + t, 2) += (l2 - d2_r) * (l2 - d2_r) / d2_r / d2_r;
+				}
+			}
+		}
+		E += 0.5 * C(3 * i + 0, 1);
+		E += 0.5 * C(3 * i + 1, 1);
+		E += 0.5 * C(3 * i + 2, 1);
+	}
+	
+	Matr_ ch(len * 3, 3);
+	for (int i = 0; i < len * 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			ch[i][j] = 0;
+		}
+	}
+	CH = 0;
+	if (chir != NULL) {
+		for (int i = 0; i < chir->row; i++) {
+			Point *p = new Point[4];
+			int k[4];
+			for (int j = 0; j < 4; j++) {
+				k[j] = int(chir->data[i][j]);
+				p[j].x = c->data[k[j]][0];
+				p[j].y = c->data[k[j]][1];
+				p[j].z = c->data[k[j]][2];
+			}
+			double center = chir->data[i][4];
+			for (int j = 0; j < 4; j++) {
+				for (int t = 0; t < 3; t++) {
+					double temp;
+					if (t == 0) {
+						p[j].x -= err;
+						temp = Point::chirality(p[0], p[1], p[2], p[3]);
+						ch[k[j] * 3 + t][0] += (temp - center) * (temp - center);
+						p[j].x += err;
+						temp = Point::chirality(p[0], p[1], p[2], p[3]);
+						ch[k[j] * 3 + t][1] += (temp - center) * (temp - center);
+						CH += 0.25 * ch[k[j] * 3 + t][1];
+						p[j].x += err;
+						temp = Point::chirality(p[0], p[1], p[2], p[3]);
+						ch[k[j] * 3 + t][2] += (temp - center) * (temp - center);
+					} else if (t == 1) {
+						p[j].y -= err;
+						temp = Point::chirality(p[0], p[1], p[2], p[3]);
+						ch[k[j] * 3 + t][0] += (temp - center) * (temp - center);
+						p[j].y += err;
+						temp = Point::chirality(p[0], p[1], p[2], p[3]);
+						ch[k[j] * 3 + t][1] += (temp - center) * (temp - center);
+						CH += 0.25 * ch[k[j] * 3 + t][1];
+						p[j].y += err;
+						temp = Point::chirality(p[0], p[1], p[2], p[3]);
+						ch[k[j] * 3 + t][2] += (temp - center) * (temp - center);
+					} else {
+						p[j].z -= err;
+						temp = Point::chirality(p[0], p[1], p[2], p[3]);
+						ch[k[j] * 3 + t][0] += (temp - center) * (temp - center);
+						p[j].z += err;
+						temp = Point::chirality(p[0], p[1], p[2], p[3]);
+						ch[k[j] * 3 + t][1] += (temp - center) * (temp - center);
+						CH += 0.25 * ch[k[j] * 3 + t][1];
+						p[j].z += err;
+						temp = Point::chirality(p[0], p[1], p[2], p[3]);
+						ch[k[j] * 3 + t][2] += (temp - center) * (temp - center);
+					}
+				}
+			}
+		}
+	}
+
+	delete g;
+	g = new Matr_(len, 3);
+	g2 = 0;
+	for (int i = 0; i < len; i++) {
+		for (int j = 0; j < 3; j++) {
+			g->data[i][j] = (C(3 * i + j, 2) - C(3 * i + j, 0)) / (2 * err) + (ch[3 * i + j][2] - ch[3 * i + j][0]) / (2 * err);
+			g2 += g->data[i][j] * g->data[i][j];
+		}
+	}
+}
+
+void DG::cg() {
+	Matr_ *d_o = new Matr_(len, 3);
+	Matr_ *d_n = new Matr_(len, 3);
+
+	double a = 0.001;
+	double beta = 0;
+	for (int i = 0; i < len; i++) {
+		for (int j = 0; j < 3; j++) {
+			d_o->data[i][j] = 0;
+		}
+	}
+	gradient();
+	double oldE = E + CH;
+	double oldG2 = g2;
+	int upd = 0;
+	while (upd < 500) {
+		double tempG2 = g2;
+		double tempE = E + CH;
+
+		if (upd != 0) beta = g2 / oldG2;
+		if (upd % 10 == 0) beta = 0;
+		for (int i = 0; i < len; i++) {
+			for (int j = 0; j < 3; j++) {
+				d_n->data[i][j] = -g->data[i][j] + beta * d_o->data[i][j];
+				c->data[i][j] += a * d_n->data[i][j];
+			}
+		}
+
+		gradient();
+
+		if (E + CH >= tempE || g2 >= tempG2) {
+			for (int i = 0; i < len; i++) {
+				for (int j = 0; j < 3; j++) {
+					c->data[i][j] -= a * d_n->data[i][j];
+				}
+			}
+			gradient();
+			a *= 0.5;
+			if (a < 1.e-12) break;
+		} else {
+			upd++;
+			a *= 2;
+			for (int i = 0; i < len; i++) {
+				for (int j = 0; j < 3; j++) {
+					d_o->data[i][j] = d_n->data[i][j];
+				}
+			}
+			oldG2 = tempG2;
+			oldE = tempE;
+		//	cerr << upd << ' ' << a << ' ' << E << ' ' <<  CH << endl;
+			if (E + CH < 1.e-12 && g2 < 1.e-12) break;
+		}
+	} //cerr << upd << ' ' << a << ' ' << E << ' ' << CH << endl;
+}
+
+void DG::mc() {
+	srand(time(0));
+	double minE = 99999;
+	Matr_ *minC = new Matr_(len, 3);
+	for (int i = 0; i < 10000; i++) {
+		if (i % 1000 == 0) cout << i << '\t' << E << endl;
+		int m = int(((rand() % 1000) / 1000.) * len);
+		int n = int(((rand() % 1000) / 1000.) * 3);
+		double x = ((rand() % 1000) / 1000. - 0.5) * 5;
+		c->data[m][n] += x;
+		double tempE = E;
+		gradient();
+		double temp = 50 * (E - tempE) / tempE;
+		if (temp > 0) {
+			double temp2 = (rand() % 1000) / 1000.;
+			if (temp2 > exp(-temp)) {
+				c->data[m][n] -= x;
+				gradient();
+			}
+		}
+		if (E < minE) {
+			minE = E;
+			for (int j = 0; j < len; j++) {
+				for (int k = 0; k < 3; k++) {
+					minC->data[j][k] = c->data[j][k];
+				}
+			}
+		}
+	}
+	delete c;
+	c = minC;
+	gradient();
+	cout << "minimal E: " << minE << endl;
+}
+
+double DG::at(Obj<Matr_> bound, int i, int j, int len) {
+	if (j >= len) {
+		j -= len;
+		return at(bound, j, i, len);
+	}
+	if (i >= len) {
+		i -= len;
+		return at(bound, j, i, len);
+	}
+	return bound->data[i][j];
+}
+
+void DG::assign(Obj<Matr_> bound, int i, int j, double d, int len) {
+	if (j >= len) {
+		j -= len;
+		assign(bound, j, i, d, len);
+		return;
+	}
+	if (i >= len) {
+		i -= len;
+		assign(bound, j, i, d, len);
+		return;
+	}
+	bound->data[i][j] = d;
+}
+
+
+
+
