@@ -1,9 +1,9 @@
 #include "Assemble.h"
 #include "BuildHelix.h"
 #include "LoopModelling2.h"
+#include "LM.h"
 
 namespace jian {
-
 namespace nuc3d {
 
 using namespace nuc2d;
@@ -15,7 +15,7 @@ int Assemble::find_templates(loop *l) {
 
     /// find templates of loops
     if (l->head != NULL) {
-        templates[l].first = find_loops(l, _max_loop_nums);
+        templates[l].first = find_loops(l, num);
     }
     
     /// find templates of helices
@@ -303,12 +303,16 @@ void Assemble::create_loops() {
                 string l_seq = l->getSeq();
                 string l_ss = l->getSS();
                 log("for loop: " + l_seq + " " + l_ss, 2);
-                LoopModelling2 lm(type);
+                //LoopModelling2 lm(type);
+                LM lm(type);
                 lm._view = view;
-                for (int i = 0; i < diff; i++) {
-                    templates[l].first.push_back(Model(lm(l_seq, l_ss, constraints)));
-                    log("create a loop template (penalty energy: " + to_string(lm.dg.E) + ").", 4);
-                }
+                log("creating " + std::to_string(diff) + " loop templates...", 4);
+                auto models = lm(l_seq, l_ss, constraints, diff);
+                std::copy(models.begin(), models.end(), std::back_inserter(templates[l].first));
+//                for (int i = 0; i < diff; i++) {
+//                    templates[l].first.push_back(Model(lm(l_seq, l_ss, constraints)));
+//                    log("create a loop template (penalty energy: " + to_string(lm.dg.E) + ").", 4);
+//                }
             }
         }
         if (l->s.head != NULL) {

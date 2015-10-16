@@ -5,6 +5,7 @@
 #include "Split.h"
 #include "Connect.h"
 #include "LoopModelling2.h"
+#include "LM.h"
 #include "JunctBuild.h"
 
 #endif

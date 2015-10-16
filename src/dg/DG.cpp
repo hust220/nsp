@@ -1,17 +1,37 @@
 #include "DG.h"
 
-using namespace jian;
+namespace jian {
 
 MatrixXf DG::operator ()() {
-if (view) cerr << "bound: \n" << bound << endl;
-    b2d();
-    metric();
-    d2c();
-if (view) cerr << c << endl;
-    cg();
-if (view) cerr << c << endl;
-    if (E > 20) {
-        mc();
+    if (view) cerr << "bound: \n" << bound << endl;
+    double E_min;
+    MatrixXf c_min;
+    for (int i = 0; i < 3; i++) {
+        b2d();
+        metric();
+        d2c();
+        if (view) cerr << c << endl;
+        cg();
+        if (view) cerr << c << endl;
+        if (E > 20) {
+            mc();
+        }
+        if (E <= 200) {
+            return c;
+        }
+        if (i == 0) {
+            E_min = E;
+            c_min = c;
+        } else {
+            if (E_min > E) {
+                E_min = E;
+                c_min = c;
+            }
+        }
+    }
+    if (E != E_min) {
+        E = E_min;
+        c = c_min;
     }
     return c;
 }
@@ -625,5 +645,5 @@ void DG::assign(MatrixXf &bound, int i, int j, double d, int len) {
     bound(i, j) = d;
 }
 
-
+}
 
