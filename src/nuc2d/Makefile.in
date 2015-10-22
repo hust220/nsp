@@ -46,7 +46,8 @@ AR = ar
 ARFLAGS = cru
 libnuc2d_a_AR = $(AR) $(ARFLAGS)
 libnuc2d_a_LIBADD =
-am_libnuc2d_a_OBJECTS = helix.$(OBJEXT) loop.$(OBJEXT) N2D.$(OBJEXT)
+am_libnuc2d_a_OBJECTS = helix.$(OBJEXT) loop.$(OBJEXT) N2D.$(OBJEXT) \
+	Seq2Ss.$(OBJEXT)
 libnuc2d_a_OBJECTS = $(am_libnuc2d_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -154,7 +155,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 noinst_LIBRARIES = libnuc2d.a
-libnuc2d_a_SOURCES = bp.h helix.cpp helix.h loop.cpp loop.h N2D.cpp N2D.h res.h util.h
+libnuc2d_a_SOURCES = bp.h helix.cpp helix.h loop.cpp loop.h N2D.cpp N2D.h res.h util.h Seq2Ss.h Seq2Ss.cpp
 all: all-am
 
 .SUFFIXES:
@@ -204,6 +205,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/N2D.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Seq2Ss.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/helix.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/loop.Po@am__quote@
 

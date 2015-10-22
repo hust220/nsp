@@ -13,6 +13,13 @@ int main(int argc, char **argv) {
             jian::nuc3d::Assemble ass(par);
             ass();
         }
+    } else if (boost::to_lower_copy(par["global"][0]) == "seq2ss") {
+        jian::nuc2d::Seq2Ss seq2ss;
+        seq2ss(par["global"][1]);
+    } else if (boost::to_lower_copy(par["global"][0]) == "dg") {
+        auto mat = jian::mat_from_file(par["global"][1]);
+        jian::DG dg(mat);
+        std::cout << dg() << std::endl;
     } else if (boost::to_lower_copy(par["global"][0]) == "n2d") {
         jian::nuc2d::N2D n2d;
         if (par.count("h")) n2d.hinge_base_pair_num = std::stoi(par["h"][0]);

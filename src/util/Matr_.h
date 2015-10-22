@@ -13,6 +13,8 @@ using namespace Eigen;
 
 namespace jian {
 
+MatrixXf mat_from_file(std::string file);
+
 class Matr_ {
 public:
 	Matr_(int, int);

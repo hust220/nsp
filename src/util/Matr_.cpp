@@ -5,8 +5,28 @@
 #include <iomanip>
 #include "Matr_.h"
 
+namespace jian {
+
 using namespace std;
-using namespace jian;
+
+MatrixXf mat_from_file(std::string file) {
+    std::ifstream ifile(file.c_str());
+    int rows, cols;
+    ifile >> rows >> cols;
+    MatrixXf mat(rows, cols);
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            if (ifile >> mat(i, j)) {
+                continue;
+            } else {
+                std::cerr << "jian::mat_from_file failed!" << std::endl;
+                exit(1);
+            }
+        }
+    }
+    return mat;
+}
+
 
 Matr_::Matr_(int row, int col) {
 	if (row <= 0 || col <= 0) {
@@ -616,5 +636,6 @@ Obj<Point> Matr_::point(int n) {
 	return p;
 }
 
+} /// namespace jian
 
 

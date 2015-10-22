@@ -37,7 +37,7 @@ MatrixXf DG::operator ()() {
 }
 
 void DG::smooth() {
-    /// Check minimum distance
+    /// check minimum distance
     for (int i = 0; i < bound.rows(); i++) {
         for (int j = 0; j < bound.cols(); j++) {
             if (i == j) continue;

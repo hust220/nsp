@@ -6,6 +6,7 @@
 #include "loop.h"
 #include "N2D.h"
 #include "res.h"
+#include "Seq2Ss.h"
 
 #endif
 
