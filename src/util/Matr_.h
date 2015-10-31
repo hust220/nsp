@@ -15,6 +15,33 @@ namespace jian {
 
 MatrixXf mat_from_file(std::string file);
 
+namespace mat {
+
+template<class T1, class T2>
+MatrixXf hstack(const T1 &mat1, const T2 &mat2) {
+    if (mat1.rows() == 0) {
+        return mat2;
+    } else if (mat2.rows() == 0) {
+        return mat1;
+    }
+    assert(mat1.cols() == mat2.cols());
+    MatrixXf mat(mat1.rows() + mat2.rows(), mat1.cols());
+    int i = 0;
+    for (; i < mat1.rows(); i++) {
+        for (int j = 0; j < mat1.cols(); j++) {
+            mat(i, j) = mat1(i, j);
+        }
+    }
+    for (int ii = 0; i < mat.rows(); i++, ii++) {
+        for (int j = 0; j < mat2.cols(); j++) {
+            mat(i, j) = mat2(ii, j);
+        }
+    }
+    return mat;
+}
+
+} /// namespace mat
+
 class Matr_ {
 public:
 	Matr_(int, int);

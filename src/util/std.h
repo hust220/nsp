@@ -17,11 +17,13 @@
 #include <list>
 #include <set>
 #include <deque>
+#include <unordered_map>
 #include <map>
 #include <memory>
 #include <iterator>
 #include <utility>
 #include <algorithm>
+#include <functional>
 using namespace std;
 
 /// boost

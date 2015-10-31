@@ -7,6 +7,8 @@
 #include "N2D.h"
 #include "res.h"
 #include "Seq2Ss.h"
+#include "Seq2Tri.h"
+#include "Seq2Qua.h"
 
 #endif
 

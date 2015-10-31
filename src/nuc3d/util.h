@@ -6,6 +6,7 @@
 #include "Connect.h"
 #include "LoopModelling2.h"
 #include "LM.h"
+#include "LM2.h"
 #include "JunctBuild.h"
 
 #endif

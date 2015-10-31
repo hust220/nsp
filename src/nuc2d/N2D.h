@@ -17,7 +17,7 @@ public:
     N2D(const N2D &mol2d);
     void operator ()();
     void operator ()(std::string ss_);
-    void operator ()(std::string seq_, std::string ss_);
+    loop *operator ()(std::string seq_, std::string ss_);
     N2D &operator =(const N2D &mol2d);
     ~N2D();
 

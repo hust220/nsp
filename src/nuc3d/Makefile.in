@@ -50,7 +50,7 @@ am_libnuc3d_a_OBJECTS = Assemble.$(OBJEXT) ass_templates.$(OBJEXT) \
 	Connect.$(OBJEXT) find_templates.$(OBJEXT) \
 	LoopModelling2.$(OBJEXT) Transform.$(OBJEXT) AddPhos.$(OBJEXT) \
 	BuildNuc.$(OBJEXT) JunctBuild.$(OBJEXT) Split.$(OBJEXT) \
-	BuildHelix.$(OBJEXT) util.$(OBJEXT) LM.$(OBJEXT)
+	BuildHelix.$(OBJEXT) util.$(OBJEXT) LM.$(OBJEXT) LM2.$(OBJEXT)
 libnuc3d_a_OBJECTS = $(am_libnuc3d_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -158,7 +158,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 noinst_LIBRARIES = libnuc3d.a
-libnuc3d_a_SOURCES = Assemble.cpp Assemble.h ass_templates.cpp Connect.cpp Connect.h find_templates.cpp LoopModelling2.cpp LoopModelling2.h Transform.cpp Transform.h AddPhos.cpp AddPhos.h BuildNuc.h BuildNuc.cpp JunctBuild.cpp JunctBuild.h Split.cpp Split.h BuildHelix.h BuildHelix.cpp util.h util.cpp LM.h LM.cpp
+libnuc3d_a_SOURCES = Assemble.cpp Assemble.h ass_templates.cpp Connect.cpp Connect.h find_templates.cpp LoopModelling2.cpp LoopModelling2.h Transform.cpp Transform.h AddPhos.cpp AddPhos.h BuildNuc.h BuildNuc.cpp JunctBuild.cpp JunctBuild.h Split.cpp Split.h BuildHelix.h BuildHelix.cpp util.h util.cpp LM.h LM.cpp LM2.h LM2.cpp
 all: all-am
 
 .SUFFIXES:
@@ -214,6 +214,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Connect.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JunctBuild.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LM.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LM2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LoopModelling2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Split.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Transform.Po@am__quote@

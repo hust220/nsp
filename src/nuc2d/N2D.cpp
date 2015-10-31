@@ -51,9 +51,10 @@ void N2D::operator ()(std::string ss_) {
     (*this)();
 }
 
-void N2D::operator ()(std::string seq_, std::string ss_) {
+loop *N2D::operator ()(std::string seq_, std::string ss_) {
     (*this)(ss_);
     readSeq(seq_);
+    return loop::copy(pseudo_head);
 }
 
 N2D::N2D(string ss_, int view_) : line(ss_), view(view_) {

@@ -13,9 +13,18 @@ int main(int argc, char **argv) {
             jian::nuc3d::Assemble ass(par);
             ass();
         }
+    } else if (boost::to_lower_copy(par["global"][0]) == "lm2") {
+        jian::nuc3d::LM2 lm2;
+        lm2(par["seq"][0], par["ss"][0]);
     } else if (boost::to_lower_copy(par["global"][0]) == "seq2ss") {
         jian::nuc2d::Seq2Ss seq2ss;
         seq2ss(par["global"][1]);
+    } else if (boost::to_lower_copy(par["global"][0]) == "seq2tri") {
+        jian::nuc2d::Seq2Tri seq2tri;
+        seq2tri(par["global"][1]);
+    } else if (boost::to_lower_copy(par["global"][0]) == "seq2qua") {
+        jian::nuc2d::Seq2Qua seq2qua;
+        seq2qua(par["global"][1]);
     } else if (boost::to_lower_copy(par["global"][0]) == "dg") {
         auto mat = jian::mat_from_file(par["global"][1]);
         jian::DG dg(mat);
@@ -216,22 +225,23 @@ int main(int argc, char **argv) {
             }
         }
         std::cout << mol;
-    } else if (!strcmp(argv[1], "test")) {
-//        MatrixXf a(3, 3);
-//        a << 0, 0, 0,
-//             0, 1, 0,
-//             0, 0, 1;
-//
-//        std::vector<std::tuple<int, int, double, double>> dists;
-//        for (int i = 0; i < a.rows(); i++) {
-//            for (int j = 0; j < a.rows(); j++) {
-//                double d = (a.row(i) - a.row(j)).squaredNorm();
-//                dists.push_back(std::make_tuple(i, j, d, d));
-//            }
-//        }
-//
-//        jian::dg::Dgsol dgsol;
-//        std::cout << dgsol(dists, 3) << std::endl;
+    } else if (boost::to_lower_copy(par["global"][0]) == "test") {
+        jian::RNA rna(par["global"][1]);
+        int a = std::stoi(par["global"][2]);
+        int b = std::stoi(par["global"][3]);
+        int n = 0;
+        jian::Point p1, p2;
+        for (auto &&chain: rna) {
+            for (auto &&res: chain) {
+                n++;
+                if (n == a) {
+                    p1 = res["C4*"].pos();
+                } else if (n == b) {
+                    p2 = res["C4*"].pos();
+                }
+            }
+        }
+        std::cout << p1.dist(p2) << std::endl;
     } else if (boost::to_lower_copy(par["global"][0]) == "len") {
         std::cout << jian::Model(par["global"][1]).res_nums() << std::endl;
     } else if (!strcmp(argv[1], "seq")) {
