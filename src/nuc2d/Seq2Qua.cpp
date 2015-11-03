@@ -3,21 +3,20 @@
 namespace jian {
 namespace nuc2d {
 
-std::vector<std::vector<std::tuple<int, int, int, int>>> Seq2Qua::operator ()(std::string seq) {
+void Seq2Qua::operator ()(std::string seq) {
     _seq = seq;
     int len = seq.size();
     std::vector<int> vec(len);
     std::iota(vec.begin(), vec.end(), 0);
     get(vec);
 
-    auto pair_lists = backtrack(vec);
+    auto pair_lists = backtrack(vec, _cutoff);
     for (auto &&pair_list: pair_lists) {
-        for (auto &&pair: pair_list) {
+        for (auto &&pair: pair_list.first) {
             std::cout << std::get<0>(pair) << '-' << std::get<1>(pair) << '-' << std::get<2>(pair) << '-' << std::get<3>(pair) << ' ';
         }
-        std::cout << std::endl;
+        std::cout << pair_list.second << std::endl;
     }
-    return pair_lists;
 }
 
 double Seq2Qua::get(const std::vector<int> &seq) {
@@ -31,7 +30,7 @@ double Seq2Qua::get(const std::vector<int> &seq) {
 
     std::vector<int> temp_vec;
     std::copy(seq.begin(), std::prev(seq.end(), 1), std::back_inserter(temp_vec));
-    double max_score = get(temp_vec);
+    double min_score = get(temp_vec);
 
     for (int i = 0; i < seq.size() - 3; i++) {
         for (int j = i + 1; j < seq.size() - 2; j++) {
@@ -45,28 +44,28 @@ double Seq2Qua::get(const std::vector<int> &seq) {
                 std::copy(std::next(seq.begin(), i + 1), std::next(seq.begin(), j), std::back_inserter(temp_seq2));
                 std::copy(std::next(seq.begin(), k + 1), std::prev(seq.end(), 1), std::back_inserter(temp_seq2));
                 double temp = get(temp_seq1) + get(temp_seq2) + score(seq[i], seq[j], seq[k], seq.back());
-                if (temp > max_score) {
-                    max_score = temp;
+                if (temp < min_score) {
+                    min_score = temp;
                 }
             }
         }
     }
 
-    _scores[seq] = max_score;
-    return max_score;
+    _scores[seq] = min_score;
+    return min_score;
 }
 
 double Seq2Qua::score(int a, int b, int c, int d) {
     int m = _convert[_seq[a]] * _convert[_seq[b]] * _convert[_seq[c]] * _convert[_seq[d]];
     if (m == 16) {
-        return 1;
+        return -1;
     } else {
         return 0;
     }
 }
 
-std::vector<std::vector<std::tuple<int, int, int, int>>> Seq2Qua::backtrack(const std::vector<int> &seq) {
-    std::vector<std::vector<std::tuple<int, int, int, int>>> vec;
+Seq2Qua::PairLists Seq2Qua::backtrack(const std::vector<int> &seq, double cutoff) {
+    PairLists vec;
 
     if (seq.size() < 4) {
         return vec;
@@ -76,8 +75,10 @@ std::vector<std::vector<std::tuple<int, int, int, int>>> Seq2Qua::backtrack(cons
 
     std::vector<int> temp_seq;
     std::copy(seq.begin(), std::prev(seq.end(), 1), std::back_inserter(temp_seq));
-    if (temp_score == get(temp_seq)) {
-        vec = backtrack(temp_seq);
+    double s = get(temp_seq);
+    if (s - temp_score <= cutoff) {
+        auto temp_vec = backtrack(temp_seq, cutoff - s + temp_score);
+        std::copy(temp_vec.begin(), temp_vec.end(), std::back_inserter(vec));
     }
 
     for (int i = 0; i < seq.size() - 3; i++) {
@@ -93,37 +94,48 @@ std::vector<std::vector<std::tuple<int, int, int, int>>> Seq2Qua::backtrack(cons
                 std::copy(std::next(seq.begin(), k + 1), std::prev(seq.end(), 1), std::back_inserter(temp_seq2));
                 auto en = score(seq[i], seq[j], seq[k], seq.back());
                 double temp = get(temp_seq1) + get(temp_seq2) + en;
-                if (temp == temp_score && en == 1) {
+                if (temp == temp_score && en == -1) {
+                    double new_cutoff = cutoff - temp + temp_score;
                     auto pair = std::make_tuple(seq[i], seq[j], seq[k], seq.back());
-                    std::vector<std::tuple<int, int, int, int>> pair_list;
+                    Pairs pair_list;
                     pair_list.push_back(pair);
-                    std::vector<std::vector<std::tuple<int, int, int, int>>> pair_lists;
-                    pair_lists.push_back(pair_list);
-                    auto pair_lists1 = backtrack(temp_seq1);
-                    auto pair_lists2 = backtrack(temp_seq2);
-                    if (pair_lists1.size() != 0) {
-                        std::vector<std::vector<std::tuple<int, int, int, int>>> temp_lists;
-                        for (int i = 0; i < pair_lists.size(); i++) {
-                            for (int j = 0; j < pair_lists1.size(); j++) {
-                                auto temp_pair_list = pair_lists[i];
-                                std::copy(pair_lists1[j].begin(), pair_lists1[j].end(), std::back_inserter(temp_pair_list));
-                                temp_lists.push_back(temp_pair_list);
+                    auto pair_lists1 = backtrack(temp_seq1, new_cutoff);
+                    auto pair_lists2 = backtrack(temp_seq2, new_cutoff);
+                    if (pair_lists1.size() != 0 && pair_lists2.size() != 0) {
+                        for (int ii = 0; ii < pair_lists1.size(); ii++) {
+                            for (int jj = 0; jj < pair_lists2.size(); jj++) {
+                                double s = pair_lists1[ii].second + pair_lists2[jj].second + en;
+                                if (s - temp_score <= new_cutoff) {
+                                    Pairs temp_pairs = pair_list;
+                                    std::copy(pair_lists1[ii].first.begin(), pair_lists1[ii].first.end(), std::back_inserter(temp_pairs));
+                                    std::copy(pair_lists2[jj].first.begin(), pair_lists2[jj].first.end(), std::back_inserter(temp_pairs));
+                                    vec.push_back(std::make_pair(temp_pairs, s));
+                                }
                             }
                         }
-                        std::swap(pair_lists, temp_lists);
-                    }
-                    if (pair_lists2.size() != 0) {
-                        std::vector<std::vector<std::tuple<int, int, int, int>>> temp_lists;
-                        for (int i = 0; i < pair_lists.size(); i++) {
-                            for (int j = 0; j < pair_lists2.size(); j++) {
-                                auto temp_pair_list = pair_lists[i];
-                                std::copy(pair_lists2[j].begin(), pair_lists2[j].end(), std::back_inserter(temp_pair_list));
-                                temp_lists.push_back(temp_pair_list);
+                    } else if (pair_lists1.size() != 0) {
+                        for (int ii = 0; ii < pair_lists1.size(); ii++) {
+                            double s = pair_lists1[ii].second + en;
+                            if (s - temp_score <= new_cutoff) {
+                                Pairs temp_pairs = pair_list;
+                                std::copy(pair_lists1[ii].first.begin(), pair_lists1[ii].first.end(), std::back_inserter(temp_pairs));
+                                vec.push_back(std::make_pair(temp_pairs, s));
                             }
                         }
-                        std::swap(pair_lists, temp_lists);
+                    } else if (pair_lists2.size() != 0) {
+                        for (int jj = 0; jj < pair_lists2.size(); jj++) {
+                            double s = pair_lists2[jj].second + en;
+                            if (s - temp_score <= new_cutoff) {
+                                Pairs temp_pairs = pair_list;
+                                std::copy(pair_lists2[jj].first.begin(), pair_lists2[jj].first.end(), std::back_inserter(temp_pairs));
+                                vec.push_back(std::make_pair(temp_pairs, s));
+                            }
+                        }
+                    } else {
+                        if (en - temp_score <= new_cutoff) {
+                            vec.push_back(std::make_pair(pair_list, en));
+                        }
                     }
-                    std::copy(pair_lists.begin(), pair_lists.end(), std::back_inserter(vec));
                 }
             }
         }

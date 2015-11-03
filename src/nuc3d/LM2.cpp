@@ -95,43 +95,67 @@ void LM2::init() {
 
     /// Add helix parameters into the bound matrix
     auto fn_a = [](int n){return sqrt(2 * 9.7 * 9.7 * (1 - cos(0.562 * n - 2 * 3.14159)) + (2.84 * n) * (2.84 * n));};
-    auto fn_c = [](int n){return sqrt(2 * 9.7 * 9.7 * (1 - cos(0.562 * n - 2 * 3.14159)) + (2.84*n-4) * (2.84*n-4));};
-    auto fn_d = [](int n){return sqrt(2 * 9.7 * 9.7 * (1 - cos(0.562 * n - 2 * 3.14159)) + (2.84*n+4) * (2.84*n+4));};
+    auto fn_c = [](int n){return sqrt(2 * 9.7 * 9.7 * (1 - cos(0.562 * n - 1.5 * 3.14159)) + (2.84*n-4) * (2.84*n-4));};
+    auto fn_d = [](int n){return sqrt(2 * 9.7 * 9.7 * (1 - cos(0.562 * n - 0.5 * 3.14159)) + (2.84*n+4) * (2.84*n+4));};
     for (auto &&anchor: _helix_anchors) {
         int i1 = m1[anchor[0].num];
         int i2 = m1[anchor[1].num];
         int i3 = m1[anchor[2].num];
         int i4 = m1[anchor[3].num];
+        int len = m2[i3] - m2[i1];
         _bound(i1, i2) = _bound(i2, i1) = 15.1;
         _bound(i3, i4) = _bound(i4, i3) = 15.1;
-        _bound(i1, i3) = _bound(i3, i1) = fn_a(m2[i3] - m2[i1]);
-        _bound(i4, i2) = _bound(i4, i2) = fn_a(m2[i2] - m2[i4]);
-        _bound(i1, i4) = _bound(i4, i1) = fn_c(m2[i4] - m2[i1]);
-        _bound(i3, i2) = _bound(i2, i3) = fn_d(m2[i2] - m2[i3]);
+        _bound(i1, i3) = _bound(i3, i1) = fn_a(len);
+        _bound(i4, i2) = _bound(i4, i2) = fn_a(len);
+        _bound(i1, i4) = _bound(i4, i1) = fn_c(len);
+        _bound(i3, i2) = _bound(i2, i3) = fn_d(len);
     }
 
     /// Calculate scaffold coordinates
     DG dg(_bound);
-    std::cout << "bound matrix: " << std::endl;
+    std::cout << "\nscaffold bound matrix: " << std::endl;
     std::cout << _bound << "\n" << std::endl;
     _scaffold = dg();
+    std::cout << "DG...\n";
     std::cout << "scaffold energy: " << dg.E << std::endl;
     std::cout << "scaffold: " << std::endl;
     std::cout << _scaffold << std::endl;
 
     /// Calculate helix coordinates
-    std::cout << "\nCalculate helix coordinate: " << std::endl;
-    std::vector<MatrixXf> helix_coords;
+    std::cout << "\nCalculate helix coordinates:\n";
+    std::map<int, MatrixXf> helix_coords;
     SupPos sp;
-    for (int i = 0; i < _scaffold.rows(); i += 2) {
-        auto helix_coord = make_helix_strand(_scaffold.row(i), _scaffold.row(i + 1), m2[i + 1] - m2[i]);
-        MatrixXf m, n;
-        m = mat::hstack(helix_coord.row(0), helix_coord.row(helix_coord.rows() - 1));
-        n = mat::hstack(_scaffold.row(i), _scaffold.row(i + 1));
-        sp(helix_coord, m, n);
-        helix_coords.push_back(helix_coord);
-        std::cout << "helix coordinate: \n" << helix_coord << std::endl;
+    for (auto &&anchor: _helix_anchors) {
+        MatrixXf anchor_coord(4, 3);
+        for (int i = 0; i < 3; i++) {
+            anchor_coord(0, i) = _scaffold(m1[anchor[0].num], i);
+            anchor_coord(1, i) = _scaffold(m1[anchor[2].num], i);
+            anchor_coord(2, i) = _scaffold(m1[anchor[3].num], i);
+            anchor_coord(3, i) = _scaffold(m1[anchor[1].num], i);
+        }
+        int len = anchor[2].num - anchor[0].num + 1;
+        auto helix_coord = make_helix(anchor_coord, len);
+        std::cout << "helix:\n" << helix_coord << std::endl;
+        MatrixXf temp_mat = mat::hstack(helix_coord.row(0), helix_coord.row(len - 1));
+        temp_mat = mat::hstack(temp_mat, helix_coord.row(len));
+        temp_mat = mat::hstack(temp_mat, helix_coord.row(2 * len - 1));
+        sp(helix_coord, temp_mat, anchor_coord);
+        std::cout << "superposed helix:\n" << helix_coord << std::endl;
+        helix_coords[m1[anchor[0].num] / 2] = helix_coord.topRows(helix_coord.rows() / 2);
+        helix_coords[m1[anchor[3].num] / 2] = helix_coord.bottomRows(helix_coord.rows() / 2);
     }
+//    std::cout << "\nCalculate helix coordinate: " << std::endl;
+//    std::vector<MatrixXf> helix_coords;
+//    SupPos sp;
+//    for (int i = 0; i < _scaffold.rows(); i += 2) {
+//        auto helix_coord = make_helix_strand(_scaffold.row(i), _scaffold.row(i + 1), m2[i + 1] - m2[i]);
+//        MatrixXf m, n;
+//        m = mat::hstack(helix_coord.row(0), helix_coord.row(helix_coord.rows() - 1));
+//        n = mat::hstack(_scaffold.row(i), _scaffold.row(i + 1));
+//        sp(helix_coord, m, n);
+//        helix_coords.push_back(helix_coord);
+//        std::cout << "helix coordinate: \n" << helix_coord << std::endl;
+//    }
 
     /// Construct fragments
     std::vector<int> anchor_list;
@@ -181,11 +205,6 @@ void LM2::init() {
                 y(y.rows() - 1, i) = b(1, i);
             }
         }
-        std::cout << "superpose: " << std::endl;
-        std::cout << "x: " << std::endl;
-        std::cout << x << std::endl;
-        std::cout << "y: " << std::endl;
-        std::cout << y << std::endl;
         sp(frag_coords, x, y);
         std::cout << "after superpose: " << std::endl;
         std::cout << frag_coords << std::endl;
@@ -210,6 +229,34 @@ void LM2::init() {
 
     std::cout << "\nfinal coords: \n" << coords << std::endl;
 
+}
+
+MatrixXf LM2::make_helix(const MatrixXf &anchor, int len) {
+    int num_atoms = len * 2;
+    MatrixXf bound(num_atoms, num_atoms);
+    for (int i = 0; i < num_atoms; i++) {
+        for (int j = i; j < num_atoms; j++) {
+            if (i == j) {
+                bound(i, j) = 0;
+            } else if (i < len && j < len || i >= len && j >= len) {
+                int d = j - i;
+                bound(i, j) = bound(j, i) = sqrt(2*9.7*9.7*(1-cos(0.562*d-2*3.14159))+(2.84*d)*(2.84*d));
+            } else if (i < len && j >= len && j < num_atoms - 1 - i) {
+                int d = num_atoms - 1 - i - j;
+                bound(i, j) = bound(j, i) = sqrt(2*9.7*9.7*(1-cos(0.562*d-1.5*3.14159))+(2.84*d-4)*(2.84*d-4));
+            } else if (i < len && j >= len && j > num_atoms - 1 - i) {
+                int d = j - (num_atoms - 1 - i);
+                bound(i, j) = bound(j, i) = sqrt(2*9.7*9.7*(1-cos(0.562*d-0.5*3.14159))+(2.84*d+4)*(2.84*d+4));
+            } else if (j == num_atoms - 1 - i) {
+                bound(i, j) = bound(j, i) = 15.1;
+            }
+        }
+    }
+    std::cout << "helix bound:\n" << bound << std::endl;
+    DG dg(bound);
+    auto coord = dg();
+    std::cout << "helix energy: " << dg.E << std::endl;
+    return coord;
 }
 
 MatrixXf LM2::make_helix_strand(MatrixXf head, MatrixXf tail, int len) {
@@ -276,11 +323,11 @@ MatrixXf LM2::get_frag_coords(const std::tuple<std::vector<int>, std::vector<int
         double dist6 = (a.row(1) - b.row(1)).norm();
         bound(1, len - 1) = bound(len - 1, 1) = dist6;
     }
-    std::cout << "bound: \n" << bound << std::endl;
+    std::cout << "\nfragment bound: \n" << bound << std::endl;
     DG dg(bound);
     auto coord = dg();
 //    std::cout << coord << "\n" << "energy: " << dg.E << "\n" << std::endl;
-    std::cout << "\nenergy: " << dg.E << "\n" << coord << std::endl;
+    std::cout << "DG...\nenergy: " << dg.E << "\n" << coord << std::endl;
     std::cout << "distances: " << std::endl;
     for (int i = 0; i < coord.rows() - 1; i++) {
         std::cout << (coord.row(i) - coord.row(i + 1)).norm() << ' ';
@@ -321,20 +368,20 @@ std::vector<std::tuple<std::vector<int>, std::vector<int>, std::vector<int>>> LM
         fragments.push_back(std::make_tuple(a, b, c));
     }
 
-    std::cout << "fragments: " << std::endl;
+    std::cout << "\nfragments: " << std::endl;
     for (auto &&frag: fragments) {
         for (auto &&i: std::get<0>(frag)) {
-            std::cout << i << ' ';
+            std::cout << i << '-';
         }
-        std::cout << std::endl;
+        std::cout << ' ';
         for (auto &&i: std::get<1>(frag)) {
-            std::cout << i << ' ';
+            std::cout << i << '-';
         }
-        std::cout << std::endl;
+        std::cout << ' ';
         for (auto &&i: std::get<2>(frag)) {
-            std::cout << i << ' ';
+            std::cout << i << '-';
         }
-        std::cout << std::endl;
+        std::cout << ' ';
         std::cout << std::endl;
     }
     return fragments;

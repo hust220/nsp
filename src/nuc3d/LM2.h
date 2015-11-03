@@ -20,6 +20,7 @@ public:
     std::vector<std::tuple<std::vector<int>, std::vector<int>, std::vector<int>>> get_fragments(const std::vector<int> &);
     MatrixXf get_frag_coords(const std::tuple<std::vector<int>, std::vector<int>, std::vector<int>> &, MatrixXf, MatrixXf);
     MatrixXf make_helix_strand(MatrixXf, MatrixXf, int);
+    MatrixXf make_helix(const MatrixXf &, int);
 
 
     map<string, MatrixXf> _mono_nuc_pars;

@@ -8,20 +8,22 @@ namespace nuc2d {
 
 class Seq2Ss {
 public:
-    std::vector<std::pair<int, int>> operator ()(std::string seq);
-    int mms(int, int);
-    int score(int, int);
-    std::vector<std::vector<std::pair<int, int>>> backtrack(int, int);
-    int get_mms(int, int);
+    typedef std::pair<int, int> Pair;
+    typedef std::vector<Pair> Pairs;
+    typedef std::vector<Pair> PairList;
+    typedef std::vector<std::pair<Pairs, double>> PairLists;
+
+    void operator ()(std::string seq);
+    double mms(int, int);
+    double score(int, int);
+    PairLists backtrack(int, int, double);
+    double get_mms(int, int);
 
     MatrixXf _mms;
     std::string _seq;
     std::vector<int> _types;
     int _len;
     int _min_hairpin_size = 4;
-    std::vector<std::pair<int, int>> _pairs;
-    std::vector<std::vector<std::pair<int, int>>> _all_pairs;
-    std::vector<std::vector<std::pair<int, int>>> _pairs_stack;
     int _cutoff = 1;
 };
 

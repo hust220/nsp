@@ -18,13 +18,16 @@ int main(int argc, char **argv) {
         lm2(par["seq"][0], par["ss"][0]);
     } else if (boost::to_lower_copy(par["global"][0]) == "seq2ss") {
         jian::nuc2d::Seq2Ss seq2ss;
-        seq2ss(par["global"][1]);
+        if (par.count("cutoff")) seq2ss._cutoff = std::stoi(par["cutoff"][0]);
+        seq2ss(par["seq"][0]);
     } else if (boost::to_lower_copy(par["global"][0]) == "seq2tri") {
         jian::nuc2d::Seq2Tri seq2tri;
-        seq2tri(par["global"][1]);
+        if (par.count("cutoff")) seq2tri._cutoff = std::stoi(par["cutoff"][0]);
+        seq2tri(par["seq"][0]);
     } else if (boost::to_lower_copy(par["global"][0]) == "seq2qua") {
         jian::nuc2d::Seq2Qua seq2qua;
-        seq2qua(par["global"][1]);
+        if (par.count("cutoff")) seq2qua._cutoff = std::stoi(par["cutoff"][0]);
+        seq2qua(par["seq"][0]);
     } else if (boost::to_lower_copy(par["global"][0]) == "dg") {
         auto mat = jian::mat_from_file(par["global"][1]);
         jian::DG dg(mat);

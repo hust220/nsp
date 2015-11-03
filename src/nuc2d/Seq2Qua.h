@@ -20,16 +20,21 @@ struct MyHash {
 
 class Seq2Qua {
 public:
-    std::vector<std::vector<std::tuple<int, int, int, int>>> operator ()(std::string seq);
-    double get(const std::vector<int> &);
+    typedef std::tuple<int, int, int, int> Pair;
+    typedef std::vector<Pair> Pairs;
+    typedef std::vector<std::pair<Pairs, double>> PairLists;
+
+    void operator ()(std::string seq);
+    double get(const std::vector<int> &sequence);
     double score(int, int, int, int);
-    std::vector<std::vector<std::tuple<int, int, int, int>>> backtrack(const std::vector<int> &);
+    PairLists backtrack(const std::vector<int> &sequence, double cutoff);
 
     std::unordered_map<std::vector<int>, double, seq2qua::MyHash> _scores;
 
     std::string _seq;
     std::map<char, int> _convert{{'A', 0}, {'U', 1}, {'G', 2}, {'C', 3}};
     int _min_hairpin_size = 4;
+    double _cutoff = 1;
 };
 
 } /// namespace nuc2d
