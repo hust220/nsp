@@ -17,8 +17,16 @@ Model BuildHelix::operator ()(nuc2d::helix *s) {
 }
 
 Model BuildHelix::operator ()(std::string seq) {
-    if (seq.size() < 4 || seq.size() % 2 == 1) {
-        die("jian::nuc3d::BuildHelix::operator (std::string) error! Unreasonable length.");
+    if (seq.size() < 2 || seq.size() % 2 == 1) {
+        die("jian::nuc3d::BuildHelix::operator (std::string) error! Unreasonable length.\nSequence: " + seq);
+    } else if (seq.size() == 2) {
+        std::string file_name = _lib + "/basepair/" + seq + ".pdb";
+        std::ifstream ifile(file_name.c_str());
+        if (!ifile) {
+            file_name = _lib + "/basepair/XX.pdb";
+        }
+        ifile.close();
+        return RNA(file_name);
     } else if (seq.size() == 4) {
         std::string file_name = _lib + "/basepair/" + seq + ".pdb";
         std::ifstream ifile(file_name.c_str());

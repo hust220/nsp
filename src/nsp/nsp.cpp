@@ -245,6 +245,30 @@ int main(int argc, char **argv) {
             }
         }
         std::cout << p1.dist(p2) << std::endl;
+    } else if (boost::to_lower_copy(par["global"][0]) == "test2") {
+        jian::RNA rna(par["global"][1]);
+        int a = std::stoi(par["global"][2]);
+        int b = std::stoi(par["global"][3]);
+        int c = std::stoi(par["global"][4]);
+        int d = std::stoi(par["global"][5]);
+        int n = 0;
+        jian::Point p1, p2, p3, p4;
+        for (auto &&chain: rna) {
+            for (auto &&res: chain) {
+                n++;
+                if (n == a) {
+                    p1 = res["C4*"].pos();
+                } else if (n == b) {
+                    p2 = res["C4*"].pos();
+                } else if (n == c) {
+                    p3 = res["C4*"].pos();
+                } else if (n == d) {
+                    p4 = res["C4*"].pos();
+                }
+            }
+        }
+        std::cout << jian::Point::chirality(p1, p2, p3, p4) << std::endl;
+        std::cout << jian::Point::dihedral(p1, p2, p3, p4) << std::endl;
     } else if (boost::to_lower_copy(par["global"][0]) == "len") {
         std::cout << jian::Model(par["global"][1]).res_nums() << std::endl;
     } else if (!strcmp(argv[1], "seq")) {

@@ -106,7 +106,7 @@ void LM2::init() {
         _bound(i1, i2) = _bound(i2, i1) = 15.1;
         _bound(i3, i4) = _bound(i4, i3) = 15.1;
         _bound(i1, i3) = _bound(i3, i1) = fn_a(len);
-        _bound(i4, i2) = _bound(i4, i2) = fn_a(len);
+        _bound(i4, i2) = _bound(i2, i4) = fn_a(len);
         _bound(i1, i4) = _bound(i4, i1) = fn_c(len);
         _bound(i3, i2) = _bound(i2, i3) = fn_d(len);
     }
@@ -213,7 +213,11 @@ void LM2::init() {
 //        } else {
 //            coords = mat::hstack(coords, frag_coords);
 //        }
-        if (frag_num == 0) {
+        if (std::get<0>(frag)[0] == 0) {
+            coords = mat::hstack(helix_coords[frag_num], frag_coords.block(2, 0, frag_coords.rows() - 4, 3));
+            frag_num++;
+            coords = mat::hstack(coords, helix_coords[frag_num]);
+        } else if (frag_num == 0) {
             coords = mat::hstack(coords, frag_coords.topRows(frag_coords.rows() - 2));
             coords = mat::hstack(coords, helix_coords[frag_num]);
         } else if (frag_num == fragments.size() - 1) {
@@ -373,11 +377,9 @@ std::vector<std::tuple<std::vector<int>, std::vector<int>, std::vector<int>>> LM
         for (auto &&i: std::get<0>(frag)) {
             std::cout << i << '-';
         }
-        std::cout << ' ';
         for (auto &&i: std::get<1>(frag)) {
             std::cout << i << '-';
         }
-        std::cout << ' ';
         for (auto &&i: std::get<2>(frag)) {
             std::cout << i << '-';
         }

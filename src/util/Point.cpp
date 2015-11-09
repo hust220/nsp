@@ -667,7 +667,7 @@ double Point::chirality(Point *p1, Point *p2, Point *p3, Point *p4) {
     return a.x * d.x + a.y * d.y + a.z * d.z;
 }
 
-double Point::chirality(Point &p1, Point &p2, Point &p3, Point &p4) {
+double Point::chirality(const Point &p1, const Point &p2, const Point &p3, const Point &p4) {
     Point a(p1.x - p4.x, p1.y - p4.y, p1.z - p4.z);
     Point b(p2.x - p4.x, p2.y - p4.y, p2.z - p4.z);
     Point c(p3.x - p4.x, p3.y - p4.y, p3.z - p4.z);

@@ -35,7 +35,7 @@ public:
 	static Point *t2c(double *, double *, double *, int);
 	static Point *t2c(double *, double *, double *, Point *, Point *, int);
 	static double chirality(Point *, Point *, Point *, Point *);
-	static double chirality(Point &, Point &, Point &, Point &);
+	static double chirality(const Point &, const Point &, const Point &, const Point &);
 	double &operator[](int);
 	const double &operator[](int) const;
 	friend Point operator -(const Point &);

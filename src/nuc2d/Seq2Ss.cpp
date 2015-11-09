@@ -54,10 +54,10 @@ Seq2Ss::PairLists Seq2Ss::backtrack(int m, int n, double cutoff) {
     if (n <= m + _min_hairpin_size) {
         return temp_vec;;
     }
-    double min_score = get_mms(m, n);
-    if (-min_score <= cutoff) {
-        temp_vec.push_back(std::make_pair(Pairs(), 0));
-    }
+//    double min_score = get_mms(m, n);
+//    if (-min_score <= cutoff) {
+//        temp_vec.push_back(std::make_pair(Pairs(), 0));
+//    }
     double temp_score = get_mms(m, n - 1) - min_score;
     if (temp_score <= cutoff) {
         auto vec = backtrack(m, n - 1, cutoff - temp_score);
