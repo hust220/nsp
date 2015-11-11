@@ -19,7 +19,7 @@ public:
 //    double mms(int, int);
     InfoList sub_info(int, int, double);
 //    double get_mms(int, int);
-    PairInfo best_info(int m, int n);
+    InfoList best_info(int m, int n);
     PairInfo strand_info(int m, int n);
     PairInfo score(const PairInfo &info1, int m, const PairInfo &info2, int n);
     PairInfo score(const PairInfo &info, int m);
@@ -27,14 +27,14 @@ public:
     double stack_energy(int i, int j);
 
 
-    std::map<int, PairInfo> _info;
+    std::map<int, InfoList> _info;
 
     MatrixXf _mms;
     std::string _seq;
     std::vector<int> _types;
     int _len;
     int _min_hairpin_size = 4;
-    double _cutoff = 0.5;
+    double _cutoff = 0.2;
     Matrix4f _pair_energy;
     Matrix4f _stack_energy;
 };
