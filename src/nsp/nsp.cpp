@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
         lm2(par["seq"][0], par["ss"][0]);
     } else if (boost::to_lower_copy(par["global"][0]) == "seq2ss") {
         jian::nuc2d::Seq2Ss seq2ss;
-        if (par.count("cutoff")) seq2ss._cutoff = std::stoi(par["cutoff"][0]);
+        if (par.count("cutoff")) seq2ss._cutoff = std::stof(par["cutoff"][0]);
         seq2ss(par["seq"][0]);
     } else if (boost::to_lower_copy(par["global"][0]) == "seq2tri") {
         jian::nuc2d::Seq2Tri seq2tri;

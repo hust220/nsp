@@ -10,21 +10,33 @@ class Seq2Ss {
 public:
     typedef std::pair<int, int> Pair;
     typedef std::vector<Pair> Pairs;
-    typedef std::vector<Pair> PairList;
-    typedef std::vector<std::pair<Pairs, double>> PairLists;
+    typedef std::vector<int> PairList;
+    typedef std::pair<PairList, double> PairInfo;
+    typedef std::vector<PairInfo> InfoList;
 
+    Seq2Ss();
     void operator ()(std::string seq);
-    double mms(int, int);
-    double score(int, int);
-    PairLists backtrack(int, int, double);
-    double get_mms(int, int);
+//    double mms(int, int);
+    InfoList sub_info(int, int, double);
+//    double get_mms(int, int);
+    PairInfo best_info(int m, int n);
+    PairInfo strand_info(int m, int n);
+    PairInfo score(const PairInfo &info1, int m, const PairInfo &info2, int n);
+    PairInfo score(const PairInfo &info, int m);
+    std::pair<double, bool> pair_energy(int i, int j);
+    double stack_energy(int i, int j);
+
+
+    std::map<int, PairInfo> _info;
 
     MatrixXf _mms;
     std::string _seq;
     std::vector<int> _types;
     int _len;
     int _min_hairpin_size = 4;
-    int _cutoff = 1;
+    double _cutoff = 0.5;
+    Matrix4f _pair_energy;
+    Matrix4f _stack_energy;
 };
 
 } /// namespace nuc2d
