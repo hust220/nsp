@@ -1,8 +1,7 @@
-build/*
-*.o
-*.a
-*.so
-*.deps
-.*
-nsp
+*
+!*.h
+!*.cpp
+!configure.ac
+!Makefile.am
 !.gitignore
+!lib
