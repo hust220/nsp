@@ -1,0 +1,11 @@
+data_Dictionary
+# 
+_category.description      'Description for category_1' 
+_category.mandatory_code   no 
+_category.id               category_1 
+_category.implicit_key     Dictionary 
+# 
+_item.name             '_item_1' 
+_item.category_id      category_1 
+_item.mandatory_code   no 
+# 
