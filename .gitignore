@@ -13,5 +13,5 @@ README.md
 *.deps
 *.so
 *.a
-nsp
+src/nsp/nsp
 !.gitignore
