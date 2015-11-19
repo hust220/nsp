@@ -4,6 +4,8 @@ namespace jian {
 namespace nuc2d {
 
 Seq2Ss::Seq2Ss() {
+	_cutoff = 0.3;
+	_min_hairpin_size = 4;
 	_pair_energy <<  -45.94, -484.06,  -45.94,   -45.94,
 			        -491.53,  -45.94,    -200,   -45.94,
 					 -45.94,    -200,  -45.94,  -679.05,
@@ -14,10 +16,10 @@ Seq2Ss::Seq2Ss() {
 					 -642.19, -735.33, -851.11, -509.75;
 }
 
-void Seq2Ss::operator ()(std::string seq) {
+Seq2Ss::InfoList Seq2Ss::operator ()(std::string seq) {
     _seq = seq;
     int len = seq.size();
-    std::map<char, int> temp_map{{'A', 0}, {'U', 1}, {'G', 2}, {'C', 3}};
+    std::map<char, int> temp_map{{'A', 0}, {'U', 1}, {'T', 1}, {'G', 2}, {'C', 3}};
     std::transform(_seq.begin(), _seq.end(), std::back_inserter(_types), [&](char c){return temp_map[c];});
 
     auto info = best_info(0, len - 1);
@@ -36,6 +38,7 @@ void Seq2Ss::operator ()(std::string seq) {
     	}
     	std::cout << info.second << std::endl;
     }
+    return info_list;
 }
 
 Seq2Ss::InfoList Seq2Ss::best_info(int m, int n) {

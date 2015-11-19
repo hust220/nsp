@@ -7,6 +7,10 @@
 
 namespace jian {
 
+class Atom;
+
+Atom make_atom(const std::string s);
+
 class Atom {
 public:
     Atom();
@@ -37,7 +41,7 @@ public:
         this->name = name;
     }
     Atom(string name, double x, double y, double z);
-    Atom(string &);
+    Atom(const string &);
     Atom(Point, string, string, int);
     void set_name(std::string);
     void set_mass();

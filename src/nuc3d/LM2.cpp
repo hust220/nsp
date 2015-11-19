@@ -81,7 +81,6 @@ void LM2::init() {
     /// Initiate bound matrix
     int len = _helix_anchors.size() * 4;
     _bound = MatrixXf::Zero(len, len);
-    _bound.resize(len, len);
     for (int i = 0; i < len; i++) {
         for (int j = i; j < len; j++) {
             if (i == j) {

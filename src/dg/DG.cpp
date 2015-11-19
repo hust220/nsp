@@ -364,6 +364,7 @@ void DG::gradient() {
         E += 0.5 * C(3 * i + 0, 1);
     }
     
+    /// Chirality
     MatrixXf ch(len * 3, 3);
     for (int i = 0; i < len * 3; i++) {
         for (int j = 0; j < 3; j++) {
@@ -371,54 +372,52 @@ void DG::gradient() {
         }
     }
     CH = 0;
-    if (chir.rows() != 0) {
-        for (int i = 0; i < chir.rows(); i++) {
-            Point p[4];
-            int k[4];
-            for (int j = 0; j < 4; j++) {
-                k[j] = int(chir(i, j));
-                p[j].x = c(k[j], 0);
-                p[j].y = c(k[j], 1);
-                p[j].z = c(k[j], 2);
-            }
-            double center = chir(i, 4);
-            for (int j = 0; j < 4; j++) {
-                for (int t = 0; t < 3; t++) {
-                    double temp;
-                    if (t == 0) {
-                        p[j].x -= err;
-                        temp = Point::chirality(p[0], p[1], p[2], p[3]);
-                        ch(k[j] * 3 + t, 0) += (temp - center) * (temp - center);
-                        p[j].x += err;
-                        temp = Point::chirality(p[0], p[1], p[2], p[3]);
-                        ch(k[j] * 3 + t, 1) += (temp - center) * (temp - center);
-                        CH += 0.25 * ch(k[j] * 3 + t, 1);
-                        p[j].x += err;
-                        temp = Point::chirality(p[0], p[1], p[2], p[3]);
-                        ch(k[j] * 3 + t, 2) += (temp - center) * (temp - center);
-                    } else if (t == 1) {
-                        p[j].y -= err;
-                        temp = Point::chirality(p[0], p[1], p[2], p[3]);
-                        ch(k[j] * 3 + t, 0) += (temp - center) * (temp - center);
-                        p[j].y += err;
-                        temp = Point::chirality(p[0], p[1], p[2], p[3]);
-                        ch(k[j] * 3 + t, 1) += (temp - center) * (temp - center);
-                        CH += 0.25 * ch(k[j] * 3 + t, 1);
-                        p[j].y += err;
-                        temp = Point::chirality(p[0], p[1], p[2], p[3]);
-                        ch(k[j] * 3 + t, 2) += (temp - center) * (temp - center);
-                    } else {
-                        p[j].z -= err;
-                        temp = Point::chirality(p[0], p[1], p[2], p[3]);
-                        ch(k[j] * 3 + t, 0) += (temp - center) * (temp - center);
-                        p[j].z += err;
-                        temp = Point::chirality(p[0], p[1], p[2], p[3]);
-                        ch(k[j] * 3 + t, 1) += (temp - center) * (temp - center);
-                        CH += 0.25 * ch(k[j] * 3 + t, 1);
-                        p[j].z += err;
-                        temp = Point::chirality(p[0], p[1], p[2], p[3]);
-                        ch(k[j] * 3 + t, 2) += (temp - center) * (temp - center);
-                    }
+    for (int i = 0; i < chir.rows(); i++) {
+        Point p[4];
+        int k[4];
+        for (int j = 0; j < 4; j++) {
+            k[j] = int(chir(i, j));
+            p[j].x = c(k[j], 0);
+            p[j].y = c(k[j], 1);
+            p[j].z = c(k[j], 2);
+        }
+        double center = chir(i, 4);
+        for (int j = 0; j < 4; j++) {
+            for (int t = 0; t < 3; t++) {
+                double temp;
+                if (t == 0) {
+                    p[j].x -= err;
+                    temp = Point::chirality(p[0], p[1], p[2], p[3]);
+                    ch(k[j] * 3 + t, 0) += (temp - center) * (temp - center);
+                    p[j].x += err;
+                    temp = Point::chirality(p[0], p[1], p[2], p[3]);
+                    ch(k[j] * 3 + t, 1) += (temp - center) * (temp - center);
+                    CH += 0.25 * ch(k[j] * 3 + t, 1);
+                    p[j].x += err;
+                    temp = Point::chirality(p[0], p[1], p[2], p[3]);
+                    ch(k[j] * 3 + t, 2) += (temp - center) * (temp - center);
+                } else if (t == 1) {
+                    p[j].y -= err;
+                    temp = Point::chirality(p[0], p[1], p[2], p[3]);
+                    ch(k[j] * 3 + t, 0) += (temp - center) * (temp - center);
+                    p[j].y += err;
+                    temp = Point::chirality(p[0], p[1], p[2], p[3]);
+                    ch(k[j] * 3 + t, 1) += (temp - center) * (temp - center);
+                    CH += 0.25 * ch(k[j] * 3 + t, 1);
+                    p[j].y += err;
+                    temp = Point::chirality(p[0], p[1], p[2], p[3]);
+                    ch(k[j] * 3 + t, 2) += (temp - center) * (temp - center);
+                } else {
+                    p[j].z -= err;
+                    temp = Point::chirality(p[0], p[1], p[2], p[3]);
+                    ch(k[j] * 3 + t, 0) += (temp - center) * (temp - center);
+                    p[j].z += err;
+                    temp = Point::chirality(p[0], p[1], p[2], p[3]);
+                    ch(k[j] * 3 + t, 1) += (temp - center) * (temp - center);
+                    CH += 0.25 * ch(k[j] * 3 + t, 1);
+                    p[j].z += err;
+                    temp = Point::chirality(p[0], p[1], p[2], p[3]);
+                    ch(k[j] * 3 + t, 2) += (temp - center) * (temp - center);
                 }
             }
         }

@@ -15,10 +15,8 @@ public:
     typedef std::vector<PairInfo> InfoList;
 
     Seq2Ss();
-    void operator ()(std::string seq);
-//    double mms(int, int);
+    InfoList operator ()(std::string seq);
     InfoList sub_info(int, int, double);
-//    double get_mms(int, int);
     InfoList best_info(int m, int n);
     PairInfo strand_info(int m, int n);
     PairInfo score(const PairInfo &info1, int m, const PairInfo &info2, int n);
@@ -33,8 +31,8 @@ public:
     std::string _seq;
     std::vector<int> _types;
     int _len;
-    int _min_hairpin_size = 4;
-    double _cutoff = 0.2;
+    int _min_hairpin_size;
+    double _cutoff;
     Matrix4f _pair_energy;
     Matrix4f _stack_energy;
 };

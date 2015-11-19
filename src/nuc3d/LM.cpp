@@ -53,7 +53,10 @@ std::vector<Model> LM::operator ()(string seq, string ss, string constraint_file
         return set<char>{'.', '(', ')', '[', ']'}.count(c);
     }));
 
+    /// set bound matrix
     init();
+
+    /// initialize distance geometry calculator
     dg = DG(_bound, 2);
     dg.view = _view;
     std::vector<Model> models;
@@ -101,7 +104,7 @@ void LM::init() {
     }
     /// end initializing bound matrix
 
-    /// begin mononucleotide
+    /// begin mono-nucleotide
     for (int i = 0; i < res_nums; i++) {
         for (int j = 0; j < _atom_nums_per_nuc; j++) {
             for (int k = j + 1; k < _atom_nums_per_nuc; k++) {
@@ -112,7 +115,7 @@ void LM::init() {
             }
         }
     }
-    /// end mononucleotide
+    /// end mono-nucleotide
 
     /// begin adjacent nucleotides
     for (int i = 0; i + 1 < res_nums; i++) {

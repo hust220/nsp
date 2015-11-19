@@ -2,7 +2,29 @@
 
 namespace jian {
 
+Residue make_residue(const std::vector<std::string> &strings) {
+    Residue residue;
+
+    /// Set name.
+    residue.name = boost::trim_copy(strings[0].substr(17, 3));
+
+    /// Set number and num.
+    std::string str = strings[0].substr(22, 5);
+    std::copy_if(str.begin(), str.end(), std::back_inserter(residue.number), [](char c){return c != ' ';});
+    residue.num = std::stoi(strings[0].substr(22, 5));
+
+    /// Set atoms.
+    for (auto &&s: strings) residue.atoms.push_back(Atom(s));
+
+    /// Set atomNum.
+    residue.atomNum = residue.atoms.size();
+}
+
 Residue::Residue() {
+    num = -1;
+    number = "";
+    atomNum = -1;
+    name = "X";
 }
 
 Residue::Residue(MolFile &pdb_file) {

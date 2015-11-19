@@ -2,7 +2,6 @@
 #include "BuildHelix.h"
 
 namespace jian {
-
 namespace nuc3d {
 
 using namespace nuc2d;
@@ -16,7 +15,8 @@ Assemble::Assemble(Par pars) {
     pars.count("seq") && (seq = pars["seq"][0], 1);
     boost::to_upper(seq);
 
-    pars.count("secondary_structure") && (ss = pars["secondary_structure"][0], 1);
+    pars.count("secondary_structure")
+            && (ss = pars["secondary_structure"][0], 1);
     pars.count("ss") && (ss = pars["ss"][0], 1);
 
     pars.count("library_path") && (lib = pars["library_path"][0], 1);
@@ -36,10 +36,15 @@ Assemble::Assemble(Par pars) {
     pars.count("family") && (family = pars["family"][0], 1);
     pars.count("type") && (type = pars["type"][0], 1);
     pars.count("constraints") && (constraints = pars["constraints"][0], 1);
-    pars.count("max_search_number") && (_max_loop_nums = stoi(pars["max_search_number"][0]), 1);
-    pars.count("method") && (_method = boost::to_lower_copy(pars["method"][0]), 1);
-    pars.count("test") && (is_test = (boost::to_lower_copy(pars["test"][0]) == "yes" ? 1 : 0), 1);
-    pars.count("view") && (view = (boost::to_lower_copy(pars["view"][0]) == "yes" ? 1 : 0), 1);
+    pars.count("max_search_number")
+            && (_max_loop_nums = stoi(pars["max_search_number"][0]), 1);
+    pars.count("method")
+            && (_method = boost::to_lower_copy(pars["method"][0]), 1);
+    pars.count("test")
+            && (is_test = (
+                    boost::to_lower_copy(pars["test"][0]) == "yes" ? 1 : 0), 1);
+    pars.count("view")
+            && (view = (boost::to_lower_copy(pars["view"][0]) == "yes" ? 1 : 0), 1);
 
     /// set library path
     if (upper(type) == "RNA") {
@@ -50,13 +55,16 @@ Assemble::Assemble(Par pars) {
         lib += "protein/";
     }
 
+    /// check sequence and secondary structure
     ss != "" || die("Please tell me the secondary structure!");
     seq != "" || die("Please tell me the sequence!");
 
     /// check the length of the secondary structure and sequence
     count_if(begin(ss), end(ss), [](const char &c) {
         return c == '.' || c == '(' || c == ')' || c == '[' || c == ']';
-    }) == seq.size() || die("The length of the secondary structure and sequence should be equal!");
+    }) == seq.size()
+            || die(
+                    "The length of the secondary structure and sequence should be equal!");
 }
 
 Assemble::Assemble(string seq, string ss) {
@@ -102,5 +110,4 @@ void Assemble::operator ()() {
 } /// namespace nuc3d
 
 } /// namespace jian
-
 

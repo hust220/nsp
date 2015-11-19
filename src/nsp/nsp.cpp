@@ -1,6 +1,7 @@
 #include <nuc3d/util.h>
 #include <cluster/Cluster.h>
 #include <scoring/util.h>
+#include "extract_4_nuc.h"
 
 int main(int argc, char **argv) {
     jian::Par par(argc, argv);
@@ -13,6 +14,8 @@ int main(int argc, char **argv) {
             jian::nuc3d::Assemble ass(par);
             ass();
         }
+    } else if (boost::to_lower_copy(par["global"][0]) == "extract_4_nuc") {
+        extract_4_nuc(par["global"][1]);
     } else if (boost::to_lower_copy(par["global"][0]) == "lm2") {
         jian::nuc3d::LM2 lm2;
         lm2(par["seq"][0], par["ss"][0]);
@@ -22,7 +25,7 @@ int main(int argc, char **argv) {
         seq2ss(par["seq"][0]);
     } else if (boost::to_lower_copy(par["global"][0]) == "seq2tri") {
         jian::nuc2d::Seq2Tri seq2tri;
-        if (par.count("cutoff")) seq2tri._cutoff = std::stoi(par["cutoff"][0]);
+        if (par.count("cutoff")) seq2tri._cutoff = std::stof(par["cutoff"][0]);
         seq2tri(par["seq"][0]);
     } else if (boost::to_lower_copy(par["global"][0]) == "seq2qua") {
         jian::nuc2d::Seq2Qua seq2qua;
@@ -179,6 +182,12 @@ int main(int argc, char **argv) {
                 }
             }
         }
+    } else if (boost::to_lower_copy(par["global"][0]) == "triplex") {
+    	auto seq = par["seq"][0];
+    	jian::nuc2d::Seq2Tri seq2tri;
+    	auto info_list = seq2tri(seq);
+    	jian::nuc3d::BuildTriplex build_triplex;
+    	build_triplex(seq, info_list[0], 1);
     } else if (!strcmp(argv[1], "test:aa")) {
         jian::Model model(argv[2]);
         for (auto &chain: model.chains) {

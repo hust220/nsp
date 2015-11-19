@@ -7,7 +7,8 @@
 #include "LoopModelling2.h"
 #include "LM.h"
 #include "LM2.h"
-#include "JunctBuild.h"
+#include "BuildJunction.h"
+#include "BuildTriplex.h"
 
 #endif
 

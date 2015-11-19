@@ -2,6 +2,16 @@
 
 namespace jian {
 
+Atom make_atom(const string &line) {
+    Atom atom;
+    atom.set_name(line.substr(12, 4));
+    atom.num = std::stoi(line.substr(6, 5));
+    atom.set_mass();
+    atom.x = std::stof(line.substr(30, 8));
+    atom.y = std::stof(line.substr(38, 8));
+    atom.z = std::stof(line.substr(46, 8));
+}
+
 Atom::Atom() {
 }
 
@@ -17,7 +27,7 @@ Atom::Atom(MolFile &pdb_file) {
     }
 }
 
-Atom::Atom(string &line) {
+Atom::Atom(const string &line) {
     set_name(line.substr(12, 4));
     num = atoi(line.substr(6, 5).c_str());
     set_mass();
