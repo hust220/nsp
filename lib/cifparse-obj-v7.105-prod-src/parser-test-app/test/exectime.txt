@@ -1,1 +1,0 @@
-Tests execution time is 4 seconds.

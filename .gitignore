@@ -1,7 +1,6 @@
-/*
+*
 !*.h
 !*.cpp
-!configure.ac
-!Makefile.am
 !.gitignore
-!lib
+!Makefile.am
+!configure.ac
