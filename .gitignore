@@ -1,1 +1,8 @@
-build
+build/*
+*.o
+*.a
+*.so
+*.deps
+.*
+nsp
+!.gitignore
