@@ -3,7 +3,9 @@
 !configure.ac
 !Makefile.am
 !lib
-!src/**/*.h
-!src/**/*.cpp
-!src/**/*.bak
-!src/**/Makefile
+!src
+*.[oa]
+*.deps
+*.so
+Makefile
+Makefile.in
