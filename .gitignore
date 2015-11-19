@@ -8,6 +8,8 @@ Makefile.in
 missing
 nsp.layout
 README.md
+Makefile
+depcomp
 .*
 *.o
 *.deps
