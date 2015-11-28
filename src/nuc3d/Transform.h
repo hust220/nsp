@@ -13,6 +13,9 @@ public:
 	Transform(const Model &model) {
 		_model = model;
 	}
+    Transform(Model &&model) {
+        std::swap(_model, model);
+    }
 
 	Model operator() (string, string);
 	Model to_rna(string);

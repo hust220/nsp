@@ -1,7 +1,7 @@
 #ifndef JIAN_NUC3D_BUILDHELIX
 #define JIAN_NUC3D_BUILDHELIX
 
-#include <nuc2d/util.h>
+#include <nuc2d/N2D.h>
 #include "Connect.h"
 
 namespace jian {

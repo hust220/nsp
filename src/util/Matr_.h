@@ -17,8 +17,23 @@ MatrixXf mat_from_file(std::string file);
 
 namespace mat {
 
-template<class T1, class T2>
-MatrixXf hstack(const T1 &mat1, const T2 &mat2) {
+template<typename F, typename T1>
+auto sum(F &&f, T1 &&t1) ->decltype(f(t1)) {
+    return f(std::forward<T1>(t1));
+}
+
+template<typename F, typename T1, typename... T2>
+auto sum(F &&f, T1 &&t1, T2 && ...t2) ->decltype(f(t1)) {
+    return f(std::forward<T1>(t1)) + sum(f, std::forward<T2>(t2)...);
+}
+
+template<typename T1>
+MatrixXf hstack(T1 &&mat1) {
+    return std::forward<T1>(mat1);
+}
+
+template<typename T1, typename T2, typename... T3>
+MatrixXf hstack(T1 &&mat1, T2 &&mat2, T3 && ...mat3) {
     if (mat1.rows() == 0) {
         return mat2;
     } else if (mat2.rows() == 0) {
@@ -37,7 +52,7 @@ MatrixXf hstack(const T1 &mat1, const T2 &mat2) {
             mat(i, j) = mat2(ii, j);
         }
     }
-    return mat;
+    return hstack(mat, std::forward<T3>(mat3)...);
 }
 
 } /// namespace mat

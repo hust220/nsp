@@ -2,6 +2,28 @@
 
 namespace jian {
 
+std::deque<Residue> get_residues_from_file(std::string file_name) {
+    std::deque<Residue> residues;
+    if (file_name.size() > 4 && file_name.substr(file_name.size() - 4, 4) == ".pdb") {
+        PdbFile pdb_file(file_name);
+        if (!pdb_file.eof()) {
+            while (!pdb_file.eof()) {
+                residues.push_back(Residue(pdb_file));
+            }
+        }
+    } else if (file_name.size() > 4 && file_name.substr(file_name.size() - 4, 4) == ".cif") {
+        Cif cif(file_name);
+        if (!cif.eof()) {
+            while (!cif.eof()) {
+                residues.push_back(Residue(cif));
+            }
+        }
+    } else {
+        throw "JIAN::RESIDUE::get_residues_from_file(std::string) error! Please give me a file ended with '.pdb' or '.cif'!";
+    }
+    return residues;
+}
+
 Residue make_residue(const std::vector<std::string> &strings) {
     Residue residue;
 

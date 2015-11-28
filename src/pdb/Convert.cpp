@@ -47,7 +47,7 @@ void Convert::operator ()(Residue &res, std::string name) {
     /// Rotate base
     VectorXf beg = base_coord.row(base_nail[0]);
     VectorXf end = base_coord.row(base_nail[1]);
-    geometry::rotate(base_coord, beg, end, rotate_angle);
+    geom::rotate(base_coord, beg, end, rotate_angle);
 
     /// Set residue coordiantes size
     std::set<std::string> dna_name_list{"DA", "DT", "DG", "DC"};

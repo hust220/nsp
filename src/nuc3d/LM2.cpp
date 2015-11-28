@@ -6,60 +6,108 @@ namespace nuc3d {
 
 using namespace nuc2d;
 
-LM2::LM2(string type): _type(type) {
-}
-
-std::vector<Model> LM2::operator ()(string seq, string ss, string constraint_file, int num) {
-    _seq = seq;
-    _ss = ss;
-    _constraint_file = constraint_file;
-
-    assert(seq.size() == count_if(ss.begin(), ss.end(), [](char c) {
-        return set<char>{'.', '(', ')', '[', ']'}.count(c);
-    }));
-
+LM2::LM2(const Par &par) : JobInf(par) {
     init();
-    std::vector<Model> models;
-//    dg = DG(_bound, 2);
-//    dg.view = _view;
-//    std::vector<Model> models;
-//    for (int i = 0; i < num; i++) {
-//        models.push_back(to_all_atom(apply_constraints(dg())));
-//    }
-    return models;
 }
 
-Model LM2::to_all_atom(const MatrixXf &scaffold) {
-    int res_nums = _seq.size();
-    Chain chain;
+Model LM2::operator ()() {
+    return Transform(run())(_type, _seq);
+}
 
-    BuildNuc build_nuc(_type);
-    build_nuc._view = _view;
-    for (int i = 0; i < res_nums; i++) {
-        chain.residues.push_back(
-            build_nuc(
-                (_type == "DNA" ? (string("D") + _seq[i]) : (string() + _seq[i])),
-                scaffold.block(i * _atom_nums_per_nuc, 0, _atom_nums_per_nuc, 3)
-            )
-        );
+// # Initialization
+void LM2::init() {
+    read_pars();
+    set_helix_anchors();
+    set_native();
+    set_bound();
+}
+
+// # Read parameters
+void LM2::read_pars() {
+    // ## Read helix parameters
+    std::string helix_file_name = _lib + "/RNA/pars/nuc3d/helix_coord.pdb";
+    _helix_file = RNA(helix_file_name);
+
+    // ## Set the name of fragment parameter files
+    _frag_par_path = _lib + "/RNA/pars/nuc3d/frag";
+    std::string frag_3_par = _frag_par_path + "/frag-3.par";
+    std::string frag_4_par = _frag_par_path + "/frag-4.par";
+    std::string frag_5_par = _frag_par_path + "/frag-5.par";
+
+    int num_frags = 0;
+    // ## Read the information of fragments of 3 nt
+    std::ifstream ifile(frag_3_par.c_str());
+    ifile >> num_frags;
+    _frag_3_names.resize(num_frags);
+    _frag_3_dists.resize(num_frags);
+    for (int i = 0; i < num_frags; i++) {
+        ifile >> _frag_3_names[i];
+        for (int j = 0; j < 3; j++) {
+            ifile >> _frag_3_dists[i][j];
+        }
+    }
+    ifile.close();
+
+    // ## Read the information of fragments of 4 nt
+    ifile.open(frag_4_par.c_str());
+    ifile >> num_frags;
+    _frag_4_names.resize(num_frags);
+    _frag_4_dists.resize(num_frags);
+    for (int i = 0; i < num_frags; i++) {
+        ifile >> _frag_4_names[i];
+        for (int j = 0; j < 6; j++) {
+            ifile >> _frag_4_dists[i][j];
+        }
+    }
+    ifile.close();
+
+    // ## Read the information of fragments of 5 nt
+    ifile.open(frag_5_par.c_str());
+    ifile >> num_frags;
+    _frag_5_names.resize(num_frags);
+    _frag_5_dists.resize(num_frags);
+    for (int i = 0; i < num_frags; i++) {
+        ifile >> _frag_5_names[i];
+        for (int j = 0; j < 10; j++) {
+            ifile >> _frag_5_dists[i][j];
+        }
+    }
+    ifile.close();
+}
+
+std::string LM2::parse_molecule_type(std::string seq) {
+    std::regex nuc_pattern("[AUTGC]+");
+    if (std::regex_match(seq, nuc_pattern)) {
+        if (std::regex_search(seq, std::regex("T+"))) {
+            return "DNA";
+        } else {
+            return "RNA";
+        }
+    } else {
+        throw "JIAN::NUC3D::LM2::parse_molecule_type(std::string) error! Only support RNA and DNA.";
+    }
+}
+
+void LM2::set_helix_anchors() {
+    std::map<char, char> temp_map{{'(', '.'}, {')', '.'}, {'[', '.'}, {']', '.'}, 
+                                  {'{', '.'}, {'}', '.'}, {'<', '.'}, {'>', '.'},
+                                  {'\\', '.'}, {'/', '.'}, {'.', '.'}, {'&', '&'}};
+    for (auto &&pair : std::map<char, char>{{'(', ')'}, {'[', ']'}, {'{', '}'}, {'<', '>'}, {'\\', '/'}}) {
+        if (std::count_if(_ss.begin(), _ss.end(), [&](const char &c){return c == pair.first || c == pair.second;})) {
+            temp_map[pair.first] = '(';
+            temp_map[pair.second] = ')';
+
+            std::string str = _ss;
+            std::transform(str.begin(), str.end(), str.begin(), [&](const char &c) {return temp_map[c];});
+            N2D n2d2(str, _seq);
+            set_helix_anchors(n2d2.head);
+
+            temp_map[pair.first] = '.';
+            temp_map[pair.second] = '.';;
+        }
     }
 
-    Model model;
-    model.chains.push_back(chain);
-    return model;
-}
-
-void LM2::init() {
-    /// Construct helix anchors
-    _ss_tree = N2D(_ss, _seq);
-    set_helix_anchors(_ss_tree.head);
-
-    string str = _ss;
-    map<char, char> temp_map{{'(', '['}, {')', ']'}, {'[', '('}, {']', ')'}, {'.', '.'}, {'&', '&'}};
-    transform(str.begin(), str.end(), str.begin(), [&](const char &c) {return temp_map[c];});
-    N2D n2d2(str, _seq);
-    set_helix_anchors(n2d2.head);
-
+    // ## Construct residue list and then sort
     std::vector<res> res_list;
     std::cout << "helix anchors: " << std::endl;
     for (auto &&anchor: _helix_anchors) {
@@ -71,195 +119,253 @@ void LM2::init() {
     }
     std::sort(res_list.begin(), res_list.end(), [](const res &res1, const res &res2){return res1.num < res2.num;});
 
-    /// Construct map
-    std::map<int, int> m1, m2;
+    // ## Construct map for the convenience of index convertion
     for (int i = 0; i < res_list.size(); i++) {
-        m1[res_list[i].num] = i;    
-        m2[i] = res_list[i].num;
+        _m1[res_list[i].num - 1] = i;    
+        _m2[i] = res_list[i].num - 1;
     }
-
-    /// Initiate bound matrix
-    int len = _helix_anchors.size() * 4;
-    _bound = MatrixXf::Zero(len, len);
-    for (int i = 0; i < len; i++) {
-        for (int j = i; j < len; j++) {
-            if (i == j) {
-                _bound(i, j) = 0;    
-            } else {
-                _bound(i, j) = 6.1 * (m2[j] - m2[i]);
-                _bound(j, i) = 6.1;
-            }
-        }
-    }
-
-    /// Add helix parameters into the bound matrix
-    auto fn_a = [](int n){return sqrt(2 * 9.7 * 9.7 * (1 - cos(0.562 * n - 2 * 3.14159)) + (2.84 * n) * (2.84 * n));};
-    auto fn_c = [](int n){return sqrt(2 * 9.7 * 9.7 * (1 - cos(0.562 * n - 1.5 * 3.14159)) + (2.84*n-4) * (2.84*n-4));};
-    auto fn_d = [](int n){return sqrt(2 * 9.7 * 9.7 * (1 - cos(0.562 * n - 0.5 * 3.14159)) + (2.84*n+4) * (2.84*n+4));};
-    for (auto &&anchor: _helix_anchors) {
-        int i1 = m1[anchor[0].num];
-        int i2 = m1[anchor[1].num];
-        int i3 = m1[anchor[2].num];
-        int i4 = m1[anchor[3].num];
-        int len = m2[i3] - m2[i1];
-        _bound(i1, i2) = _bound(i2, i1) = 15.1;
-        _bound(i3, i4) = _bound(i4, i3) = 15.1;
-        _bound(i1, i3) = _bound(i3, i1) = fn_a(len);
-        _bound(i4, i2) = _bound(i2, i4) = fn_a(len);
-        _bound(i1, i4) = _bound(i4, i1) = fn_c(len);
-        _bound(i3, i2) = _bound(i2, i3) = fn_d(len);
-    }
-
-    /// Calculate scaffold coordinates
-    DG dg(_bound);
-    std::cout << "\nscaffold bound matrix: " << std::endl;
-    std::cout << _bound << "\n" << std::endl;
-    _scaffold = dg();
-    std::cout << "DG...\n";
-    std::cout << "scaffold energy: " << dg.E << std::endl;
-    std::cout << "scaffold: " << std::endl;
-    std::cout << _scaffold << std::endl;
-
-    /// Calculate helix coordinates
-    std::cout << "\nCalculate helix coordinates:\n";
-    std::map<int, MatrixXf> helix_coords;
-    SupPos sp;
-    for (auto &&anchor: _helix_anchors) {
-        MatrixXf anchor_coord(4, 3);
-        for (int i = 0; i < 3; i++) {
-            anchor_coord(0, i) = _scaffold(m1[anchor[0].num], i);
-            anchor_coord(1, i) = _scaffold(m1[anchor[2].num], i);
-            anchor_coord(2, i) = _scaffold(m1[anchor[3].num], i);
-            anchor_coord(3, i) = _scaffold(m1[anchor[1].num], i);
-        }
-        int len = anchor[2].num - anchor[0].num + 1;
-        auto helix_coord = make_helix(anchor_coord, len);
-        std::cout << "helix:\n" << helix_coord << std::endl;
-        MatrixXf temp_mat = mat::hstack(helix_coord.row(0), helix_coord.row(len - 1));
-        temp_mat = mat::hstack(temp_mat, helix_coord.row(len));
-        temp_mat = mat::hstack(temp_mat, helix_coord.row(2 * len - 1));
-        sp(helix_coord, temp_mat, anchor_coord);
-        std::cout << "superposed helix:\n" << helix_coord << std::endl;
-        helix_coords[m1[anchor[0].num] / 2] = helix_coord.topRows(helix_coord.rows() / 2);
-        helix_coords[m1[anchor[3].num] / 2] = helix_coord.bottomRows(helix_coord.rows() / 2);
-    }
-//    std::cout << "\nCalculate helix coordinate: " << std::endl;
-//    std::vector<MatrixXf> helix_coords;
-//    SupPos sp;
-//    for (int i = 0; i < _scaffold.rows(); i += 2) {
-//        auto helix_coord = make_helix_strand(_scaffold.row(i), _scaffold.row(i + 1), m2[i + 1] - m2[i]);
-//        MatrixXf m, n;
-//        m = mat::hstack(helix_coord.row(0), helix_coord.row(helix_coord.rows() - 1));
-//        n = mat::hstack(_scaffold.row(i), _scaffold.row(i + 1));
-//        sp(helix_coord, m, n);
-//        helix_coords.push_back(helix_coord);
-//        std::cout << "helix coordinate: \n" << helix_coord << std::endl;
-//    }
-
-    /// Construct fragments
-    std::vector<int> anchor_list;
-    for (auto &&vec: _helix_anchors) {
-        for (auto &&res: vec) {
-            anchor_list.push_back(res.num - 1);
-        }
-    }
-    std::sort(anchor_list.begin(), anchor_list.end(), [](int a, int b){return a < b;});
-    auto fragments = get_fragments(anchor_list);
-
-    /// Calculate coordinates of fragments
-    MatrixXf coords;
-    int frag_num = 0;
-    for (auto &&frag: fragments) {
-        MatrixXf a, b;
-        if (std::get<0>(frag).size() != 0) {
-            a.resize(2, 3);
-            for (int i = 0; i < 3; i++) {
-                a(0, i) = _scaffold(m1[std::get<0>(frag)[0] + 1], i);
-                a(1, i) = _scaffold(m1[std::get<0>(frag)[1] + 1], i);
-            }
-        }
-        if (std::get<2>(frag).size() != 0) {
-            b.resize(2, 3);
-            for (int i = 0; i < 3; i++) {
-                b(0, i) = _scaffold(m1[std::get<2>(frag)[0] + 1], i);
-                b(1, i) = _scaffold(m1[std::get<2>(frag)[1] + 1], i);
-            }
-        }
-        auto frag_coords = get_frag_coords(frag, a, b);
-        int temp_len = a.rows() + b.rows();
-        MatrixXf x(temp_len, 3), y(temp_len, 3);
-        if (std::get<0>(frag).size() != 0) {
-            for (int i = 0; i < 3; i++) {
-                x(0, i) = frag_coords(0, i);
-                x(1, i) = frag_coords(1, i);
-                y(0, i) = a(0, i);
-                y(1, i) = a(1, i);
-            }
-        }
-        if (std::get<2>(frag).size() != 0) {
-            for (int i = 0; i < 3; i++) {
-                x(x.rows() - 2, i) = frag_coords(frag_coords.rows() - 2, i);
-                x(x.rows() - 1, i) = frag_coords(frag_coords.rows() - 1, i);
-                y(y.rows() - 2, i) = b(0, i);
-                y(y.rows() - 1, i) = b(1, i);
-            }
-        }
-        sp(frag_coords, x, y);
-        std::cout << "after superpose: " << std::endl;
-        std::cout << frag_coords << std::endl;
-//        if (std::get<2>(frag).size() != 0) {
-//            coords = mat::hstack(coords, frag_coords.topRows(frag_coords.rows() - 2));
-//        } else {
-//            coords = mat::hstack(coords, frag_coords);
-//        }
-        if (std::get<0>(frag)[0] == 0) {
-            coords = mat::hstack(helix_coords[frag_num], frag_coords.block(2, 0, frag_coords.rows() - 4, 3));
-            frag_num++;
-            coords = mat::hstack(coords, helix_coords[frag_num]);
-        } else if (frag_num == 0) {
-            coords = mat::hstack(coords, frag_coords.topRows(frag_coords.rows() - 2));
-            coords = mat::hstack(coords, helix_coords[frag_num]);
-        } else if (frag_num == fragments.size() - 1) {
-            coords = mat::hstack(coords, frag_coords.bottomRows(frag_coords.rows() - 2));
-        } else {
-            coords = mat::hstack(coords, frag_coords.block(2, 0, frag_coords.rows() - 4, 3));
-            coords = mat::hstack(coords, helix_coords[frag_num]);
-        }
-
-        frag_num++;
-    }
-
-
-    std::cout << "\nfinal coords: \n" << coords << std::endl;
 
 }
 
-MatrixXf LM2::make_helix(const MatrixXf &anchor, int len) {
-    int num_atoms = len * 2;
-    MatrixXf bound(num_atoms, num_atoms);
-    for (int i = 0; i < num_atoms; i++) {
-        for (int j = i; j < num_atoms; j++) {
-            if (i == j) {
-                bound(i, j) = 0;
-            } else if (i < len && j < len || i >= len && j >= len) {
-                int d = j - i;
-                bound(i, j) = bound(j, i) = sqrt(2*9.7*9.7*(1-cos(0.562*d-2*3.14159))+(2.84*d)*(2.84*d));
-            } else if (i < len && j >= len && j < num_atoms - 1 - i) {
-                int d = num_atoms - 1 - i - j;
-                bound(i, j) = bound(j, i) = sqrt(2*9.7*9.7*(1-cos(0.562*d-1.5*3.14159))+(2.84*d-4)*(2.84*d-4));
-            } else if (i < len && j >= len && j > num_atoms - 1 - i) {
-                int d = j - (num_atoms - 1 - i);
-                bound(i, j) = bound(j, i) = sqrt(2*9.7*9.7*(1-cos(0.562*d-0.5*3.14159))+(2.84*d+4)*(2.84*d+4));
-            } else if (j == num_atoms - 1 - i) {
-                bound(i, j) = bound(j, i) = 15.1;
+void LM2::set_helix_anchors(loop *src) {
+    if (src == NULL) {
+        return;
+    } else {
+        if (src->s.head != NULL) {
+            std::vector<res> vec;
+            bp *b = src->s.head;
+            vec.push_back(b->res1);
+            vec.push_back(b->res2);
+            for (; b->next != NULL; b = b->next);
+            vec.push_back(b->res1);
+            vec.push_back(b->res2);
+            _helix_anchors.push_back(vec);
+        }
+        set_helix_anchors(src->son);
+        set_helix_anchors(src->brother);
+    }
+}
+
+void LM2::set_native() {
+    if (_native == "") {
+        return;
+    } else {
+        _native_model = Model(_native);
+
+        int len = _native_model.res_nums();
+        if (len != _seq.size()) {
+            throw "JIAN::NUC3D::LM2::set_native() error!";
+        } else {
+            _native_scaffold.resize(len, 3);
+            int index = 0;
+            for (auto &&chain: _native_model.chains) {
+                for (auto &&res: chain.residues) {
+                    auto atom = res["C4*"].pos();
+                    for (int j = 0; j < 3; j++) {
+                        _native_scaffold(index, j) = atom[j];
+                    }
+                    index++;
+                }
+            }
+        }
+
+        if (_helix_anchors.empty()) {
+            return;
+        } else {
+            int len2 = _helix_anchors.size() * 4;
+            _native_helices.resize(len2, 3);
+            for (int i = 0; i < len2; i++) {
+                for (int j = 0; j < 3; j++) {
+                    _native_helices(i, j) = _native_scaffold(_m2[i], j);
+                }
             }
         }
     }
-    std::cout << "helix bound:\n" << bound << std::endl;
-    DG dg(bound);
-    auto coord = dg();
-    std::cout << "helix energy: " << dg.E << std::endl;
-    return coord;
+}
+
+void LM2::set_bound() {
+    int len = _helix_anchors.size() * 4;
+    if (len == 0) {
+        return;    
+    } else {
+        _bound = MatrixXf::Zero(len, len);
+        for (int i = 0; i < len; i++) {
+            for (int j = i; j < len; j++) {
+                if (i == j) {
+                    _bound(i, j) = 0;    
+                } else {
+                    _bound(i, j) = 6.1 * (_m2[j] - _m2[i]);
+                    _bound(j, i) = 6.1;
+                }
+            }
+        }
+
+        // ## Add helix parameters into the bound matrix
+        static auto fn_a = [](int n){return sqrt(2 * 9.7 * 9.7 * (1 - cos(0.562 * n - 2 * 3.14159)) + (2.84 * n) * (2.84 * n));};
+        static auto fn_c = [](int n){return sqrt(2 * 9.7 * 9.7 * (1 - cos(0.562 * n - 1.5 * 3.14159)) + (2.84*n-4) * (2.84*n-4));};
+        static auto fn_d = [](int n){return sqrt(2 * 9.7 * 9.7 * (1 - cos(0.562 * n - 0.5 * 3.14159)) + (2.84*n+4) * (2.84*n+4));};
+        for (auto &&anchor: _helix_anchors) {
+            int i1 = _m1[anchor[0].num - 1];
+            int i2 = _m1[anchor[1].num - 1];
+            int i3 = _m1[anchor[2].num - 1];
+            int i4 = _m1[anchor[3].num - 1];
+            int len = _m2[i3] - _m2[i1];
+            _bound(i1, i2) = _bound(i2, i1) = 15.1;
+            _bound(i3, i4) = _bound(i4, i3) = 15.1;
+            _bound(i1, i3) = _bound(i3, i1) = fn_a(len);
+            _bound(i4, i2) = _bound(i2, i4) = fn_a(len);
+            _bound(i1, i4) = _bound(i4, i1) = fn_c(len);
+            _bound(i3, i2) = _bound(i2, i3) = fn_d(len);
+        }
+
+        // ## Calculate scaffold coordinates
+        _dg = DG(_bound);
+        std::cout << "\nscaffold bound matrix: " << std::endl;
+        std::cout << _bound << "\n" << std::endl;
+    }
+}
+
+Model LM2::run() {
+    // ## Initialize variables
+    int num_residues = _seq.size();
+    _scaffold = MatrixXf::Zero(num_residues, 3);
+    std::vector<Residue> residues(num_residues);
+
+    if (!_helix_anchors.empty()) {
+
+        _helices = _dg();
+        std::cout << "DG...\n";
+        std::cout << "scaffold energy: " << dg.E << std::endl;
+        std::cout << "scaffold: " << std::endl;
+        std::cout << _helices << std::endl;
+        if (_native != "") std::cout << "RMSD: " << geom::rmsd(_helices, _native_helices) << std::endl;
+
+        // ## Copy scaffold coordinates to integral coordinates
+        for (int i = 0; i < _helices.rows(); i++) {
+            for (int j = 0; j < _helices.cols(); j++) {
+                _scaffold(_m2[i], j) = _helices(i, j);
+            }
+        }
+        std::cout << "\nIntegral coordinates: \n" << _scaffold << std::endl;
+
+        // ## Calculate helix coordinates
+        std::cout << "\nCalculate helix coordinates:\n";
+        for (auto &&anchor: _helix_anchors) {
+            MatrixXf anchor_coord(4, 3); // the index order of an anchor is n0-n3 n1-n2
+            for (int i = 0; i < 3; i++) {
+                anchor_coord(0, i) = _scaffold(anchor[0].num - 1, i);
+                anchor_coord(1, i) = _scaffold(anchor[2].num - 1, i);
+                anchor_coord(2, i) = _scaffold(anchor[3].num - 1, i);
+                anchor_coord(3, i) = _scaffold(anchor[1].num - 1, i);
+            }
+            int len = anchor[2].num - anchor[0].num + 1;
+
+            // ### Construct helix
+            auto helix_pair = make_helix(anchor_coord, len);
+            auto &helix_coord = helix_pair.first;
+            auto &helix_model = helix_pair.second;
+
+            // ### Deposit helix information
+            for (int i = 0; i < len; i++) {
+                int m = anchor[0].num - 1 + i;
+                int n = anchor[3].num - 1 + i;
+                for (int j = 0; j < 3; j++) {
+                    _scaffold(m, j) = helix_coord(i, j);    
+                    _scaffold(n, j) = helix_coord(i + len, j);
+                }
+                std::swap(residues[m], helix_model[i]);
+                std::swap(residues[n], helix_model[i + len]);
+            }
+            std::cout << "superposed helix:\n" << helix_coord << std::endl;
+        }
+        std::cout << "\nIntegral scaffold: \n" << _scaffold << std::endl;
+    }
+
+    // ## Construct fragments
+    auto fragments = get_fragments();
+
+    // ## Calculate coordinates of fragments
+    MatrixXf coords;
+    for (auto &&frag: fragments) {
+        auto beg = std::get<0>(frag);
+        auto center = std::get<1>(frag);
+        auto end = std::get<2>(frag);
+        MatrixXf a, b; // a is the matrix of beg, b is the matrix of end
+        if (beg.size() != 0) {
+            a.resize(2, 3);
+            for (int i = 0; i < 3; i++) {
+                a(0, i) = _scaffold(beg[0], i);
+                a(1, i) = _scaffold(beg[1], i);
+            }
+            std::cout << "\na: \n" << a << std::endl;
+        }
+        if (end.size() != 0) {
+            b.resize(2, 3);
+            for (int i = 0; i < 3; i++) {
+                b(0, i) = _scaffold(end[0], i);
+                b(1, i) = _scaffold(end[1], i);
+            }
+            std::cout << "\nb: \n" << b << std::endl;
+        }
+
+        // ### Construct fragment
+        auto frag_result = make_frag(frag, a, b);
+        auto &frag_coord = frag_result.first;
+        auto &frag_residues = frag_result.second;
+
+        // ### Deposit the information of fragment
+        int temp = 2;
+        if (beg.size() == 0) temp = 0;
+        for (int i = 0; i < center.size(); i++) {
+            for (int j = 0; j < 3; j++) {
+                _scaffold(center[i], j) = frag_coord(temp + i, j);
+            }
+            std::swap(residues[center[i]], frag_residues[i]);
+        }
+    }
+
+
+    std::cout << "\nfinal coords: \n" << _scaffold << std::endl;
+
+    Model model;
+    Chain chain;
+    std::swap(chain.residues, residues);
+    model.chains.push_back(chain);
+    return model;
+
+}
+
+// # Make a helix fixed on two anchcors
+std::pair<MatrixXf, std::deque<Residue>> LM2::make_helix(const MatrixXf &anchor, int len) {
+    int num_residues = len * 2;
+    int num_residues_helix_file = _helix_file.res_nums();
+    std::vector<int> sub_indices(num_residues);
+    for (int i = 0; i < len; i++) {
+        sub_indices[i] = i; 
+        sub_indices[num_residues - 1 - i] = num_residues_helix_file - 1 - i;
+    }
+    auto residues = _helix_file.residues(sub_indices);
+
+    MatrixXf scaffold(num_residues, 3);
+    int num_residue = 0;
+    for (int i = 0; i < residues.size(); i++) {
+        auto pos = residues[i]["C4*"].pos();
+        for (int j = 0; j < 3; j++)
+            scaffold(i, j) = pos[j];
+    }
+
+    std::cout << "helix:\n" << scaffold << std::endl;
+    SupPos sp;
+    sp(scaffold, mat::hstack(scaffold.row(0), scaffold.row(len - 1), scaffold.row(len), scaffold.row(2 * len - 1)), anchor);
+    auto c1 = -sp.c1;
+    for (auto &&res: residues) {
+        for (auto &&atom: res.atoms) {
+            geom::move(atom, c1);
+            geom::rotate(atom, sp.rot);
+            geom::move(atom, sp.c2);
+        }
+    }
+    return std::make_pair(scaffold, residues);
 }
 
 MatrixXf LM2::make_helix_strand(MatrixXf head, MatrixXf tail, int len) {
@@ -279,7 +385,10 @@ MatrixXf LM2::make_helix_strand(MatrixXf head, MatrixXf tail, int len) {
     return coord;
 }
 
-MatrixXf LM2::get_frag_coords(const std::tuple<std::vector<int>, std::vector<int>, std::vector<int>> &frag, MatrixXf a, MatrixXf b) {
+std::pair<MatrixXf, std::deque<Residue>> LM2::make_frag(const std::tuple<std::vector<int>, std::vector<int>, std::vector<int>> &frag, MatrixXf a, MatrixXf b) {
+    auto &beg = std::get<0>(frag);
+    auto &center = std::get<1>(frag);
+    auto &end = std::get<2>(frag);
     std::vector<int> res_list;
     std::copy(std::get<0>(frag).begin(), std::get<0>(frag).end(), std::back_inserter(res_list));
     std::copy(std::get<1>(frag).begin(), std::get<1>(frag).end(), std::back_inserter(res_list));
@@ -296,15 +405,15 @@ MatrixXf LM2::get_frag_coords(const std::tuple<std::vector<int>, std::vector<int
         for (int j = i; j < len; j++) {
             if (i == j) {
                 bound(i, j) = 0;    
-            } else if (m2[j] - m2[i] == 1) {
-                bound(i, j) = bound(j, i) = 6.1;
             } else {
                 bound(i, j) = 6.1 * (m2[j] - m2[i]);
                 bound(j, i) = 6.1;
             }
         }
     }
-    if (a.rows() == 0) {
+    if (a.rows() == 0 && b.rows() == 0) {
+        // pass
+    } else if (a.rows() == 0) {
         double dist = (b.row(0) - b.row(1)).norm();
         bound(len - 2, len - 1) = dist;
         bound(len - 1, len - 2) = dist;
@@ -336,58 +445,234 @@ MatrixXf LM2::get_frag_coords(const std::tuple<std::vector<int>, std::vector<int
         std::cout << (coord.row(i) - coord.row(i + 1)).norm() << ' ';
     }
     std::cout << std::endl;
-    return coord;
+
+    // ## Superpose matrix
+    SupPos sp;
+    if (a.rows() != 0 || b.rows() != 0) {
+        int temp_len = a.rows() + b.rows();
+        MatrixXf x(temp_len, 3), y(temp_len, 3);
+        if (beg.size() != 0) {
+            for (int i = 0; i < 3; i++) {
+                x(0, i) = coord(0, i);
+                x(1, i) = coord(1, i);
+                y(0, i) = a(0, i);
+                y(1, i) = a(1, i);
+            }
+        }
+        if (end.size() != 0) {
+            for (int i = 0; i < 3; i++) {
+                x(x.rows() - 2, i) = coord(coord.rows() - 2, i);
+                x(x.rows() - 1, i) = coord(coord.rows() - 1, i);
+                y(y.rows() - 2, i) = b(0, i);
+                y(y.rows() - 1, i) = b(1, i);
+            }
+        }
+        sp(coord, x, y);
+        std::cout << "after superpose: " << std::endl;
+        std::cout << coord << std::endl;
+    }
+
+    // ## Find similar fragment model
+    std::deque<Residue> residues;
+    if (beg.empty() && end.empty()) {
+        for (int i = 0; i < center.size() - 4; i++) {
+            std::array<double, 10> dists;
+            for (int j = 0, index = 0; j < 5; j++) {
+                for (int k = j + 1; k < 5; k++) {
+                    dists[index] = (coord.row(i + j) - coord.row(i + k)).norm();
+                    index++;
+                }
+            }
+            auto best_frag_model = find_best_frag_model(dists);
+            MatrixXf x(5, 3), y(5, 3);
+            for (int j = 0; j < 5; j++) {
+                for (int k = 0; k < 3; k++) {
+                    x(j, k) = best_frag_model[j]["C4*"][k];
+                    y(j, k) = coord(i + j, k);
+                }
+            }
+            sp(x, y);
+            auto c1 = -sp.c1;
+            for (auto &&res: best_frag_model) {
+                    for (auto &&atom: res.atoms) {
+                        geom::move(atom, c1);    
+                        geom::rotate(atom, sp.rot);    
+                        geom::move(atom, sp.c2);    
+                    }
+            }
+            if (i == 0) {
+                residues.push_back(best_frag_model[0]);
+                residues.push_back(best_frag_model[1]);
+            } 
+            residues.push_back(best_frag_model[2]);
+            if (i == center.size() - 5) {
+                residues.push_back(best_frag_model[3]);
+                residues.push_back(best_frag_model[4]);
+            }
+        }
+    } else if (beg.empty()) {
+        for (int i = center.size() - 1; i >= 0; i--) {
+            auto best_frag_model = find_best_frag_model(std::vector<double>{(coord.row(i) - coord.row(i + 1)).norm(),
+                                                         (coord.row(i) - coord.row(i + 2)).norm(),
+                                                         (coord.row(i + 1) - coord.row(i + 2)).norm()});
+            MatrixXf x(3, 3), y(3, 3);
+            for (int j = 0; j < 3; j++) {
+                for (int k = 0; k < 3; k++) {
+                    x(j, k) = best_frag_model[j]["C4*"][k];
+                    y(j, k) = coord(i + j, k);
+                }
+            }
+            sp(x, y);
+            auto c1 = -sp.c1;
+            for (auto &&res: best_frag_model) {
+                    for (auto &&atom: res.atoms) {
+                        geom::move(atom, c1);    
+                        geom::rotate(atom, sp.rot);    
+                        geom::move(atom, sp.c2);    
+                    }
+            }
+            residues.push_back(best_frag_model[0]);
+        }
+    } else if (end.empty()) {
+        for (int i = 0; i < center.size(); i++) {
+            auto best_frag_model = find_best_frag_model(std::vector<double>{(coord.row(i) - coord.row(i + 1)).norm(),
+                                                         (coord.row(i) - coord.row(i + 2)).norm(),
+                                                         (coord.row(i + 1) - coord.row(i + 2)).norm()});
+            MatrixXf x(3, 3), y(3, 3);
+            for (int j = 0; j < 3; j++) {
+                for (int k = 0; k < 3; k++) {
+                    x(j, k) = best_frag_model[j]["C4*"][k];
+                    y(j, k) = coord(i + j, k);
+                }
+            }
+            sp(x, y);
+            auto c1 = -sp.c1;
+            for (auto &&res: best_frag_model) {
+                    for (auto &&atom: res.atoms) {
+                        geom::move(atom, c1);    
+                        geom::rotate(atom, sp.rot);    
+                        geom::move(atom, sp.c2);    
+                    }
+            }
+            residues.push_back(best_frag_model[2]);
+        }
+    } else {
+        for (int i = 0; i < center.size(); i++) {
+            std::array<double, 10> dists;
+            for (int j = 0, index = 0; j < 5; j++) {
+                for (int k = j + 1; k < 5; k++) {
+                    dists[index] = (coord.row(i + j) - coord.row(i + k)).norm();
+                    index++;
+                }
+            }
+            auto best_frag_model = find_best_frag_model(dists);
+            MatrixXf x(5, 3), y(5, 3);
+            for (int j = 0; j < 5; j++) {
+                for (int k = 0; k < 3; k++) {
+                    x(j, k) = best_frag_model[j]["C4*"][k];
+                    y(j, k) = coord(i + j, k);
+                }
+            }
+            sp(x, y);
+            auto c1 = -sp.c1;
+            for (auto &&res: best_frag_model) {
+                    for (auto &&atom: res.atoms) {
+                        geom::move(atom, c1);    
+                        geom::rotate(atom, sp.rot);    
+                        geom::move(atom, sp.c2);    
+                    }
+            }
+            residues.push_back(best_frag_model[2]);
+        }
+    }
+    // ## Superpose fragment model
+    return std::make_pair(coord, residues);
 }
 
-std::vector<std::tuple<std::vector<int>, std::vector<int>, std::vector<int>>> LM2::get_fragments(const std::vector<int> &anchor_list) {
+std::vector<std::tuple<std::vector<int>, std::vector<int>, std::vector<int>>> LM2::get_fragments() {
     std::vector<std::tuple<std::vector<int>, std::vector<int>, std::vector<int>>> fragments;
-    if (anchor_list[0] != 0) {
-        std::vector<int> a, b, c;
-        for (int j = 0; j < anchor_list[0]; j++) {
-            b.push_back(j);
+
+    // ## Construct anchor list
+    std::vector<int> anchor_list;
+    for (auto &&vec: _helix_anchors) {
+        for (auto &&res: vec) {
+            anchor_list.push_back(res.num - 1);
         }
-        c.push_back(anchor_list[0]);
-        c.push_back(anchor_list[1]);
-        fragments.push_back(std::make_tuple(a, b, c));
-    }
-    for (int i = 0; i < anchor_list.size() / 2 - 1; i++) {
-        std::vector<int> a, b, c;
-        a.push_back(anchor_list[i * 2]);
-        a.push_back(anchor_list[i * 2 + 1]);
-        for (int j = anchor_list[i * 2 + 1] + 1; j < anchor_list[i * 2 + 2]; j++) {
-            b.push_back(j);
-        }
-        c.push_back(anchor_list[i * 2 + 2]);
-        c.push_back(anchor_list[i * 2 + 3]);
-        fragments.push_back(std::make_tuple(a, b, c));
-    }
-    if (anchor_list.back() != _seq.size() - 1) {
-        std::vector<int> a, b, c;
-        a.push_back(anchor_list[anchor_list.size() - 2]);
-        a.push_back(anchor_list.back());
-        for (int j = anchor_list.back() + 1; j < _seq.size(); j++) {
-            b.push_back(j);
-        }
-        fragments.push_back(std::make_tuple(a, b, c));
     }
 
-    std::cout << "\nfragments: " << std::endl;
-    for (auto &&frag: fragments) {
-        for (auto &&i: std::get<0>(frag)) {
-            std::cout << i << '-';
+    if (anchor_list.empty()) {
+        std::vector<int> a, b(_seq.size()), c;
+        std::iota(b.begin(), b.end(), 0);
+        fragments.push_back(std::make_tuple(a, b, c));
+    } else {
+        std::sort(anchor_list.begin(), anchor_list.end(), [](int a, int b){return a < b;});
+
+        // ## Construct the first fragment
+        if (anchor_list[0] != 0) {
+            std::vector<int> a, b, c; // a is the begin, b is the center, c is the end
+            for (int j = 0; j < anchor_list[0]; j++) {
+                b.push_back(j);
+            }
+            c.push_back(anchor_list[0]);
+            c.push_back(anchor_list[0] + 1);
+            fragments.push_back(std::make_tuple(a, b, c));
         }
-        for (auto &&i: std::get<1>(frag)) {
-            std::cout << i << '-';
+        // ## Construct the center fragments
+        for (int i = 0; i < anchor_list.size() / 2 - 1; i++) {
+            std::vector<int> a, b, c;
+            a.push_back(anchor_list[i * 2 + 1] - 1);
+            a.push_back(anchor_list[i * 2 + 1]);
+            for (int j = anchor_list[i * 2 + 1] + 1; j < anchor_list[i * 2 + 2]; j++) {
+                b.push_back(j);
+            }
+            c.push_back(anchor_list[i * 2 + 2]);
+            c.push_back(anchor_list[i * 2 + 2] + 1);
+            fragments.push_back(std::make_tuple(a, b, c));
         }
-        for (auto &&i: std::get<2>(frag)) {
-            std::cout << i << '-';
+        // ## Construct the last fragment
+        if (anchor_list.back() != _seq.size() - 1) {
+            std::vector<int> a, b, c;
+            a.push_back(anchor_list.back() - 1);
+            a.push_back(anchor_list.back());
+            for (int j = anchor_list.back() + 1; j < _seq.size(); j++) {
+                b.push_back(j);
+            }
+            fragments.push_back(std::make_tuple(a, b, c));
         }
-        std::cout << ' ';
-        std::cout << std::endl;
+
+        // ## Print fragments information
+        std::cout << "\nfragments: " << std::endl;
+        for (auto &&frag: fragments) {
+            for (auto &&i: std::get<0>(frag)) std::cout << i << '-';
+            for (auto &&i: std::get<1>(frag)) std::cout << i << '-';
+            for (auto &&i: std::get<2>(frag)) std::cout << i << '-';
+            std::cout << ' ';
+            std::cout << std::endl;
+        }
     }
     return fragments;
 }
 
+
+Model LM2::to_all_atom(const MatrixXf &scaffold) {
+    int res_nums = _seq.size();
+    Chain chain;
+
+    BuildNuc build_nuc(_type);
+    build_nuc._view = _view;
+    for (int i = 0; i < res_nums; i++) {
+        chain.residues.push_back(
+            build_nuc(
+                (_type == "DNA" ? (string("D") + _seq[i]) : (string() + _seq[i])),
+                scaffold.block(i * _atom_nums_per_nuc, 0, _atom_nums_per_nuc, 3)
+            )
+        );
+    }
+
+    Model model;
+    model.chains.push_back(chain);
+    return model;
+}
 
 void LM2::set_helix_coords(loop *src) {
     for (bp *b = src->s.head; b != NULL; b = b->next) {
@@ -402,25 +687,6 @@ void LM2::set_helix_coords(loop *src) {
         if (std::count_if(_helix_anchors.begin(), _helix_anchors.end(), [&](const std::vector<res> &vec){return std::count_if(vec.begin(), vec.end(), [&](const res &r2){return r->type == r2.type && r->name == r2.name && r->num == r2.num;});})) {
             std::cout << r->num << ' ' << r->type << ' ' << r->name << std::endl;
         }
-    }
-}
-
-void LM2::set_helix_anchors(loop *src) {
-    if (src == NULL) {
-        return;
-    } else {
-        if (src->s.head != NULL) {
-            std::vector<res> vec;
-            bp *b = src->s.head;
-            vec.push_back(b->res1);
-            vec.push_back(b->res2);
-            for (; b->next != NULL; b = b->next);
-            vec.push_back(b->res1);
-            vec.push_back(b->res2);
-            _helix_anchors.push_back(vec);
-        }
-        set_helix_anchors(src->son);
-        set_helix_anchors(src->brother);
     }
 }
 

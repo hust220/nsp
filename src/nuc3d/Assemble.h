@@ -1,7 +1,7 @@
 #ifndef ASSEMBLE_H
 #define ASSEMBLE_H
 
-#include <nuc2d/util.h>
+#include <nuc2d/N2D.h>
 #include <pdb/util.h>
 #include "Connect.h"
 

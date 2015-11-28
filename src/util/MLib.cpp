@@ -98,7 +98,7 @@ int die(std::string str) {
 
 std::string env(std::string str) {
     char *path = getenv(str.c_str());
-    std::string env_path = (path ? path : ".");
+    std::string env_path = (path ? path : throw "Please set the 'NSP' environment variable to the path of the library of nsp!");
     return env_path;
 }
 

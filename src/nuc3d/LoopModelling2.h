@@ -17,7 +17,7 @@
 #define LOOPMODELLING2_H
 
 #include <pdb/util.h>
-#include <nuc2d/util.h>
+#include <nuc2d/N2D.h>
 #include <dg/DG.h>
 #include "Connect.h"
 

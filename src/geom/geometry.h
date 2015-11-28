@@ -14,6 +14,13 @@ double distance(const P1 &p1, const P2 &p2) {
     return sqrt(x * x + y * y + z * z);
 }
 
+template<typename P1, typename P2>
+double norm(P1 &&p1, P2 &&p2, int n) {
+    double sum = 0;
+    for (int i = 0; i < n; i++) sum += (p1[i] - p2[i]) * (p1[i] - p2[i]);
+    return sqrt(sum);
+}
+
 template<class P1, class P2, class P3>
 double angle(const P1 &p1, const P2 &p2, const P3 &p3) {
     double a1 = p1[0] - p2[0], a2 = p1[1] - p2[1], a3 = p1[2] - p2[2];
@@ -46,8 +53,8 @@ P normal_vector(const P1 &p1, const P2 &p2, const P3 &p3) {
     return p;
 }
 
-template<typename T, typename L>
-void superpose(T &src, const L &src_indices, const T &tgt, const L &tgt_indices) {
+template<typename Src, typename SrcInd, typename Tgt, typename TgtInd>
+void superpose(Src &src, SrcInd &&src_indices, Tgt &&tgt, TgtInd &&tgt_indices) {
     /// Construct matrices m and n
     MatrixXf m(src_indices.size(), 3), n(tgt_indices.size(), 3);
     for (int i = 0; i < src_indices.size(); i++) {

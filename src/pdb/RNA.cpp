@@ -10,8 +10,10 @@ RNA::RNA(const Model &model) {
         Chain temp_chain;
         temp_chain.name = chain.name;
         for (auto &&residue: chain.residues) {
-            if (std::set<std::string>{"A", "U", "G", "C"}.count(residue.name)) {
-                temp_chain.residues.push_back(residue);
+            auto res = residue;
+            res.name = res.name.substr(0, 1);
+            if (std::set<std::string>{"A", "U", "G", "C"}.count(res.name)) {
+                temp_chain.residues.push_back(std::move(res));
             }
         }
         if (!temp_chain.residues.empty()) {

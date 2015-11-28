@@ -7,6 +7,8 @@ namespace jian {
 
 class Residue;
 
+std::deque<Residue> get_residues_from_file(std::string file_name);
+
 Residue make_residue(std::vector<std::string>);
 
 class Residue {

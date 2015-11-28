@@ -2,10 +2,9 @@
 #define JIAN_NUC3D_SPLIT_H
 
 #include <pdb/util.h>
-#include <nuc2d/util.h>
+#include <nuc2d/N2D.h>
 
 namespace jian {
-
 namespace nuc3d {
 
 class Split {
@@ -27,9 +26,8 @@ public:
     int _loop_num = 0;
 };
 
-} /// namespace nuc3d
-
-} /// namespace jian
+} // namespace nuc3d
+} // namespace jian
 
 
 #endif

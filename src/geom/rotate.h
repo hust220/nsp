@@ -1,14 +1,21 @@
-#ifndef ROTATE_H
-#define ROTATE_H
+#ifndef JIAN_GEOM_ROTATE_H
+#define JIAN_GEOM_ROTATE_H
 
 #include <util/util.h>
 
 namespace jian {
+namespace geom {
 
-namespace geometry {
+template<typename T, typename Mat> inline void rotate(T &&t, Mat &&mat) {
+    double x = t[0] * mat(0, 0) + t[1] * mat(1, 0) + t[2] * mat(2, 0);
+    double y = t[0] * mat(0, 1) + t[1] * mat(1, 1) + t[2] * mat(2, 1);
+    double z = t[0] * mat(0, 2) + t[1] * mat(1, 2) + t[2] * mat(2, 2);
+    t[0] = x;
+    t[1] = y;
+    t[2] = z;
+}
 
-template<class N, class L>
-N times(const MatrixXf &mat, const L &l) {
+template<class N, class L> N times(const MatrixXf &mat, const L &l) {
     N n = l;
     for (int i = 0; i < mat.rows(); i++) {
         n[i] = 0;
@@ -19,8 +26,7 @@ N times(const MatrixXf &mat, const L &l) {
     return n;
 } /// times
 
-template<class C1 = double, class C2 = double>
-MatrixXf x_rot_mat(C1 c, C2 s) {
+template<class C1 = double, class C2 = double> MatrixXf x_rot_mat(C1 c, C2 s) {
     MatrixXf rot_mat(3, 3);
     rot_mat << 1, 0, 0,
                0, c, s,
@@ -28,8 +34,7 @@ MatrixXf x_rot_mat(C1 c, C2 s) {
     return rot_mat;   
 } /// x_rot_mat
 
-template<class C1 = double, class C2 = double>
-MatrixXf y_rot_mat(C1 c, C2 s) {
+template<class C1 = double, class C2 = double> MatrixXf y_rot_mat(C1 c, C2 s) {
     MatrixXf rot_mat(3, 3);
     rot_mat << c, 0,-s,
                0, 1, 0,
@@ -37,8 +42,7 @@ MatrixXf y_rot_mat(C1 c, C2 s) {
     return rot_mat;   
 } /// y_rot_mat
 
-template<class C1 = double, class C2 = double>
-MatrixXf z_rot_mat(C1 c, C2 s) {
+template<class C1 = double, class C2 = double> MatrixXf z_rot_mat(C1 c, C2 s) {
     MatrixXf rot_mat(3, 3);
     rot_mat << c, s, 0,
               -s, c, 0,
@@ -46,8 +50,7 @@ MatrixXf z_rot_mat(C1 c, C2 s) {
     return rot_mat;   
 } /// z_rot_mat
 
-template<typename L>
-void rotate(MatrixXf &src, const L &begin, const L &end, const double &angle) {
+template<typename L> void rotate(MatrixXf &src, const L &begin, const L &end, const double &angle) {
     L l = end - begin;
     for (int i = 0; i < src.rows(); i++) {
         for (int j = 0; j < src.cols(); j++) {
@@ -106,9 +109,8 @@ void rotate(MatrixXf &src, const L &begin, const L &end, const double &angle) {
     }
 } /// rotate
 
-} /// namespace geometry
-
-} /// namespace jian
+} // namespace geometry
+} // namespace jian
 
 #endif
 

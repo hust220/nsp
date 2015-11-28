@@ -1,9 +1,19 @@
-#include <nuc3d/util.h>
+#include <nuc3d/Assemble.h>
+#include <nuc3d/LM2.h>
+#include <nuc3d/LoopModelling2.h>
+#include <nuc3d/BuildJunction.h>
+#include <nuc3d/BuildTriplex.h>
+#include <nuc3d/Split.h>
+#include <nuc2d/N2D.h>
+#include <nuc2d/Seq2Ss.h>
+#include <nuc2d/Seq2Tri.h>
+#include <nuc2d/Seq2Qua.h>
 #include <cluster/Cluster.h>
 #include <scoring/util.h>
-#include "extract_4_nuc.h"
+#include "extract_fragment.h"
 
 int main(int argc, char **argv) {
+    try {
     jian::Par par(argc, argv);
     if (boost::to_lower_copy(par["global"][0]) == "3drna") {
         if (par.count("par")) {
@@ -14,11 +24,13 @@ int main(int argc, char **argv) {
             jian::nuc3d::Assemble ass(par);
             ass();
         }
-    } else if (boost::to_lower_copy(par["global"][0]) == "extract_4_nuc") {
-        extract_4_nuc(par["global"][1]);
+    } else if (boost::to_lower_copy(par["global"][0]) == "extract_fragment") {
+        jian::extract_fragment(par["mol"][0], std::stoi(par["len"][0]));
     } else if (boost::to_lower_copy(par["global"][0]) == "lm2") {
-        jian::nuc3d::LM2 lm2;
-        lm2(par["seq"][0], par["ss"][0]);
+        jian::nuc3d::LM2 lm2(par);
+        for (int i = 0; i < lm2._num; i++) {
+            lm2().write(lm2._name + "-" + std::to_string(i + 1) + ".pdb");
+        }
     } else if (boost::to_lower_copy(par["global"][0]) == "seq2ss") {
         jian::nuc2d::Seq2Ss seq2ss;
         if (par.count("cutoff")) seq2ss._cutoff = std::stof(par["cutoff"][0]);
@@ -255,29 +267,10 @@ int main(int argc, char **argv) {
         }
         std::cout << p1.dist(p2) << std::endl;
     } else if (boost::to_lower_copy(par["global"][0]) == "test2") {
-        jian::RNA rna(par["global"][1]);
-        int a = std::stoi(par["global"][2]);
-        int b = std::stoi(par["global"][3]);
-        int c = std::stoi(par["global"][4]);
-        int d = std::stoi(par["global"][5]);
-        int n = 0;
-        jian::Point p1, p2, p3, p4;
-        for (auto &&chain: rna) {
-            for (auto &&res: chain) {
-                n++;
-                if (n == a) {
-                    p1 = res["C4*"].pos();
-                } else if (n == b) {
-                    p2 = res["C4*"].pos();
-                } else if (n == c) {
-                    p3 = res["C4*"].pos();
-                } else if (n == d) {
-                    p4 = res["C4*"].pos();
-                }
-            }
-        }
-        std::cout << jian::Point::chirality(p1, p2, p3, p4) << std::endl;
-        std::cout << jian::Point::dihedral(p1, p2, p3, p4) << std::endl;
+        MatrixXf a = MatrixXf::Zero(3, 3);
+        MatrixXf b = MatrixXf::Zero(3, 3);
+        MatrixXf c = MatrixXf::Zero(3, 3);
+        std::cout << jian::mat::sum([](const MatrixXf &a){return a.rows();}, a, b, c) << std::endl;
     } else if (boost::to_lower_copy(par["global"][0]) == "len") {
         std::cout << jian::Model(par["global"][1]).res_nums() << std::endl;
     } else if (!strcmp(argv[1], "seq")) {
@@ -291,6 +284,9 @@ int main(int argc, char **argv) {
             }
         }
         std::cout << std::endl;
+    }
+    } catch (const char *inf) {
+        std::cout << inf << std::endl;
     }
     return 0;
 }

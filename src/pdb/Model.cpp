@@ -31,7 +31,7 @@ void Model::read(string pdbfile) {
     } else if (pdbfile.size() > 4 && pdbfile.substr(pdbfile.size() - 4, 4) == ".cif") {
         read_cif(pdbfile);
     } else {
-        die("Please give me a file ended with '.pdb' or '.cif'!");
+        throw "JIAN::MODEL::read(std::string) error! Please give me a file ended with '.pdb' or '.cif'!";
     }
 }
 
@@ -137,6 +137,20 @@ vector<Chain>::iterator Model::begin() {
 }
 vector<Chain>::iterator Model::end() {
     return chains.end();
+}
+
+// # Return the nth residue
+// The efficient is linear to n
+Residue Model::residue(int n) {
+    int res_num = 0;
+    for (auto &&chain: chains) {
+        for (auto &&res: chain.residues) {
+            if (res_num == n)
+                return res;
+            res_num++;
+        }
+    }
+    throw "JIAN::MODEL::residue(int) error! Residue index out of range.";
 }
 
 } /// namespace jian

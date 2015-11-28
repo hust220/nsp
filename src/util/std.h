@@ -9,6 +9,7 @@
 #include <cmath>
 #include <cstring>
 #include <cassert>
+#include <regex>
 
 // STL
 #include <vector>

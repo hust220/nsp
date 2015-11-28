@@ -48,8 +48,8 @@ public:
 
 
     virtual std::string seq(std::string delimiter = "");
-    template<class T>
-    Model sub(const T &t) {
+
+    template<typename T> Model sub(T &&t) {
         Model model;
         int res_num = 0;
         for (auto &&chain: chains) {
@@ -66,6 +66,25 @@ public:
         }
         return model;
     }
+
+    // # Return the residues
+    template<typename List> std::deque<Residue> residues(List &&list) {
+        std::deque<Residue> vec;
+        int res_num = 0;
+        for (auto &&chain: chains) {
+            for (auto &&res: chain.residues) {
+                if (std::count(std::begin(list), std::end(list), res_num))
+                    vec.push_back(res);
+                res_num++;
+            }
+        }
+        return vec;
+    }
+
+    // # Return the nth residue
+    // The efficient is linear to n
+    Residue residue(int n);
+
     int empty();
     void push(const Chain &);
     Chain &operator [](int);
