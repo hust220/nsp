@@ -11,6 +11,8 @@
 #include <cluster/Cluster.h>
 #include <scoring/util.h>
 #include "extract_fragment.h"
+#include <nuc2d/BuildSST.h>
+#include <nuc2d/MergeRings.h>
 
 int main(int argc, char **argv) {
     try {
@@ -49,6 +51,7 @@ int main(int argc, char **argv) {
         std::cout << dg() << std::endl;
     } else if (boost::to_lower_copy(par["global"][0]) == "n2d") {
         jian::nuc2d::N2D n2d;
+        if (par.count("view")) n2d.view = 1;
         if (par.count("h")) n2d.hinge_base_pair_num = std::stoi(par["h"][0]);
         n2d(par["ss"][0]);
         n2d.print();
@@ -271,6 +274,11 @@ int main(int argc, char **argv) {
         MatrixXf b = MatrixXf::Zero(3, 3);
         MatrixXf c = MatrixXf::Zero(3, 3);
         std::cout << jian::mat::sum([](const MatrixXf &a){return a.rows();}, a, b, c) << std::endl;
+    } else if (boost::to_lower_copy(par["global"][0]) == "tree") {
+        jian::nuc2d::BuildSST build_sst;
+        auto sst = build_sst(par["seq"][0], par["ss"][0]);
+        jian::nuc2d::MergeRings merge_rings;
+        merge_rings(sst);
     } else if (boost::to_lower_copy(par["global"][0]) == "len") {
         std::cout << jian::Model(par["global"][1]).res_nums() << std::endl;
     } else if (!strcmp(argv[1], "seq")) {

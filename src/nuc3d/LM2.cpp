@@ -90,9 +90,12 @@ std::string LM2::parse_molecule_type(std::string seq) {
 
 void LM2::set_helix_anchors() {
     std::map<char, char> temp_map{{'(', '.'}, {')', '.'}, {'[', '.'}, {']', '.'}, 
-                                  {'{', '.'}, {'}', '.'}, {'<', '.'}, {'>', '.'},
-                                  {'\\', '.'}, {'/', '.'}, {'.', '.'}, {'&', '&'}};
-    for (auto &&pair : std::map<char, char>{{'(', ')'}, {'[', ']'}, {'{', '}'}, {'<', '>'}, {'\\', '/'}}) {
+                                  {'{', '.'}, {'}', '.'}, {'<', '.'}, {'>', '.'}, 
+                                  {'A', '.'}, {'a', '.'}, {'B', '.'}, {'b', '.'}, 
+                                  {'C', '.'}, {'c', '.'}, {'D', '.'}, {'d', '.'}, 
+                                  {'E', '.'}, {'e', '.'}, {'F', '.'}, {'f', '.'}, 
+                                  {'/', '.'}, {'.', '.'}, {'&', '&'}};
+    for (auto &&pair : nuc2d::paired_keys) {
         if (std::count_if(_ss.begin(), _ss.end(), [&](const char &c){return c == pair.first || c == pair.second;})) {
             temp_map[pair.first] = '(';
             temp_map[pair.second] = ')';

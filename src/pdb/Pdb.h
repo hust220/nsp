@@ -7,7 +7,7 @@ namespace jian {
 
 class Pdb {
 public:
-    Pdb();
+    Pdb() {}
     Pdb(MolFile &mol_file);
 //    Pdb(PdbFile &pdb_file);
 //    Pdb(Cif &cif);

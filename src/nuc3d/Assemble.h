@@ -2,65 +2,59 @@
 #define ASSEMBLE_H
 
 #include <nuc2d/N2D.h>
+#include <nuc2d/util.h>
 #include <pdb/util.h>
-#include "Connect.h"
+#include "FindTemplates.h"
+#include "AssembleTemplates.h"
 
 namespace jian {
-
 namespace nuc3d {
 
-class Assemble {
+class Assemble : public virtual AssembleTemplates {
 public:
-    Assemble(Par);
-    Assemble(string, string);
-    void operator ()();
+    Log log;
 
-    string ss;
-    string seq;
-    int hinge_size = 2;
-    string job = "assemble";
-    string lib;
-    string family = "other";
-    string type = "RNA";
-    Log log {"nsp.log"};
-    nuc2d::N2D mol;
-    string constraints;
-    int num = 1;
-    int is_test = 0; // Is this a test case or not?
-    int view = 0;
-    std::string _method = "assemble";
+    Assemble(const Par &pars) : JobInf(pars) {
+    }
 
-    /////////////////////////////////////
-    /// Find templates
-    int find_templates(nuc2d::loop *);
-    vector<Model> find_loops(nuc2d::loop *, int = 1);
-    vector<Model> find_helices(nuc2d::helix *, int = 1);
-    void create_loops();
+    void operator ()() {
+        assemble();
+    }
 
-    int _max_loop_nums = 1000;
-    map<nuc2d::loop *, pair<vector<Model>, vector<Model>>> templates;
-    vector<tuple<nuc2d::loop *, int, int, int>> loop_nums_table;
-    //////////////////////////////////////
+    void assemble() {
+        log("=========================================================");
+        log("New Job: " + _name);
+        log("Time: " + Time::time());
+        boost::timer t;
+        log("Sequence: " + _seq);
+        log("2D Structure: " + _ss);
+        log("Number: " + std::to_string(_num));
+        log("----------------------------------------");
 
-    //////////////////////////////////////
-    /// Assemble templates
-    void ass_templates(int = 1);
-    Model ass_templates(nuc2d::loop *);
-    void rebuild_chains(Model &);
-    //Model createHelix(nuc2d::helix *);
-    //Model createHelix(string);
+        log("Step 1: Construct 2D structure tree.");
+        _n2d.hinge_base_pair_num = _hinge;
+        _n2d(_seq, _ss);
 
-    map<nuc2d::loop *, pair<int, int>> templ;
-    Connect connect;
-    //////////////////////////////////////
+        log("Step 2: Searching templates.");
+        find_templates();
+
+        log("Step 3: Assemble templates.");
+        for (int i = 0; i < _num; i++) {
+            log("assemble model " + std::to_string(i + 1) + "...");
+            assemble_templates().write(_name + "-" + std::to_string(i) + ".pdb");
+        }
+
+        log("----------------------------------------");
+        log("Finish Time: " + Time::time());
+        log("Time elapsed: " + std::to_string(t.elapsed()) + "s");
+        log("=========================================================");
+        log("\n\n");
+    }
+
 };
 
-} /// namespace nuc3d
-
-} /// namespace jian
+} // namespace nuc3d
+} // namespace jian
 
 #endif
-
-
-
 

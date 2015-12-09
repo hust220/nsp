@@ -2,9 +2,6 @@
 
 namespace jian {
 
-Pdb::Pdb() {
-}
-
 Pdb::Pdb(MolFile &pdb_file) {
     name = pdb_file._name;   
     while (!pdb_file.eof()) {
@@ -12,20 +9,6 @@ Pdb::Pdb(MolFile &pdb_file) {
     }
 }
 
-//Pdb::Pdb(PdbFile &pdb_file) {
-//    name = pdb_file._name;   
-//    while (!pdb_file.eof()) {
-//        models.push_back(Model(pdb_file));
-//    }
-//}
-//
-//Pdb::Pdb(Cif &cif) {
-//    name = cif._name;   
-//    while (!cif.eof()) {
-//        models.push_back(Model(cif));
-//    }
-//}
-//
 Pdb::Pdb(string file_name) {
     read(file_name);
 }

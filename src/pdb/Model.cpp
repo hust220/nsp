@@ -141,18 +141,6 @@ vector<Chain>::iterator Model::end() {
 
 // # Return the nth residue
 // The efficient is linear to n
-Residue Model::residue(int n) {
-    int res_num = 0;
-    for (auto &&chain: chains) {
-        for (auto &&res: chain.residues) {
-            if (res_num == n)
-                return res;
-            res_num++;
-        }
-    }
-    throw "JIAN::MODEL::residue(int) error! Residue index out of range.";
-}
-
 } /// namespace jian
 
 

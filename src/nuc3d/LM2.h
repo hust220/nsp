@@ -14,7 +14,7 @@
 namespace jian {
 namespace nuc3d {
 
-class LM2 : public JobInf {
+class LM2 : public virtual JobInf {
 public:
     LM2(const Par &);
     Model operator ()();

@@ -6,8 +6,7 @@
 namespace jian {
 namespace geometry {
 
-template<class P1, class P2>
-double distance(const P1 &p1, const P2 &p2) {
+template<class P1, class P2> double distance(P1 &&p1, P2 &&p2) {
     double x = p1[0] - p2[0];
     double y = p1[1] - p2[1];
     double z = p1[2] - p2[2];

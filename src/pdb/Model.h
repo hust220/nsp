@@ -10,8 +10,6 @@ class Model
 public:
     Model();
     Model(MolFile &mol_file);
-//    Model(PdbFile &pdb_file);
-//    Model(Cif &cif);
     Model(Model *model) : name(model->name), chains(model->chains) {}
     Model(const Model &model) : name(model.name), chains(model.chains) {}
     Model &operator =(const Model &model);
@@ -67,23 +65,35 @@ public:
         return model;
     }
 
-    // # Return the residues
     template<typename List> std::deque<Residue> residues(List &&list) {
         std::deque<Residue> vec;
         int res_num = 0;
         for (auto &&chain: chains) {
             for (auto &&res: chain.residues) {
-                if (std::count(std::begin(list), std::end(list), res_num))
-                    vec.push_back(res);
+                if (std::count(std::begin(list), std::end(list), res_num)) vec.push_back(res);
                 res_num++;
             }
         }
         return vec;
     }
 
-    // # Return the nth residue
-    // The efficient is linear to n
-    Residue residue(int n);
+    std::deque<Residue> residues() {
+        std::deque<Residue> vec;
+        for (auto &&chain: chains) for (auto &&res: chain.residues) vec.push_back(res);
+        return vec;
+    }
+
+    Residue residue(int n) {
+        int res_num = 0;
+        for (auto &&chain: chains) {
+            for (auto &&res: chain.residues) {
+                if (res_num == n) return res;
+                res_num++;
+            }
+        }
+        throw "JIAN::MODEL::residue(int) error! Residue index out of range.";
+    }
+
 
     int empty();
     void push(const Chain &);
