@@ -51,10 +51,52 @@ std::ostream &operator <<(std::ostream &out, const Frag &frag) {
     return out;
 }
 
+class Helix : public std::array<Frag, 2> {
+public:
+    std::string seq() const {
+        return at(0).seq() + at(1).seq();
+    }
+
+    std::string ss() const {
+        return at(0).ss() + at(1).ss();
+    }
+};
+
+class Loop : public std::list<Frag> {
+public:
+    std::string seq() const {
+        return std::accumulate(begin(), end(), std::string(), [](const std::string &s, const Frag &frag) {
+            return s + frag.seq();
+        });
+    }
+
+    std::string ss() const {
+        return std::accumulate(begin(), end(), std::string(), [](const std::string &s, const Frag &frag) {
+            return s + frag.ss();
+        });
+    }
+};
+
 class Hairpin {
 public:
-    std::array<Frag, 2> _helix;
-    std::list<Frag> _loop;
+    Helix _helix;
+    Loop _loop;
+
+    Helix &helix() {
+        return _helix;
+    }
+
+    const Helix &helix() const {
+        return _helix;
+    }
+
+    Loop &loop() {
+        return _loop;
+    }
+
+    const Loop &loop() const {
+        return _loop;
+    }
 
     int size() const {
         int size = _helix[0].size() + _helix[1].size();

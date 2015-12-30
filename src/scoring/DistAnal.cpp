@@ -244,9 +244,7 @@ void DistAnal::init_obs_prob() {
     for (int i = 0; i < 5; i++) {
         for (int j = 0; j < 85 * 85; j++) {
             double line_sum = 0;
-            for (int k = 0; k < _bins; k++) {
-                line_sum += _obs_parm(i, j * _bins + k);
-            }
+            for (int k = 0; k < _bins; k++) line_sum += _obs_parm(i, j * _bins + k);
             for (int k = 0; k < _bins; k++) {
                 if (line_sum == 0) {
                     _obs_prob(i, j * _bins + k) = 0;
@@ -262,15 +260,10 @@ void DistAnal::init_ref_prob() {
     for (int i = 0; i < 5; i++) {
         for (int j = 0; j < 85 * 85; j++) {
             double line_sum = 0;
+            for (int k = 0; k < _bins; k++) line_sum += _ref_parm(i, j * _bins + k);
             for (int k = 0; k < _bins; k++) {
-                line_sum += _ref_parm(i, j * _bins + k);
-            }
-            for (int k = 0; k < _bins; k++) {
-                if (_ref_parm(i, j * _bins + k) == 0) {
-                    _ref_prob(i, j * _bins + k) = 0;
-                } else {
-                    _ref_prob(i, j * _bins + k) = double(_ref_parm(i, j * _bins + k)) / line_sum;
-                }
+                if (_ref_parm(i, j * _bins + k) == 0) _ref_prob(i, j * _bins + k) = 0;
+                else _ref_prob(i, j * _bins + k) = double(_ref_parm(i, j * _bins + k)) / line_sum;
             }
         }
     }

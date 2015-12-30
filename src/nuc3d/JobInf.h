@@ -3,6 +3,7 @@
 
 #include <util/std.h>
 #include <util/Par.h>
+#include <util/Log.h>
 #include <nuc2d/N2D.h>
 #include <nuc2d/util.h>
 
@@ -24,6 +25,9 @@ public:
     std::string _method = "assemble";
     std::string _native;
     nuc2d::N2D _n2d;
+    std::string _strategy = "loose";
+
+    Log log;
 
     JobInf() {
         _lib = env("NSP");
@@ -47,6 +51,8 @@ public:
         // ## Set job name
         pars.count("job_name") && (_name = pars["job_name"][0], 1);
         pars.count("job") && (_name = pars["job"][0], 1);
+        pars.count("name") && (_name = pars["job"][0], 1);
+        log.bind(_name + ".3drna");
 
         // ## Set prediction number
         pars.count("number") && (_num = std::stoi(pars["number"][0]), 1);
@@ -57,6 +63,9 @@ public:
 
         // ## Set family
         pars.count("family") && (_family = pars["family"][0], 1);
+
+        // ## Set template strategy
+        pars.count("strategy") && (_strategy = pars["strategy"][0], 1);
 
         // ## Set prediction type
         pars.count("type") && (_type = pars["type"][0], 1);
@@ -74,16 +83,11 @@ public:
         pars.count("native") && (_native = boost::to_lower_copy(pars["native"][0]), 1);
 
         // ## Check whether sequence and secondary are null
-        _ss != "" || die("Please tell me the secondary structure!");
-        _seq != "" || die("Please tell me the sequence!");
+        _ss != "" or die("Please tell me the secondary structure!");
+        _seq != "" or die("Please tell me the sequence!");
 
         // ## Check the length of the secondary structure and sequence
-        if (!nuc2d::check_ss(_ss)) { 
-            throw "The secondary structure includes illegal characters!";
-        }
-        if (nuc2d::len_ss(_ss) != _seq.size()) {
-            throw "The length of the secondary structure and sequence should be equal!";
-        }
+        if (nuc2d::len_ss(_ss) != _seq.size()) throw "The length of the secondary structure and sequence should be equal!";
     }
 
 };

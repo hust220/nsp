@@ -1,5 +1,5 @@
-#ifndef LOG_H
-#define LOG_H
+#ifndef JIAN_LOG_H
+#define JIAN_LOG_H
 
 #include "std.h"
 
@@ -7,32 +7,44 @@ namespace jian {
 
 class Log {
 public:
+    std::string _log_file = "";
+    bool _display = true;
+
     Log() {}
-    Log(std::string log_file): _log_file(log_file) {}
 
-    void print(std::ostream &out, std::string content, int space_nums = 0) {
-        for (int i = 0; i < space_nums; i++) { out << ' '; }
-        out << content;
+    Log(const std::string &log_file, bool display = true) : _log_file(log_file), _display(display) {}
+
+    void set_display(bool b) {
+        _display = b;
     }
 
-    void println(std::ostream &out, std::string content, int space_nums = 0) {
-        for (int i = 0; i < space_nums; i++) { out << ' '; }
-        out << content << std::endl;
+    const std::string bind() const {
+        return _log_file;
     }
 
-    void operator ()(std::string content, int space_nums = 0) {
-        if (_log_file == "") {
-            println(std::cout, content, space_nums);
-        } else {
-            std::ofstream out(_log_file.c_str(), std::ios_base::app);
-            out || die("Log::Log error! Couldn't open '" + _log_file + "'!");
-            println(out, content, space_nums);
+    void bind(const std::string &log_file) {
+        _log_file = log_file;
+        if (_log_file != "") {
+            std::ofstream out(_log_file.c_str());
             out.close();
         }
     }
 
-private:
-    std::string _log_file;
+    void operator ()() {}
+
+    template<typename Data, typename... Datum> void operator ()(Data &&data, Datum && ...datum) {
+        if (!_display) return;
+        if (_log_file == "") {
+            std::cout << data;
+        } else {
+            std::ofstream out(_log_file.c_str(), std::ios_base::app);
+            out || die("Log::Log error! Couldn't open '" + _log_file + "'!");
+            out << data;
+            out.close();
+        }
+        (*this)(datum...);
+    }
+
 };
 
 

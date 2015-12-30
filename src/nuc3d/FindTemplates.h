@@ -26,13 +26,13 @@ public:
     }
 
     void print_records() {
-        std::cout << "Records searching results:\n";
+        log("Records searching results:\n");
         for (auto &&Row: _loop_nums_table) {
             nuc2d::loop *l;
             int type, num_loops, num_helices;
             std::tie(l, type, num_loops, num_helices) = Row;
-            std::cout << "Hairpin(" << l << "):\n" << "Helix: " << l->s.seq() << ' ' << l->s.ss() << ' ' << num_helices << "\n";
-            std::cout << "Loop: " << l->seq() << ' ' << l->ss() << ' ' << num_loops << "\n" << std::endl;
+            log("loop(", l, "):\n", "Helix: ", l->s.seq(), ' ', l->s.ss(), ' ', num_helices, '\n');
+            log("Loop: ", l->seq(), ' ', l->ss(), ' ', num_loops, "\n\n");
         }
     }
 
@@ -50,7 +50,7 @@ public:
             return;
         }
 
-        std::string seq = l->seq(), ss = l->ss(), p_ss = nuc2d::pure_ss(ss), lower_ss = nuc2d::lower_ss(ss, 1), family = _family;
+        std::string seq = l->seq(), ss = l->ss(), p_ss = nuc2d::pure_ss(ss), lower_ss = nuc2d::lower_ss(p_ss, 1), family = _family;
         int num_sons = l->num_sons();
 
         std::string info_file = _lib + "/" + _type + "/" + "records/" + (l->is_open() ? "open_" : "") + "loop";
@@ -60,14 +60,14 @@ public:
         TemplRec templ_rec;
         int num = 0;
         while (ifile >> templ_rec._name >> templ_rec._type >> templ_rec._seq >> templ_rec._ss >> templ_rec._family) {
-            if (templ_rec._type == num_sons && num_sons >= (l->is_open() ? 0 : 2)) {
+            if (_strategy == "loose" and templ_rec._type == num_sons and num_sons >= (l->is_open() ? 0 : 2)) {
                 templ_rec._score = 0;
                 if (templ_rec._name.substr(0, 4) == _name.substr(0, 4)) {
                     if (_is_test) continue; else templ_rec._score += 5;
                 }
                 _records[l].first.push_back(templ_rec);
                 num++;
-            } else if (nuc2d::lower_ss(templ_rec._ss, 1) == lower_ss) {
+            } else if (nuc2d::pure_ss(nuc2d::lower_ss(templ_rec._ss, 1)) == lower_ss) {
                 templ_rec._score = (templ_rec._ss == ss ? 5 : 0);
                 if (templ_rec._name.substr(0, 4) == _name.substr(0, 4)) {
                     if (_is_test) continue; else templ_rec._score += 5;

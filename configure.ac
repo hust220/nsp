@@ -19,6 +19,6 @@ AC_PROG_RANLIB
 
 # Checks for library functions.
 
-AC_CONFIG_FILES([Makefile src/Makefile src/util/Makefile src/dg/Makefile src/pdb/Makefile src/mc/Makefile src/scoring/Makefile src/nuc2d/Makefile src/nuc3d/Makefile src/nsp/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile src/nsp/Makefile])
 
 AC_OUTPUT

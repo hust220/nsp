@@ -5,34 +5,77 @@
 
 namespace jian {
 
-class Pdb {
+template<typename ModelType>
+class BasicPdb {
 public:
-    Pdb() {}
-    Pdb(MolFile &mol_file);
-//    Pdb(PdbFile &pdb_file);
-//    Pdb(Cif &cif);
-    Pdb(string file_name);
+    std::string name = "none";
+    std::vector<ModelType> models;
 
-    vector<Model>::iterator begin() {
+    BasicPdb() {}
+
+    typename std::vector<ModelType>::iterator begin() {
         return models.begin();
     }
-    vector<Model>::iterator end() {
+    typename std::vector<ModelType>::iterator end() {
         return models.end();
     }
 
-    void push(const Model &);
-    void read(string);
-    void read_pdb(string);
-    Model &operator [](int);
-    const Model &operator [](int) const;
+    BasicPdb(MolFile &pdb_file) {
+        name = pdb_file._name;   
+        while (!pdb_file.eof()) {
+            models.push_back(ModelType(pdb_file));
+        }
+    }
 
-    /* attributes */
-    string name = "none";
-    vector<Model> models;
+    BasicPdb(std::string file_name) {
+        read(file_name);
+    }
+
+    void read(std::string file_name) {
+        if (file_name.size() > 4 && file_name.substr(file_name.size() - 4, 4) == ".pdb") {
+            PdbFile pdb(file_name);
+            (*this) = BasicPdb<ModelType>(pdb);
+        } else if (file_name.size() > 4 && file_name.substr(file_name.size() - 4, 4) == ".cif") {
+            Cif cif(file_name);
+            (*this) = BasicPdb<ModelType>(cif);
+        } else {
+            die("Please give me a file ended with '.pdb' or '.cif'!");
+        }
+    }
+
+    ModelType &operator [](int n) {
+        return models[n];
+    }
+
+    const ModelType &operator [](int n) const {
+        return models[n];
+    }
+
+    void print_models() {
+        int index = 1;
+        std::ofstream out;
+        for (auto && model : models) {
+            std::string pdb_name = name + "-model-" + std::to_string(index);
+            model.write(pdb_name + ".pdb");
+            index++;
+        }
+    }
+
+    void print(std::ostream &out) {
+        int index = 1;
+        for (auto && model : models) {
+            out << "MODEL " << index << "\n";
+            out << model;    
+            out << "ENDMDL\n";
+            index++;
+        }
+    }
 
 };
 
+typedef BasicPdb<Model> Pdb;
+
 } /// namespace jian
 
-#endif // Pdb_H
+#endif // BasicPdb<ModelType>_H
 

@@ -105,18 +105,12 @@ public:
             std::string loop_name = _name + "-" + std::to_string(_loop_num) + "-" + std::string(l->is_open() ? "open_" : "") + "loop-" + std::to_string(type);
             std::vector<int> all_nums, hinge_nums;
             all_nums.reserve(len);
-            for (auto r = l->head; r != NULL; r = r->next) {
-                all_nums.push_back(r->num - 1);
-            }
+            for (auto r = l->head; r != NULL; r = r->next) all_nums.push_back(r->num - 1);
             hinge_nums.reserve(type * 2 + (l->is_open() ? 0 : 4));
-            if (!l->is_open()) {hinge_nums.push_back(0); hinge_nums.push_back(1);}
-            for (auto &&pair: l->hinges) {
-                hinge_nums.push_back(pair.first-1);
-                hinge_nums.push_back(pair.first);
-                hinge_nums.push_back(pair.second);
-                hinge_nums.push_back(pair.second+1);
-            }
-            if (!l->is_open()) {hinge_nums.push_back(len - 2); hinge_nums.push_back(len - 1);}
+            if (!l->is_open()) append(hinge_nums, l->at(0).num - 1, l->at(1).num - 1);
+            for (auto &&pair: l->hinges) append(hinge_nums, l->at(pair.first-1).num - 1, l->at(pair.first).num - 1, 
+                                                l->at(pair.second).num - 1, l->at(pair.second+1).num - 1);
+            if (!l->is_open()) append(hinge_nums, l->at(len - 2).num - 1, l->at(len - 1).num - 1);
             _mol.sub(all_nums).write(pdb_path + loop_name + ".pdb");
             _mol.sub(hinge_nums).write(pdb_path + loop_name + ".hinge.pdb");
 

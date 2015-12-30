@@ -1,7 +1,7 @@
 #ifndef JIAN_PDB_ATOM_H
 #define JIAN_PDB_ATOM_H
 
-#include <util/util.h>
+#include "../util/util.h"
 #include "PdbFile.h"
 #include "Cif.h"
 

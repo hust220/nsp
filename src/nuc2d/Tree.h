@@ -27,6 +27,22 @@ public:
         return this;
     }
 
+    Data &head() {
+        return _data;
+    }
+
+    const Data &head() const {
+        return _data;
+    }
+
+    std::list<Tree<Data>> &sons() {
+        return _sons;
+    }
+
+    const std::list<Tree<Data>> &sons() const {
+        return _sons;
+    }
+
     void append() {}
 
     template<typename T1, typename... T2> void append(T1 &&t1, T2 && ...t2) {

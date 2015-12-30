@@ -1,7 +1,7 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
-#include <util/util.h>
+#include "../util/util.h"
 
 namespace jian {
 namespace geometry {
@@ -31,10 +31,10 @@ double angle(const P1 &p1, const P2 &p2, const P3 &p3) {
 
 template<class T1, class T2, class T3, class T4>
 double chirality(const T1 &p1, const T2 &p2, const T3 &p3, const T4 &p4) {
-    int a[3] = {p1[0] - p4[0], p1[1] - p4[1], p1[2] - p4[2]};
-    int b[3] = {p2[0] - p4[0], p2[1] - p4[1], p2[2] - p4[2]};
-    int c[3] = {p3[0] - p4[0], p3[1] - p4[1], p3[2] - p4[2]};
-    int d[3] = {b[1]*c[2]-b[2]*c[1], b[2]*c[0]-b[0]*c[2], b[0]*c[1]-b[1]*c[0]};
+    double a[3] = {p1[0] - p4[0], p1[1] - p4[1], p1[2] - p4[2]};
+    double b[3] = {p2[0] - p4[0], p2[1] - p4[1], p2[2] - p4[2]};
+    double c[3] = {p3[0] - p4[0], p3[1] - p4[1], p3[2] - p4[2]};
+    double d[3] = {b[1]*c[2]-b[2]*c[1], b[2]*c[0]-b[0]*c[2], b[0]*c[1]-b[1]*c[0]};
     return a[0]*d[0]+a[1]*d[1]+a[2]*d[2];
 }
 

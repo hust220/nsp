@@ -59,6 +59,26 @@ public:
         for (auto l = son; l != NULL; l = l->brother) l->apply(f);
     }
 
+    res &at(int n) {
+        int index = 0;
+        for (auto r = head; r != NULL; r = r->next) {
+            if (r->type == '&') continue;
+            if (index == n) return *r;
+            index++;
+        }
+        throw "jian::nuc2d::loop::at error! out of range.";
+    }
+
+    const res &at(int n) const {
+        int index = 0;
+        for (auto r = head; r != NULL; r = r->next) {
+            if (r->type == '&') continue;
+            if (index == n) return *r;
+            index++;
+        }
+        throw "jian::nuc2d::loop::at error! out of range.";
+    }
+
 
     static loop *copy(loop *l) {
         if (l == NULL) {

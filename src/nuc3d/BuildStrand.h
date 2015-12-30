@@ -3,7 +3,7 @@
 
 #include <pdb/Residue.h>
 #include <util/std.h>
-#include <util/Matr_.h>
+#include <util/mat.h>
 #include <dg/DG.h>
 #include <geom/geometry.h>
 
@@ -12,6 +12,7 @@ namespace nuc3d {
 
 class BuildStrand {
 public:
+    Log log;
     std::set<std::string> _coarse_atoms {"C4*"};
     DG dg;
     SupPos sp;
@@ -27,6 +28,7 @@ public:
 
     BuildStrand() {
         read_pars();
+        dg.log.set_display(false);
     }
 
     std::vector<Residue> operator ()(int n, const MatrixXf &a, const MatrixXf &b) {
@@ -37,28 +39,22 @@ public:
         if ((a.rows() != _coarse_atoms.size() * 2 && a.rows() != 0) || (b.rows() != _coarse_atoms.size() * 2 && b.rows() != 0)) {
             throw "jian::nuc3d::BuildStrand::build_strand(int, const MatrixXf &, const MatrixXf &) error!";
         }
-        std::cout << "build strand:\n";
+        log("build strand:\n");
         auto bound = make_bound(n, a, b);
-        std::cout << "matrix a:\n" << a << "\n" << "matrix b:\n" << b << "\n";
-        std::cout << "bound:\n" << bound << "\n";
+        log("matrix a:\n", a, "\n", "matrix b:\n", b, "\n", "bound:\n", bound, "\n");
         auto scaffold = dg(bound);
-        std::cout << "scaffold:\n" << scaffold << "\n";
+        log("scaffold:\n", scaffold, "\n");
         superpose_scaffold(scaffold, a, b);
-        std::cout << "scaffold after superposed:\n" << scaffold << "\n";
-        std::cout << scaffold.rows() << std::endl;
+        log("scaffold after superposed:\n", scaffold, "\n", scaffold.rows(), '\n');
         auto residues = all_atom(scaffold);
         auto new_residues = slice(residues, a.rows(), a.rows() + n);
         if (a.rows() != 0) {
-            for (int i = 0; i < 3; i++) {
-                std::cout << new_residues.front()["C4*"][i] << ' ';
-            }
-            std::cout << std::endl;
+            for (int i = 0; i < 3; i++) log(new_residues.front()["C4*"][i], ' ');
+            log('\n');
         }
         if (b.rows() != 0) {
-            for (int i = 0; i < 3; i++) {
-                std::cout << new_residues.back()["C4*"][i] << ' ';
-            }
-            std::cout << std::endl;
+            for (int i = 0; i < 3; i++) log(new_residues.back()["C4*"][i], ' ');
+            log('\n');
         }
         return new_residues;
         //return slice(residues, a.rows(), a.rows() + n);
@@ -126,12 +122,12 @@ public:
         if (size == 3) {
             for (int i = 0; i < _frag_3_dists.size(); i++) 
                 rank.push(std::make_pair(i, geometry::distance(_frag_3_dists[i], std::forward<List>(list))));
-            std::cout << _frag_par_path + "/" + _frag_3_names[rank.top().first] + ".pdb" << std::endl;
+            log(_frag_par_path, "/", _frag_3_names[rank.top().first], ".pdb\n");
             return get_residues_from_file(_frag_par_path + "/" + _frag_3_names[rank.top().first] + ".pdb");
         } else if (size == 10) {
             for (int i = 0; i < _frag_5_dists.size(); i++) 
                 rank.push(std::make_pair(i, geometry::norm(_frag_5_dists[i], std::forward<List>(list), 10)));
-            std::cout << _frag_par_path + "/" + _frag_5_names[rank.top().first] + ".pdb" << std::endl;
+            log(_frag_par_path, "/", _frag_5_names[rank.top().first], ".pdb\n");
             return get_residues_from_file(_frag_par_path + "/" + _frag_5_names[rank.top().first] + ".pdb");
         } else {
             throw "JIAN::NUC3D::LM2::find_best_frag_model error!";
@@ -175,7 +171,7 @@ public:
                 superpose_residues(frag_residues, coord);
                 if (i == 0) append(residues, frag_residues[0], frag_residues[1]);
                 residues.push_back(frag_residues[2]);
-                if (i == len - 3) append(residues, frag_residues[3], frag_residues[4]);
+                if (i == len - 5) append(residues, frag_residues[3], frag_residues[4]);
             }
             return residues;
         } else {

@@ -1,7 +1,7 @@
 #ifndef JIAN_MOLFILE_H
 #define JIAN_MOLFILE_H
 
-#include <util/util.h>
+#include "../util/util.h"
 
 namespace jian {
 

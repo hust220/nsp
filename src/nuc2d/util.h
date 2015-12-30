@@ -47,10 +47,10 @@ template<typename T> bool check_ss(T &&ss) {
     static std::map<char, int> pos_keys = get_pos_keys();
 
     for (auto &&s: ss) {
-        if (!std::count_if(paired_keys.begin(), paired_keys.end(), [&](const std::pair<char, char> &pair) {
+        if (not std::count_if(paired_keys.begin(), paired_keys.end(), [&](const std::pair<char, char> &pair) {
                 return pair.first == s || pair.second == s;
-            }) && !std::count(unpaired_keys.begin(), unpaired_keys.end(), s) 
-               && !std::count(break_keys.begin(), break_keys.end(), s)) {
+            }) and not std::count(unpaired_keys.begin(), unpaired_keys.end(), s) 
+               and not std::count(break_keys.begin(), break_keys.end(), s)) {
             return false;
         }
     }
@@ -59,36 +59,20 @@ template<typename T> bool check_ss(T &&ss) {
     for (auto &&s: ss) {
         if (pos_keys.count(s)) {
             if (pos_keys[s] > 0) {
-                if (map.count(s)) {
-                    map[s]++;    
-                } else {
-                    map[s] = 1;    
-                }
+                if (map.count(s)) map[s]++; else map[s] = 1;
             } else {
                 char c = map_keys[s];
                 if (map.count(c)) {
                     map[c]--;    
-                    if (map[c] < 0) {
-                        return false;    
-                    } else {
-                        // pass
-                    }
+                    if (map[c] < 0) return false;
                 } else {
                     return false;    
                 }
             }
-        } else {
-            // pass
         }
     }
 
-    for (auto &&pair: map) {
-        if (pair.second != 0) {
-            return false;
-        } else {
-            // pass
-        }
-    }
+    for (auto &&pair: map) if (pair.second != 0) return false;
 
     return true;
 }
