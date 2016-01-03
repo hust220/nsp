@@ -1,21 +1,21 @@
-#include "../nuc3d/Predict.h"
-//#include "../nuc3d/LM2.h"
-//#include "../nuc3d/LoopModelling2.h"
-#include "../nuc3d/BuildJunction.h"
-//#include "../nuc3d/BuildTriplex.h"
-#include "../nuc3d/Split.h"
-#include "../nuc2d/N2D.h"
-#include "../nuc2d/Seq2Ss.h"
-#include "../nuc2d/Seq2Tri.h"
-#include "../nuc2d/Seq2Qua.h"
-#include "../cluster/Cluster.h"
-//#include "../scoring/util.h"
+#include <jian/nuc3d/Predict.h>
+//#include <jian/nuc3d/LM2.h>
+//#include <jian/nuc3d/LoopModelling2.h>
+#include <jian/nuc3d/BuildJunction.h>
+//#include <jian/nuc3d/BuildTriplex.h>
+#include <jian/nuc3d/Split.h>
+#include <jian/nuc2d/N2D.h>
+#include <jian/nuc2d/Seq2Ss.h>
+#include <jian/nuc2d/Seq2Tri.h>
+#include <jian/nuc2d/Seq2Qua.h>
+#include <jian/cluster/Cluster.h>
+//#include <jian/scoring/util.h>
 #include "extract_fragment.h"
-#include "../nuc2d/BuildSST.h"
-#include "../nuc2d/MergeRings.h"
-#include "../nuc2d/GetSS.h"
-#include "../pdb/IFModel.h"
-#include "../dg/TestMC.h"
+#include <jian/nuc2d/BuildSST.h>
+#include <jian/nuc2d/MergeRings.h>
+#include <jian/nuc2d/GetSS.h>
+#include <jian/pdb/IFModel.h>
+#include <jian/dg/TestMC.h>
 
 namespace jian {
 

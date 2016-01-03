@@ -1,9 +1,9 @@
 #ifndef JIAN_EXTRACT_FRAGMENT_H
 #define JIAN_EXTRACT_FRAGMENT_H
 
-#include <util/std.h>
-#include <geom/geometry.h>
-#include <pdb/Model.h>
+#include <jian/util/std.h>
+#include <jian/geom/geometry.h>
+#include <jian/pdb/Model.h>
 
 namespace jian {
 
