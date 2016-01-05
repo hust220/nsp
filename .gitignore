@@ -4,6 +4,7 @@
 !Makefile.am
 !lib
 !src
+!CMakeLists.txt
 *.[oa]
 *.deps
 *.so
