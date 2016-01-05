@@ -8,6 +8,8 @@ namespace jian {
 template<typename ChainType>
 class BasicModel {
 public:
+    using ResidueType = typename ChainType::ResidueType;
+
     std::string name = "none";
     std::vector<ChainType> chains;
 
@@ -179,7 +181,8 @@ public:
         return model;
     }
 
-    template<typename List> std::deque<Residue> residues(List &&list) const {
+    template<typename List> 
+    std::deque<Residue> residues(List &&list) const {
         std::deque<Residue> vec;
         int res_num = 0;
         for (auto &&chain: chains) {
@@ -191,8 +194,9 @@ public:
         return vec;
     }
 
-    std::deque<Residue> residues() const {
-        std::deque<Residue> vec;
+    template<template<typename...> class LS = std::deque>
+    auto residues() const {
+        LS<ResidueType> vec;
         for (auto &&chain: chains) for (auto &&res: chain.residues) vec.push_back(res);
         return vec;
     }
@@ -222,6 +226,26 @@ std::ostream &operator <<(std::ostream &output, const BasicModel<ChainType> &mod
     }
     return output;
 }
+
+namespace pdb {
+
+template<template<typename...> class LS, typename ResidueType>
+auto residues_to_model(LS<ResidueType> &&res) {
+    BasicModel<BasicChain<ResidueType>> model;
+    model.chains.push_back(BasicChain<ResidueType>());
+    model.chains[0].residues = res;
+    return model;
+}
+
+template<template<typename...> class LS, typename ResidueType>
+auto residues_to_model(const LS<ResidueType> &res) {
+    BasicModel<BasicChain<ResidueType>> model;
+    model.chains.push_back(BasicChain<ResidueType>());
+    model.chains[0].residues = res;
+    return model;
+}
+
+} // namespace pdb
 
 } /// namespace jian
 

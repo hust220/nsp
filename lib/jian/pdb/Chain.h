@@ -8,6 +8,8 @@ namespace jian {
 template<typename ResType>
 class BasicChain {
 public:
+    using ResidueType = ResType;
+
     std::string name = "A";
     std::vector<ResType> residues;
 

@@ -933,8 +933,6 @@ src/nsp/CMakeFiles/nsp.dir/nsp.cpp.o: src/nsp/../../lib/jian/dg/TestMC.h
 src/nsp/CMakeFiles/nsp.dir/nsp.cpp.o: src/nsp/../../lib/jian/geom/geometry.h
 src/nsp/CMakeFiles/nsp.dir/nsp.cpp.o: src/nsp/../../lib/jian/geom/move.h
 src/nsp/CMakeFiles/nsp.dir/nsp.cpp.o: src/nsp/../../lib/jian/geom/rotate.h
-src/nsp/CMakeFiles/nsp.dir/nsp.cpp.o: src/nsp/../../lib/jian/mc/MC.h
-src/nsp/CMakeFiles/nsp.dir/nsp.cpp.o: src/nsp/../../lib/jian/mc/System.h
 src/nsp/CMakeFiles/nsp.dir/nsp.cpp.o: src/nsp/../../lib/jian/nuc2d/BuildSST.h
 src/nsp/CMakeFiles/nsp.dir/nsp.cpp.o: src/nsp/../../lib/jian/nuc2d/GetSS.h
 src/nsp/CMakeFiles/nsp.dir/nsp.cpp.o: src/nsp/../../lib/jian/nuc2d/MergeRings.h

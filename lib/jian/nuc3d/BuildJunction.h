@@ -1,134 +1,76 @@
-#ifndef JIAN_NUC3D_JUNCTBUILD
-#define JIAN_NUC3D_JUNCTBUILD
+#ifndef JIAN_NUC3D_BUILDJUNCTION
+#define JIAN_NUC3D_BUILDJUNCTION
 
-#include "../mc/MC.h"
-#include "../pdb/util.h"
+#include "../geom/translate.h"
 
 namespace jian {
 namespace nuc3d {
 
-class JunctBuild: public mc::System {
+template<typename ModelType = Model>
+class BuildJunction {
 public:
-    int _helix_len = 6;
-    std::vector<std::tuple<Vector3f, Vector3f, Vector3f>> _helices;
+    using ResidueType = typename ModelType::ResidueType;
 
-    JunctBuild() {}
-//    Model operator ()(std::string seq, std::string ss);
-//    void train(const Model &model, std::string ss);
-//    std::pair<std::vector<Model>, std::vector<int>> get_helices(const Model &model, std::string ss);
-//    std::tuple<Vector3f, Vector3f, Vector3f> helix_par(const Model &model);
-//
-//    void move();
-//    void rollback();
-//    double energy();
-//    double min_energy();
-//    void set_min_state();
+    std::mt19937 _rand_engine{11};
+    std::uniform_real_distribution<double> _unif_distr{0, 1};
 
-    Model operator ()(std::string seq, std::string ss) {
-    //    extend_helix(_helix_len);
-        Model model;
-        return model;
-    } 
+    nuc2d::loop *_loop;
+    std::deque<ResidueType> _residues;
 
-    void move() {
-        
+    BuildJunction() {}
+
+    void init(nuc2d::loop *l) {
+        _loop = l;
+        _residues = init_residues();
     }
 
-    void rollback() {
-        
+    void init(nuc2d::loop *l, const ModelType &model) {
+        _loop = l;
+        _residues = model.residues();
     }
 
-    double energy() {
-        
+    std::deque<ResidueType> init_residues() {
+        return std::deque<ResidueType>();
     }
 
-    double min_energy() {
-        
+    ModelType operator ()() {
+        return build_junction();
     }
 
-    void set_min_state() {
-        
+    ModelType build_junction() {
+        auto ls = split();
+        int num_branches = ls.size();
+        int index = _unif_distr(_rand_engine) * num_branches;
+        move(ls[index]);
+        return pdb::residues_to_model(_residues);
     }
 
-    void train(const Model &model, std::string ss) {
-        std::vector<Model> helices;
-        std::vector<int> strand_lens;
-        std::tie(helices, strand_lens) = get_helices(model, ss);
-        for (auto &&helix: helices) {
-            _helices.push_back(helix_par(helix));
+    auto split() {
+        std::deque<std::deque<std::reference_wrapper<ResidueType>>> ls;
+        if (_loop->is_open()) {
+            _loop->each([](auto r, int index){});
+        } else {
+            _loop->each([](auto r, int index){});
         }
-        for (int i = 0; i < _helices.size(); i++) {
-            Vector3f orig1, orig2, axis1, axis2, direct1, direct2;
-            std::tie(orig1, axis1, direct1) = _helices[i];
-            std::tie(orig2, axis2, direct2) = (i != _helices.size() - 1 ? _helices[i + 1] : _helices[0]);
-            std::cout << strand_lens[i] << ' ' << geometry::distance(orig1, orig2) << ' ' << geometry::angle(axis1, Point(0, 0, 0), axis2) / 3.14159 * 180 << ' ' << geometry::angle(direct1, Point(0, 0, 0), direct2) / 3.14159 * 180 << std::endl;
-        }
-        for (auto &&helix: _helices) {
-        }
+        return ls;
     }
 
-    std::pair<std::vector<Model>, std::vector<int>> get_helices(const Model &model, std::string ss) {
-        std::vector<Residue> residues;
-        for (auto &&chain: model.chains) {
-            for (auto &&residue: chain.residues) {
-                residues.push_back(residue);
-            }
-        }
-
-        std::vector<Model> helices;
-        std::vector<int> strand_lens;
-        int i;
-        for (i = 0; i < ss.size(); i++) {
-            if (ss[i] == '(' && ss[ss.size() - 1 - i] == ')') {
-                continue;
-            } else {
-                if (i == 0) break;
-                Model helix;
-                helix.chains.resize(2);
-                std::copy(residues.begin(), std::next(residues.begin(), i), std::back_inserter(helix.chains[0].residues));
-                std::copy(std::next(residues.begin(), ss.size() - i), residues.end(), std::back_inserter(helix.chains[1].residues));
-                helices.push_back(helix);
-                break;
-            }
-        }
-
-        int helix_len = i;
-        int flag = i;
-        for (; i < ss.size() - 1; i++) {
-            if (ss[i] == '(' && ss[i + 1] == ')') {
-                for (int j = i - 1; j >= 0; j--) {
-                    if (ss[j] == '(' && ss[2 * i - j] == ')') {
-                        continue;
-                    } else {
-                        strand_lens.push_back(j + 1 - flag);
-                        flag = 2 * i - j + 1;
-                        Model helix;
-                        helix.chains.resize(2);
-                        std::copy(std::next(residues.begin(), j + 1), std::next(residues.begin(), i + 1), std::back_inserter(helix.chains[0].residues));
-                        std::copy(std::next(residues.begin(), i + 1), std::next(residues.begin(), 2 * i - j + 1), std::back_inserter(helix.chains[1].residues));
-                        helices.push_back(helix);
-                        break;
-                    }
-                }
-            }
-        }
-        strand_lens.push_back(ss.size() - helix_len - flag);
-
-        return std::make_pair(helices, strand_lens);
+    template<typename LS>
+    void move(LS &&ls) {
+        double flag = _unif_distr(_rand_engine);
+        if (flag < 0.5) translate(ls);
+        else rotate(ls);
     }
 
-    std::tuple<Vector3f, Vector3f, Vector3f> helix_par(const Model &model) {
-        auto axis1 = pdb::normal_vector(model[0][0]);
-        auto axis2 = pdb::normal_vector(model[1].residues.back());
-        Vector3f axis = axis1 - axis2;
-
-        auto pivot1 = pdb::pivot(model[0][0]);
-        auto pivot2 = pdb::pivot(model[1].residues.back());
-        Vector3f orig = 0.5 * (pivot1 + pivot2);
-        Vector3f diret = pivot2 - pivot1;
-        return std::make_tuple(orig, axis, diret);
+    template<typename LS>
+    void translate(LS &&ls) {
+        std::array<double, 3> s;
+        for (int i = 0; i < 3; i++) s[i] = (_unif_distr(_rand_engine) - 0.5) * 2;
+        for (auto && res : ls) geom::translate(res, s);
     }
 
+    template<typename LS>
+    void rotate(LS &&ls) {}
 };
 
 } // namespace nuc3d

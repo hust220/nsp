@@ -51,16 +51,9 @@ public:
         select_templates();
         for (auto &&pair : _templates) log(pair.first, " : ", pair.second.first.name, ' ', pair.second.second.name, '\n');
         position_templates();
-        Model model;
-        model.chains.resize(1);
-        model.chains[0].residues.resize(_seq.size());
-        assemble_templates(model.chains[0].residues, _n2d.head);
-        build_strands(model.chains[0].residues);
-
-        model = Transform(model)(_type, _seq);
-//        AddPhos()(model);
-
-        return model;
+        auto residues = assemble_templates(_n2d.head, _seq.size());
+        build_strands(residues);
+        return Transform(pdb::residues_to_model(std::move(residues)))(_type, _seq);
     }
 
     void set_virtual_loops() {
@@ -97,7 +90,13 @@ public:
         return Model(lib_path + pdb_name);
     }
 
-    void assemble_templates(std::vector<Residue> &residues, nuc2d::loop *l) {
+    std::vector<Residue> assemble_templates(nuc2d::loop *l, int len) {
+        std::vector<Residue> residues(len);
+        assemble_templates_impl(residues, l);
+        return residues;
+    }
+
+    void assemble_templates_impl(std::vector<Residue> &residues, nuc2d::loop *l) {
         if (l == NULL) return;
         if (l->has_helix()) {
             int index = 0;
@@ -118,8 +117,8 @@ public:
                 index++;
             }
         }
-        assemble_templates(residues, l->son);
-        assemble_templates(residues, l->brother);
+        assemble_templates_impl(residues, l->son);
+        assemble_templates_impl(residues, l->brother);
     }
 
     void position_templates() {
@@ -241,7 +240,7 @@ public:
         };
         int index = -1, left_index = -1, right_index = -1, state = 0;
         std::list<std::vector<int>> strands;
-        l->foreach([&](nuc2d::res *r){
+        l->each([&](nuc2d::res *r, int index){
             if (r->type == '&') return;
             auto new_state = fsm[state][type_id(r->type)];
             index = r->num - 1;

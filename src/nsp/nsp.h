@@ -158,9 +158,6 @@ public:
 //            } else if (type == "score") {
 //                jian::scoring::Score score(par);
 //                score();
-            } else if (type == "train_junction") {
-                jian::nuc3d::JunctBuild jb;
-                jb.train(jian::Model(par["pdb"][0]), par["ss"][0]);
             } else if (type == "cif") {
                 jian::Cif cif(global[1]);
                 for (int i = 0; i < cif._loop["_atom_site.group_PDB"].size(); i++) {

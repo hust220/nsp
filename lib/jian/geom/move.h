@@ -6,17 +6,13 @@
 namespace jian {
 namespace geom {
 
-template<typename T, typename Mat> inline void move(T &&t, Mat &&mat) {
+template<typename T, typename Mat> 
+void move(T &&t, Mat &&mat) {
     for (int i = 0; i < 3; i++) t[i] += mat[i];
 }
 
 } // namespace geom
 } // namespace jian
-
-
-
-
-
 
 #endif
 

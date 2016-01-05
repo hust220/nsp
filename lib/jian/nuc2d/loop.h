@@ -41,12 +41,20 @@ public:
         return *this;
     }
 
-    template<typename Fn> void foreach(Fn &&f) {
-        for (auto r = head; r != NULL; r = r->next) f(r);
+    template<typename Fn> void each(Fn &&f) {
+        int index = 0;
+        for (auto r = head; r != NULL; r = r->next) {
+            f(r, index);    
+            index++;
+        }
     }
 
-    template<typename Fn> void foreach(Fn &&f) const {
-        for (auto r = head; r != NULL; r = r->next) f(r);
+    template<typename Fn> void each(Fn &&f) const {
+        int index = 0;
+        for (auto r = head; r != NULL; r = r->next) {
+            f(r, index);    
+            index++;
+        }
     }
 
     template<typename Fn> void apply(Fn &&f) {
