@@ -13,14 +13,14 @@ class DG : public virtual dg::Job, public virtual dg::Smooth, public virtual dg:
 public:
     DG() = default;
 
-    DG(const DistType &dist_bound) {
+    DG(const DistBoundType &dist_bound) {
         bound = dist_bound;
         if (bound.rows() != bound.cols()) throw "DG initialize error!";
         len = bound.rows();
         smooth();
     }
 
-    DG(const DistType &dist_bound, const DihType &dih_bound) : DG(dist_bound) {
+    DG(const DistBoundType &dist_bound, const DihBoundType &dih_bound) : DG(dist_bound) {
         _dih_bound = dih_bound;
     }
 

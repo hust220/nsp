@@ -67,6 +67,11 @@ public:
                 }
                 _records[l].first.push_back(templ_rec);
                 num++;
+                if (not _source_pdb.empty() and templ_rec._name.substr(0, 4) == _source_pdb.substr(0, 4)) {
+                    _records[l].first.clear(); _records[l].first.push_back(templ_rec);
+                    num = 1;
+                    break;
+                }
             } else if (nuc2d::pure_ss(nuc2d::lower_ss(templ_rec._ss, 1)) == lower_ss) {
                 templ_rec._score = (templ_rec._ss == ss ? 5 : 0);
                 if (templ_rec._name.substr(0, 4) == _name.substr(0, 4)) {
@@ -76,12 +81,15 @@ public:
                     if (_is_test) continue; else templ_rec._score += 2;
                 }
                 for (int i = 0; i < templ_rec._seq.size(); i++) {
-                    if (seq[i] == templ_rec._seq[i]) {
-                        templ_rec._score++;
-                    }
+                    if (seq[i] == templ_rec._seq[i]) templ_rec._score++;
                 }
-                _records[l].first.push_back(std::move(templ_rec));
+                _records[l].first.push_back(templ_rec);
                 num++;
+                if (not _source_pdb.empty() and templ_rec._name.substr(0, 4) == _source_pdb.substr(0, 4)) {
+                    _records[l].first.clear(); _records[l].first.push_back(templ_rec);
+                    num = 1;
+                    break;
+                }
             }
         }
         ifile.close();

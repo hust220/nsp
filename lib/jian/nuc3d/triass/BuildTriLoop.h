@@ -17,7 +17,7 @@ public:
 
     template<template<typename...> class ListType>
     ModelType build_tri_loop(const ListType<int> &ls, int primary_index, int secondary_index) {
-        DG::DistType dist_bound; DG::DihType dih_bound;
+        DG::DistBoundType dist_bound; DG::DihBoundType dih_bound;
         std::tie(dist_bound, dih_bound) = bound_constraints(ls, primary_index, secondary_index);
         DG dg(dist_bound, dih_bound);
         auto scaffold = dg();
@@ -26,10 +26,10 @@ public:
     }
 
     template<template<typename...> class ListType>
-    std::pair<DG::DistType, DG::DihType> bound_constraints(const ListType<int> &ls, int primary_index, int secondary_index) {
+    std::pair<DG::DistBoundType, DG::DihBoundType> bound_constraints(const ListType<int> &ls, int primary_index, int secondary_index) {
         int len = fold([](double sum, int n){return sum + n;}, 0, ls) + 6;
-        auto dist_bound = mat::make_mat<DG::DistType>(len, len);
-        DG::DihType dih_bound;
+        auto dist_bound = mat::make_mat<DG::DistBoundType>(len, len);
+        DG::DihBoundType dih_bound;
 
         init_bound(dist_bound, len);
         set_chain(dist_bound, dih_bound, let([&ls]{
@@ -43,7 +43,7 @@ public:
         return {dist_bound, dih_bound};
     }
 
-    void init_bound(DG::DistType &dist_bound, int len) {
+    void init_bound(DG::DistBoundType &dist_bound, int len) {
         for (int i = 0; i < len; i++) {
             for (int j = i + 1; j < len; j++) {
                 mat::ref(dist_bound, i, j) = 99;
@@ -53,7 +53,7 @@ public:
     }
 
     template<typename LS>
-    void set_chain(DG::DistType &dist_bound, DG::DihType &dih_bound, const LS &ls) {
+    void set_chain(DG::DistBoundType &dist_bound, DG::DihBoundType &dih_bound, const LS &ls) {
         for (auto && v : ls) for (int i = 0; i < v.size() - 1; i++) {
             dist_bound(v[i], v[i + 1]) = dist_bound(v[i + 1], v[i]) = 6.1;
             if (i < v.size() - 2) dist_bound(v[i], v[i + 2]) = dist_bound(v[i + 2], v[i]) = 11;
@@ -61,7 +61,7 @@ public:
     }
 
     template<typename LS>
-    void set_triple(DG::DistType &dist_bound, DG::DihType &dih_bound, const LS &ls, int primary_index, int secondary_index) {
+    void set_triple(DG::DistBoundType &dist_bound, DG::DihBoundType &dih_bound, const LS &ls, int primary_index, int secondary_index) {
         int i1 = primary_index, i2 = secondary_index, i3 = 3 - i1 - i2;
         auto at = [&ls](int i, int j){
             return (j % 2 == i ? ls[i][j] + 1 : ls[i][j] - 1);

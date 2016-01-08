@@ -1,23 +1,38 @@
-//template<typename T>
-//struct template_template_helper;
-//
-//template<template<typename...> class T, typename... U>
-//struct template_template_helper<T<U...>> {
-//template<typename... V>
-//using Rebind = T<V...>;
-//
-//using Original = std::tuple<U...>;
-//};
+#ifndef JIAN_ETL_CORE
+#define JIAN_ETL_CORE
+
+#include "../util/std.h"
+
+namespace jian {
+namespace etl {
+
+template<typename T, template<typename...> class U>
+struct is_same_template {
+private:
+    template<template<typename...> class F, typename K, typename... Pars>
+    K check(F<K, Pars...>);
+public:
+    enum {value = std::is_same<U<decltype(check(declval<T>()))>, std::decay_t<T>>::value};
+};
 
 template<typename T>
-void foo(T &&val) {
-    template<typename... F>
-    using Z<F...> = T;
-}
+struct value_type {
+private:
+    template<template<typename...> class F, typename K, typename... Pars>
+    K check(F<K, Pars...>);
+public:
+    using type = decltype(check(declval<T>()));
+};
+
+template<typename T>
+using value_type_t = typename value_type<T>::type;
+
+} // namespace etl
+} // namespace jian
+
+#endif
 
 
-int main() {
-//using H = template_template_helper<std::vector<int>>;
-//static_assert(std::is_same<H::Rebind<char>, std::vector<char>>::value, "");
-//static_assert(std::is_same<H::Original, std::tuple<int, std::allocator<int>>>::value, "");
+
+
 

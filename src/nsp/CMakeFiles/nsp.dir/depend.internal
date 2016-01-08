@@ -931,9 +931,17 @@ src/nsp/CMakeFiles/nsp.dir/nsp.cpp.o
  src/nsp/../../lib/jian/dg/Move.h
  src/nsp/../../lib/jian/dg/Smooth.h
  src/nsp/../../lib/jian/dg/TestMC.h
+ src/nsp/../../lib/jian/etl/control.h
+ src/nsp/../../lib/jian/etl/core.h
+ src/nsp/../../lib/jian/etl/ls.h
+ src/nsp/../../lib/jian/fpl.h
+ src/nsp/../../lib/jian/fpl/core.h
+ src/nsp/../../lib/jian/fpl/iterate.h
+ src/nsp/../../lib/jian/fpl/list.h
  src/nsp/../../lib/jian/geom/geometry.h
  src/nsp/../../lib/jian/geom/move.h
  src/nsp/../../lib/jian/geom/rotate.h
+ src/nsp/../../lib/jian/geom/translate.h
  src/nsp/../../lib/jian/nuc2d/BuildSST.h
  src/nsp/../../lib/jian/nuc2d/GetSS.h
  src/nsp/../../lib/jian/nuc2d/MergeRings.h
@@ -953,8 +961,10 @@ src/nsp/CMakeFiles/nsp.dir/nsp.cpp.o
  src/nsp/../../lib/jian/nuc3d/BuildJunction.h
  src/nsp/../../lib/jian/nuc3d/BuildStrand.h
  src/nsp/../../lib/jian/nuc3d/FindTemplates.h
+ src/nsp/../../lib/jian/nuc3d/HelixPar.h
  src/nsp/../../lib/jian/nuc3d/JobInf.h
  src/nsp/../../lib/jian/nuc3d/Predict.h
+ src/nsp/../../lib/jian/nuc3d/ScaffoldToAllAtom.h
  src/nsp/../../lib/jian/nuc3d/Split.h
  src/nsp/../../lib/jian/nuc3d/TemplRec.h
  src/nsp/../../lib/jian/nuc3d/Transform.h

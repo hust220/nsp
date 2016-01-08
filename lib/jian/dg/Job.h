@@ -12,8 +12,8 @@ namespace dg {
 class Job {
 public:
     using DihEntry = std::vector<int>;
-    using DistType = MatrixXf;
-    using DihType = DihBound<DihEntry>;
+    using DistBoundType = MatrixXf;
+    using DihBoundType = DihBound<DihEntry>;
 
     std::mt19937 _rand_engine{11};
     std::uniform_real_distribution<double> _unif_distr{0, 1};

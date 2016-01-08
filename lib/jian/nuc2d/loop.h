@@ -166,17 +166,15 @@ public:
         return temp;
     }
 
-    int num_branches() {
-        int temp = 0;
-        for (res *tempRes = head; tempRes != NULL; tempRes = tempRes->next) {
-            if (tempRes->type == ')') {
-                temp++;
-            }
-        }
-        return temp / 2;
+    int num_branches() const {
+        int len = 0;
+        each([&len](auto res, int index){
+            if (res->type == ')') len++;
+        });
+        return len / 2;
     }
 
-    int num_sons() {
+    int num_sons() const {
         return hinges.size();
     }
 
@@ -211,7 +209,7 @@ public:
         }
     }
 
-    bool is_open() {
+    bool is_open() const {
         return num_branches() == num_sons();
     }
 

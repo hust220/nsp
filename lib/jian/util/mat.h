@@ -8,10 +8,62 @@
 #include "../Eigen/Dense"
 #include "../Eigen/SVD"
 #include "../Eigen/Geometry"
+#include "../etl/control.h"
 using namespace Eigen;
 
 namespace jian {
 namespace mat {
+
+template<typename T>
+struct is_eigen_mat {
+private:
+    using F = std::decay_t<T>;
+    template<typename _Scalar, int... Pars> 
+    static std::true_type check(Eigen::Matrix<_Scalar, Pars...>);
+    static std::false_type check(...);
+public:
+    enum {value = std::is_same<decltype(check(declval<F>())), std::true_type>::value};
+};
+
+template<typename T>
+struct is_stl_mat {
+private:
+    using F = std::decay_t<T>;
+    template<template<typename...> class LS1, template<typename...> class LS2, typename... Pars> 
+    static std::true_type check(LS1<LS2<Pars...>>);
+    static std::false_type check(...);
+public:
+    enum {value = std::is_same<decltype(check(declval<F>())), std::true_type>::value};
+};
+
+template<typename T>
+struct is_array_mat {
+private:
+    using F = std::decay_t<T>;
+    template<typename U, std::size_t N> 
+    static std::true_type check(U(*)[N]);
+    template<typename U> 
+    static std::true_type check(U **);
+    static std::false_type check(...);
+public:
+    enum {value = std::is_same<decltype(check(declval<F>())), std::true_type>::value};
+};
+
+// rows
+template<typename MatType, std::enable_if_t<is_eigen_mat<MatType>::value, int> = 42>
+int rows(MatType &&mat) {
+    return mat.rows();
+}
+
+template<typename MatType, std::enable_if_t<is_stl_mat<MatType>::value, int> = 42>
+int rows(MatType &&mat) {
+    return mat.size();
+}
+
+template<typename MatType, std::enable_if_t<is_array_mat<MatType>::value, int> = 42>
+int rows(MatType &&mat) {
+    return std::distance(std::begin(mat), std::end(mat));
+}
 
 // ref
 template<typename MatType, typename DataType>

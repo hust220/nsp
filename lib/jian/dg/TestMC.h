@@ -16,7 +16,7 @@ public:
 
     void test_mc(int n) {
         MatrixXf dist_bound;
-        DG::DihType dih_bound;
+        DG::DihBoundType dih_bound;
         std::tie(dist_bound, dih_bound) = bound(n);
         log("test mc:\n");
         DG dg(dist_bound, dih_bound);
@@ -24,15 +24,15 @@ public:
         log("coordinate:\n", c, '\n');
     }
 
-    std::pair<DG::DistType, DG::DihType> bound(int n) {
+    std::pair<DG::DistBoundType, DG::DihBoundType> bound(int n) {
         static auto fn_a = [](int n){return sqrt(2 * 9.7 * 9.7 * (1 - cos(0.562 * n - 2 * 3.14159)) + (2.84 * n) * (2.84 * n));};
         static auto fn_c = [](int n){return sqrt(2 * 9.7 * 9.7 * (1 - cos(0.562 * n - 1.5 * 3.14159)) + (2.84*n-4) * (2.84*n-4));};
         static auto fn_d = [](int n){return sqrt(2 * 9.7 * 9.7 * (1 - cos(0.562 * n - 0.5 * 3.14159)) + (2.84*n+4) * (2.84*n+4));};
         static std::vector<double> chir_data {437, 1498, 2600, 3068, 2442, 696, -1647, -3717, -4580, -3605};
 
         int len = 2 * (n + 1);
-        DG::DistType dist_bound(len, len);
-        DG::DihType dih_bound;
+        DG::DistBoundType dist_bound(len, len);
+        DG::DihBoundType dih_bound;
 //        MatrixXf chir(2 * (n - 2), 5);
 
 //        for (int i = 0; i < len; i++) bound(i, i) = 0;

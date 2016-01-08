@@ -6,6 +6,22 @@
 namespace jian {
 namespace fpl {
 
+template<template<typename...> class LS = std::list, typename Fn>
+auto list(int len, Fn &&f) {
+    using T = std::result_of_t<Fn(int)>;
+    LS<T> ls;
+    if (len == 0) return ls;
+    if (std::is_same<LS<T>, std::vector<T>>::value) {
+        ls.reserve(len);
+    }
+    int n = 0;
+    while (n < len) {
+        ls.push_back(f(n));
+        n++;
+    }
+    return ls;
+}
+
 template<typename Fn, typename ListType, typename... ListsType>
 bool exists(Fn &&f, const ListType &list, const ListsType & ...lists) {
     for (int i = 0; i < list.size(); i++) {

@@ -21,11 +21,12 @@ public:
     std::string _constraints;
     int _hinge = 2;
     int _num = 1;
-    int _is_test = 0; // Is this a test case or not?
+    bool _is_test = false; // Is this a test case or not?
     std::string _method = "assemble";
     std::string _native;
     nuc2d::N2D _n2d;
     std::string _strategy = "loose";
+    std::string _source_pdb;
 
     Log log;
 
@@ -77,10 +78,13 @@ public:
         pars.count("method") && (_method = boost::to_lower_copy(pars["method"][0]), 1);
 
         // ## Set whether test
-        pars.count("test") && (_is_test = ( boost::to_lower_copy(pars["test"][0]) == "yes" ? 1 : 0), 1);
+        pars.count("test") and (_is_test = ( boost::to_lower_copy(pars["test"][0]) == "yes" ? 1 : 0), true);
 
         // ## Set the path of native pdb
         pars.count("native") && (_native = boost::to_lower_copy(pars["native"][0]), 1);
+
+        // ## Set source pdb
+        pars.count("source-pdb") and (_source_pdb = pars["source-pdb"][0], true);
 
         // ## Check whether sequence and secondary are null
         _ss != "" or die("Please tell me the secondary structure!");

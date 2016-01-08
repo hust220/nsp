@@ -13,7 +13,9 @@
 
 // STL
 #include <vector>
+#include <array>
 #include <queue>
+#include <numeric>
 #include <ctime>
 #include <list>
 #include <set>
