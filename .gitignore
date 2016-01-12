@@ -2,9 +2,10 @@
 !lib
 !include
 !src
-!.gitignore
 !CMakeLists.txt
 *.bak
 *.o
 Makefile.in
-a.out
+*.out
+.*
+!.gitignore
