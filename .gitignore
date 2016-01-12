@@ -1,5 +1,6 @@
 /*
 !lib
+!include
 !src
 !.gitignore
 !CMakeLists.txt
