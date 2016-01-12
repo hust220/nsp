@@ -7,3 +7,4 @@
 *.o
 Makefile.in
 a.out
+.*
