@@ -1,5 +1,5 @@
-include_directories(../../lib)
-include_directories(../../lib/boost_1_58_0)
+include_directories(../../include)
+include_directories(../../include/boost_1_58_0)
 add_executable (nsp nsp.cpp)
 add_executable (anal-mol AnalMol.cpp)
 install(TARGETS nsp DESTINATION bin)
