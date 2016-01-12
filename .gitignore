@@ -3,3 +3,7 @@
 !src
 !.gitignore
 !CMakeLists.txt
+*.bak
+*.o
+Makefile.in
+a.out
