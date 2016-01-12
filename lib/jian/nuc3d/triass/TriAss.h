@@ -13,14 +13,14 @@ namespace triass {
 template<typename ModelType>
 class TriAss : public virtual JobInf {
 public:
-    typedef struct {char seq; char ss; int num;} Res;
-    typedef std::vector<Res> Frag;
-    typedef struct {std::string type; std::list<Frag> frags;} Module;
-    typedef std::list<Module> Tree;
-    typedef std::map<const Module *, ModelType> Templates;
+    using Res = struct {char seq; char ss; int num;};
+    using Frag = std::vector<Res>
+    using Module = struct {std::string type; std::list<Frag> frags;};
+    using Tree = std::list<Module>;
+    using Templates = std::map<const Module *, ModelType>;
 
-    MatrixXf _bound;
-    MatrixXf _constraints;
+    DG::DistBountType _dist_bound;
+    DG::DihBoundType _dih_bound;
     DG dg;
 
     BuildTriLoop<ModelType> build_tri_loop;
@@ -51,7 +51,9 @@ public:
             }
         }
         auto templates = find_templates(tree);
-        return assemble_templates(tree, templates);
+        position_templates(tree, templates);
+        auto model = assemble_templates(tree, templates);
+        return build_strands(tree, model);
     }
 
     Tree ss_to_tree() {
@@ -105,21 +107,9 @@ public:
     Templates find_templates(const Tree &tree) {
         Templates templates;
         for (auto && module : tree) {
-            templates[&module] = find_module_templates(module);
+            if (module.type == "helix") templates[&module] = find_helix_templates(module);
         }
         return templates;
-    }
-
-    ModelType find_module_templates(const Module &module) {
-        if (module.type == "hairpin") return find_hairpin_templates(module);
-        else if (module.type == "helix") return find_helix_templates(module);
-        else if (module.type == "loop") return find_loop_templates(module);
-        else throw "jian::nuc3d::TriAss::find_module_templates error! Illegal module type!";
-    }
-
-    ModelType find_hairpin_templates(const Module &module) {
-        ModelType model;
-        return model;
     }
 
     ModelType find_helix_templates(const Module &module) {
@@ -133,9 +123,9 @@ public:
         return assemble_helices(models);
     }
 
-    ModelType find_loop_templates(const Module &module) {
-        return build_tri_loop(map([](const Frag &frag)->int{return frag.size();}, module.frags), 0, 1);
-    }
+    void position_templates() {}
+
+    ModelType build_strands() {}
 
     ModelType assemble_templates(const Tree &tree, const Templates &templates) {
         return ModelType();

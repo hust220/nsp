@@ -240,7 +240,7 @@ public:
         };
         int index = -1, left_index = -1, right_index = -1, state = 0;
         std::list<std::vector<int>> strands;
-        l->each([&](nuc2d::res *r, int index){
+        l->each([&](nuc2d::res *r, int i){
             if (r->type == '&') return;
             auto new_state = fsm[state][type_id(r->type)];
             index = r->num - 1;

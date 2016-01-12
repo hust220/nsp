@@ -10,13 +10,13 @@ namespace triass {
 template<typename ModelType>
 class BuildTriLoop {
 public:
-    template<template<typename...> class ListType>
-    ModelType operator ()(const ListType<int> &ls, int primary_index, int secondary_index) {
+    template<typename LS>
+    ModelType operator ()(const LS &ls, int primary_index, int secondary_index) {
         return build_tri_loop(ls, primary_index, secondary_index);
     }
 
-    template<template<typename...> class ListType>
-    ModelType build_tri_loop(const ListType<int> &ls, int primary_index, int secondary_index) {
+    template<typename LS>
+    ModelType build_tri_loop(const LS &ls, int primary_index, int secondary_index) {
         DG::DistBoundType dist_bound; DG::DihBoundType dih_bound;
         std::tie(dist_bound, dih_bound) = bound_constraints(ls, primary_index, secondary_index);
         DG dg(dist_bound, dih_bound);
@@ -25,8 +25,8 @@ public:
         return all_atom(scaffold);
     }
 
-    template<template<typename...> class ListType>
-    std::pair<DG::DistBoundType, DG::DihBoundType> bound_constraints(const ListType<int> &ls, int primary_index, int secondary_index) {
+    template<typename LS>
+    std::pair<DG::DistBoundType, DG::DihBoundType> bound_constraints(const LS &ls, int primary_index, int secondary_index) {
         int len = fold([](double sum, int n){return sum + n;}, 0, ls) + 6;
         auto dist_bound = mat::make_mat<DG::DistBoundType>(len, len);
         DG::DihBoundType dih_bound;

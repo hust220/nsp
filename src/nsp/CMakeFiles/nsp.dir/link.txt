@@ -1,1 +1,0 @@
-/usr/bin/c++    -g -std=c++14   CMakeFiles/nsp.dir/nsp.cpp.o  -o nsp -rdynamic 

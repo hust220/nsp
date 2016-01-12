@@ -1,13 +1,2 @@
-/*
-!.gitignore
-!configure.ac
-!Makefile.am
-!lib
-!src
-!CMakeLists.txt
-*.[oa]
-*.deps
-*.so
-*.bak
-Makefile
-Makefile.in
+build
+tags

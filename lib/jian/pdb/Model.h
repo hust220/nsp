@@ -215,6 +215,7 @@ std::ostream &operator <<(std::ostream &output, const BasicModel<ChainType> &mod
         for (auto &&residue: chain.residues) {
             for (auto &&atom: residue.atoms) {
                 std::string atom_name = boost::replace_all_copy(atom.name, "*", "'");
+                if (residue_num == 1 and std::set<std::string>{"P", "O1P", "O2P"}.count(atom_name)) continue;
                 output << boost::format("ATOM%7i  %-4s%3s%2s%4i%12.3lf%8.3lf%8.3lf%6.2f%6.2f%12c  \n") % 
                                         atom_num % atom_name % residue.name % chain.name % residue_num % 
                                         atom.x % atom.y % atom.z % 1.00 % 0.00 % atom_name[0];
