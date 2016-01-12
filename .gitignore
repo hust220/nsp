@@ -3,6 +3,7 @@
 !include
 !src
 !CMakeLists.txt
+.svn
 *.bak
 *.o
 Makefile.in
