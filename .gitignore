@@ -1,2 +1,5 @@
-build
-tags
+/*
+!lib
+!src
+!.gitignore
+!CMakeLists.txt
