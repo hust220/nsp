@@ -20,14 +20,24 @@ public:
 
     Residue(MolFile &pdb_file) {
         if (!pdb_file.eof()) {
-            name = pdb_file.res_name();
+            name = format_name(pdb_file.res_name());
             num = pdb_file.res_num();
             int model_num = pdb_file.model_num();
             std::string chain_name = pdb_file.chain_name();
-            while (!pdb_file.eof() && model_num == pdb_file.model_num() && chain_name == pdb_file.chain_name() && num == pdb_file.res_num() && name == pdb_file.res_name()) {
+            while (!pdb_file.eof() and model_num == pdb_file.model_num() and chain_name == pdb_file.chain_name() 
+                   and num == pdb_file.res_num() and name == format_name(pdb_file.res_name())) {
                 atoms.push_back(Atom(pdb_file));
             }
         }
+    }
+
+    std::string format_name(const std::string &s) {
+        std::smatch result;
+        if (std::regex_match(s, result, std::regex("^(\\w+)\\d+$"))) {
+            // tLeap would append a '5' after the name of first residue
+            // and '3' after the name of the last residue
+            return result[1];
+        } else return s;
     }
 
     Residue(vector<string> &strings) {

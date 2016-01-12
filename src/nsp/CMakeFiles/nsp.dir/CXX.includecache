@@ -9288,10 +9288,6 @@ src/nsp/../../lib/jian/pdb/MolFile.h
 ../util/util.h
 src/nsp/../../lib/jian/util/util.h
 
-src/nsp/../../lib/jian/pdb/P2B.h
-RNA.h
-src/nsp/../../lib/jian/pdb/RNA.h
-
 src/nsp/../../lib/jian/pdb/Pdb.h
 Model.h
 src/nsp/../../lib/jian/pdb/Model.h
@@ -9341,8 +9337,6 @@ RNA.h
 src/nsp/../../lib/jian/pdb/RNA.h
 DNA.h
 src/nsp/../../lib/jian/pdb/DNA.h
-P2B.h
-src/nsp/../../lib/jian/pdb/P2B.h
 R6P.h
 src/nsp/../../lib/jian/pdb/R6P.h
 R5P.h

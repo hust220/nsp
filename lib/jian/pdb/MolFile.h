@@ -8,7 +8,7 @@ namespace jian {
 class MolFile {
 public:
     virtual void next() = 0;
-    virtual int eof() = 0;
+    virtual bool eof() = 0;
     virtual double x() = 0;
     virtual double y() = 0;
     virtual double z() = 0;
@@ -21,7 +21,7 @@ public:
     virtual int model_num() = 0;
 
     std::string _name;
-    int _i = 0;
+    unsigned int _i = 0;
 };
 
 } /// namespace jian

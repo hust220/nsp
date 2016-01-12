@@ -10,7 +10,7 @@ class PdbFile : public MolFile, public std::map<std::string, std::vector<std::st
 public:
     ///////////////////////////////////////
     void next();
-    int eof();
+    bool eof();
     double x();
     double y();
     double z();
@@ -67,7 +67,7 @@ inline void PdbFile::next() {
     }
 }
 
-inline int PdbFile::eof() {
+inline bool PdbFile::eof() {
     if (_i >= (*this)["atom_num"].size()) {
         return 1;
     } else {

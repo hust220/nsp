@@ -982,7 +982,6 @@ src/nsp/CMakeFiles/nsp.dir/nsp.cpp.o: src/nsp/../../lib/jian/pdb/IFRes.h
 src/nsp/CMakeFiles/nsp.dir/nsp.cpp.o: src/nsp/../../lib/jian/pdb/Manipulate.h
 src/nsp/CMakeFiles/nsp.dir/nsp.cpp.o: src/nsp/../../lib/jian/pdb/Model.h
 src/nsp/CMakeFiles/nsp.dir/nsp.cpp.o: src/nsp/../../lib/jian/pdb/MolFile.h
-src/nsp/CMakeFiles/nsp.dir/nsp.cpp.o: src/nsp/../../lib/jian/pdb/P2B.h
 src/nsp/CMakeFiles/nsp.dir/nsp.cpp.o: src/nsp/../../lib/jian/pdb/Pdb.h
 src/nsp/CMakeFiles/nsp.dir/nsp.cpp.o: src/nsp/../../lib/jian/pdb/PdbFile.h
 src/nsp/CMakeFiles/nsp.dir/nsp.cpp.o: src/nsp/../../lib/jian/pdb/R5P.h
