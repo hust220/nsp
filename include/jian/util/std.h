@@ -12,6 +12,7 @@
 #include <regex>
 
 // STL
+#include <bitset>
 #include <vector>
 #include <array>
 #include <queue>
@@ -27,6 +28,7 @@
 #include <utility>
 #include <algorithm>
 #include <functional>
+#include <type_traits>
 using namespace std;
 
 // boost

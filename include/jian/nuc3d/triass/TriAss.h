@@ -14,12 +14,12 @@ template<typename ModelType>
 class TriAss : public virtual JobInf {
 public:
     using Res = struct {char seq; char ss; int num;};
-    using Frag = std::vector<Res>
+    using Frag = std::vector<Res>;
     using Module = struct {std::string type; std::list<Frag> frags;};
     using Tree = std::list<Module>;
     using Templates = std::map<const Module *, ModelType>;
 
-    DG::DistBountType _dist_bound;
+    DG::DistBoundType _dist_bound;
     DG::DihBoundType _dih_bound;
     DG dg;
 
@@ -123,19 +123,22 @@ public:
         return assemble_helices(models);
     }
 
-    void position_templates() {}
+    ModelType load_helix(const std::string &s) {
+        return ModelType();
+    }
 
-    ModelType build_strands() {}
+    template<typename LS>
+    ModelType assemble_helices(LS &&ls) {
+        return ModelType();
+    }
+
+    void position_templates(const Tree &tree, Templates &templates) {}
 
     ModelType assemble_templates(const Tree &tree, const Templates &templates) {
         return ModelType();
     }
 
-    ModelType load_helix(const std::string &s) {
-        return ModelType();
-    }
-
-    ModelType assemble_helices(const std::list<ModelType> &models) {
+    ModelType build_strands(const Tree &tree, const ModelType &model) {
         return ModelType();
     }
 

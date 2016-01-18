@@ -6,6 +6,23 @@
 namespace jian {
 namespace etl {
 
+template<typename T, typename U>
+struct is_decay_same {
+    enum {value = std::is_same<std::decay_t<T>, std::decay_t<U>>::value};
+};
+
+template<typename... T> struct is_all_decay_same;
+
+template<typename T>
+struct is_all_decay_same<T> {
+    enum {value = true};
+};
+
+template<typename T, typename U, typename... F>
+struct is_all_decay_same<T, U, F...> {
+    enum {value = is_decay_same<T, U>::value and is_all_decay_same<U, F...>::value};
+};
+
 template<typename T, template<typename...> class U>
 struct is_same_template {
 private:

@@ -2,6 +2,7 @@
 #define JIAN_FPL_ITERATE
 
 #include "../util/std.h"
+#include "../etl/core.h"
 
 namespace jian {
 namespace fpl {
@@ -17,17 +18,22 @@ auto map(Fn &&f, const ListType<DataType> &list, const ListsType<DataType> & ...
     return result;
 }
 
-template<typename Fn, typename DataType>
-auto fold(Fn &&f, DataType &&data, std::pair<int, int> p) -> decltype(f(data, 0)) {
-    decltype(f(data, 0)) sum = data;
-    for (int i = p.first; i < p.second; i++) sum = f(sum, i);
-    return sum;
-}
+//template<typename Fn, typename DataType, typename ListType, typename... ListsType, 
+//         std::enable_if_t<etl::is_decay_same<std::pair<int, int>, ListType>::value and 
+//                          etl::is_all_decay_same<std::pair<int, int>, ListsType...>::value, int> = 42>
+//auto fold(Fn &&f, DataType &&data, ListType &&list, ListsType && ...lists) {
+////         -> decltype(f(data, *std::begin(list), (*std::begin(lists))...)) {
+//    using R = std::decay_t<decltype(f(data, list.first, (lists.first)...))>;
+//    R sum = std::forward<DataType>(data);
+//    for (int i = 0; i < list.second - list.first; i++) sum = f(sum, list.first + i, (lists.first + i)...);
+//    return sum;
+//}
 
 template<typename Fn, typename DataType, typename ListType, typename... ListsType>
-auto fold(Fn &&f, DataType &&data, ListType &&list, ListsType && ...lists) 
-         -> decltype(f(data, *std::begin(list), (*std::begin(lists))...)) {
-    decltype(f(data, *std::begin(list), (*std::begin(lists))...)) sum = std::forward<DataType>(data);
+auto fold(Fn &&f, DataType &&data, ListType &&list, ListsType && ...lists) {
+//         -> decltype(f(data, *std::begin(list), (*std::begin(lists))...)) {
+    using R = std::decay_t<decltype(f(data, *std::begin(list), (*std::begin(lists))...))>;
+    R sum = std::forward<DataType>(data);
     for (int i = 0; i < std::distance(std::begin(list), std::end(list)); i++) {
         sum = f(sum, *(std::next(std::begin(list), i)), (*(std::next(std::begin(lists), i)))...);
     }
