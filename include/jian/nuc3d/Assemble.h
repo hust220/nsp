@@ -10,6 +10,7 @@
 #include "Transform.h"
 #include "AddPhos.h"
 #include "BuildStrand.h"
+#include "LM.h"
 
 namespace jian {
 namespace nuc3d {
@@ -20,6 +21,8 @@ public:
     BuildStrand build_strand;
     int _it_num = 0;
     std::map<nuc2d::loop *, bool> _is_virtual;
+
+    LM lm;
 
     Assemble(const Par &par) : JobInf(par) {
 
@@ -72,12 +75,24 @@ public:
     void select_templates() {
         if (_it_num == 0) {
             _n2d.head->apply([&](nuc2d::loop *l){
-                if (l->has_loop()) _templates[l].first = load_pdb(_records[l].first[0], (_is_virtual[l] ? "hinge" : ""));
+                if (l->has_loop()) {
+                    if (_records[l].first.empty()) {
+                        _templates[l].first = lm(l->seq(), (_is_virtual[l] ? nuc2d::hinge_ss(l->ss()) : nuc2d::lower_ss(l->ss())))[0];
+                    } else {
+                        _templates[l].first = load_pdb(_records[l].first[0], (_is_virtual[l] ? "hinge" : ""));    
+                    }
+                }
                 if (l->has_helix()) _templates[l].second = load_pdb(_records[l].second[0]);
             });
         } else {
             _n2d.head->apply([&](nuc2d::loop *l){
-                if (l->has_loop()) _templates[l].first = load_pdb(_records[l].first[rand(0, _records[l].first.size() - 1)], (_is_virtual[l] ? "hinge" : ""));
+                if (l->has_loop()) {
+                    if (_records[l].first.empty()) {
+                        _templates[l].first = lm(l->seq(), (_is_virtual[l] ? nuc2d::hinge_ss(l->ss()) : nuc2d::lower_ss(l->ss())))[0];
+                    } else {
+                        _templates[l].first = load_pdb(_records[l].first[rand(0, _records[l].first.size() - 1)], (_is_virtual[l] ? "hinge" : ""));
+                    }
+                }
                 if (l->has_helix()) _templates[l].second = load_pdb(_records[l].second[rand(0, _records[l].second.size() - 1)]);
             });
         }

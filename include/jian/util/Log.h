@@ -24,6 +24,9 @@ public:
 
     void bind(const std::string &log_file) {
         _log_file = log_file;
+    }
+
+    void clear() {
         if (_log_file != "") {
             std::ofstream out(_log_file.c_str());
             out.close();

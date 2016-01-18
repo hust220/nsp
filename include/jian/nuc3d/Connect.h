@@ -1,7 +1,7 @@
 #ifndef CONNECT_H
 #define CONNECT_H
 
-#include <pdb/util.h>
+#include "../pdb/util.h"
 
 namespace jian {
 namespace nuc3d {

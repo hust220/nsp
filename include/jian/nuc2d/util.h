@@ -77,7 +77,7 @@ template<typename T> bool check_ss(T &&ss) {
     return true;
 }
 
-template<typename T> int len_ss(T &&ss) {
+template<typename T> inline int len_ss(T &&ss) {
     return std::count_if(ss.begin(), ss.end(), [&](const char &c){
         return std::count_if(paired_keys.begin(), paired_keys.end(), [&](const std::pair<char, char> &pair){
             return pair.first == c || pair.second == c;
@@ -85,13 +85,13 @@ template<typename T> int len_ss(T &&ss) {
     });
 }
 
-template<typename T> std::string pure_ss(T &&ss) {
+template<typename T> inline std::string pure_ss(T &&ss) {
     std::string p_ss;
     std::copy_if(ss.begin(), ss.end(), std::back_inserter(p_ss), [](const char &c){return c != '&';});
     return p_ss;
 }
     
-template<typename T> std::string lower_ss(T &&ss, int n = 2) {
+template<typename T> inline std::string lower_ss(T &&ss, int n = 2) {
     static std::map<char, int> pos_keys = get_pos_keys();
     std::string l_ss;
     std::transform(ss.begin(), ss.end(), std::back_inserter(l_ss), [&](const char &c){
@@ -102,6 +102,14 @@ template<typename T> std::string lower_ss(T &&ss, int n = 2) {
         }
     });
     return l_ss;
+}
+
+template<typename T> inline std::string hinge_ss(T &&ss) {
+    std::string h_ss;
+    std::copy_if(ss.begin(), ss.end(), std::back_inserter(h_ss), [](const char &c){
+        return c == '(' or c == ')';
+    });
+    return h_ss;
 }
 
 } // namespace nuc2d

@@ -16,10 +16,11 @@
 #ifndef JIAN_NUC3D_LM_H
 #define JIAN_NUC3D_LM_H
 
-#include <pdb/util.h>
-#include <nuc2d/N2D.h>
-#include <dg/DG.h>
+#include "../pdb/util.h"
+#include "../nuc2d/N2D.h"
+#include "../dg/DG.h"
 #include "Connect.h"
+#include "BuildNuc.h"
 
 namespace jian {
 namespace nuc3d {
@@ -41,23 +42,6 @@ public:
     int _view = 0;
 
     std::string _constraint_file;
-
-//    LM(string type = "RNA");
-//    std::vector<Model> operator ()(string seq, string ss, string constraint_file = "", int num = 1);
-//    Model to_all_atom(const MatrixXf &);
-
-//    void set_constraints();
-//    MatrixXf apply_constraints(const MatrixXf &);
-//    std::vector<std::vector<std::vector<int>>> read_constraints_file();
-//    MatrixXf read_constraints_pos(std::string, int);
-//    MatrixXf read_constraints_par(std::string, int);
-
-//    void init();
-//    void set_base_pairs(nuc2d::loop *);
-
-//    MatrixXf get_helix_par(const R5P &);
-//    R5P get_helix(const nuc2d::helix &);
-//    R5P create_helix(const string &);
 
     LM(string type = "RNA"): _type(type) {
         char *lib = getenv("NSP");
@@ -97,7 +81,7 @@ public:
         ifile.close();
     }
 
-    std::vector<Model> operator ()(string seq, string ss, string constraint_file, int num = 1) {
+    std::vector<Model> operator ()(string seq, string ss, std::string constraint_file = "", int num = 1) {
         _seq = seq;
         _ss = ss;
         _constraint_file = constraint_file;
@@ -106,11 +90,11 @@ public:
             return std::set<char>{'.', '(', ')', '[', ']'}.count(c);
         }));
 
-        /// set bound matrix
+        // set bound matrix
         init();
 
-        /// initialize distance geometry calculator
-        dg = DG(_bound, 2);
+        // initialize distance geometry calculator
+        dg = DG(_bound);
         dg.log.set_display(_view);
         std::vector<Model> models;
         for (int i = 0; i < num; i++) {
@@ -187,7 +171,7 @@ public:
         /// end adjacent nucleotides
 
         /// begin base pairs
-        N2D mol2d(_ss, _seq);
+        nuc2d::N2D mol2d(_ss, _seq);
         set_base_pairs(mol2d.head);
 
         std::string str = _ss;
@@ -196,7 +180,7 @@ public:
                                      {']', ')'}, {'.', '.'}, {'&', '&'}};
             return temp_map[c];
         });
-        N2D mol2d_2(str, _seq);
+        nuc2d::N2D mol2d_2(str, _seq);
         set_base_pairs(mol2d_2.head);
         /// end base pairs
 
@@ -269,7 +253,7 @@ public:
         }
     }
 
-    R5P get_helix(const helix &h) {
+    R5P get_helix(const nuc2d::helix &h) {
         std::string file_name = _lib + "/info/helix";
         std::ifstream ifile(file_name.c_str());
         assert(ifile);

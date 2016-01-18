@@ -1,11 +1,10 @@
 #ifndef BUILD_NUC_H
 #define BUILD_NUC_H
 
-#include <dg/DG.h>
-#include <pdb/util.h>
+#include "../dg/DG.h"
+#include "../pdb/util.h"
 
 namespace jian {
-
 namespace nuc3d {
 
 class BuildNuc {
@@ -16,8 +15,8 @@ public:
 
     int _view = 0;
 
-    string _type = "RNA";
-    string _lib;
+    std::string _type = "RNA";
+    std::string _lib;
     std::map<string, MatrixXf> _base_aa_par;
     std::map<string, MatrixXf> _base_cg_par;
     std::map<string, MatrixXf> _phos_sugar_par;

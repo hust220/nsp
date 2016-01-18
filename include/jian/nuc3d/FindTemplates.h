@@ -93,9 +93,6 @@ public:
             }
         }
         ifile.close();
-        if (_records[l].first.size() == 0) {
-            _records[l].first.push_back();
-        }
         std::sort(_records[l].first.begin(), _records[l].first.end(), []( const TemplRec &loop1, const TemplRec &loop2) {
             return loop1._score > loop2._score; });
         _loop_nums_table.push_back(std::make_tuple(l, num_sons, num, 0));

@@ -22,6 +22,7 @@ public:
 
     void predict() {
         boost::timer t;
+        log.clear();
         log("=========================================================\n",
             "New Job: ", _name, '\n',
             "Time: ", Time::time(), '\n',

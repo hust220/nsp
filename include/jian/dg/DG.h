@@ -12,6 +12,7 @@ namespace jian {
 class DG : public virtual dg::Job, public virtual dg::Smooth, public virtual dg::CG, public virtual dg::MC {
 public:
     DG() = default;
+    DG(const DG &dg) =  default;
 
     DG(const DistBoundType &dist_bound) {
         bound = dist_bound;
