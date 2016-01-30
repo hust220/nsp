@@ -2,7 +2,7 @@
 #define JIAN_PDB_IFRES_H
 
 #include "Residue.h"
-#include "../geom/geometry.h"
+#include "../geom.h"
 
 namespace jian {
 namespace pdb {
@@ -17,8 +17,8 @@ public:
         static std::unordered_map<std::string, unsigned int> cvt {{"A", 1}, {"U", 2}, {"G", 4}, {"C", 8}};
 
         Atom atoms[4] {(*this)["C"], (*this)["O"], if_res["C"], if_res["O"]};
-        std::array<double, 4> dists {geometry::distance(atoms[0], atoms[2]), geometry::distance(atoms[1], atoms[3]),
-                                     geometry::distance(atoms[0], atoms[3]), geometry::distance(atoms[1], atoms[2])};
+        std::array<double, 4> dists {geom::distance(atoms[0], atoms[2]), geom::distance(atoms[1], atoms[3]),
+                                     geom::distance(atoms[0], atoms[3]), geom::distance(atoms[1], atoms[2])};
 
         std::cout << num - 1 << '-' << if_res.num - 1 << ' ';
         for (auto i : dists) std::cout << i << ' ';

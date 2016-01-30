@@ -4,6 +4,7 @@
 #include "Cif.h"
 #include "PdbFile.h"
 #include "../util/std.h"
+#include "../util/file.h"
 
 namespace jian {
 namespace pdb {
@@ -13,7 +14,7 @@ struct _AA {}; struct _PSB {};
 
 template<typename T>
 struct is_mol_file {
-    enum {value = std::is_same<std::decay_t<T>, Cif>::value or std::is_same<std::decay_t<T>, PdbFile>::value};
+    enum {value = std::is_same<std::decay_t<T>, Cif>::value || std::is_same<std::decay_t<T>, PdbFile>::value};
 };
 
 class Atom : public std::array<double, 3> {
@@ -49,6 +50,8 @@ public:
 
     std::string _name;
     int _num;
+
+    Residue() = default;
 
     template<typename F, typename V, std::enable_if_t<std::is_same<U, V>::value, int> = 42>
     Residue(const Residue<F, V> &res) : _name(res._name) {
@@ -149,6 +152,8 @@ public:
 
     std::string _name;
 
+    Chain() = default;
+
     template<typename F, typename V>
     Chain(const Chain<F, V> &chain) : _name(chain._name) {
         for (auto &&res : chain) this->push_back(Residue<T, U>(res));
@@ -184,7 +189,7 @@ public:
 
     std::string _name;
 
-    Model() {}
+    Model() = default;
 
     template<typename F, typename V>
     Model(const Model<F, V> &model) : _name(model._name) {
@@ -219,7 +224,14 @@ public:
             while (!file.eof() and num == file.model_num()) this->push_back(Chain<T, U>(file));
         }
     }
+
 };
+
+template<typename T, typename U>
+inline int res_type(const Residue<T, U> &res) {
+    static std::map<std::string, int> m{{"A", 0}, {"U", 1}, {"G", 2}, {"C", 3}};
+    return m.count(res._name) ? m[res._name] : -1;
+}
 
 template<typename T, typename U> 
 std::ostream &operator <<(std::ostream &output, const Model<T, U> &model) {
@@ -242,6 +254,16 @@ std::ostream &operator <<(std::ostream &output, const Model<T, U> &model) {
     }
     return output;
 }
+
+template<typename T>
+inline int num_residues(const T &model) {
+    int index = 0;
+    for (auto &chain : model) for (auto &res : chain) {
+        index++;
+    }
+    return index;
+}
+
 
 using RNA = Model<_RNA, _AA>;
 using DNA = Model<_DNA, _AA>;

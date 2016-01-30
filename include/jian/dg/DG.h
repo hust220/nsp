@@ -5,7 +5,7 @@
 #include "Smooth.h"
 #include "CG.h"
 #include "MC.h"
-#include "../geom/geometry.h"
+#include "../geom.h"
 
 namespace jian {
 
@@ -103,7 +103,7 @@ public:
         MatrixXf dist(coord.rows(), coord.cols());
         for (int i = 0; i < len; i++) for (int j = i; j < len; j++) {
             if (i == j) dist(i, j) = 0;
-            else dist(i, j) = dist(j, i) = geometry::distance(coord.row(i), coord.row(j));
+            else dist(i, j) = dist(j, i) = geom::distance(coord.row(i), coord.row(j));
         }
         return dist;
     }

@@ -2,7 +2,7 @@
 #define JIAN_DG_GRADIENT_H
 
 #include "Job.h"
-#include "../geom/geometry.h"
+#include "../geom.h"
 
 namespace jian {
 namespace dg {
@@ -105,7 +105,7 @@ public:
 
     template<typename LS>
     double dih_row_energy(const LS &ls) {
-        double dih = geometry::dihedral(c.row(ls[0]), c.row(ls[1]), c.row(ls[2]), c.row(ls[3]));
+        double dih = geom::dihedral(c.row(ls[0]), c.row(ls[1]), c.row(ls[2]), c.row(ls[3]));
         auto dih_bound = _dih_bound[ls];
         return relative_dih_energy(dih, (dih_bound.first), (dih_bound.second));
     }

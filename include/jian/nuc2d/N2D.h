@@ -23,37 +23,6 @@ public:
 
     N2D() {}
 
-//    N2D(string ss_, int view_ = 0);
-//    N2D(string ss_, string seq_, int view_ = 0);
-//    N2D(N2D *mol2d);
-//    N2D(const N2D &mol2d);
-//    void operator ()();
-//    void operator ()(std::string ss_);
-//    loop *operator ()(std::string seq_, std::string ss_);
-//    N2D &operator =(const N2D &mol2d);
-//    ~N2D();
-
-//    void setTree(vector<res> &, int = 0);
-//    void resetNum(loop *, const vector<int> &);
-//    void print();
-//    void readSeq(string);
-//    void readMol(string);
-//
-//    void getLoop(vector<res> &, vector<loop *> &, const vector<int> &);
-//    void printTree(loop *, int = 0);
-//    void delLoop(loop *);
-//    void setSeq(loop *, string);
-
-//    pair<vector<loop *>, int> extend_hinge(loop *, int);
-
-    // methods for constructing pseudo-knots loop
-//    void setPairs();
-//    void setLoops(loop *);
-//    list<loop *> find_path(loop *, loop *);
-//    void constructPseudoknots();
-//    list<loop *> pseudo_loop(loop *, set<loop *>);
-//    int pseudo_tree(loop *, loop *, set<loop *>, loop *);
-
     void operator ()() {
         if (line == "") {
             std::cerr << "N2D::operator () error! Please provide the 2D structure. " << std::endl;

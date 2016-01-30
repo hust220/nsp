@@ -16,6 +16,7 @@
 #include <jian/nuc2d/GetSS.h>
 #include <jian/pdb/IFModel.h>
 #include <jian/dg/TestMC.h>
+#include <jian/scoring/AssessPSB.h>
 
 namespace jian {
 
@@ -41,13 +42,11 @@ public:
                     jian::nuc3d::Predict pred(par);
                     pred();
                 }
+            } else if (type == "anal-psb") {
+                jian::scoring::AssessPSB assess_psb;
+                if (par.count("mol")) for (auto && file : par["mol"]) assess_psb.analyze(jian::pdb::PSB(file));
             } else if (type == "extract_fragment") {
                 jian::extract_fragment(par["mol"][0], std::stoi(par["len"][0]));
-//            } else if (type == "lm2") {
-//                jian::nuc3d::LM2 lm2(par);
-//                for (int i = 0; i < lm2._num; i++) {
-//                    lm2().write(lm2._name + "-" + std::to_string(i + 1) + ".pdb");
-//                }
             } else if (type == "seq2ss") {
                 jian::nuc2d::Seq2Ss seq2ss;
                 if (par.count("cutoff")) seq2ss._cutoff = std::stof(par["cutoff"][0]);

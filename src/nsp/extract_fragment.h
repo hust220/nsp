@@ -2,7 +2,7 @@
 #define JIAN_EXTRACT_FRAGMENT_H
 
 #include <jian/util/std.h>
-#include <jian/geom/geometry.h>
+#include <jian/geom.h>
 #include <jian/pdb/Model.h>
 
 namespace jian {
@@ -22,7 +22,7 @@ void extract_fragment(const jian::Model &model, int len) {
             deque2.push_back(residue["C4*"].pos());
             deque3.push_back(residue["O3*"].pos());
             if (deque2.size() >= 2) {
-                double dist = jian::geometry::distance(deque1.back(), deque3[deque3.size() - 2]);
+                double dist = jian::geom::distance(deque1.back(), deque3[deque3.size() - 2]);
                 if (dist > 4) {
                     deque1.erase(deque1.begin(), std::next(deque1.begin(), deque1.size() - 1));
                     deque2.erase(deque2.begin(), std::next(deque2.begin(), deque2.size() - 1));
@@ -36,7 +36,7 @@ void extract_fragment(const jian::Model &model, int len) {
                 std::cout << file_name << " ";
                 for (int i = 0; i < len; i++) {
                     for (int j = i + 1; j < len; j++) {
-                        std::cout << jian::geometry::distance(deque2[i], deque2[j]) << ' ';
+                        std::cout << jian::geom::distance(deque2[i], deque2[j]) << ' ';
                     }
                 }
                 jian::Model new_model;

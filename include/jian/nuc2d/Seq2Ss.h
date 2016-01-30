@@ -8,11 +8,11 @@ namespace nuc2d {
 
 class Seq2Ss {
 public:
-    typedef std::pair<int, int> Pair;
-    typedef std::vector<Pair> Pairs;
-    typedef std::vector<int> PairList;
-    typedef std::pair<PairList, double> PairInfo;
-    typedef std::vector<PairInfo> InfoList;
+    using Pair = std::pair<int, int>;
+    using Pairs = std::vector<Pair>;
+    using PairList = std::vector<int>;
+    using PairInfo = std::pair<PairList, double>;
+    using InfoList = std::vector<PairInfo>;
 
     std::map<int, InfoList> _info;
 

@@ -1,11 +1,16 @@
-#ifndef JIAN_GEOM_ROTATE_H
-#define JIAN_GEOM_ROTATE_H
+#ifndef JIAN_GEOM_ROTATE
+#define JIAN_GEOM_ROTATE
 
 #include "../fpl.h"
-#include "../util/util.h"
+#include "../util.h"
 
 namespace jian {
 namespace geom {
+
+template<typename T, typename U> 
+void translate(T &&t, U &&u) {
+    for (int i = 0; i < 3; i++) t[i] += u[i];
+}
 
 template<typename T, typename Mat> 
 void rotate(T &&t, Mat &&mat) {

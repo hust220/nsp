@@ -54,7 +54,6 @@ template<typename T> bool check_ss(T &&ss) {
             return false;
         }
     }
-
     std::map<char, int> map;
     for (auto &&s: ss) {
         if (pos_keys.count(s)) {

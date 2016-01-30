@@ -2,8 +2,7 @@
 #define CONVERT_H
 
 #include "Pdb.h"
-#include "../geom/geometry.h"
-#include "../geom/rotate.h"
+#include "../geom.h"
 #include "Format.h"
 
 namespace jian {
@@ -75,15 +74,15 @@ public:
         std::tie(base_coord, base_nail, base_direct) = read_base(name);
      
         /// Superpose axis
-        geometry::superpose(base_coord, base_nail, res_coord, res_nail);
+        geom::superpose(base_coord, base_nail, res_coord, res_nail);
 
         /// Calculate base direction
-        RowVector3f direct1 = geometry::normal_vector(
+        RowVector3f direct1 = geom::normal_vector(
             base_coord.row(base_direct[0]),
             base_coord.row(base_direct[1]),
             base_coord.row(base_direct[2])
         );
-        RowVector3f direct2 = geometry::normal_vector(
+        RowVector3f direct2 = geom::normal_vector(
             res_coord.row(res_direct[0]),
             res_coord.row(res_direct[1]),
             res_coord.row(res_direct[2])
@@ -91,7 +90,7 @@ public:
 
 
         /// Calculate rotate angle
-        auto rotate_angle = geometry::dihedral(
+        auto rotate_angle = geom::dihedral(
             base_coord.row(base_nail[0]) + direct1,
             base_coord.row(base_nail[0]),
             base_coord.row(base_nail[1]),

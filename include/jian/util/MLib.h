@@ -144,7 +144,7 @@ template<typename List> List slice(const List &list, int m, int n) {
     return new_list;
 }
 
-inline void tokenize(const string &str, vector<string> &tokens, const string &delimiters) {
+inline void tokenize(const std::string &str, std::vector<string> &tokens, const std::string &delimiters) {
     tokens.clear();
     // Skip delimiters at beginning.
     string::size_type lastPos = str.find_first_not_of(delimiters, 0);

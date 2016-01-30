@@ -1,7 +1,7 @@
 #ifndef CIF_H
 #define CIF_H
 
-#include "../util/util.h"
+#include "../util.h"
 #include "MolFile.h"
 
 namespace jian {

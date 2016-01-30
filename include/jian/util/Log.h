@@ -35,7 +35,8 @@ public:
 
     void operator ()() {}
 
-    template<typename Data, typename... Datum> void operator ()(Data &&data, Datum && ...datum) {
+    template<typename Data, typename... Datum> 
+    void operator ()(Data &&data, Datum && ...datum) {
         if (!_display) return;
         if (_log_file == "") {
             std::cout << data;

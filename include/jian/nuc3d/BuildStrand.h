@@ -5,7 +5,7 @@
 #include "../util/std.h"
 #include "../util/mat.h"
 #include "../dg/DG.h"
-#include "../geom/geometry.h"
+#include "../geom.h"
 
 namespace jian {
 namespace nuc3d {
@@ -83,7 +83,7 @@ public:
         else return bound;
         for (int i = 0; i < mat.rows(); i++) {
             for (int j = i + 1; j < mat.rows(); j++) {
-                bound(vec[i], vec[j]) = bound(vec[j], vec[i]) = geometry::distance(mat.row(i), mat.row(j));
+                bound(vec[i], vec[j]) = bound(vec[j], vec[i]) = geom::distance(mat.row(i), mat.row(j));
             }
         }
         return bound;
@@ -113,7 +113,8 @@ public:
         }
     }
 
-    template<typename List> std::deque<Residue> find_best_frag_model(List &&list) {
+    template<typename List> 
+    std::deque<Residue> find_best_frag_model(List &&list) {
         typedef struct {
             bool operator ()(const std::pair<int, double> &p1, const std::pair<int, double> &p2) {return p1.second < p2.second;}
         } Compare;
@@ -121,24 +122,25 @@ public:
         int size = std::distance(std::begin(list), std::end(list));
         if (size == 3) {
             for (int i = 0; i < _frag_3_dists.size(); i++) 
-                rank.push(std::make_pair(i, geometry::distance(_frag_3_dists[i], std::forward<List>(list))));
+                rank.push(std::make_pair(i, geom::distance(_frag_3_dists[i], std::forward<List>(list))));
             log(_frag_par_path, "/", _frag_3_names[rank.top().first], ".pdb\n");
             return get_residues_from_file(_frag_par_path + "/" + _frag_3_names[rank.top().first] + ".pdb");
         } else if (size == 10) {
             for (int i = 0; i < _frag_5_dists.size(); i++) 
-                rank.push(std::make_pair(i, geometry::norm(_frag_5_dists[i], std::forward<List>(list), 10)));
+                rank.push(std::make_pair(i, geom::norm(_frag_5_dists[i], std::forward<List>(list), 10)));
             log(_frag_par_path, "/", _frag_5_names[rank.top().first], ".pdb\n");
             return get_residues_from_file(_frag_par_path + "/" + _frag_5_names[rank.top().first] + ".pdb");
         } else {
-            throw "JIAN::NUC3D::LM2::find_best_frag_model error!";
+            throw "JIAN::NUC3D::BuildStrand::find_best_frag_model error!";
         }
     }
 
-    template<typename Coord> std::vector<double> coord_to_dists(Coord &&coord) {
+    template<typename Coord> 
+    std::vector<double> coord_to_dists(Coord &&coord) {
         int len = coord.rows();
         std::vector<double> dists(len * (len - 1) / 2);
         for (int i = 0, index = 0; i < len; i++) for (int j = i + 1; j < len; j++) {
-            dists[index] = geometry::distance(coord.row(i), coord.row(j));
+            dists[index] = geom::distance(coord.row(i), coord.row(j));
             index++;
         }
         return dists;

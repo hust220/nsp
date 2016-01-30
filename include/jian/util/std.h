@@ -36,6 +36,7 @@ using namespace std;
 #include <boost/assert.hpp>
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/preprocessor.hpp>
 
 // constant
 #define MASS_H 1.00794
@@ -47,6 +48,9 @@ using namespace std;
 namespace jian {
 const static double PI = 3.1415927;
 } // namespace jian
+
+// Macro
+#define CLASS_NAME(T) #T
 
 #endif
 

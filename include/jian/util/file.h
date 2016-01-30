@@ -18,6 +18,18 @@ inline std::string type(const std::string &file_path) {
     } else return "";
 }
 
+template<typename Fn>
+inline void each_line(const std::string &file_name, Fn &&f) {
+    std::ifstream ifile(file_name.c_str());
+    std::string line; int num_line = 0; 
+    while (ifile) {
+        num_line++;
+        std::getline(ifile, line);
+        if (!f(line, num_line)) break;
+    }
+    ifile.close();
+}
+
 } // namespace file
 } // namespace jian
 
