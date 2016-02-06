@@ -9,8 +9,8 @@ namespace jian {
 namespace nuc3d {
 
 template<typename ModelType = pdb::RNA, 
-         enable_if_t<std::is_same<ModelType, pdb::RNA>::value || 
-                     std::is_same<ModelType, pdb::DNA>::value, int> = 42>
+         std::enable_if_t<std::is_same<ModelType, pdb::RNA>::value || 
+                          std::is_same<ModelType, pdb::DNA>::value, int> = 42>
 class BuildJunction {
 public:
     using Hinge = std::array<int, 4>;
@@ -64,7 +64,7 @@ public:
     }
 
     auto make_junction(const Hinges &hinges) {
-        std::vector<Helix> helices(hinges.size());
+        Helices helices(hinges.size());
         helices[0].theta = 0; helices[0].phi = 0;
         for (int i = 1; i < helices.size(); i++) {
             helices[i].theta = rand()*PI; helices[i].phi = rand()*2*PI;
@@ -78,7 +78,7 @@ public:
         auto result = parse_helix(pairs);
         for (int i = 0; i < helices.size(); i++) {
             auto helix = pairs;
-            translate(helix, center, std::vector<double>{0, 0, 0});
+            translate(helix, result.origin, std::vector<double>{0, 0, 0});
             rotate(helix, direction, helices[i]);
         }
         return model;
@@ -93,7 +93,12 @@ public:
     }
 
     template<typename T1, typename T2>
-    void translate(const ModelType &model, const T1 &old_center, const T2 &new_center) {}
+    void translate(const ModelType &model, const T1 &o, const T2 &n) {
+        for (auto &chain : model) for (auto &residue : chain) for (auto &atom : residue) {
+            geom::translate(atom, std::vector<val_t>{-o[0], -o[1], -o[2]});
+            geom::translate(atom, std::vector<val_t>{n[0], n[1], n[2]});
+        }
+    }
 
     void rotate(const ModelType &model, const Helix &old_direct, const Helix &new_direct) {}
 

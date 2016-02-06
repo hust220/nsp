@@ -39,7 +39,7 @@ MatrixXf x_rot_mat(C1 c, C2 s) {
                0, c, s,
                0,-s, c;
     return rot_mat;   
-} /// x_rot_mat
+} // x_rot_mat
 
 template<class C1 = double, class C2 = double> 
 MatrixXf y_rot_mat(C1 c, C2 s) {
@@ -48,7 +48,7 @@ MatrixXf y_rot_mat(C1 c, C2 s) {
                0, 1, 0,
                s, 0, c;
     return rot_mat;   
-} /// y_rot_mat
+} // y_rot_mat
 
 template<class C1 = double, class C2 = double> 
 MatrixXf z_rot_mat(C1 c, C2 s) {
@@ -57,7 +57,7 @@ MatrixXf z_rot_mat(C1 c, C2 s) {
               -s, c, 0,
                0, 0, 1;
     return rot_mat;   
-} /// z_rot_mat
+} // z_rot_mat
 
 template<typename L> 
 void rotate(MatrixXf &src, const L &begin, const L &end, const double &angle) {
