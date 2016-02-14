@@ -1,5 +1,5 @@
-#ifndef CONVERT_H
-#define CONVERT_H
+#ifndef JIAN_PDB_CONVERT_H
+#define JIAN_PDB_CONVERT_H
 
 #include "Pdb.h"
 #include "../geom.h"
@@ -9,6 +9,7 @@ namespace jian {
 
 class Convert {
 public:
+    using Mat = MatrixXd;
     std::string _lib;
     std::map<std::string, std::vector<std::string>> _atom_list;
 
@@ -63,26 +64,26 @@ public:
         format.sort(res);
 
         /// Get information
-        MatrixXf res_coord; 
+        Mat res_coord; 
         std::vector<int> res_nail; 
         std::vector<int> res_direct;
         std::tie(res_coord, res_nail, res_direct) = get_res_coord(res);
 
-        MatrixXf base_coord; 
+        Mat base_coord; 
         std::vector<int> base_nail; 
         std::vector<int> base_direct;
         std::tie(base_coord, base_nail, base_direct) = read_base(name);
      
         /// Superpose axis
-        geom::superpose(base_coord, base_nail, res_coord, res_nail);
+        geom::suppos(base_coord, base_nail, res_coord, res_nail);
 
         /// Calculate base direction
-        RowVector3f direct1 = geom::normal_vector(
+        RowVector3d direct1 = geom::normal_vector(
             base_coord.row(base_direct[0]),
             base_coord.row(base_direct[1]),
             base_coord.row(base_direct[2])
         );
-        RowVector3f direct2 = geom::normal_vector(
+        RowVector3d direct2 = geom::normal_vector(
             res_coord.row(res_direct[0]),
             res_coord.row(res_direct[1]),
             res_coord.row(res_direct[2])
@@ -98,9 +99,9 @@ public:
         );
 
         /// Rotate base
-        VectorXf beg = base_coord.row(base_nail[0]);
-        VectorXf end = base_coord.row(base_nail[1]);
-        geom::rotate(base_coord, beg, end, rotate_angle);
+        VectorXd beg = base_coord.row(base_nail[0]);
+        VectorXd end = base_coord.row(base_nail[1]);
+        geom::rotate_angle_xyz(base_coord, beg, end, rotate_angle);
 
         /// Set residue coordiantes size
         std::set<std::string> dna_name_list{"DA", "DT", "DG", "DC"};
@@ -115,7 +116,7 @@ public:
         BOOST_ASSERT(new_sugar_size == old_sugar_size && "jian::Convert error! Please check the residue to be converted.");
         new_base_size = std::map<std::string, int>{{"A", 10}, {"U", 8}, {"G", 11}, {"C", 8}, {"DA", 10}, {"DT", 9}, {"DG", 11}, {"DC", 8}}[name];
 
-        MatrixXf coord(new_phos_size + new_sugar_size + new_base_size, 3);
+        Mat coord(new_phos_size + new_sugar_size + new_base_size, 3);
 
         /// Copy phosphate and sugar coordinates
         if (rna_name_list.count(res.name) && dna_name_list.count(name)) {
@@ -134,8 +135,8 @@ public:
         res = make_residue(name, coord);
     }
 
-    std::tuple<MatrixXf, std::vector<int>, std::vector<int>> get_res_coord(const Residue &res) {
-        MatrixXf res_coord(res.atoms.size(), 3);
+    std::tuple<Mat, std::vector<int>, std::vector<int>> get_res_coord(const Residue &res) {
+        Mat res_coord(res.atoms.size(), 3);
         std::vector<int> res_nail(2);
         std::vector<int> res_direct(3);
         for (int i = 0; i < res.atoms.size(); i++) {
@@ -163,7 +164,7 @@ public:
         return std::make_tuple(res_coord, res_nail, res_direct);
     }
 
-    void set_res_coord(Residue &res, const MatrixXf &res_coord) {
+    void set_res_coord(Residue &res, const Mat &res_coord) {
         for (int i = 0; i < res.atoms.size(); i++) {
             res.atoms[i].x = res_coord(i, 0);
             res.atoms[i].y = res_coord(i, 1);
@@ -171,7 +172,7 @@ public:
         }
     }
 
-    std::tuple<MatrixXf, std::vector<int>, std::vector<int>> read_base(std::string name) {
+    std::tuple<Mat, std::vector<int>, std::vector<int>> read_base(std::string name) {
         std::string file_name = _lib;
         if (std::set<std::string>{"A", "U", "G", "C"}.count(name)) {
             file_name += "/RNA/base/" + name + ".pdb";
@@ -196,15 +197,15 @@ public:
         return make_tuple(phos_size, sugar_size, base_size);
     }
 
-    RowVector3f get_o2_coord(const Residue &res) {
-        RowVector3f c1, c2, c3, o2;
+    RowVector3d get_o2_coord(const Residue &res) {
+        RowVector3d c1, c2, c3, o2;
         for (auto &&atom: res.atoms) {
             if (atom.name == "C1*") {
-                c1 = atom.pos<RowVector3f>();
+                c1 = atom.pos<RowVector3d>();
             } else if (atom.name == "C2*") {
-                c2 = atom.pos<RowVector3f>();
+                c2 = atom.pos<RowVector3d>();
             } else if (atom.name == "C3*") {
-                c3 = atom.pos<RowVector3f>();
+                c3 = atom.pos<RowVector3d>();
             }
         }
         o2 = (c3 - c2).cross(c1 - c2) + (c3 + c1 - 2 * c2) + c2;

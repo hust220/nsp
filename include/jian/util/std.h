@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <iomanip>
 #include <cmath>
+#include <string>
 #include <cstring>
 #include <cassert>
 #include <regex>
@@ -37,6 +38,7 @@ using namespace std;
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/preprocessor.hpp>
+#include <boost/lexical_cast.hpp>
 
 // constant
 #define MASS_H 1.00794

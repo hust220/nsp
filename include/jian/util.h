@@ -11,6 +11,7 @@
 #include "util/Log.h"
 #include "util/fun.h"
 #include "util/file.h"
+#include "util/rand.h"
 
 #endif
 

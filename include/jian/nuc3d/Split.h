@@ -40,7 +40,7 @@ public:
 
         if (par.count("type")) _type = boost::to_upper_copy(par["type"][0]);
 
-        if (par.count("hinge")) _hinge_size = std::stoi(par["hinge"][0]);
+        if (par.count("hinge")) _hinge_size = boost::lexical_cast<int>(par["hinge"][0]);
 
         _lib += "/" + _type;
 
@@ -75,7 +75,7 @@ public:
             // write to pdb file
             int len = l->s.len();
             std::string pdb_path = _lib + "/templates/";
-            std::string helix_name = _name + "-" + std::to_string(_helix_num) + "-helix-" + std::to_string(len);
+            std::string helix_name = _name + "-" + boost::lexical_cast<std::string>(_helix_num) + "-helix-" + boost::lexical_cast<std::string>(len);
             std::vector<int> nums(len * 2);
             int index = 0;
             for (auto b = l->s.head; b != NULL; b = b->next) {
@@ -102,7 +102,7 @@ public:
             int len = l->size();
             auto type = l->hinges.size();
             std::string pdb_path = _lib + "/templates/";
-            std::string loop_name = _name + "-" + std::to_string(_loop_num) + "-" + std::string(l->is_open() ? "open_" : "") + "loop-" + std::to_string(type);
+            std::string loop_name = _name + "-" + boost::lexical_cast<std::string>(_loop_num) + "-" + std::string(l->is_open() ? "open_" : "") + "loop-" + boost::lexical_cast<std::string>(type);
             std::vector<int> all_nums, hinge_nums;
             all_nums.reserve(len);
             for (auto r = l->head; r != NULL; r = r->next) all_nums.push_back(r->num - 1);

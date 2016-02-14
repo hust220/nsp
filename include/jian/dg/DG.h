@@ -25,7 +25,7 @@ public:
         _dih_bound = dih_bound;
     }
 
-    MatrixXf operator ()() {
+    Mat operator ()() {
         log("Start DG...\nbound:\n", bound, "\n dihedral bound:\n", _dih_bound, '\n');
         b2d(); metric(); d2c(); cg();
         if (_dist_en > 20 or _dih_en > 20) mc();
@@ -33,9 +33,9 @@ public:
         return c;
     }
 
-    MatrixXf operator ()(const MatrixXf &b) {
+    Mat operator ()(const Mat &b) {
         bound = b;
-        if (b.rows() != b.cols()) throw "DG::operator()(const MatrixXf &) error!";
+        if (b.rows() != b.cols()) throw "DG::operator()(const Mat &) error!";
         len = bound.rows();
         smooth();
         return (*this)();
@@ -70,9 +70,9 @@ public:
 
     void d2c() {
         /* transform bounds matrix to coordinates matrix */
-        MatrixXf A(len, len);
+        Mat A(len, len);
         for (int i = 0; i < len; i++) for (int j = 0; j < len; j++) A(i, j) = m(i, j);
-        SelfAdjointEigenSolver<MatrixXf> eigensolver(A);
+        SelfAdjointEigenSolver<Mat> eigensolver(A);
         double max1 = 0, max2 = 0, max3 = 0;
         int m1 = 0, m2 = 0, m3 = 0;
         for (int i = 0; i < len; i++) {
@@ -99,8 +99,8 @@ public:
         }
     }
 
-    MatrixXf c2d(const MatrixXf &coord) {
-        MatrixXf dist(coord.rows(), coord.cols());
+    Mat c2d(const Mat &coord) {
+        Mat dist(coord.rows(), coord.cols());
         for (int i = 0; i < len; i++) for (int j = i; j < len; j++) {
             if (i == j) dist(i, j) = 0;
             else dist(i, j) = dist(j, i) = geom::distance(coord.row(i), coord.row(j));

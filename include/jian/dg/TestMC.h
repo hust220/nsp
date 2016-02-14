@@ -8,6 +8,8 @@ namespace dg {
 
 class TestMC {
 public:
+    using Mat = MatrixXd;
+
     Log log;
 
     void operator ()(int n) {
@@ -15,7 +17,7 @@ public:
     }
 
     void test_mc(int n) {
-        MatrixXf dist_bound;
+        Mat dist_bound;
         DG::DihBoundType dih_bound;
         std::tie(dist_bound, dih_bound) = bound(n);
         log("test mc:\n");
@@ -33,7 +35,7 @@ public:
         int len = 2 * (n + 1);
         DG::DistBoundType dist_bound(len, len);
         DG::DihBoundType dih_bound;
-//        MatrixXf chir(2 * (n - 2), 5);
+//        Mat chir(2 * (n - 2), 5);
 
 //        for (int i = 0; i < len; i++) bound(i, i) = 0;
 //

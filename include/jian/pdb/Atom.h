@@ -1,7 +1,7 @@
 #ifndef JIAN_PDB_ATOM_H
 #define JIAN_PDB_ATOM_H
 
-#include "../util/util.h"
+#include "../util.h"
 #include "PdbFile.h"
 #include "Cif.h"
 
@@ -176,11 +176,11 @@ inline ostream &operator <<(ostream &output, const Atom &atom) {
 inline Atom make_atom(const std::string &line) {
     Atom atom;
     atom.set_name(line.substr(12, 4));
-    atom.num = std::stoi(line.substr(6, 5));
+    atom.num = boost::lexical_cast<int>(line.substr(6, 5));
     atom.set_mass();
-    atom.x = std::stof(line.substr(30, 8));
-    atom.y = std::stof(line.substr(38, 8));
-    atom.z = std::stof(line.substr(46, 8));
+    atom.x = boost::lexical_cast<double>(line.substr(30, 8));
+    atom.y = boost::lexical_cast<double>(line.substr(38, 8));
+    atom.z = boost::lexical_cast<double>(line.substr(46, 8));
     return atom;
 }
 

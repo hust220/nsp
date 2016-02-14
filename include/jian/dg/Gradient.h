@@ -19,7 +19,7 @@ public:
     Gradient &operator =(const Gradient &) = default;
 
     void gradient() {
-        MatrixXf C = MatrixXf::Zero(3 * len, 3);
+        Mat C = Mat::Zero(3 * len, 3);
         double err = 1.e-6;
 
         // dist energy
@@ -59,11 +59,11 @@ public:
         for (auto && pair : _dih_bound) for (auto i : pair.first) _involved_dihs[i].push_back(pair.first);
     }
 
-    double total_energy(const MatrixXf &coord) {
+    double total_energy(const Mat &coord) {
         return total_dist_energy(coord) + total_dih_energy();
     }
 
-    double total_dist_energy(const MatrixXf &coord) {
+    double total_dist_energy(const Mat &coord) {
         double en = 0, u2, l2, dist2;
         for (int i = 0; i < coord.rows(); i++) {
             for (int j = i + 1; j < coord.rows(); j++) {
@@ -80,15 +80,15 @@ public:
         return fold([&](double sum, const auto &entry){return sum + this->dih_row_energy(entry.first);}, 0, _dih_bound);
     }
 
-    double atom_energy(const MatrixXf &coord, int n) {
+    double atom_energy(const Mat &coord, int n) {
         return atom_dist_energy(coord, n) + atom_dih_energy(n);
     }
 
-    double atom_dist_energy(const MatrixXf &coord, int n) {
+    double atom_dist_energy(const Mat &coord, int n) {
         return fold([&](double sum, auto i){return sum + this->atom_pair_energy(coord, i, n);}, 0, {0, coord.rows()});
     }
 
-    double atom_pair_energy(const MatrixXf &coord, int i, int j) {
+    double atom_pair_energy(const Mat &coord, int i, int j) {
         if (i == j) return 0;
         double dist = sqrt(fold([&](double sum, int k){return sum + square(coord(i, k) - coord(j, k));}, 0, {0, 3}));
         return (i < j ? relative_dist_energy(dist, (bound(j, i)), (bound(i, j))) : 

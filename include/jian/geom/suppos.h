@@ -8,7 +8,7 @@ namespace jian {
 namespace geom {
 
 template<typename T, typename U>
-auto suppos(const T &m, const U &n) {
+inline auto suppos(const T &m, const U &n) {
     using val_t = double;
     using Vec = VectorXd;
     using Mat = MatrixXd;
@@ -37,7 +37,7 @@ auto suppos(const T &m, const U &n) {
 }
 
 template<typename T, typename U, typename F>
-auto suppos(T &t, const U &m, const F &n) {
+inline auto suppos(T &t, const U &m, const F &n) {
     auto sp = suppos(m, n);
     for (int i = 0; i < t.rows(); i++) for (int j = 0; j < 3; j++) t(i, j) -= sp.c1[j];
     t = t * sp.rot;
@@ -46,7 +46,7 @@ auto suppos(T &t, const U &m, const F &n) {
 }
 
 template<typename T, typename U, typename F, typename V>
-auto suppos(T &src, const U &src_indices, const F &tgt, const V &tgt_indices) {
+inline auto suppos(T &src, const U &src_indices, const F &tgt, const V &tgt_indices) {
     MatrixXd m(src_indices.size(), 3), n(tgt_indices.size(), 3);
     for (int i = 0; i < src_indices.size(); i++) for (int j = 0; j < 3; j++) {
         m(i, j) = src(src_indices[i], j);
@@ -62,8 +62,34 @@ auto suppos(T &src, const U &src_indices, const F &tgt, const V &tgt_indices) {
 }
 
 template<typename T, typename U>
-auto rmsd(const T &x, const U &y) {
+inline auto rmsd(const T &x, const U &y) {
     return suppos(x, y).rmsd;
+}
+
+template<typename Mat>
+inline Mat suppos_axis_polar(val_t theta_o, val_t phi_o, val_t theta_n, val_t phi_n) {
+    Mat m = Mat::Identity(3, 3);
+    val_t ang=PI/2-phi_o;      if (ang != 0) m *= z_rot_mat(std::cos(ang), std::sin(ang));
+          ang=theta_o-theta_n; if (ang != 0) m *= x_rot_mat(std::cos(ang), std::sin(ang));
+          ang=phi_n-PI/2;      if (ang != 0) m *= z_rot_mat(std::cos(ang), std::sin(ang));
+    return m;
+}
+
+template<typename Mat, typename O, typename N>
+inline Mat suppos_axis_xyz(const O &o, const N &n) {
+    Mat m = Mat::Identity(3, 3);
+    val_t r, x, y, r1, x1, y1, r2, x2, y2, c, s, c1, c2, s1, s2;
+    r=std::sqrt(o[0]*o[0]+o[1]*o[1]); x=o[0]; y=o[1];
+    if (r != 0) {c=y/r; s=x/r; if (s != 0) m *= z_rot_mat(c, s);}
+    r1=std::sqrt(o[0]*o[0]+o[1]*o[1]+o[2]*o[2]); x1=std::sqrt(o[0]*o[0]+o[1]*o[1]); y1=o[2];
+    r2=std::sqrt(n[0]*n[0]+n[1]*n[1]+n[2]*n[2]); x2=std::sqrt(n[0]*n[0]+n[1]*n[1]); y2=n[2];
+    if(r1 != 0 && r2 != 0) {
+        c1=y1/r1; s1=x1/r1; c2=y2/r2; s2=x2/r2; c=c1*c2+s1*s2; s=s1*c2-s2*c1;
+        if (s != 0) m *= x_rot_mat(c, s);
+    }
+    r=std::sqrt(n[0]*n[0]+n[1]*n[1]); x=n[0]; y=n[1];
+    if (r != 0) {c=y/r; s=-x/r; if (s != 0) m *= z_rot_mat(c, s);}
+    return m;
 }
 
 } // namespace geom

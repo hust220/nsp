@@ -40,7 +40,7 @@ inline double chirality(const T1 &p1, const T2 &p2, const T3 &p3, const T4 &p4) 
     return a[0]*d[0]+a[1]*d[1]+a[2]*d[2];
 }
 
-template<class P = Vector3f, class P1, class P2, class P3>
+template<class P = Vector3d, class P1, class P2, class P3>
 P normal_vector(const P1 &p1, const P2 &p2, const P3 &p3) {
     double a1, a2, a3, b1, b2, b3, r;
     P p;

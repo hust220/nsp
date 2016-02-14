@@ -1,7 +1,7 @@
 #ifndef JIAN_CLUSTER_H
 #define JIAN_CLUSTER_H
 
-#include "../util/util.h"
+#include "../util.h"
 
 namespace jian {
 

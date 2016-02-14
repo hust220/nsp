@@ -33,7 +33,7 @@ public:
         log("Start Tri-assemble.\n");
         for (int i = 0; i < _num; i++) {
             log("tri-assemble model ", i, '\n');
-            std::string file_name = _name + "-" + std::to_string(i + 1);
+            std::string file_name = _name + "-" + boost::lexical_cast<std::string>(i + 1);
             tri_ass().write(file_name);
         }
         log("Finish Tri-assemble.\n");

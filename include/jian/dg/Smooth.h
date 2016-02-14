@@ -81,7 +81,7 @@ public:
 
     }
 
-    double at(const MatrixXf &bound, int i, int j, int len) const {
+    double at(const Mat &bound, int i, int j, int len) const {
         if (j >= len) {
             j -= len;
             return at(bound, j, i, len);
@@ -93,7 +93,7 @@ public:
         return bound(i, j);
     }
 
-    void assign(MatrixXf &bound, int i, int j, double d, int len) {
+    void assign(Mat &bound, int i, int j, double d, int len) {
         if (j >= len) {
             j -= len;
             assign(bound, j, i, d, len);

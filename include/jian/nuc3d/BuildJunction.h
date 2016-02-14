@@ -4,6 +4,8 @@
 #include "../pdb/Molecule.h"
 #include "HelixParser.h"
 #include "../util/Log.h"
+#include "../util/rand.h"
+#include "../geom.h"
 
 namespace jian {
 namespace nuc3d {
@@ -11,16 +13,17 @@ namespace nuc3d {
 template<typename ModelType = pdb::RNA, 
          std::enable_if_t<std::is_same<ModelType, pdb::RNA>::value || 
                           std::is_same<ModelType, pdb::DNA>::value, int> = 42>
-class BuildJunction {
+class BuildJunction : public virtual Rand {
 public:
+    using val_t = double;
+    using Mat = Eigen::Matrix<val_t, -1, -1>;
     using Hinge = std::array<int, 4>;
-    using Hinges = std::list<Hinge>;
-    using Helix = struct {double theta, phi;};
+    using Hinges = std::deque<Hinge>;
+    using Helix = struct {val_t theta, phi;};
     using Helices = std::vector<Helix>;
 
-    std::mt19937 _rand_engine{11};
-    std::uniform_real_distribution<double> _unif_distr{0, 1};
     std::string _lib = env("NSP");
+    std::map<std::string, Hinges> _cache;
 
     HelixParser parse_helix;
     Log log;
@@ -30,10 +33,6 @@ public:
         print_hinges(hinges);
         if (hinges.size() == 2) return make_internal_loop(hinges);
         else return make_junction(hinges);
-    }
-
-    double rand() {
-        return _unif_distr(_rand_engine);
     }
 
     void print_hinges(const Hinges &hinges) {
@@ -46,6 +45,7 @@ public:
     }
 
     Hinges ss_to_hinges(const std::string &ss) {
+        if (_cache.count(ss)) return _cache[ss];
         Hinges hinges; std::deque<char> stack; std::deque<int> stack2;
         for (int i = 0; i < ss.size(); i++) {
             stack.push_back(ss[i]); stack2.push_back(i);
@@ -66,22 +66,35 @@ public:
     auto make_junction(const Hinges &hinges) {
         Helices helices(hinges.size());
         helices[0].theta = 0; helices[0].phi = 0;
-        for (int i = 1; i < helices.size(); i++) {
-            helices[i].theta = rand()*PI; helices[i].phi = rand()*2*PI;
+        std::vector<int> v(helices.size()); std::iota(v.begin(), v.end(), 0);
+        for (int i = 0; i < helices.size(); i++) {
+            else if (i == 1) {helices[i].theta = PI; helices[i].phi = 0;}
+            else {helices[i].theta = int(rand()*6)*PI/6; helices[i].phi = int(rand()*12)*PI/6;}
         }
+        for (auto &helix : helices) log(helix.theta, ':', helix.phi, ' '); log('\n');
         return helices_to_model(helices, hinges);
     }
 
     auto helices_to_model(const Helices &helices, const Hinges &hinges) {
-        ModelType model; model.resize(1); model[0].resize(helices.size()*4);
+        ModelType model; model.resize(1); model[0].resize(hinges.size()*4);
         auto pairs = read_standard_pairs();
         auto result = parse_helix(pairs);
+        val_t radius = 15;
         for (int i = 0; i < helices.size(); i++) {
             auto helix = pairs;
-            translate(helix, result.origin, std::vector<double>{0, 0, 0});
-            rotate(helix, direction, helices[i]);
+            adjust_helix(helix, result.origin, std::vector<val_t>{
+                radius*std::sin(helices[i].theta)*std::cos(helices[i].phi), 
+                radius*std::sin(helices[i].theta)*std::sin(helices[i].phi), 
+                radius*std::cos(helices[i].theta)},
+                result.theta, result.phi, helices[i].theta, helices[i].phi);
+            append_helix(model, helix, hinges[i]);
         }
         return model;
+    }
+
+    template<typename T, typename U, typename F>
+    void append_helix(T &model, const U &helix, const F &hinge) {
+        pdb::each_residue(helix, [&](const auto &r, int i) { model[0][hinge[i]] = r; });
     }
 
     auto read_standard_pairs() {
@@ -92,15 +105,17 @@ public:
         }
     }
 
-    template<typename T1, typename T2>
-    void translate(const ModelType &model, const T1 &o, const T2 &n) {
+    template<typename O, typename N>
+    void adjust_helix(ModelType &model, const O &o, const N &n, val_t theta_o, val_t phi_o, val_t theta_n, val_t phi_n) {
+        auto rot = geom::suppos_axis_polar<Mat>(theta_o, phi_o, theta_n, phi_n);
+        std::vector<val_t> v1 {-o[0], -o[1], -o[2]}, v2 {n[0], n[1], n[2]};
+        log(o[0], ':', o[1], ':', o[2], ' '); log(n[0], ':', n[1], ':', n[2], '\n');
         for (auto &chain : model) for (auto &residue : chain) for (auto &atom : residue) {
-            geom::translate(atom, std::vector<val_t>{-o[0], -o[1], -o[2]});
-            geom::translate(atom, std::vector<val_t>{n[0], n[1], n[2]});
+            geom::translate(atom, v1);
+            geom::rotate(atom, rot);
+            geom::translate(atom, v2);
         }
     }
-
-    void rotate(const ModelType &model, const Helix &old_direct, const Helix &new_direct) {}
 
 };
 

@@ -3,7 +3,6 @@
 
 #include "../util/std.h"
 #include "../pdb/Model.h"
-#include "../geom/move.h"
 #include "../geom/rotate.h"
 #include "FindTemplates.h"
 #include "TemplRec.h"
@@ -17,7 +16,8 @@ namespace nuc3d {
 
 class Assemble : public virtual FindTemplates {
 public:    
-    SupPos superpose;
+    using Mat = MatrixXd;
+
     BuildStrand build_strand;
     int _it_num = 0;
     std::map<nuc2d::loop *, bool> _is_virtual;
@@ -45,7 +45,7 @@ public:
     void operator ()() {
         for (int i = 0; i < _num; i++) {
             log("assemble model ", i + 1, "...\n");
-            assemble().write(_name + "-" + std::to_string(i + 1) + ".pdb");
+            assemble().write(_name + "-" + boost::lexical_cast<std::string>(i + 1) + ".pdb");
         }
     }
 
@@ -137,10 +137,10 @@ public:
     }
 
     void position_templates() {
-        position_templates(_n2d.head, std::list<MatrixXf>());
+        position_templates(_n2d.head, std::list<Mat>());
     }
 
-    void position_templates(nuc2d::loop *l, std::list<MatrixXf> mats) {
+    void position_templates(nuc2d::loop *l, std::list<Mat> mats) {
         if (l == NULL) return;
         auto &loop = _templates[l].first;
         auto &helix = _templates[l].second;
@@ -181,27 +181,27 @@ public:
         }
     }
 
-    void position_model(Model &model, const MatrixXf &mat) {
+    void position_model(Model &model, const Mat &mat) {
         int len = model.res_nums();
         auto mat2 = model_mat(model, std::list<int>{0, 1, len - 2, len - 1});
-        superpose(mat2, mat);
-        auto c1 = -superpose.c1;
-        auto &rot = superpose.rot;
-        auto &c2 = superpose.c2;
+        auto sp = geom::suppos(mat2, mat);
+        auto c1 = -sp.c1;
+        auto &rot = sp.rot;
+        auto &c2 = sp.c2;
         for (auto &&chain: model.chains) {
             for (auto &&residue: chain.residues) {
                 for (auto &&atom: residue.atoms) {
-                    geom::move(atom, c1);
+                    geom::translate(atom, c1);
                     geom::rotate(atom, rot);
-                    geom::move(atom, c2);
+                    geom::translate(atom, c2);
                 }
             }
         }
     }
 
-    MatrixXf model_mat(const Model &model, const std::list<int> &list) {
+    Mat model_mat(const Model &model, const std::list<int> &list) {
         static std::set<std::string> names{"C5*", "O3*", "C1*"};
-        MatrixXf mat(names.size() * list.size(), 3);
+        Mat mat(names.size() * list.size(), 3);
         int index = 0;
         int num_res = 0;
         for (auto &&chain: model.chains) {
@@ -221,8 +221,8 @@ public:
         return mat;
     }
 
-    std::list<MatrixXf> loop_mats(const Model &model, nuc2d::loop *l) {
-        std::list<MatrixXf> mats;
+    std::list<Mat> loop_mats(const Model &model, nuc2d::loop *l) {
+        std::list<Mat> mats;
         if (l->num_sons() == 0) return mats;
         else if (_is_virtual[l]) {
             if (l->is_open()) {
@@ -281,7 +281,7 @@ public:
         int len = residues.size();
         for (auto i : vec) log(i, ' ');
         log(")...\n");
-        MatrixXf a, b;
+        Mat a, b;
         if (vec[0] >= 2) {
             a.resize(2, 3);
             for (int i = 0; i < 3; i++) {

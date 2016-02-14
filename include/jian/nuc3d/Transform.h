@@ -47,7 +47,7 @@ public:
         if (_model.res_nums() != seq.size()) {
             for (auto &&chain: _model.chains) for (auto &&res: chain.residues) std::cout << res.name;
             std::cout << std::endl;
-            die("Transform::to_rna(string) error! Sequence's lenght isn't appropriate.\nNumbers of residues: " + std::to_string(_model.res_nums()) + ".\nLenght of sequence: " + std::to_string(seq.size()) + ".\nSequence: " + seq + ".");
+            die("Transform::to_rna(string) error! Sequence's length isn't appropriate.\nNumbers of residues: " + boost::lexical_cast<std::string>(_model.res_nums()) + ".\nLength of sequence: " + boost::lexical_cast<std::string>(seq.size()) + ".\nSequence: " + seq + ".");
         }
         int i = 0;
         for (auto &&chain: _model.chains) for (auto &&residue: chain.residues) {

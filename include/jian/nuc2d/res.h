@@ -1,7 +1,7 @@
 #ifndef RES_H
 #define RES_H
 
-#include "../util/util.h"
+#include "../util.h"
 
 namespace jian {
 namespace nuc2d {

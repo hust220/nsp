@@ -10,11 +10,12 @@ namespace jian {
 namespace pdb {
 
 struct _Mol {}; struct _RNA {}; struct _DNA {}; struct _Pro {};
-struct _AA {}; struct _PSB {};
+struct _AA {}; struct _PSB {}; 
 
 template<typename T>
 struct is_mol_file {
-    enum {value = std::is_same<std::decay_t<T>, Cif>::value || std::is_same<std::decay_t<T>, PdbFile>::value};
+    enum {value = std::is_same<std::decay_t<T>, Cif>::value || 
+                  std::is_same<std::decay_t<T>, PdbFile>::value};
 };
 
 class Atom : public std::array<double, 3> {
@@ -58,7 +59,8 @@ public:
         for (auto &&atom : res) this->push_back(atom);
     }
 
-    template<typename F, typename V, std::enable_if_t<std::is_same<U, _PSB>::value and std::is_same<V, _AA>::value, int> = 42>
+    template<typename F, typename V, std::enable_if_t<std::is_same<U, _PSB>::value && 
+                                                      !std::is_same<V, _PSB>::value, int> = 42>
     Residue(const Residue<F, V> &res) : _name(res._name) {
         static std::set<std::string> names_base_atoms{"N1", "C2", "N3", "C4", "C5", "C6"};
         std::deque<Atom> atoms_base;
@@ -79,7 +81,8 @@ public:
         return *this;
     }
 
-    template<typename F, typename V, std::enable_if_t<std::is_same<U, _PSB>::value and std::is_same<V, _AA>::value, int> = 42>
+    template<typename F, typename V, std::enable_if_t<std::is_same<U, _PSB>::value && 
+                                                      !std::is_same<V, _PSB>::value, int> = 42>
     Residue<T, U> &operator =(const Residue<F, V> &res) {
         static std::set<std::string> names_base_atoms{"N1", "C2", "N3", "C4", "C5", "C6"};
         _name = res._name;
@@ -104,21 +107,21 @@ public:
         return atom;
     }
 
-    template<typename F, std::enable_if_t<is_mol_file<F>::value and std::is_same<U, _AA>::value, int> = 42>
+    template<typename F, std::enable_if_t<is_mol_file<F>::value && ! std::is_same<U, _PSB>::value, int> = 42>
     Residue(F &&file) {
         if (!file.eof()) {
             _name = format_name(file.res_name());
             _num = file.res_num();
             int model_num = file.model_num();
             std::string chain_name = file.chain_name();
-            while (!file.eof() and model_num == file.model_num() and chain_name == file.chain_name() 
-                   and _num == file.res_num() and _name == format_name(file.res_name())) {
+            while (!file.eof() && model_num == file.model_num() && chain_name == file.chain_name() 
+                   && _num == file.res_num() && _name == format_name(file.res_name())) {
                 this->push_back(Atom(file));
             }
         }
     }
 
-    template<typename F, std::enable_if_t<is_mol_file<F>::value and std::is_same<U, _PSB>::value, int> = 42>
+    template<typename F, std::enable_if_t<is_mol_file<F>::value && std::is_same<U, _PSB>::value, int> = 42>
     Residue(F &&file) : Residue(Residue<T, _AA>(file)) {}
 
     std::string format_name(const std::string &s) {
@@ -235,35 +238,52 @@ inline int res_type(const Residue<T, U> &res) {
 
 template<typename T, typename U> 
 std::ostream &operator <<(std::ostream &output, const Model<T, U> &model) {
-    int atom_num = 1;
-    int residue_num = 1;
-    output << fixed << setprecision(3);
+    int atom_num = 1; int residue_num = 1; char chain_name = 'A';
     for (auto &&chain: model) {
         for (auto &&residue: chain) {
             for (auto &&atom: residue) {
                 std::string atom_name = boost::replace_all_copy(atom._name, "*", "'");
-//                if (residue_num == 1 and std::set<std::string>{"P", "O1P", "O2P"}.count(atom_name)) continue;
                 output << boost::format("ATOM%7i  %-4s%3s%2s%4i%12.3lf%8.3lf%8.3lf%6.2f%6.2f%12c  \n") % 
-                                        atom_num % atom_name % residue._name % chain._name % residue_num % 
+                                        atom_num % atom_name % residue._name % chain_name % residue_num % 
                                         atom[0] % atom[1] % atom[2] % 1.00 % 0.00 % atom_name[0];
                 atom_num++;
             }
             residue_num++;
         }
+        chain_name++;
         output << "TER" << endl;
     }
     return output;
 }
 
 template<typename T>
+void write_pdb(T &&mol, const std::string &file_name) {
+    std::ofstream ofile(file_name.c_str()); ofile << mol; ofile.close();
+}
+
+template<typename T>
 inline int num_residues(const T &model) {
-    int index = 0;
-    for (auto &chain : model) for (auto &res : chain) {
-        index++;
-    }
+    int index = 0; for (auto &chain : model) for (auto &res : chain) index++;
     return index;
 }
 
+template<typename T, typename F, 
+         std::enable_if_t<std::is_integral<std::result_of_t<F(typename std::decay_t<T>::res_type, int)>>::value, int> = 42>
+int each_residue(T &&mol, F &&f) {
+    int i = 0; for (auto &chain : mol) for (auto &residue : chain) {
+        if (!f(residue, i)) return i;
+        i++;
+    }
+}
+
+template<typename T, typename F,
+         std::enable_if_t<std::is_void<std::result_of_t<F(typename std::decay_t<T>::res_type, int)>>::value, int> = 42>
+int each_residue(T &&mol, F &&f) {
+    int i = 0; for (auto &chain : mol) for (auto &residue : chain) {
+        f(residue, i);
+        i++;
+    }
+}
 
 using RNA = Model<_RNA, _AA>;
 using DNA = Model<_DNA, _AA>;

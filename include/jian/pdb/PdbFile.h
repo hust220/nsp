@@ -51,7 +51,7 @@ public:
             (*this)["chain_name"].push_back(boost::trim_copy(line.substr(20, 2)));
             (*this)["atom_num"].push_back(boost::trim_copy(line.substr(6, 5)));
             (*this)["res_num"].push_back(boost::trim_copy(line.substr(22, 4)));
-            (*this)["model_num"].push_back(std::to_string(_model_num));
+            (*this)["model_num"].push_back(boost::lexical_cast<std::string>(_model_num));
             (*this)["x"].push_back(boost::trim_copy(line.substr(30, 8)));
             (*this)["y"].push_back(boost::trim_copy(line.substr(38, 8)));
             (*this)["z"].push_back(boost::trim_copy(line.substr(46, 8)));
@@ -76,15 +76,15 @@ inline bool PdbFile::eof() {
 }
 
 inline double PdbFile::x() {
-    return std::stod((*this)["x"][_i]);
+    return boost::lexical_cast<double>((*this)["x"][_i]);
 }
 
 inline double PdbFile::y() {
-    return std::stod((*this)["y"][_i]);
+    return boost::lexical_cast<double>((*this)["y"][_i]);
 }
 
 inline double PdbFile::z() {
-    return std::stod((*this)["z"][_i]);
+    return boost::lexical_cast<double>((*this)["z"][_i]);
 }
 
 inline std::string PdbFile::atom_name() {
@@ -96,7 +96,7 @@ inline std::string PdbFile::atom_type() {
 }
 
 inline int PdbFile::atom_num() {
-    return std::stoi((*this)["atom_num"][_i]);
+    return boost::lexical_cast<int>((*this)["atom_num"][_i]);
 }
 
 inline std::string PdbFile::res_name() {
@@ -105,7 +105,7 @@ inline std::string PdbFile::res_name() {
 
 inline int PdbFile::res_num() {
     std::string str = (*this)["res_num"][_i];
-    return std::stoi(str);
+    return boost::lexical_cast<int>(str);
 }
 
 inline std::string PdbFile::chain_name() {
@@ -113,7 +113,7 @@ inline std::string PdbFile::chain_name() {
 }
 
 inline int PdbFile::model_num() {
-    return std::stoi((*this)["model_num"][_i]);
+    return boost::lexical_cast<int>((*this)["model_num"][_i]);
 }
 
 } /// namespace jian

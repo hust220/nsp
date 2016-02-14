@@ -8,10 +8,10 @@ namespace jian {
 class Residue {
 public:
     int num = -1;
-    string number;
+    std::string number;
     int atomNum = -1;
-    string name = "X";
-    vector<Atom> atoms;
+    std::string name = "X";
+    std::vector<Atom> atoms;
 
     Residue() {}
 
@@ -351,7 +351,7 @@ inline Residue make_residue(const std::vector<std::string> &strings) {
     /// Set number and num.
     std::string str = strings[0].substr(22, 5);
     std::copy_if(str.begin(), str.end(), std::back_inserter(residue.number), [](char c){return c != ' ';});
-    residue.num = std::stoi(strings[0].substr(22, 5));
+    residue.num = boost::lexical_cast<int>(strings[0].substr(22, 5));
 
     /// Set atoms.
     for (auto &&s: strings) residue.atoms.push_back(Atom(s));

@@ -101,7 +101,7 @@ public:
             new_state = _fsm[state][i];
             if (new_state == -1) return strip(word);
             else if (new_state == -2) throw "jian::pdb::Cif::read_word error! Line" + 
-                std::to_string(_num_line) + " in file " + _name + ".cif.";
+                boost::lexical_cast<std::string>(_num_line) + " in file " + _name + ".cif.";
             else if (new_state != 0 and new_state != 1) {
                 word += c;    
                 state = new_state;
@@ -146,15 +146,15 @@ public:
 };
 
 inline double Cif::x() {
-    return std::stod(_loop["_atom_site.Cartn_x"][_i]);
+    return boost::lexical_cast<double>(_loop["_atom_site.Cartn_x"][_i]);
 }
 
 inline double Cif::y() {
-    return std::stod(_loop["_atom_site.Cartn_y"][_i]);
+    return boost::lexical_cast<double>(_loop["_atom_site.Cartn_y"][_i]);
 }
 
 inline double Cif::z() {
-    return std::stod(_loop["_atom_site.Cartn_z"][_i]);
+    return boost::lexical_cast<double>(_loop["_atom_site.Cartn_z"][_i]);
 }
 
 inline std::string Cif::atom_name() {
@@ -166,7 +166,7 @@ inline std::string Cif::atom_type() {
 }
 
 inline int Cif::atom_num() {
-    return std::stoi(_loop["_atom_site.id"][_i]);
+    return boost::lexical_cast<int>(_loop["_atom_site.id"][_i]);
 }
 
 inline std::string Cif::res_name() {
@@ -178,7 +178,7 @@ inline int Cif::res_num() {
     if (str == ".") 
         return -1;
     else 
-        return std::stoi(str);
+        return boost::lexical_cast<int>(str);
 }
 
 inline std::string Cif::chain_name() {
@@ -186,11 +186,11 @@ inline std::string Cif::chain_name() {
 }
 
 inline int Cif::chain_num() {
-    return std::stoi(_loop["_atom_site.label_entity_id"][_i]);
+    return boost::lexical_cast<int>(_loop["_atom_site.label_entity_id"][_i]);
 }
 
 inline int Cif::model_num() {
-    return std::stoi(_loop["_atom_site.pdbx_PDB_model_num"][_i]);
+    return boost::lexical_cast<int>(_loop["_atom_site.pdbx_PDB_model_num"][_i]);
 }
 
 } /// namespace jian

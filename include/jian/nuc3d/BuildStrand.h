@@ -11,11 +11,12 @@ namespace jian {
 namespace nuc3d {
 
 class BuildStrand {
+    using Mat = MatrixXd;
+
 public:
     Log log;
     std::set<std::string> _coarse_atoms {"C4*"};
     DG dg;
-    SupPos sp;
     std::string _lib = env("NSP");
     std::string _frag_par_path;
     std::vector<std::string> _frag_3_names;
@@ -31,13 +32,13 @@ public:
         dg.log.set_display(false);
     }
 
-    std::vector<Residue> operator ()(int n, const MatrixXf &a, const MatrixXf &b) {
+    std::vector<Residue> operator ()(int n, const Mat &a, const Mat &b) {
         return build_strand(n, a, b);
     }
 
-    std::vector<Residue> build_strand(int n, const MatrixXf &a, const MatrixXf &b) {
+    std::vector<Residue> build_strand(int n, const Mat &a, const Mat &b) {
         if ((a.rows() != _coarse_atoms.size() * 2 && a.rows() != 0) || (b.rows() != _coarse_atoms.size() * 2 && b.rows() != 0)) {
-            throw "jian::nuc3d::BuildStrand::build_strand(int, const MatrixXf &, const MatrixXf &) error!";
+            throw "jian::nuc3d::BuildStrand::build_strand(int, const Mat &, const Mat &) error!";
         }
         log("build strand:\n");
         auto bound = make_bound(n, a, b);
@@ -61,10 +62,10 @@ public:
         //return slice(all_atom(scaffold), a.rows(), a.rows() + n);
     }
 
-    MatrixXf make_bound(int n, const MatrixXf &a, const MatrixXf &b) {
+    Mat make_bound(int n, const Mat &a, const Mat &b) {
         int size = n * _coarse_atoms.size() + a.rows() + b.rows();
-        MatrixXf bound(size, size);
-        bound = MatrixXf::Zero(size, size);
+        Mat bound(size, size);
+        bound = Mat::Zero(size, size);
         for (int i = 0; i < size; i++) {
             for (int j = i; j < size; j++) {
                 if (i == j) {
@@ -89,10 +90,11 @@ public:
         return bound;
     }
 
-    void superpose_scaffold(MatrixXf &scaffold, const MatrixXf &a, const MatrixXf &b) {
+    template<typename MatType>
+    void superpose_scaffold(MatType &scaffold, const Mat &a, const Mat &b) {
         if (a.rows() != 0 || b.rows() != 0) {
             int temp_len = a.rows() + b.rows();
-            MatrixXf x(temp_len, 3), y(temp_len, 3);
+            Mat x(temp_len, 3), y(temp_len, 3);
             if (a.rows() != 0) {
                 for (int i = 0; i < 3; i++) {
                     x(0, i) = scaffold(0, i);
@@ -109,7 +111,7 @@ public:
                     y(y.rows() - 1, i) = b(1, i);
                 }
             }
-            sp(scaffold, x, y);
+            geom::suppos(scaffold, x, y);
         }
     }
 
@@ -148,21 +150,21 @@ public:
 
     template<typename Residues, typename Coord> void superpose_residues(Residues &&residues, Coord &&coord) {
         int len = coord.rows();
-        MatrixXf x(len, 3), y(len, 3);
+        Mat x(len, 3), y(len, 3);
         for (int i = 0; i < len; i++) for (int j = 0; j < 3; j++) {
             x(i, j) = residues[i]["C4*"][j];
             y(i, j) = coord(i, j);
         }
-        sp(x, y);
+        auto sp = geom::suppos(x, y);
         auto c1 = -sp.c1;
         for (auto &&res: residues) for (auto &&atom: res.atoms) {
-            geom::move(atom, c1);    
+            geom::translate(atom, c1);    
             geom::rotate(atom, sp.rot);    
-            geom::move(atom, sp.c2);    
+            geom::translate(atom, sp.c2);    
         }
     }
 
-    std::vector<Residue> all_atom(const MatrixXf &scaffold) {
+    std::vector<Residue> all_atom(const Mat &scaffold) {
         int len = scaffold.rows();
         std::vector<Residue> residues;
         residues.reserve(len);

@@ -10,16 +10,17 @@ namespace nuc3d {
 class BuildNuc {
 public:
 //    BuildNuc(string type = "RNA");
-//    Residue operator() (const string &name, const MatrixXf &scaffold);
-//    Residue make_residue(const string &name, const MatrixXf &coords);
+//    Residue operator() (const string &name, const Mat &scaffold);
+//    Residue make_residue(const string &name, const Mat &coords);
+    using Mat = MatrixXd;
 
     int _view = 0;
 
     std::string _type = "RNA";
     std::string _lib;
-    std::map<string, MatrixXf> _base_aa_par;
-    std::map<string, MatrixXf> _base_cg_par;
-    std::map<string, MatrixXf> _phos_sugar_par;
+    std::map<string, Mat> _base_aa_par;
+    std::map<string, Mat> _base_cg_par;
+    std::map<string, Mat> _phos_sugar_par;
     std::map<string, vector<string>> _atom_names;
 
     BuildNuc(string type = "RNA"): _type(type) {
@@ -112,13 +113,13 @@ public:
         }
     }
 
-    Residue operator ()(const string &name, const MatrixXf &scaffold) {
+    Residue operator ()(const string &name, const Mat &scaffold) {
         /// Base coordinates
         auto base_coords = _base_aa_par[name];
         auto temp_coords = _base_cg_par[name];
-        MatrixXf temp_scaffold(3, 3);
+        Mat temp_scaffold(3, 3);
         temp_scaffold = scaffold.block<3, 3>(2, 0);
-        SupPos()(base_coords, temp_coords, temp_scaffold);
+        geom::suppos(base_coords, temp_coords, temp_scaffold);
 
         /// Phosphate and sugar coordinates
         auto par = _phos_sugar_par[name];
@@ -139,16 +140,16 @@ public:
             }
         }
         temp_scaffold = scaffold.block<3, 3>(0, 0);
-        SupPos()(phos_sugar_coords, temp_coords, temp_scaffold);
+        geom::suppos(phos_sugar_coords, temp_coords, temp_scaffold);
 
         /// Merge base coordinates and phosphate-sugar coordinates
-        MatrixXf coords(phos_sugar_coords.rows() + base_coords.rows() - 1, 3);
+        Mat coords(phos_sugar_coords.rows() + base_coords.rows() - 1, 3);
         coords << phos_sugar_coords.block(0, 0, phos_sugar_coords.rows() - 1, 3), base_coords;
 
         return make_residue(name, coords);
     }
 
-    Residue make_residue(const string &name, const MatrixXf &coords) {
+    Residue make_residue(const string &name, const Mat &coords) {
         Residue residue;
         residue.name = name;
         for (int i = 0; i < coords.rows(); i++) {

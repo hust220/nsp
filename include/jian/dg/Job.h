@@ -9,37 +9,25 @@
 namespace jian {
 namespace dg {
 
-class Job {
+class Job : public virtual Rand {
 public:
+    using Mat = MatrixXd;
     using DihEntry = std::vector<int>;
-    using DistBoundType = MatrixXf;
+    using DistBoundType = Mat;
     using DihBoundType = DihBound<DihEntry>;
-
-    std::mt19937 _rand_engine{11};
-    std::uniform_real_distribution<double> _unif_distr{0, 1};
 
     int len = 0;
 
-    MatrixXf bound;
+    Mat bound;
     double _min_dist = 0;
     DihBound<DihEntry> _dih_bound;
-    MatrixXf d;
-    MatrixXf m;
-    MatrixXf c;
-    MatrixXf g;
+    Mat d, m, c, g;
     double g2 = 0;
     double _dist_en = 0;
     double _dih_en = 0;
 
     Log log;
 
-    void seed(int n) {
-        _rand_engine.seed(n);
-    }
-
-    double rand() {
-        return _unif_distr(_rand_engine);
-    }
 };
 
 } // namespace dg

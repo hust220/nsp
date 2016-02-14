@@ -14,7 +14,7 @@ public:
     CG &operator =(const CG &) = default;
 
     void cg() {
-        MatrixXf d_o(len, 3), d_n(len, 3);
+        Mat d_o(len, 3), d_n(len, 3);
 
         log("Start CG...\n", 
             "step", ' ', "factor", ' ', "energy", ' ', "chirality\n");

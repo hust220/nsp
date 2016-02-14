@@ -56,11 +56,11 @@ public:
         log.bind(_name + ".3drna");
 
         // ## Set prediction number
-        pars.count("number") && (_num = std::stoi(pars["number"][0]), 1);
-        pars.count("num") && (_num = std::stoi(pars["num"][0]), 1);
+        pars.count("number") && (_num = boost::lexical_cast<int>(pars["number"][0]), 1);
+        pars.count("num") && (_num = boost::lexical_cast<int>(pars["num"][0]), 1);
 
         // ## Set hinge size
-        if (pars.count("hinge")) _hinge = stoi(pars["hinge"][0]);
+        if (pars.count("hinge")) _hinge = boost::lexical_cast<int>(pars["hinge"][0]);
 
         // ## Set family
         pars.count("family") && (_family = pars["family"][0], 1);

@@ -27,13 +27,15 @@ namespace nuc3d {
 
 class LM {
 public:
-    std::map<string, MatrixXf> _mono_nuc_pars;
-    std::map<string, MatrixXf> _adj_nuc_pars;
-    std::map<string, MatrixXf> _aa_pars;
+    using Mat = MatrixXd;
+
+    std::map<string, Mat> _mono_nuc_pars;
+    std::map<string, Mat> _adj_nuc_pars;
+    std::map<string, Mat> _aa_pars;
 
     std::string _seq;
     std::string _ss;
-    MatrixXf _bound;
+    Mat _bound;
     DG dg;
     int _atom_nums_per_nuc = 5;
     double _err_radius = 0.001;
@@ -103,7 +105,7 @@ public:
         return models;
     }
 
-    Model to_all_atom(const MatrixXf &scaffold) {
+    Model to_all_atom(const Mat &scaffold) {
         int res_nums = _seq.size();
         Chain chain;
 
@@ -221,7 +223,7 @@ public:
             return;
         } else {
             if (src->s.head != NULL) {
-                MatrixXf helix_par = get_helix_par(get_helix(src->s));
+                Mat helix_par = get_helix_par(get_helix(src->s));
                 int helix_len = src->s.getLen();
                 int orig_pos_chain1 = (src->s.head->res1.num - 1) * _atom_nums_per_nuc;
                 int orig_pos_chain2 = (src->s.head->res2.num - helix_len) * _atom_nums_per_nuc;
@@ -305,9 +307,9 @@ public:
         }
     }
 
-    MatrixXf get_helix_par(const R5P &r5p) {
+    Mat get_helix_par(const R5P &r5p) {
         int atom_nums = r5p.atom_nums();
-        MatrixXf helix_par(atom_nums, atom_nums);
+        Mat helix_par(atom_nums, atom_nums);
         int num_1 = 0;
         for (auto &chain: r5p.chains) {
             for (auto &residue: chain.residues) {
@@ -363,14 +365,14 @@ public:
         }
     }
 
-    MatrixXf apply_constraints(const MatrixXf &scaffold) {
+    Mat apply_constraints(const Mat &scaffold) {
         if (_constraint_file.empty()) return scaffold;
 
         /// Read constraints
         auto constraints = read_constraints_file();
 
         /// Set _bound
-        MatrixXf coords = scaffold;
+        Mat coords = scaffold;
         for (auto &&temp_helix: constraints) {
             int layer_size = temp_helix[0].size();
             int layer_nums = temp_helix.size();
@@ -387,8 +389,8 @@ public:
                 }
             }
 
-            MatrixXf source_mat = pos;
-            MatrixXf target_mat(index, 3);
+            Mat source_mat = pos;
+            Mat target_mat(index, 3);
 
             for (int i = 0; i < index; i++) {
                 for (int j = 0; j < 3; j++) {
@@ -396,7 +398,7 @@ public:
                 }
             }
 
-            SupPos()(pos, source_mat, target_mat);
+            geom::suppos(pos, source_mat, target_mat);
 
             for (int i = 0; i < index; i++) {
                 for (int j = 0; j < 3; j++) {
@@ -452,7 +454,7 @@ public:
             std::vector<int> temp_vec;
             std::transform(std::begin(splited_line), std::end(splited_line), 
                            std::back_inserter(temp_vec), [](const std::string &s){
-                return stoi(s) - 1;
+                return boost::lexical_cast<int>(s) - 1;
             });
             temp_helix.push_back(temp_vec);
         }
@@ -461,12 +463,12 @@ public:
         return constraints;
     }
 
-    MatrixXf read_constraints_pos(std::string type, int layer_nums) {
+    Mat read_constraints_pos(std::string type, int layer_nums) {
         int layer_size = std::map<std::string, int>{{"quadruplex", 4}, {"triple", 3}, {"pair", 2}}[type];
         int atom_nums = 5 * layer_nums * layer_size;
 
         /// Read coordinates
-        MatrixXf coords(atom_nums, 3);
+        Mat coords(atom_nums, 3);
         string par_file = _lib + "/pars/5p/" + type + ".pos";
         ifstream ifile(par_file.c_str());
         for (int i = 0; i < atom_nums; i++) {
@@ -479,10 +481,10 @@ public:
         return coords;
     }
 
-    MatrixXf read_constraints_par(std::string type, int layer_nums) {
+    Mat read_constraints_par(std::string type, int layer_nums) {
         auto coords = read_constraints_pos(type, layer_nums);
         int atom_nums = coords.rows();
-        MatrixXf par(atom_nums, atom_nums);
+        Mat par(atom_nums, atom_nums);
         for (int i = 0; i < atom_nums; i++) {
             for (int j = 0; j < atom_nums; j++) {
                 par(i, j) = (coords.row(i) - coords.row(j)).norm();
@@ -495,7 +497,6 @@ public:
 };
 
 } // namespace nuc3d
-
 } // namespace jian
 
 #endif

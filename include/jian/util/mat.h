@@ -93,8 +93,8 @@ const auto &ref(const MatType &mat, int a, int b) {
 }
 
 // make_mat
-MatrixXf make_mat(int row, int col) {
-    return MatrixXf::Zero(row, col);
+MatrixXd make_mat(int row, int col) {
+    return MatrixXd::Zero(row, col);
 }
 
 template<typename MatType>
@@ -104,12 +104,12 @@ MatType make_mat(int row, int col) {
 }
 
 template<>
-MatrixXf make_mat<MatrixXf>(int row, int col) {
-    return MatrixXf::Zero(row, col);
+MatrixXd make_mat<MatrixXd>(int row, int col) {
+    return MatrixXd::Zero(row, col);
 }
 
 // mat_from_file
-template<typename Mat = MatrixXf>
+template<typename Mat = MatrixXd>
 Mat mat_from_file(std::string file) {
     std::ifstream ifile(file.c_str());
     int rows, cols;
@@ -136,33 +136,34 @@ auto sum(F &&f, T1 &&t1, T2 && ...t2) ->decltype(f(t1)) {
     return f(std::forward<T1>(t1)) + sum(f, std::forward<T2>(t2)...);
 }
 
-// hstack
-template<typename T1>
-MatrixXf hstack(T1 &&mat1) {
-    return std::forward<T1>(mat1);
+// rows_mats
+inline int rows_mats() {
+    return 0;
 }
 
-template<typename T1, typename T2, typename... T3>
-MatrixXf hstack(T1 &&mat1, T2 &&mat2, T3 && ...mat3) {
-    if (mat1.rows() == 0) {
-        return mat2;
-    } else if (mat2.rows() == 0) {
-        return mat1;
+template<typename T, typename... L>
+inline int rows_mats(const T &mat, const L & ...mats) {
+    return mat.rows() + rows_mats(mats...);
+}
+
+// hstack
+template<typename T>
+inline void hstack_helper(T &t, int n) {}
+
+template<typename T, typename... L>
+inline void hstack_helper(T &t, int n, const T &mat, const L & ...mats) {
+    for (int i = 0; i < mat.rows(); i++) {
+        for (int j = 0; j < mat.cols(); j++) t(n, j) = mat(i, j);
+        n++;
     }
-    assert(mat1.cols() == mat2.cols());
-    MatrixXf mat(mat1.rows() + mat2.rows(), mat1.cols());
-    int i = 0;
-    for (; i < mat1.rows(); i++) {
-        for (int j = 0; j < mat1.cols(); j++) {
-            mat(i, j) = mat1(i, j);
-        }
-    }
-    for (int ii = 0; i < mat.rows(); i++, ii++) {
-        for (int j = 0; j < mat2.cols(); j++) {
-            mat(i, j) = mat2(ii, j);
-        }
-    }
-    return hstack(mat, std::forward<T3>(mat3)...);
+    hstack_helper(t, n, mats...);
+}
+
+template<typename T, typename... L>
+inline T hstack(const T &mat, const L & ...mats) {
+    T t(rows_mats(mat, mats...), mat.cols());
+    hstack_helper(t, 0, mat, mats...);
+    return t;
 }
 
 } // namespace mat

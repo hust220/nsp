@@ -2,8 +2,8 @@
 #define JIAN_NUC2D_GETSS
 
 #include "../util/std.h"
-#include "../pdb/IFModel.h"
 #include "util.h"
+#include "../pdb/IFModel.h"
 
 namespace jian {
 namespace nuc2d {
@@ -13,14 +13,16 @@ public:
     typedef std::pair<int, int> BP;
     typedef std::list<BP> BPs;
 
-    template<typename ModelType> std::string operator ()(ModelType &&model) {
+    template<typename ModelType> 
+    std::string operator ()(ModelType &&model) {
         return get_ss(model);
     }
 
-    template<typename ModelType> std::string get_ss(ModelType &&model) {
+    template<typename ModelType> 
+    std::string get_ss(ModelType &&model) {
         auto bps = get_bps(model);
 //        print_bps(bps);
-        int len = model.res_nums();
+        int len = pdb::num_residues(model);
         return bps_to_ss(bps, len);
     }
 
@@ -30,24 +32,23 @@ public:
         }
     }
 
-    template<typename MolType> BPs get_bps(MolType &&model) {
+    template<typename MolType> 
+    BPs get_bps(MolType &&model) {
         BPs bps;
         int num_res1 = 0;
-        for (auto &&chain : model.chains) for (auto &&residue : chain.residues) {
+        for (auto &&chain : model) for (auto &&residue : chain) {
             int num_res2 = 0;
-            for (auto &&chain2 : model.chains) for (auto &&residue2 : chain2.residues) {
+            for (auto &&chain2 : model) for (auto &&residue2 : chain2) {
                 if (num_res2 > num_res1) {
-                    if (is_paired(residue, residue2)) append(bps, std::make_pair(num_res1, num_res2));
+                    if (pdb::is_residue_paired(residue, residue2)) {
+                        append(bps, std::make_pair(num_res1, num_res2));
+                    }
                 }
                 num_res2++;
             }
             num_res1++;
         }
         return bps;
-    }
-
-    template<typename ResType> bool is_paired(ResType &&res1, ResType &&res2) {
-        return res1.is_paired(res2);
     }
 
     std::string bps_to_ss(const BPs &bps, int len) {
