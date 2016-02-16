@@ -1,7 +1,7 @@
 #ifndef JIAN_NUC2D_UTIL
 #define JIAN_NUC2D_UTIL
 
-#include "../util/std.h"
+#include "../etl.h"
 
 namespace jian {
 namespace nuc2d {

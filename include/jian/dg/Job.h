@@ -1,9 +1,7 @@
 #ifndef JIAN_DG_JOB_H
 #define JIAN_DG_JOB_H
 
-#include "../util/std.h"
-#include "../util/mat.h"
-#include "../util/Log.h"
+#include "../etl.h"
 #include "DihBound.h"
 
 namespace jian {

@@ -1,9 +1,7 @@
 #ifndef JIAN_MD_MD
 #define JIAN_MD_MD
 
-#include "../util/std.h"
-#include "../util/Matr_.h"
-#include "../util/Log.h"
+#include "../etl.h"
 
 namespace jian {
 namespace md {
@@ -11,7 +9,7 @@ namespace md {
 template<typename Mat = MatrixXf>
 class MD {
 public:
-    typedef decltype(mat::ref(Mat(), 0, 0)) Val;
+    typedef decltype(ref(Mat(), 0, 0)) Val;
 
     int _rand_seed = 12345;
     std::string _name = "test"
@@ -46,31 +44,31 @@ public:
     }
 
     Mat get_acc(const Mat &pos) {
-        Mat acc = mat::make_mat<Mat>(_num_atoms, 3);
+        Mat acc = make_mat<Mat>(_num_atoms, 3);
         for (int i = 0; i < _num_atoms; i++) for (int j = 0; j < 3; j++) {
-            mat::ref(acc, i, j) = 0;
+            ref(acc, i, j) = 0;
         }
         return acc;
     }
 
     Mat get_pos(const Mat &pos, const Mat &vel, const Mat &acc) {
-        Mat pos = mat::make_mat<Mat>(_num_atoms, 3);
+        Mat pos = make_mat<Mat>(_num_atoms, 3);
         for (int i = 0; i < _num_atoms; i++) for (int j = 0; j < 3; j++) {
-            set_pos_coeff(pos, i, j, mat::ref(pos, i, j) + mat::ref(vel, i, j) * _min_time);
+            set_pos_coeff(pos, i, j, ref(pos, i, j) + ref(vel, i, j) * _min_time);
         }
         return pos;
     }
 
     void set_pos_coeff(const Mat &pos, int i, int j, const Val &val) {
-        if (val > _box_size / 2) mat::ref(pos, i, j) = val - _box_size;
-        else if (val < -_box_size / 2) mat::ref(pos, i, j) = val + _box_size;
-        else mat::ref(pos, i, j) = val;
+        if (val > _box_size / 2) ref(pos, i, j) = val - _box_size;
+        else if (val < -_box_size / 2) ref(pos, i, j) = val + _box_size;
+        else ref(pos, i, j) = val;
     }
 
     Mat get_vel(const Mat &pos, const Mat &vel, const Mat &acc) {
-        Mat vel = mat::make_mat<Mat>(_num_atoms, 3);
+        Mat vel = make_mat<Mat>(_num_atoms, 3);
         for (int i = 0; i < _num_atoms; i++) for (int j = 0; j < 3; j++) {
-            mat::ref(vel, i, j) += mat::ref(acc, i, j) * _min_time;
+            ref(vel, i, j) += ref(acc, i, j) * _min_time;
         }
         return pos;
     }

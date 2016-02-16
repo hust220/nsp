@@ -1,5 +1,5 @@
 #include "Pred2D.h"
-#include "../util/Par.h"
+#include "../etl.h"
 
 int main(int argc, char **argv) {
     jian::Par par(argc, argv);

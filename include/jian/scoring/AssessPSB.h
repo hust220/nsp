@@ -3,8 +3,7 @@
 
 #include "../pdb/Molecule.h"
 #include "../geom/core.h"
-#include "../util/Log.h"
-#include "../fpl.h"
+#include "../etl.h"
 
 namespace jian {
 namespace scoring {
@@ -199,15 +198,15 @@ public:
     }
 
     val_t score_bond_length() {
-        return fpl::fold([&](val_t sum, val_t i, val_t j){return sum+i*j;}, 0, _score_bond_length, _weight_bond_length);
+        return fold([&](val_t sum, val_t i, val_t j){return sum+i*j;}, 0, _score_bond_length, _weight_bond_length);
     }
 
     val_t score_bond_angle() {
-        return fpl::fold([&](val_t sum, val_t i, val_t j){return sum+i*j;}, 0, _score_bond_angle, _weight_bond_angle);
+        return fold([&](val_t sum, val_t i, val_t j){return sum+i*j;}, 0, _score_bond_angle, _weight_bond_angle);
     }
 
     val_t score_bond_dihedral() {
-        return fpl::fold([&](val_t sum, val_t i, val_t j){return sum+i*j;}, 0, _score_bond_dihedral, _weight_bond_dihedral);
+        return fold([&](val_t sum, val_t i, val_t j){return sum+i*j;}, 0, _score_bond_dihedral, _weight_bond_dihedral);
     }
 
     val_t score_base_pairing() {

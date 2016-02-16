@@ -1,7 +1,7 @@
 #ifndef DISTANAL_H
 #define DISTANAL_H
 
-#include <pdb/util.h>
+#include "Analysis.h"
 
 namespace jian {
 namespace scoring {

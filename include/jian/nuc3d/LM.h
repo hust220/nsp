@@ -16,7 +16,7 @@
 #ifndef JIAN_NUC3D_LM_H
 #define JIAN_NUC3D_LM_H
 
-#include "../pdb/util.h"
+#include "../pdb.h"
 #include "../nuc2d/N2D.h"
 #include "../dg/DG.h"
 #include "Connect.h"

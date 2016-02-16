@@ -1,5 +1,5 @@
+#include <jian/etl.h>
 #include <jian/nuc3d/HelixParser.h>
-#include <jian/util/Par.h>
 
 int main(int argc,char **argv) {
     jian::Par par(argc, argv);

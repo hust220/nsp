@@ -1,7 +1,7 @@
 #ifndef JIAN_NUC2D_SEQ2QUA_H
 #define JIAN_NUC2D_SEQ2QUA_H
 
-#include "../util.h"
+#include "../etl.h"
 
 namespace jian {
 namespace nuc2d {

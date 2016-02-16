@@ -1,9 +1,9 @@
 #ifndef JIAN_DG_TESTHELIXCHIR
 #define JIAN_DG_TESTHELIXCHIR
 
-#include "../pdb/Model.h"
-#include "../util/Log.h"
-#include "../geom/geometry.h"
+#include "../pdb.h"
+#include "../util.h"
+#include "../geom.h"
 
 namespace jian {
 namespace dg {

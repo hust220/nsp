@@ -1,7 +1,7 @@
 #ifndef JIAN_NUC3D_HELIX_PAR
 #define JIAN_NUC3D_HELIX_PAR
 
-#include "../util/std.h"
+#include "../etl.h"
 
 namespace jian {
 namespace nuc3d {

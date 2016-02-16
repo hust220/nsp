@@ -3,8 +3,7 @@
 
 #include "../pdb/Molecule.h"
 #include "HelixParser.h"
-#include "../util/Log.h"
-#include "../util/rand.h"
+#include "../etl.h"
 #include "../geom.h"
 
 namespace jian {
@@ -64,12 +63,12 @@ public:
     }
 
     auto make_junction(const Hinges &hinges) {
-        Helices helices(hinges.size());
-        helices[0].theta = 0; helices[0].phi = 0;
-        std::vector<int> v(helices.size()); std::iota(v.begin(), v.end(), 0);
-        for (int i = 0; i < helices.size(); i++) {
-            else if (i == 1) {helices[i].theta = PI; helices[i].phi = 0;}
-            else {helices[i].theta = int(rand()*6)*PI/6; helices[i].phi = int(rand()*12)*PI/6;}
+        int len = hinges.size(); Helices helices(len);
+        std::vector<int> v(len); std::iota(v.begin(), v.end(), 0);
+        std::shuffle(v.begin(), v.end(), _rand_engine);
+        helices[v[0]] = {0, 0}; helices[v[1]] = {PI, 0};
+        for (int i = 2; i < len; i++) {
+            helices[v[i]] = {int(rand()*6)*PI/6, int(rand()*12)*PI/6};
         }
         for (auto &helix : helices) log(helix.theta, ':', helix.phi, ' '); log('\n');
         return helices_to_model(helices, hinges);

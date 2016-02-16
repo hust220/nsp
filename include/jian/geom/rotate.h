@@ -1,8 +1,7 @@
 #ifndef JIAN_GEOM_ROTATE
 #define JIAN_GEOM_ROTATE
 
-#include "../fpl.h"
-#include "../util.h"
+#include "../etl.h"
 
 namespace jian {
 namespace geom {
@@ -16,9 +15,9 @@ void translate(T &t, const U &u) {
 
 template<typename T, typename Mat> 
 void rotate(T &t, const Mat &mat) {
-    val_t x = t[0] * mat::ref(mat, 0, 0) + t[1] * mat::ref(mat, 1, 0) + t[2] * mat::ref(mat, 2, 0);
-    val_t y = t[0] * mat::ref(mat, 0, 1) + t[1] * mat::ref(mat, 1, 1) + t[2] * mat::ref(mat, 2, 1);
-    val_t z = t[0] * mat::ref(mat, 0, 2) + t[1] * mat::ref(mat, 1, 2) + t[2] * mat::ref(mat, 2, 2);
+    val_t x = t[0] * ref(mat, 0, 0) + t[1] * ref(mat, 1, 0) + t[2] * ref(mat, 2, 0);
+    val_t y = t[0] * ref(mat, 0, 1) + t[1] * ref(mat, 1, 1) + t[2] * ref(mat, 2, 1);
+    val_t z = t[0] * ref(mat, 0, 2) + t[1] * ref(mat, 1, 2) + t[2] * ref(mat, 2, 2);
     t[0] = x; t[1] = y; t[2] = z;
 }
 

@@ -1,9 +1,7 @@
 #ifndef JIAN_DG_SYS
 #define JIAN_DG_SYS
 
-#include "../util/std.h"
-#include "../util/Matr_.h"
-#include "../util/Log.h"
+#include "../etl.h"
 
 namespace jian {
 namespace dg {

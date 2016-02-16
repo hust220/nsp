@@ -1,5 +1,5 @@
-#ifndef Model_H
-#define Model_H
+#ifndef JIAN_PDB_Model
+#define JIAN_PDB_Model
 
 #include "Chain.h"
 

@@ -2,7 +2,7 @@
 #define BUILD_NUC_H
 
 #include "../dg/DG.h"
-#include "../pdb/util.h"
+#include "../pdb.h"
 
 namespace jian {
 namespace nuc3d {

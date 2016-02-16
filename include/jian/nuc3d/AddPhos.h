@@ -1,7 +1,7 @@
 #ifndef ADDPHOS_H
 #define ADDPHOS_H
 
-#include "../pdb/util.h"
+#include "../pdb.h"
 
 namespace jian {
 

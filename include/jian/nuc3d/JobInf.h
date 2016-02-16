@@ -1,9 +1,7 @@
 #ifndef JIAN_NUC3D_JOBINF_H
 #define JIAN_NUC3D_JOBINF_H
 
-#include "../util/std.h"
-#include "../util/Par.h"
-#include "../util/Log.h"
+#include "../etl.h"
 #include "../nuc2d/N2D.h"
 #include "../nuc2d/util.h"
 

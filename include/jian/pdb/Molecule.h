@@ -3,8 +3,7 @@
 
 #include "Cif.h"
 #include "PdbFile.h"
-#include "../util/std.h"
-#include "../util/file.h"
+#include "../etl.h"
 
 namespace jian {
 namespace pdb {

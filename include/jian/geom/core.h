@@ -1,7 +1,7 @@
 #ifndef JIAN_GEOM_CORE
 #define JIAN_GEOM_CORE
 
-#include "../util.h"
+#include "../etl.h"
 
 namespace jian {
 namespace geom {

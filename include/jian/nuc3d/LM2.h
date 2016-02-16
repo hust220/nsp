@@ -1,12 +1,10 @@
 #ifndef JIAN_NUC3D_LM2_H
 #define JIAN_NUC3D_LM2_H
 
-#include <pdb/util.h>
+#include "../pdb.h"
 #include <nuc2d/N2D.h>
 #include <dg/DG.h>
-#include <geom/move.h>
-#include <geom/rotate.h>
-#include <geom/util.h>
+#include "../geom.h"
 #include "Connect.h"
 #include "Transform.h"
 #include "JobInf.h"
@@ -452,7 +450,7 @@ public:
 
         std::cout << "helix:\n" << scaffold << std::endl;
         SupPos sp;
-        sp(scaffold, mat::hstack(scaffold.row(0), scaffold.row(len - 1), scaffold.row(len), scaffold.row(2 * len - 1)), anchor);
+        sp(scaffold, hstack(scaffold.row(0), scaffold.row(len - 1), scaffold.row(len), scaffold.row(2 * len - 1)), anchor);
         auto c1 = -sp.c1;
         for (auto &&res: residues) {
             for (auto &&atom: res.atoms) {

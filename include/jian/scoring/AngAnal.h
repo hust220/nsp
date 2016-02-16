@@ -1,7 +1,7 @@
 #ifndef JIAN_SCORING_ANGANAL_H
 #define JIAN_SCORING_ANGANAL_H
 
-#include <pdb/util.h>
+#include "../pdb.h"
 #include "Analysis.h"
 
 namespace jian {

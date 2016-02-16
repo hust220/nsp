@@ -1,8 +1,7 @@
 #ifndef JIAN_DG_CONSTRAINTS
 #define JIAN_DG_CONSTRAINTS
 
-#include "../util/std.h"
-#include "../util/MLib.h"
+#include "../etl.h"
 
 namespace jian {
 namespace dg {

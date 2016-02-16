@@ -1,7 +1,7 @@
 #ifndef JIAN_NUC2D_MERGERINGS_H
 #define JIAN_NUC2D_MERGERINGS_H
 
-#include "../util/std.h"
+#include "../etl.h"
 #include "SST.h"
 
 namespace jian {

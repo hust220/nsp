@@ -4,21 +4,20 @@
 #include "traits.h"
 
 namespace jian {
-namespace etl {
 
 template<typename LS>
 inline int len(LS &&ls) {
     return std::distance(std::begin(ls), std::end(ls));
 }
 
-template<typename LS, std::enable_if_t<is_same_template<LS, std::list>::value, int> = 42>
-inline value_type_t<LS> &ref(LS &&ls, int n) {
+template<typename LS, std::enable_if_t<is_template_same<LS, std::list>::value, int> = 42>
+inline template_first_parameter_t<LS> & ref(LS &&ls, int n) {
     if (n < 0) return *std::next(ls.end(), n);
     else return *std::next(ls.begin(), n);
 }
 
-template<typename LS, std::enable_if_t<!is_same_template<LS, std::list>::value, int> = 42>
-inline value_type_t<LS> &ref(LS &&ls, int n) {
+template<typename LS, std::enable_if_t<!is_template_same<LS, std::list>::value, int> = 42>
+inline template_first_parameter_t<LS> &ref(LS &&ls, int n) {
     if (n < 0) return ls[len(ls) + n];
     else return ls[n];
 }
@@ -40,7 +39,8 @@ auto find(Fn &&f, const ListType &list) {
     throw "not found!";
 }
 
-template<typename Fn> void iterate2(std::pair<int, int> p1, std::pair<int, int> p2, Fn &&f) {
+template<typename Fn> 
+void iterate2(std::pair<int, int> p1, std::pair<int, int> p2, Fn &&f) {
     for (int i = p1.first; i < p1.second; i++) {
         for (int j = p2.first; j < p2.second; j++) {
             f(i, j);
@@ -65,7 +65,8 @@ auto map(Fn &&f, const ListType<DataType> &list, const ListsType<DataType> & ...
     return result;
 }
 
-template<typename Fn, typename ListType, typename... ListsType> void each(Fn &&f, ListType &&list, ListsType && ...lists) {
+template<typename Fn, typename ListType, typename... ListsType> 
+void each(Fn &&f, ListType &&list, ListsType && ...lists) {
     int index = 0;
     for (int i = 0; i < std::distance(std::begin(list), std::end(list)); i++) {
         f(*(std::next(std::begin(list), i)), (*(std::next(std::begin(lists), i)))..., index);
@@ -80,13 +81,6 @@ auto fold(Fn &&f, DataType &&data, std::pair<int, int> p) -> decltype(f(data, 0)
     return sum;
 }
 
-//template<typename Fn, typename DataType, typename ListType>
-//auto fold(Fn &&f, DataType &&data, ListType &&list) -> decltype(f(data, *std::begin(list))) {
-//    decltype(f(data, *std::begin(list))) sum = std::forward<DataType>(data);
-//    for (auto && value : list) sum = f(sum, value);
-//    return sum;
-//}
-//
 template<typename Fn, typename DataType, typename ListType, typename... ListsType>
 auto fold(Fn &&f, DataType &&data, ListType &&list, ListsType && ...lists) -> decltype(f(data, *std::begin(list), (*std::begin(lists))...)) {
     decltype(f(data, *std::begin(list), (*std::begin(lists))...)) sum = std::forward<DataType>(data);
@@ -96,47 +90,28 @@ auto fold(Fn &&f, DataType &&data, ListType &&list, ListsType && ...lists) -> de
     return sum;
 }
 
-template<typename List = std::vector<int>, typename DataType, typename StepType = int> List range(DataType &&beg, int len, StepType step = 1) {
-    List list;
-    list.reserve(len);
-    DataType value = beg;
-    for (int i = 0; i < len; i++) {
-        list.push_back(value);
-        value = value + step;
-    }
-    return list;
+template<typename T = std::deque<int>>
+T range(double beg, double end, double step = 1) {
+    using val_t = template_first_parameter_t<T>;
+    T ls; for (val_t i = beg; i < end; i += step) ls.push_back(i);
+    return ls;
 }
 
 template<typename List> void append(List &list) {}
 
-template<typename List, typename Data1, typename... Data2> void append(List &list, Data1 &&data, Data2 && ...datum) {
+template<typename List, typename Data1, typename... Data2> 
+void append(List &list, Data1 &&data, Data2 && ...datum) {
     list.push_back(std::forward<Data1>(data));
     append(list, std::forward<Data2>(datum)...);
 }
 
-template<typename List> List slice(const List &list, int m, int n) {
+template<typename List> 
+List slice(const List &list, int m, int n) {
     List new_list;
     std::copy(std::next(std::begin(list), m), std::next(std::begin(list), n), std::back_inserter(new_list));
     return new_list;
 }
 
-inline void tokenize(const string &str, vector<string> &tokens, const string &delimiters) {
-    tokens.clear();
-    // Skip delimiters at beginning.
-    string::size_type lastPos = str.find_first_not_of(delimiters, 0);
-    // Find first "non-delimiter".
-    string::size_type pos     = str.find_first_of(delimiters, lastPos);
-    while (string::npos != pos || string::npos != lastPos) {
-        // Found a token, add it to the vector.
-        tokens.push_back(str.substr(lastPos, pos - lastPos));
-        // Skip delimiters.  Note the "not_of"
-        lastPos = str.find_first_not_of(delimiters, pos);
-        // Find next "non-delimiter"
-        pos = str.find_first_of(delimiters, lastPos);
-    }
-}
-
-} // namespace etl
 } // namespace jian
 
 #endif

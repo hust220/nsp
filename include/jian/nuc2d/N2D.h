@@ -3,7 +3,7 @@
 
 #include "loop.h"
 #include "util.h"
-#include "../pdb/util.h"
+#include "../pdb.h"
 
 namespace jian {
 namespace nuc2d {

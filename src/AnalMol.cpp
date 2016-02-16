@@ -1,12 +1,11 @@
-#include <jian/util/std.h>
-#include <jian/fpl.h>
-#include <jian/pdb/Model.h>
+#include <jian/etl.h>
+#include <jian/pdb.h>
 #include <jian/geom.h>
 
 int main(int argc, char **argv) {
     jian::Par par(argc, argv);
     jian::Model model(par["pdb"][0]);
-    auto ls = jian::fpl::map<std::vector>([](const auto &s){return boost::lexical_cast<int>(s);}, par["num"]);
+    auto ls = jian::map<std::vector>([](const auto &s){return boost::lexical_cast<int>(s);}, par["num"]);
     std::vector<jian::Atom> vec(ls.size());
     model.each_res([&](const auto &res, int index){
         auto result = std::find(ls.begin(), ls.end(), index);

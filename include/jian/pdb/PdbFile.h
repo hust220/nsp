@@ -1,7 +1,6 @@
 #ifndef JIAN_PDBFILE_H
 #define JIAN_PDBFILE_H
 
-#include "../util.h"
 #include "MolFile.h"
 
 namespace jian {

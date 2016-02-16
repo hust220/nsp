@@ -2,7 +2,6 @@
 #define JIAN_ETL_CONTROL
 
 namespace jian {
-namespace etl {
 
 namespace static_if_detail {
 
@@ -38,13 +37,12 @@ struct statement<false> {
 } // namespace static_if_detail
 
 template<bool Cond, typename F>
-static_if_detail::statement<Cond> static_if(F const& f){
+static_if_detail::statement<Cond> static_if(const F &f){
     static_if_detail::statement<Cond> if_;
     if_.then(f);
     return if_;
 }
 
-} // namespace etl
 } // namespace jian
 
 #endif

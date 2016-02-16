@@ -1,9 +1,9 @@
 #ifndef JIAN_NUC3D_ASSEMBLE_H
 #define JIAN_NUC3D_ASSEMBLE_H
 
-#include "../util/std.h"
-#include "../pdb/Model.h"
-#include "../geom/rotate.h"
+#include "../etl.h"
+#include "../pdb.h"
+#include "../geom.h"
 #include "FindTemplates.h"
 #include "TemplRec.h"
 #include "Transform.h"

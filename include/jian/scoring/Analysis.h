@@ -1,7 +1,8 @@
 #ifndef ANALYSIS_H
 #define ANALYSIS_H
 
-#include <util/util.h>
+#include "../etl.h"
+#include "../pdb.h"
 
 namespace jian {
 namespace scoring {

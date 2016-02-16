@@ -1,10 +1,7 @@
 #ifndef JIAN_NUC2D_PRED2D
 #define JIAN_NUC2D_PRED2D
 
-#include "../util/std.h"
-#include "../util/MLib.h"
-#include "../util/file.h"
-#include "../util/Log.h"
+#include "../etl.h"
 
 namespace jian {
 namespace nuc2d {

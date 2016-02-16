@@ -1,8 +1,8 @@
 #ifndef TRANSFORM_H
 #define TRANSFORM_H
 
-#include "../pdb/util.h"
-#include "../util/Log.h"
+#include "../pdb.h"
+#include "../etl.h"
 
 namespace jian {
 namespace nuc3d {

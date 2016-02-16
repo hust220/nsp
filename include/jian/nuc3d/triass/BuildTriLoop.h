@@ -28,7 +28,7 @@ public:
     template<typename LS>
     std::pair<DG::DistBoundType, DG::DihBoundType> bound_constraints(const LS &ls, int primary_index, int secondary_index) {
         int len = fold([](double sum, int n){return sum + n;}, 0, ls) + 6;
-        auto dist_bound = mat::make_mat<DG::DistBoundType>(len, len);
+        auto dist_bound = make_mat<DG::DistBoundType>(len, len);
         DG::DihBoundType dih_bound;
 
         init_bound(dist_bound, len);
@@ -46,8 +46,8 @@ public:
     void init_bound(DG::DistBoundType &dist_bound, int len) {
         for (int i = 0; i < len; i++) {
             for (int j = i + 1; j < len; j++) {
-                mat::ref(dist_bound, i, j) = 99;
-                mat::ref(dist_bound, j, i) = 6.1;
+                ref(dist_bound, i, j) = 99;
+                ref(dist_bound, j, i) = 6.1;
             }
         }
     }

@@ -1,7 +1,7 @@
 #ifndef JIAN_NUC3D_SPLIT_H
 #define JIAN_NUC3D_SPLIT_H
 
-#include "../pdb/util.h"
+#include "../pdb.h"
 #include "../nuc2d/N2D.h"
 #include "../nuc2d/util.h"
 

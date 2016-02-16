@@ -1,8 +1,7 @@
 #ifndef JIAN_GEOM_SUPPOS
 #define JIAN_GEOM_SUPPOS
 
-#include "../util/std.h"
-#include "../util/mat.h"
+#include "../etl.h"
 
 namespace jian {
 namespace geom {

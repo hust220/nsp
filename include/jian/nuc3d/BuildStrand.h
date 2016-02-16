@@ -1,9 +1,8 @@
 #ifndef JIAN_NUC3D_BUILDSTRAND_H
 #define JIAN_NUC3D_BUILDSTRAND_H
 
-#include "../pdb/Residue.h"
-#include "../util/std.h"
-#include "../util/mat.h"
+#include "../etl.h"
+#include "../pdb.h"
 #include "../dg/DG.h"
 #include "../geom.h"
 
@@ -76,7 +75,7 @@ public:
                 }
             }
         }
-        auto mat = mat::hstack(a, b);
+        auto mat = hstack(a, b);
         std::vector<int> vec;
         if (a.rows() != 0 && b.rows() != 0) vec = std::vector<int> {0, 1, size - 2, size - 1};
         else if (a.rows() == 0) vec = std::vector<int> {size - 2, size - 1};

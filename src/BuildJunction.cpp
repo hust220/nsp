@@ -1,5 +1,5 @@
 #include <jian/nuc3d/BuildJunction.h>
-#include <jian/util/Par.h>
+#include <jian/etl.h>
 
 int main(int argc, char **argv) {
     try {

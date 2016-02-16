@@ -1,5 +1,5 @@
-#ifndef Pdb_H
-#define Pdb_H
+#ifndef JIAN_PDB_PDB
+#define JIAN_PDB_PDB
 
 #include "Model.h"
 

@@ -1,7 +1,7 @@
 #ifndef JIAN_NUC2D_GETSS
 #define JIAN_NUC2D_GETSS
 
-#include "../util/std.h"
+#include "../etl.h"
 #include "util.h"
 #include "../pdb/IFModel.h"
 

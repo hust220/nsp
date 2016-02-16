@@ -2,7 +2,6 @@
 #define DIHANAL_H
 
 #include "Analysis.h"
-#include <pdb/util.h>
 
 namespace jian {
 namespace scoring {

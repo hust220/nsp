@@ -1,15 +1,12 @@
+#include <jian/etl.h>
 #include <jian/nuc3d/Predict.h>
-//#include <jian/nuc3d/LM2.h>
-//#include <jian/nuc3d/LoopModelling2.h>
 #include <jian/nuc3d/BuildJunction.h>
-//#include <jian/nuc3d/BuildTriplex.h>
 #include <jian/nuc3d/Split.h>
 #include <jian/nuc2d/N2D.h>
 #include <jian/nuc2d/Seq2Ss.h>
 #include <jian/nuc2d/Seq2Tri.h>
 #include <jian/nuc2d/Seq2Qua.h>
 #include <jian/cluster/Cluster.h>
-//#include <jian/scoring/util.h>
 #include "extract_fragment.h"
 #include <jian/nuc2d/BuildSST.h>
 #include <jian/nuc2d/MergeRings.h>
@@ -60,7 +57,7 @@ public:
                 if (par.count("cutoff")) seq2qua._cutoff = boost::lexical_cast<int>(par["cutoff"][0]);
                 seq2qua(par["seq"][0]);
             } else if (type == "dg") {
-                auto mat = jian::mat::mat_from_file(global[1]);
+                auto mat = jian::mat_from_file(global[1]);
                 jian::DG dg(mat);
                 std::cout << dg() << std::endl;
             } else if (type == "n2d") {
@@ -224,7 +221,7 @@ public:
                 MatrixXf a = MatrixXf::Zero(3, 3);
                 MatrixXf b = MatrixXf::Zero(3, 3);
                 MatrixXf c = MatrixXf::Zero(3, 3);
-                std::cout << jian::mat::sum([](const MatrixXf &a){return a.rows();}, a, b, c) << std::endl;
+                std::cout << jian::sum([](const MatrixXf &a){return a.rows();}, a, b, c) << std::endl;
             } else if (type == "tree") {
                 jian::nuc2d::BuildSST build_sst;
                 auto sst = build_sst(par["seq"][0], par["ss"][0]);

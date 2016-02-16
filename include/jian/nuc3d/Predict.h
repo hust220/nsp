@@ -3,7 +3,7 @@
 
 #include "../nuc2d/N2D.h"
 #include "../nuc2d/util.h"
-#include "../pdb/util.h"
+#include "../pdb.h"
 #include "Assemble.h"
 #include "triass/TriAss.h"
 
