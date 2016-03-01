@@ -5,6 +5,7 @@
 #include "../../Eigen/Dense"
 #include "../../Eigen/SVD"
 #include "../../Eigen/Geometry"
+#include "../traits.h"
 using namespace Eigen;
 
 namespace jian {

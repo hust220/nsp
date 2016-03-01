@@ -11,13 +11,13 @@ inline int len(LS &&ls) {
 }
 
 template<typename LS, std::enable_if_t<is_template_same<LS, std::list>::value, int> = 42>
-inline template_first_parameter_t<LS> & ref(LS &&ls, int n) {
+inline template_first_parameter_t<LS&&> ref(LS &&ls, int n) {
     if (n < 0) return *std::next(ls.end(), n);
     else return *std::next(ls.begin(), n);
 }
 
 template<typename LS, std::enable_if_t<!is_template_same<LS, std::list>::value, int> = 42>
-inline template_first_parameter_t<LS> &ref(LS &&ls, int n) {
+inline template_first_parameter_t<LS&&> ref(LS &&ls, int n) {
     if (n < 0) return ls[len(ls) + n];
     else return ls[n];
 }

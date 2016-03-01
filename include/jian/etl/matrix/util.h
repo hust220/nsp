@@ -23,12 +23,12 @@ inline int rows(MatType &&mat) {
 
 // ref
 template<typename T, std::enable_if_t<is_stl_mat<T>::value, int> = 42>
-inline auto ref(T &&mat, int a, int b) -> decltype(mat[a][b]) {
+inline template_first_parameter_t<template_first_parameter_t<T&&>> ref(T &&mat, int a, int b) {
     return mat[a][b];
 }
 
 template<typename T, std::enable_if_t<is_eigen_mat<T>::value, int> = 42>
-inline auto ref(T &&mat, int a, int b) -> decltype(mat(a, b)) {
+inline template_first_parameter_t<T&&> ref(T &&mat, int a, int b) {
     return mat(a, b);
 }
 

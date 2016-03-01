@@ -29,7 +29,7 @@ private:
     template<template<typename...> class F, typename K, typename... Pars>
     static K check(F<K, Pars...>);
 public:
-    enum {value = std::is_same<U<decltype(check(declval<T>()))>, std::decay_t<T>>::value};
+    enum {value = std::is_same<U<decltype(check(std::declval<T>()))>, std::decay_t<T>>::value};
 };
 
 template<typename T>
@@ -37,8 +37,14 @@ struct template_first_parameter {
 private:
     template<template<typename...> class F, typename K, typename... Pars>
     static K check(F<K, Pars...>);
+    template<typename K, typename U> struct modify {using type = K;};
+    template<typename K, typename U> struct modify<K, const U> {using type = const K;};
+    template<typename K, typename U> struct modify<K, const U &> {using type = const K &;};
+    template<typename K, typename U> struct modify<K, const U &&> {using type = const K &&;};
+    template<typename K, typename U> struct modify<K, U&> {using type = K&;};
+    template<typename K, typename U> struct modify<K, U&&> {using type = K&&;};
 public:
-    using type = decltype(check(std::declval<T>()));
+    using type = typename modify<decltype(check(std::declval<T>())), T>::type;
 };
 
 template<typename T>
