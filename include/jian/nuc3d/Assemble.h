@@ -336,7 +336,8 @@ public:
         TemplRec templ_rec;
         int num = 0;
         while (ifile >> templ_rec._name >> templ_rec._type >> templ_rec._seq >> templ_rec._ss >> templ_rec._family) {
-            if (_strategy == "loose" and templ_rec._type == num_sons and num_sons >= (l->is_open() ? 0 : 2)) {
+            if (templ_rec._name.substr(0, 4) == _disused_pdb) continue;
+            else if (_strategy == "loose" and templ_rec._type == num_sons and num_sons >= (l->is_open() ? 0 : 2)) {
                 templ_rec._score = 0;
                 if (templ_rec._name.substr(0, 4) == _name.substr(0, 4)) {
                     if (_is_test) continue; else templ_rec._score += 5;

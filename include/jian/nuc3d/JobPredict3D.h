@@ -17,6 +17,7 @@ public:
     std::string _family = "other";
     std::string _type = "RNA";
     std::string _constraints;
+    std::string _disused_pdb;
     std::time_t _start_time, _end_time;
     int _hinge = 2;
     int _num = 1;
@@ -73,6 +74,9 @@ public:
 
         // ## Set constraints file
         pars.count("constraints") && (_constraints = pars["constraints"][0], 1);
+
+        // ## Set constraints file
+        pars.count("disused_pdb") && (_disused_pdb = pars["constraints"][0], 1);
 
         // ## Set meethod
         pars.count("method") && (_method = boost::to_lower_copy(pars["method"][0]), 1);
