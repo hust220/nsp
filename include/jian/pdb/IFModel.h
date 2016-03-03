@@ -14,7 +14,7 @@ using IFRNAResidue = Residue<_RNA, _IF>;
 inline bool is_residue_paired(const IFRNAResidue &res1, const IFRNAResidue &res2) {
     static std::unordered_map<std::string, unsigned int> cvt {{"A", 1}, {"U", 2}, {"G", 4}, {"C", 8}};
 
-    Atom atoms[4] {res1.atom("C"), res1.atom("O"), res2.atom("C"), res2.atom("O")};
+    Atom atoms[4] {atom(res1, "C"), atom(res1, "O"), atom(res2, "C"), atom(res2, "O")};
     std::array<double, 4> dists {geom::distance(atoms[0], atoms[2]), geom::distance(atoms[1], atoms[3]),
                                  geom::distance(atoms[0], atoms[3]), geom::distance(atoms[1], atoms[2])};
 

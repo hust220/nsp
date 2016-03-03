@@ -1,33 +1,28 @@
-#ifndef JIAN_PDB_Model
-#define JIAN_PDB_Model
+#ifndef JIAN_PDB_MODEL
+#define JIAN_PDB_MODEL
 
 #include "Chain.h"
 
 namespace jian {
 
-template<typename ChainType>
-class BasicModel {
+class Model : public std::deque<Chain> {
 public:
-    using ResidueType = typename ChainType::ResidueType;
+    std::string name = "unknown";
+    std::string type = "unknown";
 
-    std::string name = "none";
-    std::vector<ChainType> chains;
+    Model() {}
 
-    BasicModel() {}
-
-    BasicModel(BasicModel<ChainType> *model) : name(model->name), chains(model->chains) {}
-
-    BasicModel(MolFile &pdb_file) {
+    Model(MolFile &pdb_file) {
         name = pdb_file._name;
         if (!pdb_file.eof()) {
             int num = pdb_file.model_num();
             while (!pdb_file.eof() && num == pdb_file.model_num()) {
-                chains.push_back(ChainType(pdb_file));
+                this->push_back(Chain(pdb_file));
             }
         }
     }
 
-    BasicModel(std::string pdbfile) {
+    Model(std::string pdbfile) {
         read(pdbfile);
     }
 
@@ -43,182 +38,120 @@ public:
 
     void read_pdb(std::string pdbfile) {
         PdbFile pdb_file(pdbfile);
-        (*this) = BasicModel<ChainType>(pdb_file);
+        (*this) = Model(pdb_file);
     }
 
     void read_cif(std::string file_name) {
         Cif cif(file_name);
-        (*this) = BasicModel<ChainType>(cif);
+        (*this) = Model(cif);
     }
-
-    BasicModel(std::vector<std::string> lines) {
-        name = "none";
-        std::vector<std::string> chain_lines;
-        char chain_name = ' ';
-        int atom_num = 0;
-
-        for (auto &&line: lines) {
-            atom_num++;
-            if (line[21] != chain_name && atom_num != 1) {
-                push(ChainType(chain_lines));
-                chain_lines.clear();
-            }
-            chain_name = line[21];
-            chain_lines.push_back(line);
-        }
-        push(ChainType(chain_lines));
-        chain_lines.clear();
-    }
-
-    template<typename Fn> void each_res(Fn &&f) {
-        int res_num = 0;
-        for (auto && chain : chains) for (auto && residue : chain.residues) {
-            f(residue, res_num);    
-            res_num++;
-        }
-    }
-
-    template<typename Fn> void each_res(Fn &&f) const {
-        int res_num = 0;
-        for (auto && chain : chains) for (auto && residue : chain.residues) {
-            f(residue, res_num);    
-            res_num++;
-        }
-    }
-
-    bool empty() const {
-        return res_nums() == 0;
-    }
-
-    virtual std::string seq(std::string delimiter = "") const {
-        std::vector<std::string> res_names;
-        for (auto &&chain: chains) {
-            for (auto &&res: chain.residues) {
-                res_names.push_back(res.name);
-            }
-        }
-        return std::accumulate(res_names.begin() + 1, res_names.end(), res_names[0], [&](std::string a, std::string b){
-            return a + delimiter + b;
-        });
-    }
-
-    ChainType &operator [](int n) {
-        return chains[n];
-    }
-
-    const ChainType &operator [](int n) const {
-        return chains[n];
-    }
-
-    Residue &residue(int n) {
-        int res_num = 0;
-        for (auto &&chain: chains) for (auto &&res: chain.residues) {
-                if (res_num == n) return res;
-                res_num++;
-        }
-        throw "JIAN::MODEL::residue(int) error! Residue index out of range.";
-    }
-
-    const Residue &residue(int n) const {
-        int res_num = 0;
-        for (auto &&chain: chains) for (auto &&res: chain.residues) {
-                if (res_num == n) return res;
-                res_num++;
-        }
-        throw "JIAN::MODEL::residue(int) error! Residue index out of range.";
-    }
-
-    void push(const ChainType &chain) {
-        chains.push_back(chain);
-    }
-
-    void print() const {
-        cout << *this;
-    }
-
-    void write(string pdbname) const {
-        ofstream ofile(pdbname.c_str());
-        ofile << (*this);
-        ofile.close();
-    }
-
-    typename std::vector<ChainType>::iterator begin() {
-        return chains.begin();
-    }
-
-    typename std::vector<ChainType>::iterator end() {
-        return chains.end();
-    }
-
-    int res_nums() const {
-        int res_num = 0;
-        for (auto &chain: chains) for (auto &residue: chain.residues) res_num++;
-        return res_num;
-    }
-
-    int atom_nums() const {
-        int atom_num = 0;
-        for (auto &chain: chains) for (auto &residue: chain.residues) for (auto &atom: residue.atoms) atom_num++;
-        return atom_num;
-    }
-
-
-    template<typename T> BasicModel<ChainType> sub(T &&t) const {
-        BasicModel<ChainType> model;
-        int res_num = 0;
-        for (auto &&chain: chains) {
-            ChainType temp_chain;
-            temp_chain.name = chain.name;
-            for (auto &&res: chain.residues) {
-                if (std::count(std::begin(t), std::end(t), res_num)) {
-                    temp_chain.residues.push_back(res);
-                }
-                res_num++;
-            }
-            if (!temp_chain.residues.empty())
-                model.chains.push_back(temp_chain);
-        }
-        return model;
-    }
-
-    template<typename List> 
-    std::deque<Residue> residues(List &&list) const {
-        std::deque<Residue> vec;
-        int res_num = 0;
-        for (auto &&chain: chains) {
-            for (auto &&res: chain.residues) {
-                if (std::count(std::begin(list), std::end(list), res_num)) vec.push_back(res);
-                res_num++;
-            }
-        }
-        return vec;
-    }
-
-    template<template<typename...> class LS = std::deque>
-    auto residues() const {
-        LS<ResidueType> vec;
-        for (auto &&chain: chains) for (auto &&res: chain.residues) vec.push_back(res);
-        return vec;
-    }
-
 
 };
 
-typedef BasicModel<Chain> Model;
+inline std::string seq(const Model &model) {
+    std::string seq;
+    for (auto &&chain : model) for (auto &&res : chain) { seq += res.name; }
+    return seq;
+}
 
-template<typename ChainType> 
-std::ostream &operator <<(std::ostream &output, const BasicModel<ChainType> &model) {
+inline int num_residues(const Model &model) {
+    int i = 0; for (auto &&chain : model) for (auto &&res : chain) i++;
+    return i;
+}
+
+inline int num_atoms(const Model &model) {
+    int i = 0; for (auto &&chain : model) for (auto &&res : chain) for (auto &&atom : res) i++;
+    return i;
+}
+
+template<typename T, typename F, std::enable_if_t<std::is_integral<std::result_of_t<F(Residue, int)>>::value, int> = 42>
+inline int each_residue(T &&mol, F &&f) {
+    int i = 0; for (auto &&chain : mol) for (auto &&residue : chain) {
+        if (!f(residue, i)) return i;
+        i++;
+    }
+}
+
+template<typename T, typename F, std::enable_if_t<std::is_void<std::result_of_t<F(Residue, int)>>::value, int> = 42>
+inline void each_residue(T &&mol, F &&f) {
+    int i = 0; for (auto &&chain : mol) for (auto &&residue : chain) {
+        f(residue, i);
+        i++;
+    }
+}
+
+template<typename T, typename F, std::enable_if_t<std::is_integral<std::result_of_t<F(Atom, int)>>::value, int> = 42>
+inline int each_atom(T &&mol, F &&f) {
+    int i = 0; for (auto &&chain : mol) for (auto &&residue : chain) for (auto &&atom : residue) {
+        if (!f(atom, i)) return i;
+        i++;
+    }
+}
+
+template<typename T, typename F, std::enable_if_t<std::is_void<std::result_of_t<F(Atom, int)>>::value, int> = 42>
+inline void each_atom(T &&mol, F &&f) {
+    int i = 0; for (auto &&chain : mol) for (auto &&residue : chain) for (auto &&atom : residue) {
+        f(atom, i);
+        i++;
+    }
+}
+
+inline bool is_empty(const Model &model) {
+    return num_residues(model) == 0;
+}
+
+template<typename T> 
+inline auto sub(const Model &model, T &&t) {
+    Model m;
+    int res_num = 0; for (auto &&chain: model) {
+        Chain temp_chain; temp_chain.name = chain.name;
+        for (auto &&res: chain) {
+            if (std::count(std::begin(t), std::end(t), res_num)) temp_chain.push_back(res);
+            res_num++;
+        }
+        if (!temp_chain.empty()) m.push_back(temp_chain);
+    }
+    return m;
+}
+
+template<template<typename...> class L = std::deque>
+inline auto residues(const Model &model) {
+    L<Residue> v;
+    for (auto &&chain: model) for (auto &&res: chain) v.push_back(res);
+    return v;
+}
+
+template<typename T, template<typename...> class L = std::deque> 
+inline auto residues(const Model &model, T &&ls) {
+    L<Residue> v;
+    int i = 0; for (auto &&chain: model) for (auto &&res: chain) {
+        if (std::count(std::begin(ls), std::end(ls), i)) v.push_back(res);
+        i++;
+    }
+    return v;
+}
+
+template<typename T>
+inline uniform_const_t<Residue, T> &residue(T &&model, int n) {
+    int i = 0; for (auto &&chain: model) for (auto &&res: chain) {
+        if (i == n) return res;
+        i++;
+    }
+    throw "JIAN::MODEL::residue(int) error! Residue index out of range.";
+}
+
+inline std::ostream &operator <<(std::ostream &output, const Model &model) {
     int atom_num = 1;
     int residue_num = 1;
     output << fixed << setprecision(3);
-    for (auto &&chain: model.chains) {
-        for (auto &&residue: chain.residues) {
-            for (auto &&atom: residue.atoms) {
+    for (auto &&chain: model) {
+        for (auto &&residue: chain) {
+            for (auto &&atom: residue) {
                 std::string atom_name = boost::replace_all_copy(atom.name, "*", "'");
                 if (residue_num == 1 and std::set<std::string>{"P", "O1P", "O2P"}.count(atom_name)) continue;
                 output << boost::format("ATOM%7i  %-4s%3s%2s%4i%12.3lf%8.3lf%8.3lf%6.2f%6.2f%12c  \n") % 
                                         atom_num % atom_name % residue.name % chain.name % residue_num % 
-                                        atom.x % atom.y % atom.z % 1.00 % 0.00 % atom_name[0];
+                                        atom[0] % atom[1] % atom[2] % 1.00 % 0.00 % atom_name[0];
                 atom_num++;
             }
             residue_num++;
@@ -228,27 +161,80 @@ std::ostream &operator <<(std::ostream &output, const BasicModel<ChainType> &mod
     return output;
 }
 
-namespace pdb {
-
-template<template<typename...> class LS, typename ResidueType>
-auto residues_to_model(LS<ResidueType> &&res) {
-    BasicModel<BasicChain<ResidueType>> model;
-    model.chains.push_back(BasicChain<ResidueType>());
-    model.chains[0].residues = res;
+template<typename T>
+inline auto residues_to_model(T &&ls) {
+    Model model; model.resize(1);
+    for (auto &&res : ls) model[0].push_back(res);
     return model;
 }
 
-template<template<typename...> class LS, typename ResidueType>
-auto residues_to_model(const LS<ResidueType> &res) {
-    BasicModel<BasicChain<ResidueType>> model;
-    model.chains.push_back(BasicChain<ResidueType>());
-    model.chains[0].residues = res;
-    return model;
+inline auto RNA(const Model &model) {
+    Model rna;
+    static std::set<std::string> names {"A", "U", "G", "C"};
+    for (auto &&chain: model) {
+        Chain temp_chain; temp_chain.name = chain.name;
+        for (auto &&residue: chain) {
+            auto res = residue; res.name = res.name.substr(0, 1);
+            if (names.count(res.name)) temp_chain.push_back(std::move(res));
+        }
+        if (!temp_chain.empty()) rna.push_back(temp_chain);
+    }
+    rna.name = model.name; rna.type = "RNA";
+    return rna;
 }
 
-} // namespace pdb
+inline auto RNA(const std::string &s) {
+    return RNA(Model(s));
+}
 
-} /// namespace jian
+inline auto DNA(const Model &model) {
+    Model dna;
+    static std::set<std::string> names {"DA", "DT", "DG", "DC"};
+    for (auto &&chain: model) {
+        Chain temp_chain; temp_chain.name = chain.name;
+        for (auto &&residue: chain) {
+            auto res = residue; res.name = res.name.substr(0, 2);
+            if (names.count(res.name)) temp_chain.push_back(std::move(res));
+        }
+        if (!temp_chain.empty()) dna.push_back(temp_chain);
+    }
+    dna.name = model.name; dna.type = "DNA";
+    return dna;
+}
 
-#endif // Model_H
+inline auto DNA(const std::string &s) {
+    return DNA(Model(s));
+}
+
+inline auto R5P(const Model &model) {
+    static std::map<std::string, std::set<std::string>> names {
+        {"A", {"C5*", "O3*", "C1*", "N6", "C2"}},
+        {"U", {"C5*", "O3*", "C1*", "O2", "O4"}},
+        {"G", {"C5*", "O3*", "C1*", "O6", "N2"}},
+        {"C", {"C5*", "O3*", "C1*", "O2", "N4"}}
+    };
+    Model m; m.type = "R5P";
+    for (auto &&chain : model) {
+        Chain new_chain; new_chain.name = chain.name; new_chain.type = m.type;
+        for (auto &&res : chain) {
+            Residue new_residue; new_residue.name = res.name;
+            for (auto &&atom : res) if (names[res.name].count(atom.name)) new_residue.push_back(atom);
+            if (!new_residue.empty()) new_chain.push_back(new_residue);
+        }
+        if (!new_chain.empty()) m.push_back(new_chain);
+    }
+    return m;
+}
+
+inline auto R5P(const std::string &s) {
+    return R5P(RNA(s));
+}
+
+inline void write_pdb(const Model &model, const std::string &name) {
+    std::ofstream ofile(name.c_str()); ofile << model; ofile.close();
+}
+
+} // namespace jian
+
+#endif
 

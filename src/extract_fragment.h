@@ -8,19 +8,19 @@
 namespace jian {
 
 void extract_fragment(const jian::Model &model, int len) {
-    int num_residues = model.res_nums();
+    int num_residues = jian::num_residues(model);
     int num_residue = 0;
     std::deque<jian::Point> deque1;
     std::deque<jian::Point> deque2;
     std::deque<jian::Point> deque3;
     std::deque<jian::Residue> deque;
     int file_index = 0;
-    for (auto &&chain: model.chains) {
-        for (auto &&residue: chain.residues) {
+    for (auto &&chain: model) {
+        for (auto &&residue: chain) {
             deque.push_back(residue);
-            deque1.push_back(residue["O5*"].pos());
-            deque2.push_back(residue["C4*"].pos());
-            deque3.push_back(residue["O3*"].pos());
+            deque1.push_back(pos(atom(residue, "O5*")));
+            deque2.push_back(pos(atom(residue, "C4*")));
+            deque3.push_back(pos(atom(residue, "O3*")));
             if (deque2.size() >= 2) {
                 double dist = jian::geom::distance(deque1.back(), deque3[deque3.size() - 2]);
                 if (dist > 4) {
@@ -40,9 +40,9 @@ void extract_fragment(const jian::Model &model, int len) {
                     }
                 }
                 jian::Model new_model;
-                new_model.chains.push_back(jian::Chain());
-                std::copy(deque.begin(), deque.end(), std::back_inserter(new_model.chains[0].residues));
-                new_model.write(file_name + ".pdb");
+                new_model.push_back(jian::Chain());
+                std::copy(deque.begin(), deque.end(), std::back_inserter(new_model[0]));
+                write_pdb(new_model, file_name + ".pdb");
                 std::cout << std::endl;
                 deque1.pop_front();
                 deque2.pop_front();
@@ -54,7 +54,7 @@ void extract_fragment(const jian::Model &model, int len) {
     }
 }
 
-} /// namespace jian
+} // namespace jian
 
 #endif
 

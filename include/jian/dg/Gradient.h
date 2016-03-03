@@ -28,12 +28,10 @@ public:
             if (i == j) continue;
             _dist_en += atom_pair_energy(c, i, j);
             for (int t = 0; t < 3; t++) {
-                c(i, t) -= err; C(3 * i + t, 0) += atom_pair_energy(c, i, j);
-                c(i, t) += 2 * err; C(3 * i + t, 2) += atom_pair_energy(c, i, j);
-                c(i, t) -= err;
-                c(j, t) -= err; C(3 * j + t, 0) += atom_pair_energy(c, i, j);
-                c(j, t) += 2 * err; C(3 * j + t, 2) += atom_pair_energy(c, i, j);
-                c(j, t) -= err;
+                c(i, t) -= err; C(3 * i + t, 0) += atom_pair_energy(c, i, j); c(i, t) += err;
+                c(i, t) += err; C(3 * i + t, 2) += atom_pair_energy(c, i, j); c(i, t) -= err;
+                c(j, t) -= err; C(3 * j + t, 0) += atom_pair_energy(c, i, j); c(j, t) += err;
+                c(j, t) += err; C(3 * j + t, 2) += atom_pair_energy(c, i, j); c(j, t) -= err;
             }
         }
         
@@ -64,20 +62,13 @@ public:
     }
 
     double total_dist_energy(const Mat &coord) {
-        double en = 0, u2, l2, dist2;
-        for (int i = 0; i < coord.rows(); i++) {
-            for (int j = i + 1; j < coord.rows(); j++) {
-                dist2 = fold([&](double n, int k)->double{return n + square(coord(i, k) - coord(j, k));}, 0, {0, 3});
-                (u2 = square(bound(i, j)), l2 = square(bound(j, i)));
-                if (dist2 > u2) en += (dist2 - u2) / u2;
-                else if (dist2 < l2) en += (l2 - dist2) / dist2;
-            }
-        }
-        return en;
+        double en = 0; for (int i = 0; i < coord.rows(); i++) for (int j = i + 1; j < coord.rows(); j++) {
+            en += atom_pair_energy(coord, i, j);
+        } return en;
     }
 
     double total_dih_energy() {
-        return fold([&](double sum, const auto &entry){return sum + this->dih_row_energy(entry.first);}, 0, _dih_bound);
+        double en = 0; for (auto &&entry : _dih_bound) en += dih_row_energy(entry.first); return en;
     }
 
     double atom_energy(const Mat &coord, int n) {
@@ -85,18 +76,18 @@ public:
     }
 
     double atom_dist_energy(const Mat &coord, int n) {
-        return fold([&](double sum, auto i){return sum + this->atom_pair_energy(coord, i, n);}, 0, {0, coord.rows()});
+        double sum = 0; for (int i = 0; i < coord.rows(); i++) sum += atom_pair_energy(coord, i, n); return sum;
     }
 
     double atom_pair_energy(const Mat &coord, int i, int j) {
         if (i == j) return 0;
-        double dist = sqrt(fold([&](double sum, int k){return sum + square(coord(i, k) - coord(j, k));}, 0, {0, 3}));
+        double dist =  0; for (int k = 0; k < 3; k++) dist += square(coord(i, k)-coord(j, k)); dist = std::sqrt(dist);
         return (i < j ? relative_dist_energy(dist, (bound(j, i)), (bound(i, j))) : 
                         relative_dist_energy(dist, (bound(i, j)), (bound(j, i))));
     }
 
-    double relative_dist_energy(double en, double l, double u) {
-        if (en > u) return (en - u) / u; else if (en < l) return (l - en) / en; else return 0;
+    double relative_dist_energy(double dist, double l, double u) {
+        if (dist > u) return square(dist - u); else if (dist < l) return square(l - dist); else return 0;
     }
 
     double atom_dih_energy(int n) {

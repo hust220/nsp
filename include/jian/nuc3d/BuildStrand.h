@@ -49,31 +49,22 @@ public:
         auto residues = all_atom(scaffold);
         auto new_residues = slice(residues, a.rows(), a.rows() + n);
         if (a.rows() != 0) {
-            for (int i = 0; i < 3; i++) log(new_residues.front()["C4*"][i], ' ');
+            for (int i = 0; i < 3; i++) log(atom(new_residues.front(), "C4*")[i], ' ');
             log('\n');
         }
         if (b.rows() != 0) {
-            for (int i = 0; i < 3; i++) log(new_residues.back()["C4*"][i], ' ');
+            for (int i = 0; i < 3; i++) log(atom(new_residues.back(), "C4*")[i], ' ');
             log('\n');
         }
         return new_residues;
-        //return slice(residues, a.rows(), a.rows() + n);
-        //return slice(all_atom(scaffold), a.rows(), a.rows() + n);
     }
 
     Mat make_bound(int n, const Mat &a, const Mat &b) {
         int size = n * _coarse_atoms.size() + a.rows() + b.rows();
         Mat bound(size, size);
         bound = Mat::Zero(size, size);
-        for (int i = 0; i < size; i++) {
-            for (int j = i; j < size; j++) {
-                if (i == j) {
-                    bound(i, j) = 0;    
-                } else {
-                    bound(i, j) = 6.1 * (j - i);
-                    bound(j, i) = 6.1;
-                }
-            }
+        for (int i = 0; i < size; i++) for (int j = i; j < size; j++) {
+            if (i == j) { bound(i, j) = 0; } else { bound(i, j) = 6.1 * (j - i); bound(j, i) = 6.1; }
         }
         auto mat = hstack(a, b);
         std::vector<int> vec;
@@ -81,10 +72,8 @@ public:
         else if (a.rows() == 0) vec = std::vector<int> {size - 2, size - 1};
         else if (b.rows() == 0) vec = std::vector<int> {0, 1};
         else return bound;
-        for (int i = 0; i < mat.rows(); i++) {
-            for (int j = i + 1; j < mat.rows(); j++) {
-                bound(vec[i], vec[j]) = bound(vec[j], vec[i]) = geom::distance(mat.row(i), mat.row(j));
-            }
+        for (int i = 0; i < mat.rows(); i++) for (int j = i + 1; j < mat.rows(); j++) {
+            bound(vec[i], vec[j]) = bound(vec[j], vec[i]) = geom::distance(mat.row(i), mat.row(j));
         }
         return bound;
     }
@@ -151,12 +140,12 @@ public:
         int len = coord.rows();
         Mat x(len, 3), y(len, 3);
         for (int i = 0; i < len; i++) for (int j = 0; j < 3; j++) {
-            x(i, j) = residues[i]["C4*"][j];
+            x(i, j) = atom(residues[i], "C4*")[j];
             y(i, j) = coord(i, j);
         }
         auto sp = geom::suppos(x, y);
         auto c1 = -sp.c1;
-        for (auto &&res: residues) for (auto &&atom: res.atoms) {
+        for (auto &&res: residues) for (auto &&atom: res) {
             geom::translate(atom, c1);    
             geom::rotate(atom, sp.rot);    
             geom::translate(atom, sp.c2);    

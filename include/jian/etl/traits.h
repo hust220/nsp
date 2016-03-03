@@ -1,7 +1,7 @@
 #ifndef JIAN_ETL_TRAITS
 #define JIAN_ETL_TRAITS
 
-#include <type_traits>
+#include "std.h"
 
 namespace jian {
 
@@ -29,14 +29,21 @@ private:
     template<template<typename...> class F, typename K, typename... Pars>
     static K check(F<K, Pars...>);
 public:
-    enum {value = std::is_same<U<decltype(check(std::declval<T>()))>, std::decay_t<T>>::value};
+    enum {value = std::is_same<U<decltype(check(std::declval<std::decay_t<T>>()))>, std::decay_t<T>>::value};
 };
+
+template<typename T, typename U> struct uniform_const {using type = std::remove_const_t<T>;};
+template<typename T, typename U> struct uniform_const<T, const U> {using type = const std::remove_const_t<T>;};
+template<typename T, typename U> struct uniform_const<T, const U &> {using type = const std::remove_const_t<T>;};
+template<typename T, typename U> struct uniform_const<T, const U &&> {using type = const std::remove_const_t<T>;};
+template<typename T, typename U> using uniform_const_t = typename uniform_const<T, U>::type;
 
 template<typename T>
 struct template_first_parameter {
 private:
-    template<template<typename...> class F, typename K, typename... Pars>
-    static K check(F<K, Pars...>);
+    template<typename K> struct check {using type = std::false_type;};
+    template<template<typename...> class F, typename K, typename... Pars> struct check<F<K, Pars...>> {using type = K;};
+    template<template<typename, int...> class F, typename K, int... ints> struct check<F<K, ints...>> {using type = K;};
     template<typename K, typename U> struct modify {using type = K;};
     template<typename K, typename U> struct modify<K, const U> {using type = const K;};
     template<typename K, typename U> struct modify<K, const U &> {using type = const K &;};
@@ -44,7 +51,7 @@ private:
     template<typename K, typename U> struct modify<K, U&> {using type = K&;};
     template<typename K, typename U> struct modify<K, U&&> {using type = K&&;};
 public:
-    using type = typename modify<decltype(check(std::declval<T>())), T>::type;
+    using type = typename modify<typename check<std::decay_t<T>>::type, T>::type;
 };
 
 template<typename T>

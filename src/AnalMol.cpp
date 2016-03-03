@@ -7,10 +7,10 @@ int main(int argc, char **argv) {
     jian::Model model(par["pdb"][0]);
     auto ls = jian::map<std::vector>([](const auto &s){return boost::lexical_cast<int>(s);}, par["num"]);
     std::vector<jian::Atom> vec(ls.size());
-    model.each_res([&](const auto &res, int index){
+    jian::each_residue(model, [&](const auto &res, int index){
         auto result = std::find(ls.begin(), ls.end(), index);
         if (result != ls.end()) {
-            vec[std::distance(ls.begin(), result)] = res["C4*"];
+            vec[std::distance(ls.begin(), result)] = atom(res, "C4*");
         }
     });
     if (par["global"][0] == "dist") {

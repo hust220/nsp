@@ -19,7 +19,7 @@ public:
         log("Start CG...\n", 
             "step", ' ', "factor", ' ', "energy", ' ', "chirality\n");
 
-        double a = 0.001, beta = 0;
+        double a = 0.0001, beta = 0;
         for (int i = 0; i < len; i++) for (int j = 0; j < 3; j++) d_o(i, j) = 0;
         gradient();
         double oldE = _dist_en + _dih_en, oldG2 = g2;
@@ -48,7 +48,7 @@ public:
                 oldG2 = tempG2;
                 oldE = tempE;
                 log(upd, ' ', a, ' ', _dist_en, ' ', _dih_en, '\n');
-                if (_dist_en + _dih_en < 1.e-12 && g2 < 1.e-12) break;
+                if (_dist_en + _dih_en < 1.e-12 || g2 < 1.e-12) break;
             }
         }
         log("Finish CG.\n",

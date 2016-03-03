@@ -44,13 +44,13 @@ public:
     }
 
     Model to_rna(string seq) {
-        if (_model.res_nums() != seq.size()) {
-            for (auto &&chain: _model.chains) for (auto &&res: chain.residues) std::cout << res.name;
+        if (num_residues(_model) != seq.size()) {
+            for (auto &&chain: _model) for (auto &&res: chain) std::cout << res.name;
             std::cout << std::endl;
-            die("Transform::to_rna(string) error! Sequence's length isn't appropriate.\nNumbers of residues: " + boost::lexical_cast<std::string>(_model.res_nums()) + ".\nLength of sequence: " + boost::lexical_cast<std::string>(seq.size()) + ".\nSequence: " + seq + ".");
+            die("Transform::to_rna(string) error! Sequence's length isn't appropriate.\nNumbers of residues: " + boost::lexical_cast<std::string>(num_residues(_model)) + ".\nLength of sequence: " + boost::lexical_cast<std::string>(seq.size()) + ".\nSequence: " + seq + ".");
         }
         int i = 0;
-        for (auto &&chain: _model.chains) for (auto &&residue: chain.residues) {
+        for (auto &&chain: _model) for (auto &&residue: chain) {
             cvt(residue, std::string() + seq[i]);
             i++;
         }
@@ -58,10 +58,10 @@ public:
     }
 
     Model to_dna(string seq) {
-        if (_model.res_nums() != seq.size()) die("Transform::to_rna(string) error! Sequence's lenght isn't appropriate");
+        if (num_residues(_model) != seq.size()) die("Transform::to_rna(string) error! Sequence's lenght isn't appropriate");
 
         int i = 0;
-        for (auto &&chain: _model.chains) for (auto &&residue: chain.residues) {
+        for (auto &&chain: _model) for (auto &&residue: chain) {
             cvt(residue, std::string("D") + seq[i]);
             i++;
         }

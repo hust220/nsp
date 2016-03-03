@@ -35,9 +35,7 @@ public:
 
     std::string _seq;
     std::string _ss;
-    Mat _bound;
-    DG dg;
-    int _atom_nums_per_nuc = 5;
+    int _num_atoms_per_nuc = 5;
     double _err_radius = 0.001;
     std::string _lib;
     std::string _type = "RNA";
@@ -58,9 +56,9 @@ public:
         for (int ii = 0; ii < 4; ii++) {
             string c;
             ifile >> c;
-            _mono_nuc_pars[c].resize(_atom_nums_per_nuc, _atom_nums_per_nuc);
-            for (int i = 0; i < _atom_nums_per_nuc; i++) {
-                for (int j = 0; j < _atom_nums_per_nuc; j++) {
+            _mono_nuc_pars[c].resize(_num_atoms_per_nuc, _num_atoms_per_nuc);
+            for (int i = 0; i < _num_atoms_per_nuc; i++) {
+                for (int j = 0; j < _num_atoms_per_nuc; j++) {
                     ifile >> _mono_nuc_pars[c](i, j);
                 }
             }
@@ -73,9 +71,9 @@ public:
         for (int ii = 0; ii < 16; ii++) {
             string str;
             ifile >> str;
-            _adj_nuc_pars[str].resize(_atom_nums_per_nuc, _atom_nums_per_nuc);
-            for (int i = 0; i < _atom_nums_per_nuc; i++) {
-                for (int j = 0; j < _atom_nums_per_nuc; j++) {
+            _adj_nuc_pars[str].resize(_num_atoms_per_nuc, _num_atoms_per_nuc);
+            for (int i = 0; i < _num_atoms_per_nuc; i++) {
+                for (int j = 0; j < _num_atoms_per_nuc; j++) {
                     ifile >> _adj_nuc_pars[str](i, j);
                 }
             }
@@ -84,150 +82,87 @@ public:
     }
 
     std::vector<Model> operator ()(string seq, string ss, std::string constraint_file = "", int num = 1) {
-        _seq = seq;
-        _ss = ss;
-        _constraint_file = constraint_file;
-
-        assert(seq.size() == count_if(ss.begin(), ss.end(), [](char c) {
-            return std::set<char>{'.', '(', ')', '[', ']'}.count(c);
-        }));
-
-        // set bound matrix
-        init();
-
-        // initialize distance geometry calculator
-        dg = DG(_bound);
-        dg.log.set_display(_view);
+        _seq = seq; _ss = ss; _constraint_file = constraint_file;
+        if (nuc2d::len_ss(ss) != seq.size()) throw "jian::nuc3d::LM error!";
+        DG dg(init()); dg.log.set_display(_view);
         std::vector<Model> models;
-        for (int i = 0; i < num; i++) {
-            models.push_back(to_all_atom(apply_constraints(dg())));
-        }
+        for (int i = 0; i < num; i++) models.push_back(to_all_atom(apply_constraints(dg())));
         return models;
     }
 
     Model to_all_atom(const Mat &scaffold) {
-        int res_nums = _seq.size();
+        int num_residues = _seq.size();
         Chain chain;
 
         BuildNuc build_nuc(_type);
         build_nuc._view = _view;
-        for (int i = 0; i < res_nums; i++) {
-            chain.residues.push_back(
+        for (int i = 0; i < num_residues; i++) {
+            chain.push_back(
                 build_nuc(
                     (_type == "DNA" ? (string("D") + _seq[i]) : (string() + _seq[i])),
-                    scaffold.block(i * _atom_nums_per_nuc, 0, _atom_nums_per_nuc, 3)
+                    scaffold.block(i * _num_atoms_per_nuc, 0, _num_atoms_per_nuc, 3)
                 )
             );
         }
 
         Model model;
-        model.chains.push_back(chain);
+        model.push_back(chain);
         return model;
     }
 
-    void init() {
-        int res_nums = _seq.size();
-        int atom_nums = res_nums * _atom_nums_per_nuc;
+    Mat init() {
+        int num_residues = _seq.size();
+        int num_atoms = num_residues * _num_atoms_per_nuc;
 
-        /// begin initializing bound matrix
-        _bound.resize(atom_nums, atom_nums);
-        for (int i = 0; i < atom_nums; i++) {
-            for (int j = i; j < atom_nums; j++) {
-                if (i == j) {
-                    _bound(i, j) = 0;
-                } else {
-                    _bound(j, i) = 2;
-                    _bound(i, j) = 999;
-                }
-            }
+        // Initialize bound matrix
+        Mat bound = Mat::Zero(num_atoms, num_atoms);
+        for (int i = 0; i < num_atoms; i++) for (int j = i + 1; j < num_atoms; j++) {
+            if (i != j) { bound(j, i) = 2; bound(i, j) = 999; }
         }
-        /// end initializing bound matrix
 
-        /// begin mono-nucleotide
-        for (int i = 0; i < res_nums; i++) {
-            for (int j = 0; j < _atom_nums_per_nuc; j++) {
-                for (int k = j + 1; k < _atom_nums_per_nuc; k++) {
-                    _bound(i * _atom_nums_per_nuc + j, i * _atom_nums_per_nuc + k)
-                        = _mono_nuc_pars[string() + _seq[i]](j, k);
-                    _bound(i * _atom_nums_per_nuc + k, i * _atom_nums_per_nuc + j)
-                        = _mono_nuc_pars[string() + _seq[i]](j, k);
-                }
-            }
+        // Apply parameters of mono-nucleotide
+        for (int i = 0; i < num_residues; i++) for (int j = 0; j < _num_atoms_per_nuc; j++) for (int k = j + 1; k < _num_atoms_per_nuc; k++) {
+            bound(i * _num_atoms_per_nuc + j, i * _num_atoms_per_nuc + k) = _mono_nuc_pars[string() + _seq[i]](j, k);
+            bound(i * _num_atoms_per_nuc + k, i * _num_atoms_per_nuc + j) = _mono_nuc_pars[string() + _seq[i]](j, k);
         }
-        /// end mono-nucleotide
 
-        /// begin adjacent nucleotides
-        for (int i = 0; i + 1 < res_nums; i++) {
+        // Apply parameters of adjacent nucleotides
+        for (int i = 0; i + 1 < num_residues; i++) {
             int j = i + 1;
-            for (int m = 0; m < _atom_nums_per_nuc; m++) {
-                for (int n = 0; n < _atom_nums_per_nuc; n++) {
+            for (int m = 0; m < _num_atoms_per_nuc; m++) {
+                for (int n = 0; n < _num_atoms_per_nuc; n++) {
                     if (m != 1 || n != 0) continue;
                     std::string str = std::string() + _seq[i] + _seq[j];
-                    _bound(i * _atom_nums_per_nuc + m, j * _atom_nums_per_nuc + n)
-                        = _adj_nuc_pars[str](m, n);
-                    _bound(j * _atom_nums_per_nuc + n, i * _atom_nums_per_nuc + m)
-                        = _adj_nuc_pars[str](m, n);
+                    bound(i * _num_atoms_per_nuc + m, j * _num_atoms_per_nuc + n) = _adj_nuc_pars[str](m, n);
+                    bound(j * _num_atoms_per_nuc + n, i * _num_atoms_per_nuc + m) = _adj_nuc_pars[str](m, n);
                 }
             }
         }
-        /// end adjacent nucleotides
 
-        /// begin base pairs
-        nuc2d::N2D mol2d(_ss, _seq);
-        set_base_pairs(mol2d.head);
-
+        // Apply parameters of base pairs
+        nuc2d::N2D mol2d(_ss, _seq); set_base_pairs(mol2d.head, bound);
         std::string str = _ss;
         transform(str.begin(), str.end(), str.begin(), [](const char &c) {
-            std::map<char, char> temp_map{{'(', '['}, {')', ']'}, {'[', '('}, 
-                                     {']', ')'}, {'.', '.'}, {'&', '&'}};
+            std::map<char, char> temp_map{{'(', '['}, {')', ']'}, {'[', '('}, {']', ')'}, {'.', '.'}, {'&', '&'}};
             return temp_map[c];
         });
-        nuc2d::N2D mol2d_2(str, _seq);
-        set_base_pairs(mol2d_2.head);
-        /// end base pairs
+        nuc2d::N2D mol2d_2(str, _seq); set_base_pairs(mol2d_2.head, bound);
 
-        /// begin constraints
-        set_constraints();
-        /// end constraints
+        set_constraints(bound);
 
-        /// chirality
-    //    int flag = 0;
-    //    for (int i = 3; i < len;) {
-    //        if (ss[i / 6] == '(' && i % 6 == 5 && i != 5) {
-    //            i += 4;
-    //        } else {
-    //            i++;
-    //        }
-    //        flag++;
-    //    }
-    //    delete chir;
-    //    chir = new Matr_(flag, 5);
-    //    for (int i = 3, flag = 0; i < len;) {
-    //        chir->data[flag][0] = i - 3;
-    //        chir->data[flag][1] = i - 2;
-    //        chir->data[flag][2] = i - 1;
-    //        chir->data[flag][3] = i;
-    //        chir->data[flag][4] = chirality[(i - 2) % 6];
-    //        if (ss[i / 6] == '(' && i % 6 == 5 && i != 5) {
-    //            i += 4;
-    //        } else {
-    //            i++;
-    //        }
-    //        flag++;
-    //    }
-
+        return bound;
     }
 
-    void set_base_pairs(nuc2d::loop *src) {
+    void set_base_pairs(nuc2d::loop *src, Mat &bound) {
         if (src == NULL) {
             return;
         } else {
             if (src->s.head != NULL) {
                 Mat helix_par = get_helix_par(get_helix(src->s));
                 int helix_len = src->s.getLen();
-                int orig_pos_chain1 = (src->s.head->res1.num - 1) * _atom_nums_per_nuc;
-                int orig_pos_chain2 = (src->s.head->res2.num - helix_len) * _atom_nums_per_nuc;
-                int atom_nums_per_chain = _atom_nums_per_nuc * helix_len;
+                int orig_pos_chain1 = (src->s.head->res1.num - 1) * _num_atoms_per_nuc;
+                int orig_pos_chain2 = (src->s.head->res2.num - helix_len) * _num_atoms_per_nuc;
+                int atom_nums_per_chain = _num_atoms_per_nuc * helix_len;
                 for (int i: {0, 1}) {
                     for (int j: {0, 1}) {
                         for (int ii = 0; ii < atom_nums_per_chain; ii++) {
@@ -241,22 +176,22 @@ public:
                                 int d = j * (helix_par.rows() - atom_nums_per_chain) + jj;
                                 double dist = helix_par(c, d);
                                 if (a < b) {
-                                    _bound(a, b) = dist + _err_radius;
+                                    bound(a, b) = dist + _err_radius;
                                 } else {
-                                    _bound(a, b) = dist - _err_radius;
+                                    bound(a, b) = dist - _err_radius;
                                 }
                             }
                         }
                     }
                 }
             }
-            set_base_pairs(src->son);
-            set_base_pairs(src->brother);
+            set_base_pairs(src->son, bound);
+            set_base_pairs(src->brother, bound);
         }
     }
 
-    R5P get_helix(const nuc2d::helix &h) {
-        std::string file_name = _lib + "/info/helix";
+    Model get_helix(const nuc2d::helix &h) {
+        std::string file_name = _lib + "/records/helix";
         std::ifstream ifile(file_name.c_str());
         assert(ifile);
         std::string helix_name, helix_seq, helix_ss, helix_src;
@@ -266,7 +201,7 @@ public:
         while (ifile) {
             ifile >> helix_name >> helix_len >> helix_seq >> helix_ss >> helix_src;
             if (target_seq == helix_seq) {
-                pdb_name = _lib + "/helix/" + helix_name + ".pdb";
+                pdb_name = _lib + "/templates/" + helix_name + ".pdb";
                 break;
             }
         }
@@ -278,7 +213,7 @@ public:
         }
     }
 
-    R5P create_helix(const std::string &seq) {
+    Model create_helix(const std::string &seq) {
         if (seq.size() < 4) {
             std::cerr << "Assemble::createHelix error! The length of the helix"
                       << " to be create should not be less than 4!" << std::endl;
@@ -294,7 +229,7 @@ public:
                 file_name = _lib + "/basepair/XXXXXX.pdb";
             }
             ifile.close();
-            return RNA(file_name);
+            return Model(file_name);
         } else {
             std::string file_name = _lib + "/basepair/" + seq.substr(0, 3) + 
                                seq.substr(seq.size() - 3, 3) + ".pdb";
@@ -303,23 +238,23 @@ public:
                 file_name = _lib + "/basepair/XXXXXX.pdb";
             }
             ifile.close();
-            return Connect()(RNA(file_name), create_helix(seq.substr(1, seq.size() - 2)), 2, 3);
+            return Connect()(Model(file_name), create_helix(seq.substr(1, seq.size() - 2)), 2, 3);
         }
     }
 
-    Mat get_helix_par(const R5P &r5p) {
-        int atom_nums = r5p.atom_nums();
+    Mat get_helix_par(const Model &r5p) {
+        int atom_nums = num_atoms(r5p);
         Mat helix_par(atom_nums, atom_nums);
         int num_1 = 0;
-        for (auto &chain: r5p.chains) {
-            for (auto &residue: chain.residues) {
-                for (auto &atom: residue.atoms) {
+        for (auto &chain: r5p) {
+            for (auto &residue: chain) {
+                for (auto &atom: residue) {
                     int num_2 = 0;
-                    for (auto &chain2: r5p.chains) {
-                        for (auto &residue2: chain2.residues) {
-                            for (auto &atom2: residue2.atoms) {
-                                helix_par(num_1, num_2) = Point(atom.x, atom.y, atom.z).dist(
-                                        Point(atom2.x, atom2.y, atom2.z));
+                    for (auto &chain2: r5p) {
+                        for (auto &residue2: chain2) {
+                            for (auto &atom2: residue2) {
+                                helix_par(num_1, num_2) = Point(atom[0], atom[1], atom[2]).dist(
+                                        Point(atom2[0], atom2[1], atom2[2]));
                                 num_2++;
                             }
                         }
@@ -331,36 +266,23 @@ public:
         return helix_par;
     }
 
-    void set_constraints() {
+    void set_constraints(Mat &bound) {
         if (_constraint_file.empty()) return;
 
-        /// Read constraints
         auto constraints = read_constraints_file();
-
-        /// Set _bound
+        std::map<int, std::string> types {{4, "quadruplex"}, {3, "triple"}, {2, "pair"}};
         for (auto &&temp_helix: constraints) {
-            int layer_size = temp_helix[0].size();
-            int layer_nums = temp_helix.size();
-            auto par = read_constraints_par(std::map<int, std::string>{
-                {4, "quadruplex"}, {3, "triple"}, {2, "pair"}
-            }[layer_size], layer_nums);
+            int layer_size = temp_helix[0].size(), layer_nums = temp_helix.size();
+            auto par = read_constraints_par(types[layer_size], layer_nums);
 
-            int index = 0;
-            std::map<int, int> temp_map;
-            for (auto &&vec: temp_helix) {
-                for (int i = 0; i < layer_size * 5; i++) {
-                    temp_map[index] = vec[i / 5] * 5 + i % 5;
-                    index++;
-                }
+            int index = 0; std::map<int, int> temp_map;
+            for (auto &&vec: temp_helix) for (int i = 0; i < layer_size * 5; i++) {
+                temp_map[index] = vec[i / 5] * 5 + i % 5;
+                index++;
             }
 
-            for (int i = 0; i < index; i++) {
-                for (int j = 0; j < index; j++) {
-    //                if (i % 5 > 1 && j % 5 > 1) {
-                    if (i / 5 != j / 5) {
-                        _bound(temp_map[i], temp_map[j]) = par(i, j);
-                    }
-                }
+            for (int i = 0; i < index; i++) for (int j = 0; j < index; j++) {
+                if (i / 5 != j / 5) bound(temp_map[i], temp_map[j]) = par(i, j);
             }
         }
     }
@@ -368,43 +290,23 @@ public:
     Mat apply_constraints(const Mat &scaffold) {
         if (_constraint_file.empty()) return scaffold;
 
-        /// Read constraints
         auto constraints = read_constraints_file();
-
-        /// Set _bound
         Mat coords = scaffold;
+        std::map<int, std::string> types {{4, "quadruplex"}, {3, "triple"}, {2, "pair"}};
         for (auto &&temp_helix: constraints) {
-            int layer_size = temp_helix[0].size();
-            int layer_nums = temp_helix.size();
-            auto pos = read_constraints_pos(std::map<int, std::string>{
-                {4, "quadruplex"}, {3, "triple"}, {2, "pair"}
-            }[layer_size], layer_nums);
+            int layer_size = temp_helix[0].size(), layer_nums = temp_helix.size();
+            auto pos = read_constraints_pos(types[layer_size], layer_nums);
 
-            int index = 0;
-            std::map<int, int> temp_map;
-            for (auto &&vec: temp_helix) {
-                for (int i = 0; i < layer_size * 5; i++) {
-                    temp_map[index] = vec[i / 5] * 5 + i % 5;
-                    index++;
-                }
+            int index = 0; std::map<int, int> temp_map;
+            for (auto &&vec: temp_helix) for (int i = 0; i < layer_size * 5; i++) {
+                temp_map[index] = vec[i / 5] * 5 + i % 5;
+                index++;
             }
 
-            Mat source_mat = pos;
-            Mat target_mat(index, 3);
-
-            for (int i = 0; i < index; i++) {
-                for (int j = 0; j < 3; j++) {
-                    target_mat(i, j) = coords(temp_map[i], j);
-                }
-            }
-
+            Mat source_mat = pos; Mat target_mat(index, 3);
+            for (int i = 0; i < index; i++) for (int j = 0; j < 3; j++) target_mat(i, j) = coords(temp_map[i], j);
             geom::suppos(pos, source_mat, target_mat);
-
-            for (int i = 0; i < index; i++) {
-                for (int j = 0; j < 3; j++) {
-                    coords(temp_map[i], j) = pos(i, j);
-                }
-            }
+            for (int i = 0; i < index; i++) for (int j = 0; j < 3; j++) coords(temp_map[i], j) = pos(i, j);
         }
 
         return coords;

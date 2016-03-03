@@ -153,7 +153,7 @@ public:
         Residue residue;
         residue.name = name;
         for (int i = 0; i < coords.rows(); i++) {
-            residue.atoms.push_back(Atom(_atom_names[name][i], coords(i, 0), coords(i, 1), coords(i, 2)));
+            residue.push_back(Atom(_atom_names[name][i], coords(i, 0), coords(i, 1), coords(i, 2)));
         }
         return residue;
     }

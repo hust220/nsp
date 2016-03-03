@@ -22,7 +22,6 @@
 #include "Connect.h"
 
 namespace jian {
-
 namespace nuc3d {
 
 class LoopModelling2 {
@@ -265,7 +264,7 @@ public:
         }
     }
 
-    R5P get_helix(const helix &h) {
+    Model get_helix(const helix &h) {
         string file_name = _lib + "/info/helix";
         ifstream ifile(file_name.c_str());
         assert(ifile);
@@ -288,7 +287,7 @@ public:
         }
     }
 
-    R5P create_helix(const string &seq) {
+    Model create_helix(const string &seq) {
         if (seq.size() < 4) {
             std::cerr << "Assemble::createHelix error! The length of the helix"
                       << " to be create should not be less than 4!" << std::endl;
@@ -304,7 +303,7 @@ public:
                 file_name = _lib + "/basepair/XXXXXX.pdb";
             }
             ifile.close();
-            return RNA(file_name);
+            return Model(file_name);
         } else {
             string file_name = _lib + "/basepair/" + seq.substr(0, 3) + 
                                seq.substr(seq.size() - 3, 3) + ".pdb";
@@ -313,11 +312,11 @@ public:
                 file_name = _lib + "/basepair/XXXXXX.pdb";
             }
             ifile.close();
-            return Connect()(RNA(file_name), create_helix(seq.substr(1, seq.size() - 2)), 2, 3);
+            return Connect()(Model(file_name), create_helix(seq.substr(1, seq.size() - 2)), 2, 3);
         }
     }
 
-    MatrixXf get_helix_par(const R5P &r5p) {
+    MatrixXf get_helix_par(const Model &r5p) {
         int atom_nums = r5p.atom_nums();
         MatrixXf helix_par(atom_nums, atom_nums);
         int num_1 = 0;

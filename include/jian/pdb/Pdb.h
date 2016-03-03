@@ -56,7 +56,7 @@ public:
         std::ofstream out;
         for (auto && model : models) {
             std::string pdb_name = name + "-model-" + boost::lexical_cast<std::string>(index);
-            model.write(pdb_name + ".pdb");
+            write_pdb(model, pdb_name + ".pdb");
             index++;
         }
     }

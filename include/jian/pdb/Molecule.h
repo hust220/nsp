@@ -129,20 +129,6 @@ public:
         if (std::regex_match(s, result, std::regex("^(\\w+)\\d+$"))) return result[1]; else return s;
     }
 
-    bool exists(const std::string &s) const {
-        for (auto &&atom : (*this)) if (atom._name == s) return true;
-        return false;
-    }
-
-    Atom &atom(const std::string &s) {
-        for (auto &&atom : (*this)) if (atom._name == s) return atom;
-        throw "jian::pdb::Atom::operator [](const std::string &) error!";
-    }
-
-    const Atom &atom(const std::string &s) const {
-        for (auto &&atom : (*this)) if (atom._name == s) return atom;
-        throw "jian::pdb::Atom::operator [](const std::string &) const error!";
-    }
 };
 
 template<typename T, typename U>
@@ -256,7 +242,7 @@ std::ostream &operator <<(std::ostream &output, const Model<T, U> &model) {
 }
 
 template<typename T>
-void write_pdb(T &&mol, const std::string &file_name) {
+inline void write_pdb(T &&mol, const std::string &file_name) {
     std::ofstream ofile(file_name.c_str()); ofile << mol; ofile.close();
 }
 
@@ -268,7 +254,7 @@ inline int num_residues(const T &model) {
 
 template<typename T, typename F, 
          std::enable_if_t<std::is_integral<std::result_of_t<F(typename std::decay_t<T>::res_type, int)>>::value, int> = 42>
-int each_residue(T &&mol, F &&f) {
+inline int each_residue(T &&mol, F &&f) {
     int i = 0; for (auto &chain : mol) for (auto &residue : chain) {
         if (!f(residue, i)) return i;
         i++;
@@ -277,11 +263,23 @@ int each_residue(T &&mol, F &&f) {
 
 template<typename T, typename F,
          std::enable_if_t<std::is_void<std::result_of_t<F(typename std::decay_t<T>::res_type, int)>>::value, int> = 42>
-int each_residue(T &&mol, F &&f) {
+inline void each_residue(T &&mol, F &&f) {
     int i = 0; for (auto &chain : mol) for (auto &residue : chain) {
         f(residue, i);
         i++;
     }
+}
+
+template<typename T>
+inline uniform_const_t<Atom, T> &atom(T &&res, const std::string &s) {
+    for (auto &&atom : res) if (atom._name == s) return atom;
+    throw "jian::pdb::Atom::operator [](const std::string &) error!";
+}
+
+template<typename T>
+inline bool exists_atom(T &&res, const std::string &s) {
+    for (auto &&atom : res) if (atom._name == s) return true;
+    return false;
 }
 
 using RNA = Model<_RNA, _AA>;

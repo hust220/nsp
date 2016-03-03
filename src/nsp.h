@@ -1,6 +1,7 @@
 #include <jian/etl.h>
-#include <jian/nuc3d/Predict.h>
-#include <jian/nuc3d/BuildJunction.h>
+#include <jian/nuc3d/Predict3D.h>
+#include <jian/nuc3d/BuildLoop.h>
+#include <jian/nuc3d/LM.h>
 #include <jian/nuc3d/Split.h>
 #include <jian/nuc2d/N2D.h>
 #include <jian/nuc2d/Seq2Ss.h>
@@ -31,47 +32,41 @@ public:
     void operator ()() { 
         try {
             if (type == "3drna") {
-                if (par.count("par")) {
-                    jian::Par pars(par["par"][0]);
-                    jian::nuc3d::Predict pred(pars);
-                    pred();
-                } else {
-                    jian::nuc3d::Predict pred(par);
-                    pred();
-                }
+                nuc3d::Predict3D pred;
+                if (par.count("par")) pred(Par(par["par"][0])); else pred(par);
             } else if (type == "anal-psb") {
-                jian::scoring::AssessPSB assess_psb;
-                if (par.count("mol")) for (auto && file : par["mol"]) assess_psb.analyze(jian::pdb::PSB(file));
+                scoring::AssessPSB assess_psb;
+                if (par.count("mol")) for (auto && file : par["mol"]) assess_psb.analyze(pdb::PSB(file));
             } else if (type == "extract_fragment") {
-                jian::extract_fragment(par["mol"][0], boost::lexical_cast<int>(par["len"][0]));
+                extract_fragment(par["mol"][0], boost::lexical_cast<int>(par["len"][0]));
             } else if (type == "seq2ss") {
-                jian::nuc2d::Seq2Ss seq2ss;
+                nuc2d::Seq2Ss seq2ss;
                 if (par.count("cutoff")) seq2ss._cutoff = boost::lexical_cast<double>(par["cutoff"][0]);
                 seq2ss(par["seq"][0]);
             } else if (type == "seq2tri") {
-                jian::nuc2d::Seq2Tri seq2tri;
+                nuc2d::Seq2Tri seq2tri;
                 if (par.count("cutoff")) seq2tri._cutoff = boost::lexical_cast<double>(par["cutoff"][0]);
                 seq2tri(par["seq"][0]);
             } else if (type == "seq2qua") {
-                jian::nuc2d::Seq2Qua seq2qua;
+                nuc2d::Seq2Qua seq2qua;
                 if (par.count("cutoff")) seq2qua._cutoff = boost::lexical_cast<int>(par["cutoff"][0]);
                 seq2qua(par["seq"][0]);
             } else if (type == "dg") {
-                auto mat = jian::mat_from_file(global[1]);
-                jian::DG dg(mat);
+                auto mat = mat_from_file(global[1]);
+                DG dg(mat);
                 std::cout << dg() << std::endl;
             } else if (type == "n2d") {
-                jian::nuc2d::N2D n2d;
+                nuc2d::N2D n2d;
                 if (par.count("view")) n2d.view = 1;
                 if (par.count("h")) n2d.hinge_base_pair_num = boost::lexical_cast<int>(par["h"][0]);
                 n2d(par["ss"][0]);
                 n2d.print();
             } else if (type == "sub") {
-                jian::Model model(global[1]);
+                Model model(global[1]);
                 std::vector<int> nums;
                 for (int i = 2; i < global.size(); i++) {
                     std::vector<std::string> array;
-                    jian::tokenize(global[i], array, "-");
+                    tokenize(global[i], array, "-");
                     if (array.size() == 1) {
                         nums.push_back(boost::lexical_cast<int>(array[0]) - 1);
                     } else if (array.size() == 2) {
@@ -80,37 +75,29 @@ public:
                         }
                     }
                 }
-                std::cout << model.sub(nums) << std::endl;
+                std::cout << sub(model, nums) << std::endl;
             } else if (type == "split") {
                 if (par.count("par")) {
-                    jian::Par pars(par["par"][0]);
-                    jian::nuc3d::Split split(pars);
+                    Par pars(par["par"][0]);
+                    nuc3d::Split split(pars);
                     split();
                 } else {
-                    jian::nuc3d::Split split(par);
+                    nuc3d::Split split(par);
                     split();
                 }
             } else if (type == "rmsd") {
-                std::cout << jian::pdb::RMSD()(jian::Model(global[1]), jian::Model(global[2])) << std::endl;
-//            } else if (type == "lm") {
-//                std::string type = par["type"][0];
-//                std::string seq = par["seq"][0];
-//                std::string ss = par["ss"][0];
-//                boost::to_upper(type);
-//                int view = (par.count("view") ? 1 : 0);
-//
-//                jian::nuc3d::LoopModelling2 lm(type);
-//                lm._view = view;
-//                std::cout << lm(seq, ss) << std::endl;
+                std::cout << RMSD()(Model(global[1]), Model(global[2])) << std::endl;
+            } else if (type == "lm") {
+                nuc3d::LM lm; std::cout << lm(par["seq"][0], par["ss"][0])[0] << std::endl;
             } else if (type == "rebuild" && global[1] == "chain") {
-                jian::RNA rna(global[2]);
+                auto rna = RNA(global[2]);
                 std::set<int> break_points;
-                jian::Residue old_res;
+                Residue old_res;
                 int res_num = 0;
-                for (auto &&chain: rna.chains) {
-                    for (auto &&residue: chain.residues) {
-                        if (! old_res.atoms.empty()) {
-                            if (residue["O5*"].dist(old_res["O3*"]) > 3.5) {
+                for (auto &&chain: rna) {
+                    for (auto &&residue: chain) {
+                        if (! old_res.empty()) {
+                            if (geom::distance(atom(residue, "O5*"), atom(old_res, "O3*")) > 3.5) {
                                 break_points.insert(res_num - 1);
                             }
                         }
@@ -134,13 +121,13 @@ public:
             } else if (type == "cluster") {
                 std::ifstream ifile(global[1].c_str());
                 std::string line;
-                std::vector<jian::Model> models;
+                std::vector<Model> models;
                 while (getline(ifile, line)) {
-                    models.push_back(jian::Model(boost::trim_copy(line)));
+                    models.push_back(Model(boost::trim_copy(line)));
                 }
                 ifile.close();
-                jian::Cluster cluster(boost::lexical_cast<int>(global[2]));
-                jian::pdb::RMSD rmsd;
+                Cluster cluster(boost::lexical_cast<int>(global[2]));
+                RMSD rmsd;
                 cluster(models.begin(), models.end(), rmsd);
                 for (auto &&clu: cluster._clusters) {
                     for (auto &&i: clu) {
@@ -148,52 +135,40 @@ public:
                     }
                     std::cout << std::endl;
                 }
-//            } else if (type == "train") {
-//                jian::scoring::Train train(par);
-//                train();
-//            } else if (type == "score") {
-//                jian::scoring::Score score(par);
-//                score();
             } else if (type == "cif") {
-                jian::Cif cif(global[1]);
+                Cif cif(global[1]);
                 for (int i = 0; i < cif._loop["_atom_site.group_PDB"].size(); i++) {
                     std::cout << cif._loop["_atom_site.label_seq_id"][i] << ' ' << cif._loop["_atom_site.label_atom_id"][i] << ' ' << cif._loop["_atom_site.label_comp_id"][i] << ' ' << cif._loop["_atom_site.label_asym_id"][i] << ' ' << cif._loop["_atom_site.Cartn_x"][i] << ' ' << cif._loop["_atom_site.Cartn_y"][i] << ' ' << cif._loop["_atom_site.Cartn_z"][i] << std::endl;
                 }
             } else if (type == "tokenize") {
                 std::vector<std::string> frags;
-                jian::tokenize(global[1], frags, " ", "''\"\"");
+                tokenize(global[1], frags, " ", "''\"\"");
                 std::cout << frags.size() << ' ';
                 std::copy(frags.begin(), frags.end(), std::ostream_iterator<std::string>(std::cout, ":"));
                 std::cout << std::endl;
             } else if (type == "split-models") {
-                jian::Pdb pdb(global[1]);
+                Pdb pdb(global[1]);
                 pdb.print_models();
             } else if (type == "dna") {
-                jian::DNA mol(global[1]);
-                jian::pdb::Format format;
+                auto mol = DNA(global[1]);
+                Format format;
                 cout << format(mol);
             } else if (type == "rna") {
-                jian::RNA mol(global[1]);
-                jian::pdb::Format format;
+                auto mol = RNA(global[1]);
+                Format format;
                 cout << format(mol);
-//            } else if (type == "triplex") {
-//                auto seq = par["seq"][0];
-//                jian::nuc2d::Seq2Tri seq2tri;
-//                auto info_list = seq2tri(seq);
-//                jian::nuc3d::BuildTriplex build_triplex;
-//                build_triplex(seq, info_list[0], 1);
             } else if (type == "sort") {
-                jian::Model mol(global[1]);
-                jian::pdb::Format format;
+                Model mol(global[1]);
+                Format format;
                 std::cout << format(mol);
             } else if (type == "convert") {
-                jian::Convert cvt;
-                jian::Model mol(global[1]);
+                Convert cvt;
+                Model mol(global[1]);
                 if (par["type"][0] == "DNA") {
                     std::string seq = par["seq"][0];
                     int i = 0;
-                    for (auto &&chain: mol.chains) {
-                        for (auto &&residue: chain.residues) {
+                    for (auto &&chain: mol) {
+                        for (auto &&residue: chain) {
                             cvt(residue, std::string("D") + seq[i]);
                             i++;
                         }
@@ -201,47 +176,42 @@ public:
                 }
                 std::cout << mol;
             } else if (type == "test") {
-                jian::RNA rna(global[1]);
+                auto rna = RNA(global[1]);
                 int a = boost::lexical_cast<int>(global[2]);
                 int b = boost::lexical_cast<int>(global[3]);
                 int n = 0;
-                jian::Point p1, p2;
-                for (auto &&chain: rna) {
-                    for (auto &&res: chain) {
-                        n++;
-                        if (n == a) {
-                            p1 = res["C4*"].pos();
-                        } else if (n == b) {
-                            p2 = res["C4*"].pos();
-                        }
-                    }
+                Point p1, p2;
+                for (auto &&chain: rna) for (auto &&res: chain) {
+                    n++;
+                    if (n == a) p1 = pos(atom(res, "C4*"));
+                    else if (n == b) p2 = pos(atom(res, "C4*"));
                 }
-                std::cout << p1.dist(p2) << std::endl;
+                std::cout << geom::distance(p1, p2) << std::endl;
             } else if (type == "test2") {
                 MatrixXf a = MatrixXf::Zero(3, 3);
                 MatrixXf b = MatrixXf::Zero(3, 3);
                 MatrixXf c = MatrixXf::Zero(3, 3);
-                std::cout << jian::sum([](const MatrixXf &a){return a.rows();}, a, b, c) << std::endl;
+                std::cout << sum([](const MatrixXf &a){return a.rows();}, a, b, c) << std::endl;
             } else if (type == "tree") {
-                jian::nuc2d::BuildSST build_sst;
+                nuc2d::BuildSST build_sst;
                 auto sst = build_sst(par["seq"][0], par["ss"][0]);
-                jian::nuc2d::MergeRings merge_rings;
+                nuc2d::MergeRings merge_rings;
                 merge_rings(sst);
             } else if (type == "test-mc") {
-                jian::dg::TestMC test_mc;
+                dg::TestMC test_mc;
                 test_mc(3);
             } else if (type == "len") {
-                std::cout << jian::Model(global[1]).res_nums() << std::endl;
+                std::cout << num_residues(Model(global[1])) << std::endl;
             } else if (type == "ss") {
-                jian::nuc2d::GetSS get_ss;
-                std::cout << get_ss(jian::pdb::IFRNA(global[1])) << std::endl;
+                nuc2d::GetSS get_ss;
+                std::cout << get_ss(pdb::IFRNA(global[1])) << std::endl;
             } else if (type == "seq") {
-                jian::Model model(global[1]);
+                Model model(global[1]);
                 std::string delimiter = "";
                 if (global.size() == 3)
                     delimiter = global[2];
-                for (auto &&chain: model.chains) {
-                    for (auto &&residue: chain.residues) {
+                for (auto &&chain: model) {
+                    for (auto &&residue: chain) {
                         std::cout << residue.name << delimiter;
                     }
                 }

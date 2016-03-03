@@ -1,13 +1,13 @@
-#include <jian/nuc3d/BuildJunction.h>
-#include <jian/etl.h>
+#include <jian/nuc3d/BuildLoop.h>
+#include <jian/pdb.h>
 
 int main(int argc, char **argv) {
     try {
         jian::Par par(argc, argv);
         int n = boost::lexical_cast<int>(par["num"][0]);
-        jian::nuc3d::BuildJunction<jian::pdb::RNA> build_junction;
+        jian::nuc3d::BuildLoop build_loop;
         for (int i = 0; i < n; i++) {
-            write_pdb(build_junction(par["ss"][0]), par["name"][0]+'-'+boost::lexical_cast<std::string>(i+1)+".pdb");
+            write_pdb(build_loop(par["ss"][0]), par["name"][0]+'-'+boost::lexical_cast<std::string>(i+1)+".pdb");
         }
     } catch (const char *s) {
         std::cout << s << std::endl;

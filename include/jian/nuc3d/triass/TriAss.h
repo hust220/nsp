@@ -2,7 +2,7 @@
 #define JIAN_NUC3D_TRIASS
 
 #include "../../etl.h"
-#include "../JobInf.h" 
+#include "../JobPredict3D.h" 
 #include "../../dg/DG.h"
 #include "BuildTriLoop.h"
 
@@ -10,36 +10,35 @@ namespace jian {
 namespace nuc3d {
 namespace triass {
 
-template<typename ModelType>
-class TriAss : public virtual JobInf {
+class TriAss : public BasicPredict3D, public virtual JobPredict3D {
 public:
     using Res = struct {char seq; char ss; int num;};
     using Frag = std::vector<Res>;
     using Module = struct {std::string type; std::list<Frag> frags;};
     using Tree = std::list<Module>;
-    using Templates = std::map<const Module *, ModelType>;
+    using Templates = std::map<const Module *, Model>;
 
     DG::DistBoundType _dist_bound;
     DG::DihBoundType _dih_bound;
     DG dg;
 
-    BuildTriLoop<ModelType> build_tri_loop;
+    BuildTriLoop<Model> build_tri_loop;
 
     TriAss() {}
 
-    TriAss(Par par) : JobInf(par) {}
+    TriAss(Par par) : JobPredict3D(par) {}
 
-    void operator ()() {
-        log("Start Tri-assemble.\n");
-        for (int i = 0; i < _num; i++) {
-            log("tri-assemble model ", i, '\n');
-            std::string file_name = _name + "-" + boost::lexical_cast<std::string>(i + 1);
-            tri_ass().write(file_name);
-        }
-        log("Finish Tri-assemble.\n");
-    }
+//    void operator ()() {
+//        log("Start Tri-assemble.\n");
+//        for (int i = 0; i < _num; i++) {
+//            log("tri-assemble model ", i, '\n');
+//            std::string file_name = _name + "-" + boost::lexical_cast<std::string>(i + 1);
+//            predict().write(file_name);
+//        }
+//        log("Finish Tri-assemble.\n");
+//    }
 
-    ModelType tri_ass() {
+    Model predict() {
         auto tree = ss_to_tree();
         for (auto && module : tree) {
             log(module.type, '\n');
@@ -112,7 +111,7 @@ public:
         return templates;
     }
 
-    ModelType find_helix_templates(const Module &module) {
+    Model find_helix_templates(const Module &module) {
         std::list<std::string> seqs;
         for (int i = 1; i < ref(module.frags, 0).size(); i++) {
             std::string s; s.reserve(6);
@@ -123,23 +122,23 @@ public:
         return assemble_helices(models);
     }
 
-    ModelType load_helix(const std::string &s) {
-        return ModelType();
+    Model load_helix(const std::string &s) {
+        return Model();
     }
 
     template<typename LS>
-    ModelType assemble_helices(LS &&ls) {
-        return ModelType();
+    Model assemble_helices(LS &&ls) {
+        return Model();
     }
 
     void position_templates(const Tree &tree, Templates &templates) {}
 
-    ModelType assemble_templates(const Tree &tree, const Templates &templates) {
-        return ModelType();
+    Model assemble_templates(const Tree &tree, const Templates &templates) {
+        return Model();
     }
 
-    ModelType build_strands(const Tree &tree, const ModelType &model) {
-        return ModelType();
+    Model build_strands(const Tree &tree, const Model &model) {
+        return Model();
     }
 
 };

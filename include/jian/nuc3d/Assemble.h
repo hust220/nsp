@@ -4,33 +4,39 @@
 #include "../etl.h"
 #include "../pdb.h"
 #include "../geom.h"
-#include "FindTemplates.h"
+#include "../nuc2d/util.h"
+#include "../nuc2d/N2D.h"
+#include "BasicPredict3D.h"
 #include "TemplRec.h"
 #include "Transform.h"
 #include "AddPhos.h"
 #include "BuildStrand.h"
-#include "LM.h"
+#include "BuildLoop.h"
+#include "JobPredict3D.h"
 
 namespace jian {
 namespace nuc3d {
 
-class Assemble : public virtual FindTemplates {
+class Assemble : public BasicPredict3D, public JobPredict3D, public Rand {
 public:    
     using Mat = MatrixXd;
+    using Row = std::tuple<nuc2d::loop *, int, int, int>;
 
-    BuildStrand build_strand;
+    std::map<nuc2d::loop *, std::pair<std::deque<TemplRec>, std::deque<TemplRec>>> _records;
+    std::map<nuc2d::loop *, std::pair<Model, Model>> _templates;
+    std::list<Row> _loop_nums_table;
     int _it_num = 0;
     std::map<nuc2d::loop *, bool> _is_virtual;
 
-    LM lm;
+    BuildStrand build_strand;
+    BuildLoop build_loop;
 
-    Assemble(const Par &par) : JobInf(par) {
-
+    Assemble(const Par &par) : JobPredict3D(par) {
         build_strand.log = log;
 
-        log("Assemble start...\n",
+        log("Initialize start...\n",
             "Step 1: Check input.\n");
-        if (not nuc2d::check_ss(_ss)) throw "The secondary structure includes illegal characters!";
+        if (!nuc2d::check_ss(_ss)) throw "The secondary structure includes illegal characters!";
 
         log("Step 2: Construct 2D structure tree.\n");
         _n2d.hinge_base_pair_num = _hinge;
@@ -39,24 +45,17 @@ public:
         log("Step 3: Searching templates.\n");
         find_templates();
 
-        log("Step 4: Assemble templates.\n");
+        log("Initialize end...\n");
     }
 
-    void operator ()() {
-        for (int i = 0; i < _num; i++) {
-            log("assemble model ", i + 1, "...\n");
-            assemble().write(_name + "-" + boost::lexical_cast<std::string>(i + 1) + ".pdb");
-        }
-    }
-
-    Model assemble() {
+    Model predict() {
         set_virtual_loops();
         select_templates();
         for (auto &&pair : _templates) log(pair.first, " : ", pair.second.first.name, ' ', pair.second.second.name, '\n');
         position_templates();
         auto residues = assemble_templates(_n2d.head, _seq.size());
         build_strands(residues);
-        return Transform(pdb::residues_to_model(std::move(residues)))(_type, _seq);
+        return Transform(residues_to_model(std::move(residues)))(_type, _seq);
     }
 
     void set_virtual_loops() {
@@ -67,17 +66,12 @@ public:
         });
     }
 
-    int rand(int i, int j) {
-        static std::random_device rd;
-        return std::uniform_int_distribution<int>(i, j)(rd);
-    }
-
     void select_templates() {
         if (_it_num == 0) {
             _n2d.head->apply([&](nuc2d::loop *l){
                 if (l->has_loop()) {
                     if (_records[l].first.empty()) {
-                        _templates[l].first = lm(l->seq(), (_is_virtual[l] ? nuc2d::hinge_ss(l->ss()) : nuc2d::lower_ss(l->ss())))[0];
+                        _templates[l].first = build_loop(l->seq(), (_is_virtual[l] ? nuc2d::hinge_ss(l->ss()) : nuc2d::lower_ss(l->ss())));
                     } else {
                         _templates[l].first = load_pdb(_records[l].first[0], (_is_virtual[l] ? "hinge" : ""));    
                     }
@@ -88,12 +82,12 @@ public:
             _n2d.head->apply([&](nuc2d::loop *l){
                 if (l->has_loop()) {
                     if (_records[l].first.empty()) {
-                        _templates[l].first = lm(l->seq(), (_is_virtual[l] ? nuc2d::hinge_ss(l->ss()) : nuc2d::lower_ss(l->ss())))[0];
+                        _templates[l].first = build_loop(l->seq(), (_is_virtual[l] ? nuc2d::hinge_ss(l->ss()) : nuc2d::lower_ss(l->ss())));
                     } else {
-                        _templates[l].first = load_pdb(_records[l].first[rand(0, _records[l].first.size() - 1)], (_is_virtual[l] ? "hinge" : ""));
+                        _templates[l].first = load_pdb(_records[l].first[int(rand()*_records[l].first.size())], (_is_virtual[l] ? "hinge" : ""));
                     }
                 }
-                if (l->has_helix()) _templates[l].second = load_pdb(_records[l].second[rand(0, _records[l].second.size() - 1)]);
+                if (l->has_helix()) _templates[l].second = load_pdb(_records[l].second[int(rand()*_records[l].second.size())]);
             });
         }
         _it_num++;
@@ -116,7 +110,7 @@ public:
         if (l->has_helix()) {
             int index = 0;
             int len = l->s.size();
-            auto temp_residues = _templates[l].second.residues();
+            auto temp_residues = jian::residues(_templates[l].second);
             for (nuc2d::bp *p = l->s.head; p != NULL; p = p->next) {
                 residues[p->res1.num - 1] = temp_residues[index];
                 residues[p->res2.num - 1] = temp_residues[2*len-1-index];
@@ -125,7 +119,7 @@ public:
         }
         if (l->has_loop()) {
             int index = 0;
-            auto temp_residues = _templates[l].first.residues();
+            auto temp_residues = jian::residues(_templates[l].first);
             for (nuc2d::res *p = l->head; p != NULL; p = p->next) {
                 if (_is_virtual[l] && p->type != '(' && p->type != ')' || p->type == '&') continue;
                 residues[p->num - 1] = temp_residues[index];
@@ -152,7 +146,7 @@ public:
             }
             if (l->has_loop()) {
                 // position loop
-                int len = helix.res_nums();
+                int len = num_residues(helix);
                 auto mat2 = model_mat(helix, std::list<int>{len/2-2, len/2-1, len/2, len/2+1});
                 position_model(loop, mat2);
                 // position son
@@ -182,20 +176,14 @@ public:
     }
 
     void position_model(Model &model, const Mat &mat) {
-        int len = model.res_nums();
+        int len = num_residues(model);
         auto mat2 = model_mat(model, std::list<int>{0, 1, len - 2, len - 1});
         auto sp = geom::suppos(mat2, mat);
         auto c1 = -sp.c1;
         auto &rot = sp.rot;
         auto &c2 = sp.c2;
-        for (auto &&chain: model.chains) {
-            for (auto &&residue: chain.residues) {
-                for (auto &&atom: residue.atoms) {
-                    geom::translate(atom, c1);
-                    geom::rotate(atom, rot);
-                    geom::translate(atom, c2);
-                }
-            }
+        for (auto &&chain: model) for (auto &&residue: chain) for (auto &&atom: residue) {
+            geom::translate(atom, c1); geom::rotate(atom, rot); geom::translate(atom, c2);
         }
     }
 
@@ -204,13 +192,12 @@ public:
         Mat mat(names.size() * list.size(), 3);
         int index = 0;
         int num_res = 0;
-        for (auto &&chain: model.chains) {
-            for (auto &&residue: chain.residues) {
+        for (auto &&chain: model) {
+            for (auto &&residue: chain) {
                 if (std::count(list.begin(), list.end(), num_res)) {
-                    for (auto &&atom: residue.atoms) {
+                    for (auto &&atom: residue) {
                         if (names.count(atom.name)) {
-                            auto pt = atom.pos();
-                            for (int i = 0; i < 3; i++) mat(index, i) = pt[i];
+                            for (int i = 0; i < 3; i++) mat(index, i) = atom[i];
                             index++;
                         }
                     }
@@ -285,15 +272,15 @@ public:
         if (vec[0] >= 2) {
             a.resize(2, 3);
             for (int i = 0; i < 3; i++) {
-                a(0, i) = residues[vec[0] - 2]["C4*"][i];
-                a(1, i) = residues[vec[0] - 1]["C4*"][i];
+                a(0, i) = atom(residues[vec[0] - 2], "C4*")[i];
+                a(1, i) = atom(residues[vec[0] - 1], "C4*")[i];
             }
         }
         if (vec.back() <= len - 3) {
             b.resize(2, 3);
             for (int i = 0; i < 3; i++) {
-                b(0, i) = residues[vec.back() + 1]["C4*"][i];
-                b(1, i) = residues[vec.back() + 2]["C4*"][i];
+                b(0, i) = atom(residues[vec.back() + 1], "C4*")[i];
+                b(1, i) = atom(residues[vec.back() + 2], "C4*")[i];
             }
         }
         return build_strand(vec.size(), a, b);
@@ -307,6 +294,120 @@ public:
                 for (int i = 0; i < strand.size(); i++) residues[strand[i]] = strand_residues[i];
             }
         });
+    }
+
+    void find_templates() {
+        find_records(_n2d.head);
+        print_records();
+    }
+
+    void print_records() {
+        log("Records searching results:\n");
+        for (auto &&Row: _loop_nums_table) {
+            nuc2d::loop *l;
+            int type, num_loops, num_helices;
+            std::tie(l, type, num_loops, num_helices) = Row;
+            log("loop(", l, "):\n", "Helix: ", l->s.seq(), ' ', l->s.ss(), ' ', num_helices, '\n');
+            log("Loop: ", l->seq(), ' ', l->ss(), ' ', num_loops, "\n\n");
+        }
+    }
+
+    void find_records(nuc2d::loop *l) {
+        if (l == NULL) return;
+        find_loop_records(l);
+        find_helix_records(l);
+        find_records(l->son);
+        find_records(l->brother);
+    }
+
+    void find_loop_records(nuc2d::loop *l) {
+        if (l->empty()) {
+            _loop_nums_table.push_back(std::make_tuple(l, 0, 0, 0));    
+            return;
+        }
+
+        std::string seq = l->seq(), ss = l->ss(), p_ss = nuc2d::pure_ss(ss), lower_ss = nuc2d::lower_ss(p_ss, 1), family = _family;
+        int num_sons = l->num_sons();
+
+        std::string info_file = _lib + "/" + _type + "/" + "records/" + (l->is_open() ? "open_" : "") + "loop";
+        std::ifstream ifile(info_file.c_str());
+        if (!ifile) throw "jian::nuc3d::FindTemplates error! Can't find '" + info_file + "'!";
+
+        TemplRec templ_rec;
+        int num = 0;
+        while (ifile >> templ_rec._name >> templ_rec._type >> templ_rec._seq >> templ_rec._ss >> templ_rec._family) {
+            if (_strategy == "loose" and templ_rec._type == num_sons and num_sons >= (l->is_open() ? 0 : 2)) {
+                templ_rec._score = 0;
+                if (templ_rec._name.substr(0, 4) == _name.substr(0, 4)) {
+                    if (_is_test) continue; else templ_rec._score += 5;
+                }
+                _records[l].first.push_back(templ_rec);
+                num++;
+                if (not _source_pdb.empty() and templ_rec._name.substr(0, 4) == _source_pdb.substr(0, 4)) {
+                    _records[l].first.clear(); _records[l].first.push_back(templ_rec);
+                    num = 1;
+                    break;
+                }
+            } else if (nuc2d::pure_ss(nuc2d::lower_ss(templ_rec._ss, 1)) == lower_ss) {
+                templ_rec._score = (templ_rec._ss == ss ? 5 : 0);
+                if (templ_rec._name.substr(0, 4) == _name.substr(0, 4)) {
+                    if (_is_test) continue; else templ_rec._score += 5;
+                }
+                if (templ_rec._family == family && family != "other") {
+                    if (_is_test) continue; else templ_rec._score += 2;
+                }
+                for (int i = 0; i < templ_rec._seq.size(); i++) {
+                    if (seq[i] == templ_rec._seq[i]) templ_rec._score++;
+                }
+                _records[l].first.push_back(templ_rec);
+                num++;
+                if (not _source_pdb.empty() and templ_rec._name.substr(0, 4) == _source_pdb.substr(0, 4)) {
+                    _records[l].first.clear(); _records[l].first.push_back(templ_rec);
+                    num = 1;
+                    break;
+                }
+            }
+        }
+        ifile.close();
+        std::sort(_records[l].first.begin(), _records[l].first.end(), []( const TemplRec &loop1, const TemplRec &loop2) {
+            return loop1._score > loop2._score; });
+        _loop_nums_table.push_back(std::make_tuple(l, num_sons, num, 0));
+    }
+
+    void find_helix_records(nuc2d::loop *l) {
+        if (l->s.empty()) return;
+
+        std::string seq = l->s.seq(), ss = l->s.ss(), family = _family;
+        int len = l->s.len();
+
+        std::string info_file = _lib + "/" + _type + "/" + "records/helix";
+        std::ifstream ifile(info_file.c_str());
+        if (!ifile) throw "jian::nuc3d::FindTemplates error! Can't find '" + info_file + "'!";
+
+        TemplRec templ_rec;
+        int num = 0;
+        while (ifile >> templ_rec._name >> templ_rec._len >> templ_rec._seq >> templ_rec._ss >> templ_rec._family) {
+            if (templ_rec._len == len) {
+                templ_rec._score = 0;
+                if (templ_rec._name.substr(0, 4) == _name.substr(0, 4)) {
+                    if (_is_test) continue; else templ_rec._score += 5;
+                }
+                if (templ_rec._family == family && family != "other") {
+                    if (_is_test) continue; else templ_rec._score += 2;
+                }
+                for (int i = 0; i < templ_rec._seq.size(); i++) {
+                    if (seq[i] == templ_rec._seq[i]) {
+                        templ_rec._score++;
+                    }
+                }
+                _records[l].second.push_back(std::move(templ_rec));
+                num++;
+            }
+        }
+        ifile.close();
+        std::sort(_records[l].second.begin(), _records[l].second.end(), []( const TemplRec &loop1, const TemplRec &loop2) {
+            return loop1._score > loop2._score; });
+        for (auto &&tuple: _loop_nums_table) if (std::get<0>(tuple) == l) {std::get<3>(tuple) = num; break;}
     }
 
 };

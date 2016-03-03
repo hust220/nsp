@@ -67,6 +67,16 @@ inline int rows_mats(const T &mat, const L & ...mats) {
     return mat.rows() + rows_mats(mats...);
 }
 
+// cols_mats
+inline int cols_mats() {
+    return 0;
+}
+
+template<typename T, typename... L>
+inline int cols_mats(const T &mat, const L & ...mats) {
+    return std::max(mat.cols(), cols_mats(mats...));
+}
+
 // hstack
 template<typename T>
 inline void hstack_helper(T &t, int n) {}
@@ -82,7 +92,7 @@ inline void hstack_helper(T &t, int n, const T &mat, const L & ...mats) {
 
 template<typename T, typename... L>
 inline T hstack(const T &mat, const L & ...mats) {
-    T t(rows_mats(mat, mats...), mat.cols());
+    T t(rows_mats(mat, mats...), cols_mats(mat, mats...));
     hstack_helper(t, 0, mat, mats...);
     return t;
 }

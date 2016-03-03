@@ -5,8 +5,6 @@
 
 namespace jian {
 
-namespace pdb {
-
 class RMSD {
 public:
     double rmsd;
@@ -23,8 +21,8 @@ public:
     }
 
     void setXY() {
-        int len1 = _model1.res_nums();
-        int len2 = _model2.res_nums();
+        int len1 = num_residues(_model1);
+        int len2 = num_residues(_model2);
         assert(len1 == len2);
 
         std::map<std::string, Atom> atom_map;
@@ -41,10 +39,10 @@ public:
             n++;
 
             assert(res1->name == res2->name);
-            for (auto &&atom1 : res1->atoms) {
+            for (auto &&atom1 : *res1) {
                 atom_map[atom1.name] = atom1;
             }
-            for (auto &&atom2 : res2->atoms) {
+            for (auto &&atom2 : *res2) {
                 if (atom_map.count(atom2.name) == 1) {
                     atom_list1.push_back(atom_map[atom2.name]);
                     atom_list2.push_back(atom2);
@@ -142,9 +140,7 @@ public:
 
 };
 
-} /// namespace pdb
-
-} /// namespace jian
+} // namespace jian
 
 #endif
 

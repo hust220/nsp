@@ -28,7 +28,7 @@ public:
     Mat operator ()() {
         log("Start DG...\nbound:\n", bound, "\n dihedral bound:\n", _dih_bound, '\n');
         b2d(); metric(); d2c(); cg();
-        if (_dist_en > 20 or _dih_en > 20) mc();
+        if (_dist_en > 20 || _dih_en > 20) mc();
         log("Finish DG.\n");
         return c;
     }

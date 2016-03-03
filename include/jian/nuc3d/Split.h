@@ -51,7 +51,7 @@ public:
 
         _mol = Model(_name);
         _name = _mol.name;
-        _seq = _mol.seq();
+        _seq = jian::seq(_mol);
     }
 
     void operator ()() {
@@ -83,7 +83,7 @@ public:
                 nums[2 * len - 1 - index] = b->res2.num - 1;
                 index++;
             }
-            _mol.sub(nums).write(pdb_path + helix_name + ".pdb");
+            write_pdb(sub(_mol, nums), pdb_path + helix_name + ".pdb");
 
             // write to records file
             std::string helix_info_file = _lib + "/records/helix";
@@ -111,8 +111,8 @@ public:
             for (auto &&pair: l->hinges) append(hinge_nums, l->at(pair.first-1).num - 1, l->at(pair.first).num - 1, 
                                                 l->at(pair.second).num - 1, l->at(pair.second+1).num - 1);
             if (!l->is_open()) append(hinge_nums, l->at(len - 2).num - 1, l->at(len - 1).num - 1);
-            _mol.sub(all_nums).write(pdb_path + loop_name + ".pdb");
-            _mol.sub(hinge_nums).write(pdb_path + loop_name + ".hinge.pdb");
+            write_pdb(sub(_mol, all_nums), pdb_path + loop_name + ".pdb");
+            write_pdb(sub(_mol, hinge_nums), pdb_path + loop_name + ".hinge.pdb");
 
             // write to info file
             string l_ss = l->ss();

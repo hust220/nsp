@@ -82,7 +82,7 @@ public:
 
     template<typename Res1, typename Res2>
     val_t dist(Res1 &&res1, Res2 &&res2) {
-        return geom::distance(res1.atom("S"), res2.atom("P"));
+        return geom::distance(pdb::atom(res1, "S"), pdb::atom(res2, "P"));
     }
 
     template<typename Fn>

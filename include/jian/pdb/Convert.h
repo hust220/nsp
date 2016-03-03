@@ -38,9 +38,7 @@ public:
     template<class T> Atom make_atom(std::string name, const T &coord) {
         Atom atom;
         atom.name = name;
-        atom.x = coord[0];
-        atom.y = coord[1];
-        atom.z = coord[2];
+        for (int i = 0; i < 3; i++) atom[i] = coord[i];
         return atom;
     }
 
@@ -49,7 +47,7 @@ public:
         res.name = name;
         int index = (_atom_list[name].size() == coord.rows() ? 0 : 3);
         for (int i = 0; i < coord.rows(); i++) {
-            res.atoms.push_back(
+            res.push_back(
                 make_atom(_atom_list[name][index], coord.row(i)));
             index++;
         }
@@ -60,7 +58,7 @@ public:
         if (res.name == name) return;
 
         /// Sort atoms of res
-        pdb::Format format;
+        Format format;
         format.sort(res);
 
         /// Get information
@@ -136,14 +134,12 @@ public:
     }
 
     std::tuple<Mat, std::vector<int>, std::vector<int>> get_res_coord(const Residue &res) {
-        Mat res_coord(res.atoms.size(), 3);
+        Mat res_coord(res.size(), 3);
         std::vector<int> res_nail(2);
         std::vector<int> res_direct(3);
-        for (int i = 0; i < res.atoms.size(); i++) {
-            const Atom &atom = res.atoms[i];
-            res_coord(i, 0) = atom.x;
-            res_coord(i, 1) = atom.y;
-            res_coord(i, 2) = atom.z;
+        for (int i = 0; i < res.size(); i++) {
+            const Atom &atom = res[i];
+            for (int j = 0; j < 3; j++) res_coord(i, j) = atom[j];
             if (atom.name == "C1*") {
                 res_nail[0] = i;
             } else if (std::set<std::string>{"A", "G", "DA", "DG"}.count(res.name) && atom.name == "N9") {
@@ -165,11 +161,7 @@ public:
     }
 
     void set_res_coord(Residue &res, const Mat &res_coord) {
-        for (int i = 0; i < res.atoms.size(); i++) {
-            res.atoms[i].x = res_coord(i, 0);
-            res.atoms[i].y = res_coord(i, 1);
-            res.atoms[i].z = res_coord(i, 2);
-        }
+        for (int i = 0; i < res.size(); i++) for (int j = 0; j < 3; j++) res[i][j] = res_coord(i, j);
     }
 
     std::tuple<Mat, std::vector<int>, std::vector<int>> read_base(std::string name) {
@@ -179,13 +171,13 @@ public:
         } else if (std::set<std::string>{"DA", "DT", "DG", "DC"}.count(name)) {
             file_name += "/DNA/base/" + name + ".pdb";
         }
-        return get_res_coord(Model(file_name).chains[0].residues[0]);
+        return get_res_coord(Model(file_name)[0][0]);
     }
 
     std::tuple<int, int, int> get_res_size(const Residue &res) {
         std::set<std::string> phos_atoms{"P", "O1P", "O2P"};
         int phos_size = 0, sugar_size = 0, base_size = 0;
-        for (auto &&atom: res.atoms) {
+        for (auto &&atom: res) {
             if (phos_atoms.count(atom.name)) {
                 phos_size++;
             } else if (atom.name.size() == 3) {
@@ -199,13 +191,10 @@ public:
 
     RowVector3d get_o2_coord(const Residue &res) {
         RowVector3d c1, c2, c3, o2;
-        for (auto &&atom: res.atoms) {
-            if (atom.name == "C1*") {
-                c1 = atom.pos<RowVector3d>();
-            } else if (atom.name == "C2*") {
-                c2 = atom.pos<RowVector3d>();
-            } else if (atom.name == "C3*") {
-                c3 = atom.pos<RowVector3d>();
+        for (auto &&atom: res) {
+            if (atom.name == "C1*") { for (int i = 0; i < 3; i++) c1[i] = atom[i];
+            } else if (atom.name == "C2*") { for (int i = 0; i < 3; i++) c2[i] = atom[i];
+            } else if (atom.name == "C3*") { for (int i = 0; i < 3; i++) c3[i] = atom[i];
             }
         }
         o2 = (c3 - c2).cross(c1 - c2) + (c3 + c1 - 2 * c2) + c2;
