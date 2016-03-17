@@ -1,10 +1,8 @@
-include_directories(../include)
-include_directories(../include/boost_1_58_0)
-add_executable (nsp nsp.cpp)
-add_executable (anal-mol AnalMol.cpp)
-add_executable (build-junction BuildJunction.cpp)
-add_executable (helix-parser HelixParser.cpp)
-install(TARGETS nsp DESTINATION bin)
-install(TARGETS anal-mol DESTINATION bin)
-install(TARGETS build-junction DESTINATION bin)
-install(TARGETS helix-parser DESTINATION bin)
+file(GLOB_RECURSE TEST_SOURCES *.cpp)
+
+ADD_EXECUTABLE(nsp ${TEST_SOURCES})
+TARGET_LINK_LIBRARIES(nsp ${EXTRA_LIBS})
+
+INSTALL(TARGETS nsp DESTINATION /home/jian/bin)
+
+
