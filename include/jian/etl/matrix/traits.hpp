@@ -1,11 +1,10 @@
-#ifndef JIAN_ETL_MATRIX_TRAITS
-#define JIAN_ETL_MATRIX_TRAITS
+#pragma once
 
 #include <cstring>
-#include "../../Eigen/Dense"
-#include "../../Eigen/SVD"
-#include "../../Eigen/Geometry"
-#include "../traits.hpp"
+#include <Eigen/Dense>
+#include <Eigen/SVD>
+#include <Eigen/Geometry>
+#include <traits.hpp>
 using namespace Eigen;
 
 namespace jian {
@@ -62,7 +61,4 @@ template<typename T>
 using mat_value_type_t = typename mat_value_type<T>::type;
 
 } // namespace jian
-
-#endif
-
 
