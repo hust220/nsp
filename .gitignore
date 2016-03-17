@@ -2,6 +2,7 @@
 !lib
 !include
 !src
+!test
 !CMakeLists.txt
 .svn
 *.bak
