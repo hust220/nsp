@@ -9,12 +9,12 @@
 #define EACH_RES4(m, c) EACH_INDEX_RES_HELPER(4, m, c)
 #define EACH_RES(m, c) ({int N_RES = 0; EACH((CHAIN, N_CHAIN), m, EACH(RES, CHAIN, c; N_RES++)); N_RES;})
 
-#define EACH_ATOM_HELPER(n, m, c) EACH_RES_HELPER(n, m, EACH((ATOM##n, N_ATOM##n), RES##n, c))
+#define EACH_ATOM_HELPER(n, m, c) ({int N_ATOM##n = 0; EACH_RES_HELPER(n, m, EACH(ATOM##n, RES##n, c)); N_ATOM##n++;})
 #define EACH_ATOM1(m, c) EACH_ATOM_HELPER(1, m, c)
 #define EACH_ATOM2(m, c) EACH_ATOM_HELPER(2, m, c)
 #define EACH_ATOM3(m, c) EACH_ATOM_HELPER(3, m, c)
 #define EACH_ATOM4(m, c) EACH_ATOM_HELPER(4, m, c)
-#define EACH_ATOM(m, c) EACH_RES(m, EACH((ATOM, N_ATOM), RES, c))
+#define EACH_ATOM(m, c) ({int N_ATOM = 0; EACH_RES(m, EACH(ATOM, RES, c)); N_ATOM++;})
 
 namespace jian {
 
@@ -57,6 +57,16 @@ public:
     void read_cif(std::string file_name) {
         Cif cif(file_name);
         (*this) = Model(cif);
+    }
+
+    template<typename T>
+    Model coarse_grained(T &&names) const {
+        Model m;
+        m.name = name;
+        for (auto &&chain : *this) {
+            m.push_back(chain.coarse_grained(names));
+        }
+        return m;
     }
 
 };
@@ -183,10 +193,12 @@ void write_pdb(T &&model, const std::string &name) {
 template<typename T> 
 auto sub(const Model &model, T &&t) {
     Model m;
-    int res_num = 0; for (auto &&chain: model) {
-        Chain temp_chain; temp_chain.name = chain.name;
+    int res_num = 0; 
+    for (auto &&chain: model) {
+        Chain temp_chain; 
+        temp_chain.name = chain.name;
         for (auto &&res: chain) {
-            if (std::count(std::begin(t), std::end(t), res_num)) temp_chain.push_back(res);
+            if (std::find(std::begin(t), std::end(t), res_num) != std::end(t)) temp_chain.push_back(res);
             res_num++;
         }
         if (!temp_chain.empty()) m.push_back(temp_chain);

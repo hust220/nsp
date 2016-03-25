@@ -64,6 +64,11 @@ inline void each_line(const std::string &file_name, Fn &&f) {
     ifile.close();
 }
 
+inline void clear_file(const std::string &file_name) {
+    std::ofstream ofile(file_name.c_str());
+    ofile.close();
+}
+
 } // namespace file
 } // namespace jian
 

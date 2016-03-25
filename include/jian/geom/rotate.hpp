@@ -20,6 +20,37 @@ void rotate(T &t, const Mat &mat) {
     t[0] = x; t[1] = y; t[2] = z;
 }
 
+template<typename T, typename U, typename Mat> 
+void rotate(T &t, const U &origin, const Mat &mat) {
+    for (int i = 0; i < 3; i++) t[i] -= origin[i];
+    val_t x = t[0] * ref(mat, 0, 0) + t[1] * ref(mat, 1, 0) + t[2] * ref(mat, 2, 0);
+    val_t y = t[0] * ref(mat, 0, 1) + t[1] * ref(mat, 1, 1) + t[2] * ref(mat, 2, 1);
+    val_t z = t[0] * ref(mat, 0, 2) + t[1] * ref(mat, 1, 2) + t[2] * ref(mat, 2, 2);
+    t[0] = x; t[1] = y; t[2] = z;
+    for (int i = 0; i < 3; i++) t[i] += origin[i];
+}
+
+template<typename Mat = MatrixXd, typename T>
+Mat rot_mat(int i, T &&v) {
+    Mat mat(3, 3);
+    double c = std::cos(v);
+    double s = std::sin(v);
+    if (i == 0) {
+        mat << 1, 0, 0,
+               0, c, s,
+               0,-s, c;
+    } else if (i == 1) {
+        mat << c, 0,-s,
+               0, 1, 0,
+               s, 0, c;
+    } else if (i == 2) {
+        mat << c, s, 0,
+              -s, c, 0,
+               0, 0, 1;
+    }
+    return mat;
+}
+
 template<typename Mat = MatrixXd, class C1 = val_t, class C2 = val_t> 
 Mat x_rot_mat(C1 c, C2 s) {
     Mat rot_mat(3, 3);

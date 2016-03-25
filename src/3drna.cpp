@@ -1,6 +1,8 @@
 #include "nsp.hpp"
 #include <jian/nuc3d/Assemble.hpp>
+#include <jian/nuc3d/Predict3FA.hpp>
 #include <jian/nuc3d/Predict3DG.hpp>
+#include <jian/nuc3d/Predict3MC.hpp>
 #include <jian/nuc3d/triass/TriAss.hpp>
 
 namespace jian {
@@ -27,7 +29,7 @@ REGISTER_NSP_COMPONENT(3drna) {
     };
 
     auto job = JobPredict3D(par);
-    auto c = read_constraints(job._constraints);
+    auto c = read_constraints(job._file_constraints);
     display_start_information_job(job);
     auto method = _3drna_methods[job._method](par);
     int max_it_num = 100; int step = 1; int num = 0;
@@ -48,6 +50,17 @@ REGISTER_NSP_COMPONENT(3drna) {
     }
     delete method;
     display_end_information_job(job);
+}
+
+REGISTER_NSP_COMPONENT(r3d) {
+    Predict3MC r3d(par);
+    r3d.predict();
+}
+
+REGISTER_NSP_COMPONENT(mc) {
+    MC mc;
+    mc.mc_heat();
+    mc.mc_cool();
 }
 
 } // namespace jian

@@ -14,7 +14,8 @@ public:
     std::string _lib;
     std::string _family = "other";
     std::string _type = "RNA";
-    std::string _constraints;
+    std::string _file_constraints;
+    Constraints _constraints;
     std::string _disused_pdb;
     std::time_t _start_time, _end_time;
     int _hinge = 2;
@@ -39,7 +40,8 @@ public:
         pars.set(_strategy, "strategy");
         pars.set(_family, "family");
         pars.set(_type, "t", "type");
-        pars.set(_constraints, "c", "constraints");
+        pars.set(_file_constraints, "c", "constraints");
+        set_constraints();
         pars.set(_disused_pdb, "disused_pdb");
         pars.set(_method, "method");
         pars.set(_is_test, "test");
@@ -50,6 +52,12 @@ public:
         _seq != "" or die("Please tell me the sequence!");
 
         if (NucSS::len_ss(_ss) != _seq.size()) throw "The length of the secondary structure and sequence should be equal!";
+    }
+
+    void set_constraints() {
+        if (! _file_constraints.empty()) {
+            _constraints.read_distances_file(_file_constraints);
+        }
     }
 
 };

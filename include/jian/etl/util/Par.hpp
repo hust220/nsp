@@ -68,6 +68,10 @@ public:
         return _pars.find(s) != _pars.end();
     }
 
+    bool has(const std::string &s) const {
+        return _pars.find(s) != _pars.end();
+    }
+
     void read(string par_file) {
         std::ifstream ifile(par_file.c_str());
         if (!ifile) throw "Par::read(string) error! Can't open file '" + par_file + "'.";

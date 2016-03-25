@@ -21,6 +21,15 @@ public:
         }
     }
 
+    template<typename T>
+    Chain coarse_grained(T &&names) const {
+        Chain c;
+        c.name = name;
+        for (auto &&res : *this) {
+            c.push_back(res.coarse_grained(names));
+        }
+        return c;
+    }
 };
 
 template<typename T>
@@ -67,6 +76,29 @@ SEELN("Reidues To File ", file_name);
     output << "TER" << endl;
     output.close();
 SEELN("Reidues To File Done.");
+}
+
+template<typename T, typename U>
+void append_chain_to_file(T &&chain, U &&file_name, int n) {
+    std::ofstream output(file_name.c_str(), std::ios::app);
+    int atom_num = 1;
+    int residue_num = 1;
+    output << "MODEL " << n << endl;
+    output << fixed << setprecision(3);
+    for (auto &&residue: chain) {
+        for (auto &&atom: residue) {
+            std::string atom_name = boost::replace_all_copy(atom.name, "*", "'");
+            if (residue_num == 1 and std::set<std::string>{"P", "O1P", "O2P"}.count(atom_name)) continue;
+            output << boost::format("ATOM%7i  %-4s%3s%2s%4i%12.3lf%8.3lf%8.3lf%6.2f%6.2f%12c  \n") % 
+                                    atom_num % atom_name % residue.name % "X" % residue_num % 
+                                    atom[0] % atom[1] % atom[2] % 1.00 % 0.00 % atom_name[0];
+            atom_num++;
+        }
+        residue_num++;
+    }
+    output << "TER" << endl;
+    output << "ENDMDL" << endl;
+    output.close();
 }
 
 } // namespace jian

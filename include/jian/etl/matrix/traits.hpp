@@ -4,7 +4,7 @@
 #include <Eigen/Dense>
 #include <Eigen/SVD>
 #include <Eigen/Geometry>
-#include <traits.hpp>
+#include "../traits.hpp"
 using namespace Eigen;
 
 namespace jian {

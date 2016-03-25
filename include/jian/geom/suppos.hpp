@@ -6,6 +6,12 @@
 namespace jian {
 namespace geom {
 
+#define INIT_SUPPOS(sp) \
+    auto &&sp##C1 = -(sp.c1); auto &&sp##ROT = sp.rot; auto &&sp##C2 = sp.c2;
+
+#define APPLY_SUPPOS(m, sp) \
+    geom::translate(m, sp##C1); geom::rotate(m, sp##ROT); geom::translate(m, sp##C2);
+
 template<typename T, typename U>
 void apply_suppos(T &&m, U &&sp) {
     auto &&c1 = -(sp.c1); auto &&rot = sp.rot; auto &&c2 = sp.c2;

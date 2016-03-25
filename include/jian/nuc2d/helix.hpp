@@ -46,6 +46,17 @@ public:
         return HELIX_EACH(*this,);
     }
 
+    friend std::ostream &operator <<(std::ostream &out, const helix &h) {
+        out << "Helix: " << h.seq() << ' '<< h.ss() << ' ';
+        std::list<int> d; 
+        HELIX_EACH(h, 
+            d.insert(std::next(d.begin(), N_BP), {BP->res1.num, BP->res2.num});
+        );
+        for (auto && i : d) {
+            out << i << ' ';
+        }
+    }
+
     std::string ss() const {
         std::string str;
         HELIX_EACH(*this, str += '(');

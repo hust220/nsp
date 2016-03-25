@@ -4,7 +4,7 @@
 
 #define LOOP_EACH(l, c) ({\
     int N_RES = 0;\
-    res *RES = l->head;\
+    res *RES = (l)->head;\
     for (; RES != NULL; RES = RES->next) {\
         c;\
         N_RES++;\
@@ -163,6 +163,11 @@ public:
 
     std::string seq() const {
         std::string seq; LOOP_EACH(this, IF(RES->type != '&', seq += RES->name)); return seq;
+    }
+
+    friend std::ostream &operator <<(std::ostream &out, const loop &l) {
+        out << "Loop: " << l.seq() << ' ' << l.ss() << ' ';
+        LOOP_EACH(&l, out << RES->num << ' ');
     }
 
     void print() const {

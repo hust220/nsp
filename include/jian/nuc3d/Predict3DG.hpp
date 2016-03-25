@@ -78,7 +78,7 @@ public:
     }
 
     void set_bound_constraints() {
-        EACH_SPLIT_LINE(_constraints.c_str(), " ",
+        EACH_SPLIT_LINE(_file_constraints.c_str(), " ",
             if (F.size() == 3) {
                 int i = JN_INT(F[0]) - 1;
                 int j = JN_INT(F[1]) - 1;

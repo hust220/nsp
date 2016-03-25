@@ -38,12 +38,12 @@ public:
     Model predict() {
         auto tree = ss_to_tree();
         for (auto && module : tree) {
-            Trace::log(module.type, '\n');
+            Debug::println(module.type);
             for (auto && frag : module.frags) {
                 for (auto && res : frag) {
-                    Trace::log(res.seq, '-', res.ss, '-', res.num, ' ');
+                    Debug::println(res.seq, '-', res.ss, '-', res.num, ' ');
                 }
-                Trace::log('\n');
+                Debug::println();
             }
         }
         auto templates = find_templates(tree);

@@ -6,15 +6,15 @@ namespace jian {
 
 class NucSS {
 public:
-    std::vector<std::pair<char, char>> paired_keys = {
+    std::vector<std::pair<char, char>> paired_keys {
         {'(', ')'}, {'[', ']'}, {'{', '}'}, {'<', '>'}, 
         {'A', 'a'}, {'B', 'b'}, {'C', 'c'}, {'D', 'd'}, 
         {'E', 'e'}, {'F', 'f'}, {'G', 'g'}, {'H', 'h'},
         {'I', 'i'}, {'J', 'j'}, {'K', 'k'}, {'L', 'l'},
         {'M', 'm'}, {'N', 'n'}, {'O', 'o'}
     };
-    std::vector<char> unpaired_keys = { '.', ':' };
-    std::vector<char> break_keys = { '&', '-' };
+    std::vector<char> unpaired_keys { '.', ':' };
+    std::vector<char> break_keys { '&', '-' };
 
     static NucSS &instance() {
         static NucSS nuc_ss;

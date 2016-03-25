@@ -7,8 +7,10 @@
 #include "util/Point.hpp"
 #include "util/Log.hpp"
 #include "util/Trace.hpp"
+#include "util/Debug.hpp"
 #include "util/Lib.hpp"
 #include "util/Rand.hpp"
+#include "util/MC.hpp"
 
 #endif
 

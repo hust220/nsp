@@ -19,7 +19,7 @@ public:
     int _loop_num = 0;
 
     Split(Par par) {
-        _lib = env("NSP");
+        _lib = Env::lib();
 
         if (par.count("pdb_file")) _name = par["pdb_file"][0];
         if (par.count("pdb")) _name = par["pdb"][0];
@@ -53,14 +53,10 @@ public:
 
     void operator ()() {
         SSTree ss_tree; ss_tree.make(_seq, _ss, _hinge_size);
-        split_mol(ss_tree.head);
-    }
-
-    void split_mol(loop *l) {
-        parse_helix(l);
-        parse_loop(l);
-        if (l->has_son()) split_mol(l->son);
-        if (l->has_brother()) split_mol(l->brother);
+        LOOP_TRAVERSE(ss_tree.head,
+            parse_helix(L);
+            parse_loop(L);
+        );
     }
 
     void parse_helix(loop *l) {

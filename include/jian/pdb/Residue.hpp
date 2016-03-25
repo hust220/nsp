@@ -25,6 +25,41 @@ public:
         }
     }
 
+    static auto get_sort_keys() {
+        static std::map<std::string, std::vector<std::string>> keys {
+            {"A",{"P","O1P","O2P",
+                  "O5*","C5*","C4*","O4*","C3*","O3*","C2*","O2*","C1*",
+                  "N9","C8","N7","C5","C6","N6","N1","C2","N3","C4"}},
+            {"U",{"P","O1P","O2P",
+                  "O5*","C5*","C4*","O4*","C3*","O3*","C2*","O2*","C1*",
+                  "N1","C2","O2","N3","C4","O4","C5","C6"}},
+            {"G",{"P","O1P","O2P",
+                  "O5*","C5*","C4*","O4*","C3*","O3*","C2*","O2*","C1*",
+                  "N9","C8","N7","C5","C6","O6","N1","C2","N2","N3","C4"}},
+            {"C",{"P","O1P","O2P",
+                  "O5*","C5*","C4*","O4*","C3*","O3*","C2*","O2*","C1*",
+                  "N1","C2","O2","N3","C4","N4","C5","C6"}}
+        };
+        std::map<std::string, std::map<std::string, int>> sort_keys;
+        int index = 0;
+        for (auto && res_name : {"A", "U", "G", "C"}) {
+            for (int i = 0; i < keys[res_name].size(); i++) {
+                sort_keys[res_name][keys[res_name][i]] = index;
+                index++;
+            }
+        }
+        return sort_keys;
+    }
+
+    void sort() {
+        static auto sort_keys = get_sort_keys();
+        auto & keys = sort_keys;
+        std::sort(this->begin(), this->end(), [&](auto &&a1, auto &&a2){
+            return keys[name][a1.name] < keys[name][a2.name];
+        });
+    }
+
+                  
     std::string format_name(const std::string &s) {
         std::smatch result;
         if (std::regex_match(s, result, std::regex("^(\\w+)\\d+$"))) {
@@ -32,12 +67,12 @@ public:
             // and '3' after the name of the last residue
             return result[1];
         } else return s;
-    }
-
+    }              
+                   
     Atom &operator [](int n) {
         return std::deque<Atom>::operator [](n);
-    }
-
+    }              
+                   
     const Atom &operator [](int n) const {
         return std::deque<Atom>::operator [](n);
     }
@@ -52,6 +87,17 @@ public:
         throw "jian::Residue::operator[] error! Not found atom!";
     }
 
+    template<typename T>
+    Residue coarse_grained(T &&names) const {
+        Residue r;
+        r.name = name;
+        for (auto &&atom : *this) {
+            if (std::find(names.begin(), names.end(), atom.name) != names.end()) {
+                r.push_back(atom);
+            }
+        }
+        return r;
+    }
 };
 
 template<typename T>
