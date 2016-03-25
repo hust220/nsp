@@ -10,10 +10,8 @@ endif()
 
 include_directories(include)
 
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++14")
 if (NOT MSVC)
     ADD_COMPILE_OPTIONS("-std=c++14")
-    ADD_COMPILE_OPTIONS("-g")
 endif()
 
 add_subdirectory(src)
@@ -23,5 +21,10 @@ add_custom_target(debug
     COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Debug ${CMAKE_SOURCE_DIR}
     COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target all
     COMMENT "Switch CMAKE_BUILD_TYPE to Debug"
+)
+add_custom_target(release
+    COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Release ${CMAKE_SOURCE_DIR}
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target all
+    COMMENT "Switch CMAKE_BUILD_TYPE to Release"
 )
 

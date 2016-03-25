@@ -74,7 +74,7 @@ inline int cols_mats() {
 
 template<typename T, typename... L>
 inline int cols_mats(const T &mat, const L & ...mats) {
-    return std::max(mat.cols(), cols_mats(mats...));
+    return std::max(int(mat.cols()), cols_mats(mats...));
 }
 
 // hstack

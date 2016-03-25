@@ -28,7 +28,7 @@ public:
         auto bound = make_bound(n, a, b);
         auto scaffold = dg(bound);
         superpose_scaffold(scaffold, a, b);
-        auto residues = C2A::c2a(scaffold, std::vector<int>{0, scaffold.rows()-1});
+        auto residues = C2A::c2a(scaffold, std::vector<int>{0, int(scaffold.rows())-1});
         auto new_residues = slice(residues, a.rows(), a.rows() + n);
         return new_residues;
     }
