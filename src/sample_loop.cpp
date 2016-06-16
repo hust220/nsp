@@ -8,7 +8,7 @@ REGISTER_NSP_COMPONENT(sample_loop) {
     loop *l;
     std::shared_ptr<Model> model;
     SplitModel split_model(par["model"][0], par["seq"][0], par["ss"][0]);
-    LOOP_TRAVERSE(split_model._ss_tree.head,
+    LOOP_TRAVERSE(split_model._ss_tree.head(),
         if (L->num_sons() == 3) {
             l = L;
             model = std::make_shared<Model>(split_model._loops[l]);

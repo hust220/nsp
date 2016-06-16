@@ -9,13 +9,17 @@ if(Boost_FOUND)
 endif()
 
 include_directories(include)
+include_directories(lib)
 
 if (NOT MSVC)
+    ADD_COMPILE_OPTIONS("-g")
     ADD_COMPILE_OPTIONS("-std=c++14")
 endif()
 
 add_subdirectory(src)
-add_subdirectory(test)
+#add_subdirectory(test)
+add_subdirectory(include)
+add_subdirectory(lib)
 
 add_custom_target(debug
     COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Debug ${CMAKE_SOURCE_DIR}

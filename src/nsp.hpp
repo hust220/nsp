@@ -3,7 +3,11 @@
 #include <iostream>
 #include <map>
 #include <functional>
-#include <jian/etl/util/Par.hpp>
+#include <jian/utils/Par.hpp>
+#include <jian/utils/file.hpp>
+#include <jian/utils/Env.hpp>
+#include <string>
+#include <boost/preprocessor.hpp>
 
 namespace jian {
 
@@ -15,6 +19,8 @@ namespace jian {
 class NSP {
 public:
     std::map<std::string, std::function<void(const Par &)>> _methods;
+//    std::map<std::string, std::function<>> _synopses;
+//    std::map<std::string, std::string> _details;
 
     static NSP &instance() {
         static NSP nsp;
@@ -23,7 +29,19 @@ public:
 
     static void run(int argc, char **argv) {
         Par par(argc, argv);
-        instance()._methods[par[1]](par);
+        auto &m = instance()._methods;
+        std::string path = Env::lib() + "/RNA/pars/src/";
+        if (m.find(par[1]) == m.end()) {
+            std::string name = path + "nsp.md";
+            EACH_LINE(name.c_str(), std::cout << L << std::endl;);
+            for (auto && pair : m) {std::cout << pair.first << ' ';}
+            std::cout << std::endl;
+        } else if (par.has("help") || par.has("h") || par.has("-help")) {
+            std::string name = path + par[1] + ".md";
+            EACH_LINE(name.c_str(), std::cout << L << std::endl;);
+        } else {
+            m[par[1]](par);
+        }
     }
 
 };

@@ -1,16 +1,10 @@
 SET(TEST_SOURCES
     test.cpp
-    etl/std.cpp
-    pdb/Model.cpp
     nuc2d/SSTree.cpp
-    nuc3d/Env.cpp
-    nuc3d/C2A.cpp
 )
-
 INCLUDE_DIRECTORIES(.)
-
+LINK_DIRECTORIES(${CMAKE_SOURCE_DIR}/lib) 
 ADD_EXECUTABLE(nsp_test ${TEST_SOURCES})
-
 TARGET_LINK_LIBRARIES(nsp_test ${EXTRA_LIBS})
-
+TARGET_LINK_LIBRARIES(nsp_test jian)
 ADD_CUSTOM_TARGET(run_test COMMAND ${CMAKE_BINARY_DIR}/test/nsp_test DEPENDS nsp_test WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
