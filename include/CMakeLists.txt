@@ -1,0 +1,2 @@
+INSTALL(DIRECTORY Eigen DESTINATION include)
+

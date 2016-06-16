@@ -1,0 +1,131 @@
+#include "nsp.hpp"
+#include <jian/nuc3d/ParseHelix.hpp>
+#include <jian/nuc3d/JointHelix.hpp>
+#include <jian/pdb/Model.hpp>
+#include <jian/geom.hpp>
+#include <jian/utils/pp.hpp>
+#include <jian/utils/Debug.hpp>
+
+namespace jian {
+
+REGISTER_NSP_COMPONENT(anal_mol) {
+    auto &&chain = residues_from_file(par["pdb"][0]);
+    std::deque<int> ls; 
+    if (par.has("num")) {
+        EACH(s, par["num"], ls.push_back(JN_INT(s)));
+    }
+    SWITCH(par[2], ("dist", Debug::println(geom::distance(chain[ls[0]-1]["C4*"], chain[ls[1]-1]["C4*"]))),
+                   ("dist_atom",  Debug::println(geom::distance(chain[JN_INT(par["atom1"][0])-1][par["atom1"][1]], chain[JN_INT(par["atom2"][0])-1][par["atom2"][1]]))),
+                   ("ang",  Debug::println(geom::angle(chain[ls[0]-1]["C4*"], chain[ls[1]-1]["C4*"], chain[ls[2]-1]["C4*"]))),
+                   ("dih",  Debug::println(geom::dihedral(chain[ls[0]-1]["C4*"], chain[ls[1]-1]["C4*"], chain[ls[2]-1]["C4*"], chain[ls[3]-1]["C4*"]))),
+                   ("chir", Debug::println(geom::chirality(chain[ls[0]-1]["C4*"], chain[ls[1]-1]["C4*"], chain[ls[2]-1]["C4*"], chain[ls[3]-1]["C4*"]))));
+}
+
+REGISTER_NSP_COMPONENT(helix_par) {
+    ParseHelix parse_helix;
+    int n = JN_INT(par[2]);
+    auto &&c = parse_helix.make_standard_helix(n);
+    int j; for (int i = 1; i <= n; i++) {
+        j = 2*n + 1 - i;
+        std::cout << i << ' ' << geom::dihedral(c.row(0), c.row(i), c.row(j), c.row(2*n+1)) << std::endl;
+    }
+}
+
+REGISTER_NSP_COMPONENT(joint) {
+    auto set_nums = [](auto &&ls, auto &&v){
+        for (auto && s : v) {
+            ls.push_back(JN_INT(s)-1);
+        }
+    };
+    auto set_mat = [](auto &&m, auto &&ls, auto &&chain){
+        static std::vector<std::string> names {"C5*", "O3*", "C1*"};
+        for (int i = 0; i < ls.size(); i++) {
+            for (auto && atom : chain[ls[i]]) {
+                auto it = std::find(names.begin(), names.end(), atom.name);
+                if (it != names.end()) {
+                    int j = std::distance(names.begin(), it);
+                    for (int k = 0; k < 3; k++) {
+                        m(i * 3 + j, k) = atom[k];
+                    }
+                }
+            }
+        }
+    };
+    auto &&chain1 = residues_from_file(par["pdb1"][0]);
+    auto &&chain2 = residues_from_file(par["pdb2"][0]);
+    std::deque<int> ls1;
+    std::deque<int> ls2;
+    set_nums(ls1, par["num1"]);
+    set_nums(ls2, par["num2"]);
+    int len = ls1.size();
+    Eigen::MatrixXd m1(len * 3, 3);
+    Eigen::MatrixXd m2(len * 3, 3);
+    set_mat(m1, ls1, chain1);
+    set_mat(m2, ls2, chain2);
+    auto sp = geom::suppos(m1, m2);
+    INIT_SUPPOS(sp);
+    for (auto && res : chain1) {
+        for (auto && atom : res) {
+            APPLY_SUPPOS(atom, sp);
+        }
+    }
+    for (auto && res : chain2) {
+        chain1.push_back(std::move(res));
+    }
+    residues_to_file(chain1, par["out"][0]);
+}
+
+REGISTER_NSP_COMPONENT(joint3) {
+    auto &&chain1 = residues_from_file(par[2]);
+    auto &&chain2 = residues_from_file(par[3]);
+    JointHelix joint_helix;
+    std::cout << joint_helix.joint<3>(chain1, chain2) << std::endl;
+}
+
+REGISTER_NSP_COMPONENT(joint4) {
+    auto &&chain1 = residues_from_file(par[2]);
+    auto &&chain2 = residues_from_file(par[3]);
+    JointHelix joint_helix;
+    std::cout << joint_helix._joint<4>(chain1, chain2) << std::endl;
+}
+
+REGISTER_NSP_COMPONENT(sub) {
+    std::deque<int> ls;
+    std::vector<std::string> v;
+    int beg, end;
+    for (auto && s : par["num"]) {
+        tokenize(s, v, "-");
+        if (v.size() == 1) {
+            ls.push_back(JN_INT(s)-1);
+        } else if (v.size() == 2) {
+            beg = JN_INT(v[0])-1;
+            end = JN_INT(v[1])-1;
+            for (int i = beg; i <= end; i++) {
+                ls.push_back(i);
+            }
+        }
+    }
+    write_pdb(sub(Model(par["pdb"][0]), ls), par["out"][0]);
+}
+
+REGISTER_NSP_COMPONENT(num_residues) {
+    std::cout << num_residues(Model(par[2])) << std::endl;
+}
+
+} // namespace jian
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

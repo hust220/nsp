@@ -1,0 +1,26 @@
+#pragma once
+
+#include <iostream>
+#include <unordered_map>
+#include <vector>
+
+namespace jian {
+
+namespace DihBoundImpl {
+
+using key_t = std::vector<int>;
+
+using val_t = double;
+
+struct hash { unsigned int operator ()(const key_t &v) const; };
+
+struct equal_to { bool operator ()(const key_t &vec1, const key_t &vec2) const; };
+
+}
+
+using DihBound = std::unordered_map<DihBoundImpl::key_t, DihBoundImpl::val_t, DihBoundImpl::hash, DihBoundImpl::equal_to>;
+
+std::ostream &operator <<(std::ostream &out, const DihBound &dih_bound);
+
+} // namespace jian
+
