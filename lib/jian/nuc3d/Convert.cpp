@@ -150,7 +150,7 @@ void Convert::operator ()(Residue &res, std::string name) {
     int new_phos_size, new_sugar_size, new_base_size;
     new_phos_size = old_phos_size;
     new_sugar_size = (dna_name_list.count(name) ? 8 : 9);
-    BOOST_ASSERT(new_sugar_size == old_sugar_size && "jian::Convert error! Please check the residue to be converted.");
+    assert(new_sugar_size == old_sugar_size && "jian::Convert error! Please check the residue to be converted.");
     new_base_size = std::map<std::string, int>{{"A", 10}, {"U", 8}, {"G", 11}, {"C", 8}, {"DA", 10}, {"DT", 9}, {"DG", 11}, {"DC", 8}}[name];
 
     Mat coord(new_phos_size + new_sugar_size + new_base_size, 3);
