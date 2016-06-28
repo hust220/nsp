@@ -8,5 +8,4 @@
 #include "pdb/Molecule.hpp"
 #include "pdb/RMSD.hpp"
 #include "pdb/Constraints.hpp"
-#include "pdb/cg_psb.hpp"
 

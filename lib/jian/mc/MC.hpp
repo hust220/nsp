@@ -10,7 +10,8 @@ namespace jian {
 
 class MC {
 public:
-    double _mc_tempr = 20;
+    double _mc_init_tempr;
+    double _mc_tempr;
     int _mc_cycle_steps;
     int _mc_write_steps;
     int _mc_step = 0;
@@ -20,6 +21,7 @@ public:
     int _mc_cool_steps;
     double _mc_heat_rate;
     int _mc_state = 0; // 0: ready, 1: heating, 2: cooling, 3: done
+    double _mc_dec_rate;
 
     MC();
 

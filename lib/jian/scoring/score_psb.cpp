@@ -3,7 +3,7 @@
 #include "../utils/Env.hpp"
 #include "../utils/file.hpp"
 #include "../geom.hpp"
-#include "../pdb/cg_psb.hpp"
+#include "../cg/CGpsb.hpp"
 #include "score_psb.hpp"
 
 namespace jian {
@@ -34,7 +34,7 @@ public:
         EACH_SPLIT_LINE(s.c_str(), " ",
 //            update_counts(residues_from_file(F[0]).coarse_grained(m_atoms_cg));
             std::cout << F[0] << std::endl;
-            update_counts(cg_psb_chain(residues_from_file(F[0])));
+            update_counts(CGpsb::chain(residues_from_file(F[0])));
         );
         std::cout << m_counts_stacking << std::endl;
         std::cout << m_counts_pairing << std::endl;

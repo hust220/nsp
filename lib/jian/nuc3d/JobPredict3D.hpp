@@ -36,6 +36,7 @@ public:
     bool m_sample_hairpin = false;
     std::string m_mode = "auto";
     const Par *_par = NULL;
+    std::string m_cmd;
 
     JobPredict3D();
     JobPredict3D(const Par &pars);

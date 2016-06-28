@@ -2,12 +2,12 @@
 #include <jian/utils/file.hpp>
 #include <jian/matrix.hpp>
 #include <jian/scoring/score_psb.hpp>
-#include <jian/pdb/cg_psb.hpp>
+#include <jian/cg.hpp>
 
 namespace jian {
 
 static void score(const std::string &name) {
-    Chain chain = cg_psb_chain(residues_from_file(name));
+    Chain chain = CGpsb::chain(residues_from_file(name));
     int len = chain.size();
     double e = 0, s;
     for (int i = 0; i < len - 1; i++) {
@@ -22,7 +22,7 @@ static void score(const std::string &name) {
 }
 
 static void score_res(const std::string &name) {
-    Chain chain = cg_psb_chain(residues_from_file(name));
+    Chain chain = CGpsb::chain(residues_from_file(name));
     int len = chain.size();
     Mat m = Mat::Zero(len, len);
     double s;

@@ -1,7 +1,6 @@
 #include "nsp.hpp"
-#include <jian/nuc3d/C2A.hpp>
 #include <jian/nuc3d/CG2AA.hpp>
-#include <jian/nuc3d/psb2aa.hpp>
+#include <jian/cg.hpp>
 
 namespace jian {
 
@@ -27,16 +26,8 @@ REGISTER_NSP_COMPONENT(cg2aa) {
     residues_to_file(new_chain, par[3]);
 }
 
-//REGISTER_NSP_COMPONENT(c2a_extract_frags) {
-//    C2A::extract_frags(Model(par[2]));
-//}
-//
-//REGISTER_NSP_COMPONENT(cg2aa_extract_frags) {
-//    CG2AA::extract_frags(Model(par[2]));
-//}
-
 REGISTER_NSP_COMPONENT(psb_extract_frags) {
-    psb_extract_frags(par["pdb"][0]);
+    CGpsb::extract_frags(par["pdb"][0]);
 }
 
 } // namespace jian

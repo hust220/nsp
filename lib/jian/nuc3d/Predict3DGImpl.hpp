@@ -111,9 +111,9 @@ public:
         LOOP_EACH(l, 
             if (RES->next != NULL) {
                 if (RES->type == '(' && RES->next->type == ')') {
-                    b(RES->num-1, RES->next->num-1) = b(RES->next->num-1, RES->num-1) = HelixPar::instance().dist_bp;
+                    b(RES->num-1, RES->next->num-1) = b(RES->next->num-1, RES->num-1) = HelixPar::dist_bp;
                 } else {
-                    b(RES->num-1, RES->next->num-1) = b(RES->next->num-1, RES->num-1) = HelixPar::instance().dist_bond;
+                    b(RES->num-1, RES->next->num-1) = b(RES->next->num-1, RES->num-1) = HelixPar::dist_bond;
                 }
             }
         );
@@ -134,7 +134,7 @@ public:
             b(s1[j], s2[i]) = b(s2[i], s1[j]) = HelixPar::dist_d(j-i);
             d[{s1[i], s1[j], s2[j], s2[i]}] = HelixPar::dih(j-i);
         }
-        FOR((i, len), b(s1[i], s2[i]) = b(s2[i], s1[i]) = HelixPar::instance().dist_bp);
+        FOR((i, len), b(s1[i], s2[i]) = b(s2[i], s1[i]) = HelixPar::dist_bp);
     }
 
 };

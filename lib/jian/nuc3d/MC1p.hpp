@@ -1,15 +1,19 @@
 #pragma once
 
+#include <iostream>
+#include <set>
 #include <memory>
 #include <sstream>
+#include "../pp.hpp"
+#include "../mc.hpp"
+#include "../utils/file.hpp"
 #include "../pdb.hpp"
 #include "../geom.hpp"
 #include "../nuc2d.hpp"
-#include "../mc.hpp"
-#include "../utils/file.hpp"
+#include "../cg.hpp"
 #include "BuildHelix.hpp"
 #include "transform.hpp"
-#include "C2A.hpp"
+#include "TemplRec.hpp"
 #include "JobPredict3D.hpp"
 
 namespace jian {
@@ -17,11 +21,12 @@ namespace nuc3d {
 
 class MC1p : public JobPredict3D, public MC {
 public:    
-    enum res_module_t {RES_LOOP, RES_HELIX, RES_HAIRPIN};
-
+    #define MC1p_en_t_m len, ang, dih, crash, cons, vdw
     struct en_t {
-        double len = 0, ang = 0, dih = 0, crash = 0, cons = 0, vdw = 0;
-        double sum() const { return len + ang + dih + crash + cons + vdw; }
+        #define MC1p_en_t_m_def(a) double a = 0;
+        JN_MAP(MC1p_en_t_m_def, MC1p_en_t_m)
+        #define MC1p_en_t_m_sum(a) + a
+        double sum() const { return 0 JN_MAP(MC1p_en_t_m_sum, MC1p_en_t_m); }
     };
 
     using item_t = Atom;
@@ -30,64 +35,80 @@ public:
     using item_space_t = std::vector<space_val_t *>;
     using range_t = std::array<int, 4>;
 
-    std::deque<std::shared_ptr<range_t>> m_range;
+    std::vector<int> m_indices;
     space_t m_space;
     item_space_t m_item_space;
-    int m_box = 2;
-    std::vector<res_module_t> _res_module_types;
-    std::vector<loop *> _res_module;
-    int _mc_index;
-    std::deque<std::array<double, 3>> _moved_atoms;
+    int m_box = 3;
+    double m_box_size = 6;
+    std::deque<range_t *> m_range;
+    std::deque<Atom> _moved_atoms;
     range_t _moved_residues;
-    std::deque<int> _free_atoms;
     std::deque<std::shared_ptr<SSTree>> m_trees;
-    std::string m_init_pdb;
     Chain _pred_chain;
-    std::vector<std::string> _suppos_atoms {"C4*"};
 
-    double _mc_max_shift = 2;
+    #define JN_MC_PARS1 heat_steps, cool_steps, cycle_steps, write_steps, heat_rate, dec_rate, init_tempr
+    #define JN_MC_PARS2 bond_length_weight, bond_angle_weight, bond_angle_std, bond_dihedral_weight, bond_dihedral_std, \
+                        constraints_weight, crash_weight, vdw_weight, max_shift
 
-    double _mc_bond_length_weight = 10;
-    double _mc_bond_angle_weight = 5;
-    double _mc_bond_dihedral_weight = 3;
-    double _mc_constraints_weight = 1;
-    double _mc_crash_weight = 100;
-    double _mc_vdw_weight = 0.01;
+    #define JN_MCPSB_DEF_PAR(a) double PP_CAT(_mc_, a);
+    JN_MAP(JN_MCPSB_DEF_PAR, JN_MC_PARS2)
 
-    double _mc_bond_angle_std = 2.6;
-    double _mc_bond_dihedral_std = 0.27;
+    void read_par() {
+        Par temp_par(Env::lib() + "/RNA/pars/nuc3d/mc1p/mc.par");
+        #define JN_MCPSB_TEMPPAR_SET(a) temp_par.set(PP_CAT(_mc_, a), PP_STRING3(PP_CAT(mc_, a)));
+        JN_MAP(JN_MCPSB_TEMPPAR_SET, JN_MC_PARS2)
+    }
 
     MC1p(const Par &par) : JobPredict3D(par) {
-        par.set(m_init_pdb, "pdb");
-        _pred_chain = residues_from_file(m_init_pdb);
-        Debug::println("# Set residue module types");
-        set_res_module_types();
+        std::cout << "# Read parameters" << std::endl;
+        read_par();
 
-        Debug::println("# Set free atoms");
-        if (par.has("free_atoms")) {
-            set_free_atoms(par["free_atoms"]);
-        } else {
-            for (int i = 0; i < _seq.size(); i++) {
-                _free_atoms.push_back(i);
-            }
+        std::cout << "# Set parameters" << std::endl;
+        #define JN_MCPSB_PAR_SET(a) par.set(PP_CAT(_mc_, a), PP_STRING3(PP_CAT(mc_, a)));
+        JN_MAP(JN_MCPSB_PAR_SET, JN_MC_PARS1, JN_MC_PARS2)
+
+        std::cout << "# Print parameters" << std::endl;
+        print_parameters();
+
+        std::cout << "# Read initial structure" << std::endl;
+        _pred_chain = residues_from_file(par["pdb"][0]);
+
+        std::cout << "# Set indices" << std::endl;
+        static std::map<char, int> m {{'A', 0}, {'U', 1}, {'G', 2}, {'C', 3}};
+        m_indices.resize(_seq.size());
+        for (int i = 0; i < _seq.size(); i++) {
+            m_indices[i] = m[_seq[i]];
         }
 
-        Debug::println("# Set MC steps");
-        par.set(_mc_heat_steps, "mc_heat_steps");
-        par.set(_mc_cool_steps, "mc_cool_steps");
-        par.set(_mc_cycle_steps, "mc_cycle_steps");
-        par.set(_mc_write_steps, "mc_write_steps");
+        std::cout << "# Set 2D trees" << std::endl;
+        set_trees();
 
-        std::cout << "# Set MC energy weights." << std::endl;
-        par.set(_mc_bond_length_weight, "mc_bond_length_weight");
-        par.set(_mc_bond_angle_weight, "mc_bond_angle_weight");
-        par.set(_mc_bond_angle_std, "mc_bond_angle_std");
-        par.set(_mc_bond_dihedral_weight, "mc_bond_dihedral_weight");
-        par.set(_mc_bond_dihedral_std, "mc_bond_dihedral_std");
-        par.set(_mc_constraints_weight, "mc_constraints_weight");
-        par.set(_mc_crash_weight, "mc_crash_weight");
-        par.set(_mc_max_shift, "mc_max_shift");
+        std::cout << "# Set ranges" << std::endl;
+        set_ranges();
 
+        std::cout << "# Print ranges" << std::endl;
+        print_ranges();
+
+    }
+
+    ~MC1p() {
+        for (auto && r : m_range) {
+            delete r;
+        }
+    }
+
+    void print_ranges() {
+        for (auto && range : m_range) {
+            for (auto && i : *range) {
+                std::cout << i << ' ';
+            }
+            std::cout << std::endl;
+        }
+    }
+
+    void print_parameters() {
+        #define JN_MCPSB_TEMP(a) std::cout << PP_STRING3(PP_CAT(mc_, a)) << ' ' << PP_CAT(_mc_, a) << std::endl;
+        JN_MAP(JN_MCPSB_TEMP, JN_MC_PARS1, JN_MC_PARS2)
     }
 
     template<typename T>
@@ -104,16 +125,17 @@ public:
         return ss;
     }
 
-    void set_free_atoms(const Par::val_t &par) {
-        std::vector<std::string> v;
-        for (auto && s : par) {
-            tokenize(s, v, "-");
-            if (v.size() == 1) {
-                _free_atoms.push_back(std::stoi(v[0]) - 1);
-            } else if (v.size() == 2) {
-                for (int i = std::stoi(v[0]) - 1; i <= std::stoi(v[1]) - 1; i++) {
-                    _free_atoms.push_back(i);
-                }
+    void set_trees() {
+        m_trees.push_back(std::make_shared<SSTree>());
+        m_trees.back()->make(_seq, _ss, 2);
+        auto & keys = NucSS::instance().paired_keys;
+        for (auto it = keys.begin()+1; it != keys.end(); it++) {
+            auto ss = partial_ss(_ss, *it);
+            if (std::any_of(ss.begin(), ss.end(), [](auto &&c){return c != '.';})) {
+                m_trees.push_back(std::make_shared<SSTree>());
+                m_trees.back()->make(_seq, ss, 1);
+            } else {
+                break;
             }
         }
     }
@@ -130,36 +152,58 @@ public:
             }
         };
 
-        auto & keys = NucSS::instance().paired_keys;
-        for (auto it = keys.begin()+1; it != keys.end(); it++) {
-            auto ss = partial_ss(_ss, *it);
-            if (std::any_of(ss.begin(), ss.end(), [](auto &&c){return c != '.';})) {
-                SSTree ss_tree; 
-                ss_tree.make(_seq, ss);
-                LOOP_TRAVERSE(ss_tree.head(), 
-                    if (L->has_helix()) {
-                        set_pseudo_knots_helix(L->s);
-                    }
-                );
-            } else {
-                break;
+        auto it = m_trees.begin();
+        LOOP_TRAVERSE((*it)->head(), 
+            if (L->has_helix() && L->s.len() == 1) {
+                set_pseudo_knots_helix(L->s);
             }
+        );
+        for (it = m_trees.begin() + 1; it != m_trees.end(); it++) {
+            LOOP_TRAVERSE((*it)->head(), 
+                if (L->has_helix()) {
+                    set_pseudo_knots_helix(L->s);
+                }
+            );
         }
     }
 
-    void set_res_module_types() {
-//        _res_module_types.resize(_seq.size(), RES_LOOP);
-//        _res_module.resize(_seq.size(), NULL);
-//        for (int i = 0; i < _seq.size(); i++) {
-//            m_range[i] = std::make_shared<range_t>({i, i, i, i});
-//        }
+    auto make_range(int a, int b, int c,  int d) {
+//        std::shared_ptr<range_t> p = std::make_shared<range_t>();
+        range_t *p = new range_t;
+        (*p) = {a, b, c, d};
+        return p;
+    }
+
+    template<typename T>
+    auto make_hp_range(T &&l) {
+        return make_range(l->s.head->res1.num - 1, l->s.head->res2.num - 1, l->s.head->res1.num - 1, l->s.head->res2.num - 1 );
+    }
+
+    template<typename T>
+    auto make_il_range(T &&l) {
+        return make_range(l->s.head->res1.num - 1, l->son->s.head->res1.num - 2, l->son->s.head->res2.num, l->s.head->res2.num - 1 );
+    }
+
+    template<typename T>
+    auto make_helix_range(T &&h) {
+        auto p = make_range(h.head->res1.num - 1, 0, 0, h.head->res2.num - 1);
+        HELIX_EACH(h,
+            if (BP->next == NULL) {
+                (*p)[1] = BP->res1.num - 1;
+                (*p)[2] = BP->res2.num - 1;
+            }
+        );
+        return p;
+    }
+
+    void set_ranges() {
         std::vector<int> v(_seq.size(), 0);
 
-        auto is_hairpin = [&](loop *l) {
-            if (l->has_loop() && l->has_helix()) {
+        auto is_hp = [&](loop *l) {
+            if (l->has_loop() && l->has_helix() && l->num_sons() == 0) {
                 int flag = 0, n = 0;
                 LOOP_EACH(l,
-                    char c = _ss[RES->num - 1];
+                    char &c = _ss[RES->num - 1];
                     if (c != '.'  && c != '(' && c != ')') {
                         flag = 1;
                         break;
@@ -167,7 +211,6 @@ public:
                         n++;
                     }
                 );
-//                std::cout << flag << ' ' << n << std::endl;
                 if (flag == 0 && n <= 14) {
                     return true;
                 } else {
@@ -178,60 +221,48 @@ public:
             }
         };
 
-        auto make_range = [](int a, int b, int c,  int d) {
-            std::shared_ptr<range_t> p = std::make_shared<range_t>();
-            (*p) = {a, b, c, d};
-            return p;
-        };
-
-        auto make_hairpin_range = [&](auto &&l) {
-            return make_range(l->s.head->res1.num - 1, l->s.head->res2.num - 1, l->s.head->res1.num - 1, l->s.head->res2.num - 1 );
-        };
-
-        auto make_helix_range = [&](auto &&h) {
-            auto p = make_range(h.head->res1.num - 1, 0, 0, h.head->res2.num - 1);
-            HELIX_EACH(h,
-                if (BP->next == NULL) {
-                    (*p)[1] = BP->res1.num - 1;
-                    (*p)[2] = BP->res2.num - 1;
+        auto is_il = [&](loop *l) {
+            if (l->has_loop() && l->has_helix() && l->num_sons() == 1) {
+                int flag = 0, n = 0;
+                LOOP_EACH(l,
+                    char &c = _ss[RES->num - 1];
+                    if (c != '.'  && c != '(' && c != ')') {
+                        flag = 1;
+                        break;
+                    } else {
+                        n++;
+                    }
+                );
+                if (flag == 0 && n <= 20) {
+                    return true;
+                } else {
+                    return false;
                 }
-            );
-            return p;
+            } else {
+                return false;
+            }
+        };
+
+        auto update_range = [&](auto &&range) {
+            for (int i = range->at(0); i <= range->at(1); i++) { v[i] = 1; }
+            for (int i = range->at(2); i <= range->at(3); i++) { v[i] = 1; }
+            m_range.push_back(range);
         };
 
         auto set_res_module_types_ss = [&](loop *l, bool is_first){
             LOOP_TRAVERSE(l,
-                if (!m_sample_hairpin && is_first && is_hairpin(L)) {
-                    m_range.push_back(make_hairpin_range(L));
-                    for (int i = L->s.head->res1.num - 1; i <= L->s.head->res2.num - 1; i++) {
-//                        _res_module_types[i] = RES_HAIRPIN;
-//                        _res_module[i] = L;
-                        v[i] = 1;
-                    }
+                if (!m_sample_hairpin && is_first && is_hp(L)) {
+                    update_range(make_hp_range(L));
+                } else if (is_first && is_il(L)) {
+                    update_range(make_il_range(L));
                 } else if (L->has_helix()) {
-                    m_range.push_back(make_helix_range(L->s));
-                    HELIX_EACH(L->s,
-//                        _res_module_types[BP->res1.num - 1] = RES_HELIX;
-//                        _res_module[BP->res1.num - 1] = L;
-                        v[BP->res1.num - 1] = 1;
-//                        _res_module_types[BP->res2.num - 1] = RES_HELIX;
-//                        _res_module[BP->res2.num - 1] = L;
-                        v[BP->res2.num - 1] = 1;
-                    );
+                    update_range(make_helix_range(L->s));
                 }
             );
         };
 
-        auto & keys = NucSS::instance().paired_keys;
-        for (auto it = keys.begin(); it != keys.end(); it++) {
-            auto ss = partial_ss(_ss, *it);
-            if (std::any_of(ss.begin(), ss.end(), [](auto &&c){return c != '.';})) {
-                m_trees.push_back(std::make_shared<SSTree>());
-                m_trees.back()->make(_seq, ss);
-                set_res_module_types_ss(m_trees.back()->head(), it == keys.begin());
-            } else {
-                break;
-            }
+        for (auto it = m_trees.begin(); it != m_trees.end(); it++) {
+            set_res_module_types_ss((*it)->head(), it == m_trees.begin());
         }
 
         for (int i = 0; i < _seq.size(); i++) {
@@ -239,46 +270,91 @@ public:
                 m_range.push_back(make_range(i, i, i, i));
             }
         }
+
+        merge_ranges();
+    }
+
+    void merge_ranges() {
+        std::cout << "# Merge ranges..." << std::endl;
+        while (true) {
+            int flag = 0;
+            for (auto && r1 : m_range) {
+                for (auto && r2 : m_range) {
+                    auto &range1 = *r1;
+                    auto &range2 = *r2;
+                    if (r1 != r2) {
+                        if (range1[1] < range1[2]) {
+                            if (range1[1] + 1 == range2[0] && range2[3] + 1 == range1[2]) {
+                                if (range2[1] < range2[2]) {
+                                    m_range.push_back(make_range(range1[0], range2[1], range2[2], range1[3]));
+                                } else {
+                                    m_range.push_back(make_range(range1[0], range1[3], range1[0], range1[3]));
+                                }
+                                delete r1;
+                                delete r2;
+                                m_range.erase(std::remove_if(m_range.begin(), m_range.end(), [&](auto && t){return t == r1 || t == r2;}), m_range.end());
+                                flag++;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (flag > 0) {
+                    break;
+                }
+            }
+            if (flag == 0) {
+                break;
+            }
+        }
     }
 
     void mc_write() {
         static int n = 1;
         std::ostringstream stream;
-        stream << _name << ".mc." << m_seed << ".pdb";
+        stream << _name << ".mc1p." << m_seed << ".traj.pdb";
         std::string name = stream.str();
+
+        double old_len; double old_ang; double old_dih; double old_cons; double old_crash;
         if (n == 1) {
             file::clear_file(name);
         }
         append_chain_to_file(_pred_chain, name, n);
         en_t e;
         mc_total_energy(e);
-        std::cout << _mc_step + 1 << ": " <<  e.sum() << "(total) " << e.crash << "(crash) " << e.vdw << "(vdw) " << e.len << "(bond) " << e.ang << "(ang) " << e.dih << "(dih) " << e.cons << "(c) "<< _mc_tempr << "(tempr) " << _mc_local_succ_rate << "(rate)" << std::endl;
+        #define MC1p_print(a) << e.a << PP_STRING3((a)) << ' '
+        std::cout << _mc_step + 1 << ": " <<  e.sum() << "(total) "
+                  JN_MAP(MC1p_print, MC1p_en_t_m) << _mc_tempr << "(tempr) " << _mc_local_succ_rate << "(rate)" << std::endl;
         n++;
     }
 
     void mc_sample() {
         backup();
-        int beg = _moved_residues[0];
-        int end = _moved_residues[3];
-        if (beg == end || rand() < 0.5) {
+        if (rand() < 0.5) {
             // translate
             int index = int(rand() * 3);
             double dist = (rand() - 0.5) * 2 * _mc_max_shift;
             for (int i = 0; i < _seq.size(); i++) {
                 if (is_selected(i)) {
-                    _pred_chain[i][0][index] += dist;
-                    space_update_item(i);
+                    for (auto && atom : _pred_chain[i]) {
+                        atom[index] += dist;
+                        space_update_item(i);
+                    }
                 }
             }
         } else {
             // rotate
+            int beg = _moved_residues[0];
+            int end = _moved_residues[3];
             int index = int(rand() * 3);
             double dih = (rand() - 0.5) * PI / 6;
             auto &&rot = geom::rot_mat(index, dih);
-            auto &&origin = center(_pred_chain[beg][0], _pred_chain[end][0]);
+            auto &&origin = center_residues(_pred_chain[beg], _pred_chain[end]);
             for (int i = 0; i < _seq.size(); i++) {
                 if (is_selected(i)) {
-                    geom::rotate(_pred_chain[i][0], origin, rot);
+                    for (auto && atom : _pred_chain[i]) {
+                        geom::rotate(atom, origin, rot);
+                    }
                     space_update_item(i);
                 }
             }
@@ -288,12 +364,10 @@ public:
     void mc_back() {
         for (int i = 0; i < _seq.size(); i++) {
             if (is_selected(i)) {
-                item_t &atom = item(i);
-//                for (auto && atom : _pred_chain[i]) {
-                    auto &arr = _moved_atoms.front();
-                    atom[0] = arr[0]; atom[1] = arr[1]; atom[2] = arr[2];
+                for (auto && atom : _pred_chain[i]) {
+                    atom = _moved_atoms.front();
                     _moved_atoms.pop_front();
-//                }
+                }
                 space_update_item(i);
             }
         }
@@ -304,14 +378,23 @@ public:
         for (int i = 0; i < _seq.size(); i++) {
             if (is_selected(i)) {
                 for (auto && atom : _pred_chain[i]) {
-                    _moved_atoms.push_back({atom[0], atom[1], atom[2]});
+                    _moved_atoms.push_back(atom);
                 }
             }
         }
     }
 
+    void init_space() {
+        m_item_space.resize(_seq.size());
+        for (int i = 0; i < _seq.size(); i++) {
+            space_val_t &s = space_val(i);
+            s.push_back(i);
+            m_item_space[i] = &s;
+        }
+    }
+
     int space_index(double n) const {
-        return (n+1000)/5;
+        return (n+1000)/m_box_size;
     }
 
     item_t &item(int i) {
@@ -325,7 +408,6 @@ public:
 
     void space_update_item(int i) {
         space_val_t &n = space_val(i);
-//        item_t &a = item(i);
         space_val_t &o = *(m_item_space[i]);
         if (&o != &n) {
             o.erase(std::find(o.begin(), o.end(), i));
@@ -335,30 +417,36 @@ public:
     }
 
     void run() {
-        Debug::println("# Set pseudo-knots");
+        display_start_information();
+
+        std::cout << "# Set pseudo-knots" << std::endl;
         set_pseudo_knots();
-        Debug::print("# Coarse Grained\n");
-        _pred_chain = _pred_chain.coarse_grained(_suppos_atoms);
-        std::cout << "# Init space..." << std::endl;
-        m_item_space.resize(_seq.size());
-        for (int i = 0; i < _seq.size(); i++) {
-            space_val_t &s = space_val(i);
-//            item_t &a = item(i);
-            s.push_back(i);
-            m_item_space[i] = &s;
-        }
-        std::cout << "# MC Start..." << std::endl;
-        mc();
-        Debug::println("# Print Constraints...");
+
+        std::cout << "# Coarse Grained" << std::endl;
+        _pred_chain = CG1p::chain(_pred_chain);
+
+        std::cout << "# Init space" << std::endl;
+        init_space();
+
+        std::cout << "# MC..." << std::endl;
+        mc_heat();
+        mc_cool();
+
+        std::cout << "# Print Constraints..." << std::endl;
         print_constraints();
-        Debug::println("# Coarsed Grained To All Atom...");
+
+        std::cout << "# Coarsed Grained To All Atom..." << std::endl;
         coarse_grained_to_all_atom();
+
         std::cout << "# Transform." << std::endl;
         this->transform();
+
         std::cout << "# Writing to file." << std::endl;
         std::ostringstream stream;
-        stream << _name << ".sample." << m_seed << ".pdb";
+        stream << _name << ".mc1p." << m_seed << ".pdb";
         residues_to_file(_pred_chain, stream.str());
+
+        display_end_information();
     }
 
     void transform() {
@@ -368,21 +456,18 @@ public:
     }
 
     void coarse_grained_to_all_atom() {
-        int num_atoms = _seq.size() * _suppos_atoms.size();
+        int num_atoms = _seq.size();
         Eigen::MatrixXd c(num_atoms, 3);
         int num_atom = 0;
         for (int i = 0; i < _pred_chain.size(); i++) {
-            _pred_chain[i].sort();
             for (auto && atom : _pred_chain[i]) {
-                if (std::find(_suppos_atoms.begin(), _suppos_atoms.end(), atom.name) != _suppos_atoms.end()) {
-                    for (int j = 0; j < 3; j++) {
-                        c(num_atom, j) = atom[j];
-                    }
-                    num_atom++;
+                for (int j = 0; j < 3; j++) {
+                    c(num_atom, j) = atom[j];
                 }
+                num_atom++;
             }
         }
-        _pred_chain = c2a(c, 0, num_atoms-1);
+        _pred_chain = CG1p::aa(c, 0, num_atoms-1);
     }
 
     void print_constraints() {
@@ -394,16 +479,6 @@ public:
             d = geom::distance(_pred_chain[i][0], _pred_chain[j][0]);
             std::cout << i << ' ' << j << " value:" << ct.value << " weight:" << ct.weight << " dist:" << d << std::endl;
         }
-    }
-
-    virtual void mc_select() {
-        int len = m_range.size();
-        _moved_residues = *(m_range[int(rand() * len)]);
-    }
-
-    bool is_selected(const int &i) const {
-        auto &p = _moved_residues;
-        return (i >= p[0] && i <= p[1]) || (i >= p[2] && i <= p[3]);
     }
 
     double mc_partial_energy() {
@@ -424,24 +499,12 @@ public:
         mc_total_energy_constraints(e);
     }
 
-//        double d; 
-//        for (int i = 0; i < _seq.size(); i++) { 
-//            for (int j = i + 2; j < _seq.size(); j++) { 
-//                cond { 
-//                    d = geom::distance(_pred_chain[i][0], _pred_chain[j][0]); 
-//                    if (d < 5) { 
-//                        e.crash += _mc_crash_weight * square(d - 5); 
-//                    } 
-//                } 
-//            } 
-//        } 
-
-#define MC_ENERGY_CRASH(name, cond) \
+#define MC_ENERGY_CRASH(name, cond1, cond2) \
     void mc_##name##_energy_crash(en_t &e) { \
-        double d; \
         int a, b, c; \
+        double d; \
         for (int n = 0; n < _seq.size(); n++) { \
-            cond { \
+            cond1 { \
                 for (int i = -m_box; i <= m_box; i++) { \
                     for (int j = -m_box; j <= m_box; j++) { \
                         for (int k = -m_box; k <= m_box; k++) { \
@@ -451,12 +514,10 @@ public:
                             c = space_index(it[2])+k; \
                             space_val_t &s = m_space[a][b][c]; \
                             for (auto && t : s) { \
-                                if (n < t) { \
-                                    d = geom::distance(item(t), it); \
-                                    if (d < 5) { \
-                                        e.crash += _mc_crash_weight * square(d - 5); \
-                                    } else { \
-                                        e.vdw += -1 + _mc_vdw_weight * square(d - 10); \
+                                cond2 { \
+                                    d = geom::distance(_pred_chain[n][0], _pred_chain[t][0]); \
+                                    if (d < 8) { \
+                                        e.crash += _mc_crash_weight * square(d - 8); \
                                     } \
                                 } \
                             } \
@@ -465,31 +526,31 @@ public:
                 } \
             } \
         } \
-    } 
-//MC_ENERGY_CRASH(partial, if (is_selected(i) ^ is_selected(j)))
-MC_ENERGY_CRASH(partial, if (is_selected(n)))
-MC_ENERGY_CRASH(total, )
+    }
 
+    MC_ENERGY_CRASH(partial, if (is_selected(n)), if (!(is_selected(t)) && (t - n != 1 && n - t != 1)))
+    MC_ENERGY_CRASH(total, , if (t - n > 1))
 
 #define MC_ENERGY_BOND(name, cond) \
     void mc_##name##_energy_bond(en_t &e) { \
-        double d, d1, d2, d3; \
-        for (int i = 0; i < _seq.size() - 1; i++) { \
-            cond { \
-                d = geom::distance(_pred_chain[i][0], _pred_chain[i+1][0]); \
+        double d; \
+        Mat arr = Mat::Zero(3, 3); \
+        for (int n = 0; n < _seq.size() - 1; n++) { \
+             cond { \
+                d = geom::distance(_pred_chain[n][0], _pred_chain[n+1][0]); \
                 e.len += _mc_bond_length_weight * square(d - 6.1); \
-            } \
+             } \
         } \
-    } 
-MC_ENERGY_BOND(partial, if (is_selected(i) ^ is_selected(i+1)));
-MC_ENERGY_BOND(total,);
+    }
+    MC_ENERGY_BOND(partial, if (is_selected(n) ^ is_selected(n+1)))
+    MC_ENERGY_BOND(total, )
 
 #define MC_ENERGY_ANGLE(name, cond) \
     void mc_##name##_energy_angle(en_t &e) { \
         double d; \
         int len = _seq.size(); \
         for (int i = 0; i < len - 2; i++) { \
-            cond { \
+             cond { \
                 d = geom::angle(_pred_chain[i][0],  \
                                 _pred_chain[i+1][0],  \
                                 _pred_chain[i+2][0]); \
@@ -497,15 +558,15 @@ MC_ENERGY_BOND(total,);
             } \
         } \
     }
-MC_ENERGY_ANGLE(partial, if ((is_selected(i) + is_selected(i+1) + is_selected(i+2)) % 3 != 0))
-MC_ENERGY_ANGLE(total, )
+    MC_ENERGY_ANGLE(partial, if ((is_selected(i) + is_selected(i+1) + is_selected(i+2)) % 3 != 0))
+    MC_ENERGY_ANGLE(total, )
 
 #define MC_ENERGY_DIHEDRAL(name, cond) \
     void mc_##name##_energy_dihedral(en_t &e) { \
         double d; \
         int len = _seq.size(); \
         for (int i = 0; i < len - 3; i++) { \
-            cond {\
+            cond { \
                 d = geom::dihedral(_pred_chain[i][0],  \
                                    _pred_chain[i+1][0],  \
                                    _pred_chain[i+2][0],  \
@@ -513,12 +574,11 @@ MC_ENERGY_ANGLE(total, )
                 d = d - _mc_bond_dihedral_std; \
                 d = 3.3 - 4 * std::cos(d) + std::cos(2 * d) - 0.44 * std::cos(3 * d); \
                 e.dih += _mc_bond_dihedral_weight * d; \
-            }\
+            } \
         } \
     }
-MC_ENERGY_DIHEDRAL(partial, if ((is_selected(i) + is_selected(i+1) + is_selected(i+2) + is_selected(i+3)) % 4 != 0))
-MC_ENERGY_DIHEDRAL(total, )
-
+    MC_ENERGY_DIHEDRAL(partial, if ((is_selected(i) + is_selected(i+1) + is_selected(i+2) + is_selected(i+3)) % 4 != 0))
+    MC_ENERGY_DIHEDRAL(total, )
 
 #define MC_ENERGY_CONSTRAINTS(name, cond) \
     void mc_##name##_energy_constraints(en_t &e) { \
@@ -527,20 +587,41 @@ MC_ENERGY_DIHEDRAL(total, )
         for (auto && row : _constraints.distances) { \
             cond { \
                 d = geom::distance(_pred_chain[row.key[0]][0], _pred_chain[row.key[1]][0]); \
-                if (d > row.value + 3 || d < row.value - 3) { \
-                    e.cons += _mc_constraints_weight * row.weight * 9; \
+                if (d < 17) { \
+                    e.cons += _mc_constraints_weight * (-100); \
                 } else { \
-                    e.cons += _mc_constraints_weight * row.weight * square(d - row.value); \
+                    e.cons += _mc_constraints_weight * 0.1 * row.weight * square(d - 17); \
                 } \
             } \
         } \
     }
-MC_ENERGY_CONSTRAINTS(partial, if (is_selected(row.key[0]) ^ is_selected(row.key[1])))
-MC_ENERGY_CONSTRAINTS(total,)
+    MC_ENERGY_CONSTRAINTS(partial,if (is_selected(row.key[0]) ^ is_selected(row.key[1])))
+    MC_ENERGY_CONSTRAINTS(total,)
 
     template<typename T, typename U>
-    std::array<double, 3> center(T &&r1, U &&r2) {
-        return {(r1[0]+r2[0])/2.0, (r1[1]+r2[1])/2.0, (r1[2]+r2[2])/2.0};
+    std::array<double, 3> center_residues(T &&r1, U &&r2) {
+        std::array<double, 3> origin {0, 0, 0};
+        int n_atom = 0;
+        for (auto && atom : r1) {
+            for (int i = 0; i < 3; i++) origin[i] += atom[i];
+            n_atom++;
+        }
+        for (auto && atom : r2) {
+            for (int i = 0; i < 3; i++) origin[i] += atom[i];
+            n_atom++;
+        }
+        for (int i = 0; i < 3; i++) origin[i] /= n_atom;
+        return origin;
+    }
+
+    virtual void mc_select() {
+        int len = m_range.size();
+        _moved_residues = *(m_range[int(rand() * len)]);
+    }
+
+    virtual bool is_selected(const int &i) const {
+        auto &p = _moved_residues;
+        return (i >= p[0] && i <= p[1]) || (i >= p[2] && i <= p[3]);
     }
 
 };

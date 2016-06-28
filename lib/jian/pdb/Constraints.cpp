@@ -72,6 +72,7 @@ void Constraints::read_distances_file(const std::string &f) {
     if (! f.empty()) {
         EACH_SPLIT_LINE(f.c_str(), " ", 
             if (F.size() == 3) add_distance(make_distance(JN_INT(F[0])-1, JN_INT(F[1])-1, JN_DBL(F[2])));
+            else if (F.size() == 2) add_distance(make_distance(JN_INT(F[0])-1, JN_INT(F[1])-1, 10.0));
         );
     }
 }
@@ -80,6 +81,7 @@ Constraints read_constraints(const std::string &f) {
     Constraints c; if (f == "") return c;
     EACH_SPLIT_LINE(f.c_str(), " ", 
         if (F.size() == 3) c.add_distance(make_distance(JN_INT(F[0])-1, JN_INT(F[1])-1, JN_DBL(F[2])));
+        else if (F.size() == 2) c.add_distance(make_distance(JN_INT(F[0])-1, JN_INT(F[1])-1, 10.0));
     );
     return c;
 }

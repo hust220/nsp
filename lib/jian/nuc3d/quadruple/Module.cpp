@@ -3,6 +3,7 @@
 #include "../../utils/Factory.hpp"
 
 namespace jian {
+namespace nuc3d {
 namespace quadruple {
 
 //int Module::max_len() const {
@@ -32,6 +33,7 @@ void Module::set_indices(int n, int beg, int end) {
 }
 
 } // namespace quadruple
+}
 } // namespace jian
 
 

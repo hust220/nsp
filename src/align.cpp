@@ -41,8 +41,8 @@ static Eigen::MatrixXd * model_to_mat_aa(const Model &model) {
 }
 
 REGISTER_NSP_COMPONENT(align) {
-    Model m1(par["pdb1"][0]);
-    Model m2(par["pdb2"][0]);
+    Model m1(par["pdb"][0]);
+    Model m2(par["pdb"][1]);
     Eigen::MatrixXd *mat1 = model_to_mat_aa(m1);
     Eigen::MatrixXd *mat2 = model_to_mat_aa(m2);
     auto sp = geom::suppos(*mat1, *mat2);

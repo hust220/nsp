@@ -13,7 +13,7 @@ public:
     std::string name = "X";
     std::string type = "unknown";
 
-    Residue() {}
+//    Residue() {}
     static auto get_sort_keys();
     void sort();
     std::string format_name(const std::string &s);

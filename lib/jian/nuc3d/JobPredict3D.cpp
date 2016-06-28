@@ -11,6 +11,7 @@ JobPredict3D::JobPredict3D() : _lib(Env::lib()) {}
 
 JobPredict3D::JobPredict3D(const Par &pars) : _lib(Env::lib()) {
     _par = &pars;
+    m_cmd = (*_par)[1];
     pars.set(_seq, "seq", "sequence");
     boost::to_upper(_seq);
     pars.set(_ss, "ss", "secondary_structure");
@@ -56,24 +57,23 @@ void JobPredict3D::set_constraints() {
 
 void JobPredict3D::display_start_information() {
     _start_time = std::time(nullptr);
-    Debug::print("=========================================================\n",
-               "New Job: ", _name, '\n',
-               "Time: ", std::asctime(std::localtime(&(_start_time))), '\n',
-               "Sequence: ", _seq, '\n',
-               "2D Structure: ", _ss, '\n',
-               "Molecular Type: ", _type, '\n',
-               "Number: ", _num, '\n',
-               "Number of Sampling: ", _num_sampling, '\n',
-               "Method: ", _method, '\n',
-               "----------------------------------------\n");
+    std::cout << "=========================================================\n"
+              << "New Job: " << _name << '\n'
+              << "Time: " << std::asctime(std::localtime(&(_start_time))) << '\n'
+              << "Sequence: " << _seq << '\n'
+              << "2D Structure: " << _ss << '\n'
+              << "Molecular Type: " << _type << '\n'
+              << "Number: " << _num << '\n'
+              << "Method: " << _method << '\n'
+              << "----------------------------------------\n";
 }
 
 void JobPredict3D::display_end_information() {
     _end_time = std::time(nullptr);
-    Debug::print("----------------------------------------\n",
-               "Finish Time: ", std::asctime(std::localtime(&(_end_time))), '\n',
-               "Time elapsed: ", _end_time - _start_time, "s\n",
-               "=========================================================\n\n");
+    std::cout << "----------------------------------------\n"
+              << "Finish Time: " << std::asctime(std::localtime(&(_end_time))) << '\n'
+              << "Time elapsed: " << _end_time - _start_time << "s\n"
+              << "=========================================================\n\n";
 }
 
 } // namespace jian

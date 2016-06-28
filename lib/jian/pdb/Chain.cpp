@@ -9,8 +9,6 @@
 
 namespace jian {
 
-Chain::Chain() {}
-
 std::ostream &operator <<(std::ostream &output, const Chain &chain) {
     int atom_num = 1;
     int residue_num = 1;
@@ -20,7 +18,7 @@ std::ostream &operator <<(std::ostream &output, const Chain &chain) {
             std::string atom_name(atom.name);
             std::replace(atom_name.begin(), atom_name.end(), '*', '\'');
 //            std::string atom_name = boost::replace_all_copy(atom.name, "*", "'");
-            if (residue_num == 1 and std::set<std::string>{"P", "O1P", "O2P"}.count(atom_name)) continue;
+//            if (residue_num == 1 and std::set<std::string>{"P", "O1P", "O2P"}.count(atom_name)) continue;
             output << boost::format("ATOM%7i  %-4s%3s%2s%4i%12.3lf%8.3lf%8.3lf%6.2f%6.2f%12c  \n") % 
                                     atom_num % atom_name % residue.name % chain.name % residue_num % 
                                     atom[0] % atom[1] % atom[2] % 1.00 % 0.00 % atom_name[0];
@@ -63,7 +61,7 @@ Chain residues_from_file(const std::string &f) {
 }
 
 void residues_to_file(const Chain &chain, const std::string &file_name) {
-    Debug::println("Reidues To File ", file_name);
+//    Debug::println("Reidues To File ", file_name);
     std::ofstream output(file_name.c_str());
     int atom_num = 1;
     int residue_num = 1;
@@ -73,7 +71,7 @@ void residues_to_file(const Chain &chain, const std::string &file_name) {
             std::string atom_name(atom.name);
             std::replace(atom_name.begin(), atom_name.end(), '*', '\'');
 //            std::string atom_name = boost::replace_all_copy(atom.name, "*", "'");
-            if (residue_num == 1 and std::set<std::string>{"P", "O1P", "O2P"}.count(atom_name)) continue;
+//            if (residue_num == 1 and std::set<std::string>{"P", "O1P", "O2P"}.count(atom_name)) continue;
             output << boost::format("ATOM%7i  %-4s%3s%2s%4i%12.3lf%8.3lf%8.3lf%6.2f%6.2f%12c  \n") % 
                                     atom_num % atom_name % residue.name % "X" % residue_num % 
                                     atom[0] % atom[1] % atom[2] % 1.00 % 0.00 % atom_name[0];
@@ -83,7 +81,7 @@ void residues_to_file(const Chain &chain, const std::string &file_name) {
     }
     output << "TER" << std::endl;
     output.close();
-    Debug::println("Reidues To File Done.");
+//    Debug::println("Reidues To File Done.");
 }
 
 void append_chain_to_file(const Chain &chain, const std::string &file_name, int n) {
@@ -108,6 +106,16 @@ void append_chain_to_file(const Chain &chain, const std::string &file_name, int 
     output << "TER" << std::endl;
     output << "ENDMDL" << std::endl;
     output.close();
+}
+
+int num_atoms(const Chain &chain) {
+    int n = 0;
+    for (auto && res : chain) {
+        for (auto && atom : res) {
+            n++;
+        }
+    }
+    return n;
 }
 
 } // namespace jian

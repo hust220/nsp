@@ -4,6 +4,7 @@
 #include "../../matrix.hpp"
 
 namespace jian {
+namespace nuc3d {
 namespace triple {
 
 using Frag = std::deque<int>;
@@ -23,9 +24,10 @@ public:
     virtual std::string type() const = 0;
 };
 
-#define REGISTER_TRIPLE_MODULE_FACTORY(name, Type) REGISTER_FACTORY(jian::triple::Module::cons_t, name, Type)
+#define REGISTER_TRIPLE_MODULE_FACTORY(name, Type) REGISTER_FACTORY(jian::nuc3d::triple::Module::cons_t, name, Type)
 
 } // namespace triple
+} // namespace nuc3d
 } // namespace jian
 
 

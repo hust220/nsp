@@ -2,6 +2,7 @@
 #include "../../utils/Factory.hpp"
 
 namespace jian {
+namespace nuc3d {
 namespace triple {
 
 REGISTER_TRIPLE_MODULE_FACTORY("helix", Helix);
@@ -32,6 +33,7 @@ std::string Helix::type() const {
 }
 
 } // namespace triple
+}
 } // namespace jian
 
 

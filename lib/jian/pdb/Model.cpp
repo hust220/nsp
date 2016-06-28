@@ -29,11 +29,13 @@ Model::Model(const std::string &f) {
             if (line->res_num != old_line->res_num || line->res_name != old_line->res_name || line->res_flag != old_line->res_flag) {
                 residue.name = old_line->res_name;
                 residue.num = old_line->res_num;
-                chain.push_back(std::move(residue));
+                chain.push_back(residue);
+                residue.clear();
             }
             if (line->chain_name != old_line->chain_name) {
                 chain.name = old_line->chain_name;
-                this->push_back(std::move(chain));
+                this->push_back(chain);
+                chain.clear();
             }
             delete old_line;
         }
@@ -43,9 +45,11 @@ Model::Model(const std::string &f) {
     if (old_line != NULL) {
         residue.name = old_line->res_name;
         residue.num = old_line->res_num;
-        chain.push_back(std::move(residue));
+        chain.push_back(residue);
+        residue.clear();
         chain.name = old_line->chain_name;
-        this->push_back(std::move(chain));
+        this->push_back(chain);
+        chain.clear();
         delete old_line;
         delete parser;
     }

@@ -1,6 +1,7 @@
 #include "Module.hpp"
 
 namespace jian {
+namespace nuc3d {
 namespace triple {
 
 class TailHairpin : public Module {
@@ -10,6 +11,7 @@ public:
 };
 
 } // namespace triple
+}
 } // namespace jian
 
 

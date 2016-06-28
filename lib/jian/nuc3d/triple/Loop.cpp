@@ -2,6 +2,7 @@
 #include "../../utils/Factory.hpp"
 
 namespace jian {
+namespace nuc3d {
 namespace triple {
 
 REGISTER_TRIPLE_MODULE_FACTORY("loop", Loop);
@@ -20,12 +21,12 @@ Loop::Loop(const Tuple &t1, const Tuple &t2) {
         d_frags.push_back(std::move(frag));
     }
     d_max_len = std::accumulate(d_frags.begin(), d_frags.end(), 0, [](int n, auto &&frag){
-        return std::max(n, int(frag.size()));
+        return std::max(n, int(frag.size() - 2));
     });
     d_indices = std::make_unique<Mat>(d_max_len, 3);
     for (int i = 0; i < d_max_len; i++) for (int j = 0; j < 3; j++) (*d_indices)(i, j) = -1;
     for (int i = 0; i < 3; i++) {
-        set_indices(i, p[i].first, p[i].second);
+        set_indices(i, p[i].first + 1, p[i].second - 1);
     }
 }
 
@@ -34,6 +35,7 @@ std::string Loop::type() const {
 }
 
 } // namespace triple
+}
 } // namespace jian
 
 

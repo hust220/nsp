@@ -4,6 +4,7 @@
 #include "../../matrix.hpp"
 
 namespace jian {
+namespace nuc3d {
 namespace quadruple {
 
 using Frag = std::deque<int>;
@@ -20,11 +21,13 @@ public:
     std::unique_ptr<Mat> d_indices;
 
     void set_indices(int, int, int);
+    virtual std::string type() const = 0;
 };
 
-#define REGISTER_QUADRUPLE_MODULE_FACTORY(name, Type) REGISTER_FACTORY(jian::quadruple::Module::cons_t, name, Type)
+#define REGISTER_QUADRUPLE_MODULE_FACTORY(name, Type) REGISTER_FACTORY(jian::nuc3d::quadruple::Module::cons_t, name, Type)
 
 } // namespace quadruple
+}
 } // namespace jian
 
 

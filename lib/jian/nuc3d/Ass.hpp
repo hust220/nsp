@@ -100,19 +100,23 @@ public:
 
         predict_one();
         std::cout << "# Writing assembly structure." << std::endl;
-        stream << _name << ".assemble.pdb";
-        residues_to_file(_pred_chain, stream.str());
+        if (_par->has("pdb")) {
+            residues_to_file(_pred_chain, (*_par)["pdb"][0]);
+        } else {
+            stream << _name << ".assemble.pdb";
+            residues_to_file(_pred_chain, stream.str());
+        }
         if (m_sample) {
             n = 1;
             std::cout << "# Writing sampling structure " << n << std::endl;
             stream.str("");
-            stream << _name << ".ass." << n << ".pdb";
+            stream << _name << ".assemble." << n << ".pdb";
             residues_to_file(_pred_chain, stream.str());
             for (n = 2; n <= _num; n++) {
                 predict_one();
                 std::cout << "# Writing sampling structure " << n << std::endl;
                 stream.str("");
-                stream << _name << ".ass." << n << ".pdb";
+                stream << _name << ".assemble." << n << ".pdb";
                 residues_to_file(_pred_chain, stream.str());
             }
         }
@@ -164,16 +168,9 @@ public:
             LOOP_TRAVERSE(_ss_tree.head(),
                 if (L->has_loop()) {
                     if (_records[L].first.empty()) {
-    //                    if (_is_virtual[L]) {
-    //                        _templates[L].first = build_loop(L->seq(), NucSS::hinge_ss(L->ss()));
-    //                    } else {
-    //                        build_loop_dg.init(L->seq(), NucSS::lower_ss(L->ss())); 
-    //                        _templates[L].first = build_loop_dg();
-    //                    }
                         build_loop_dg.init(L->seq(), NucSS::lower_ss(L->ss())); 
                         _templates[L].first = build_loop_dg();
                     } else {
-    //                    _templates[L].first = load_pdb(_records[L].first[0], (_is_virtual[L] ? "hinge" : ""));    
                         _templates[L].first = load_pdb(_records[L].first[0]);    
                     }
                 }
@@ -182,13 +179,18 @@ public:
                 }
             );
         } else {
-            loop *l = select_loop();
-            if (_records[l].first.empty()) {
-                build_loop_dg.init(l->seq(), NucSS::lower_ss(l->ss())); 
-                _templates[l].first = build_loop_dg();
-            } else {
-                int n = int(rand() * _records[l].first.size());
-                _templates[l].first = load_pdb(_records[l].first[n]);    
+            loop *l;
+            for (auto && pair : _templates) {
+                l = pair.first;
+                if (l->has_loop()) {
+                    if (_records[l].first.empty()) {
+                        build_loop_dg.init(l->seq(), NucSS::lower_ss(l->ss())); 
+                        _templates[l].first = build_loop_dg();
+                    } else {
+                        int n = int(rand() * _records[l].first.size());
+                        _templates[l].first = load_pdb(_records[l].first[n]);    
+                    }
+                }
             }
         }
 
@@ -204,7 +206,7 @@ public:
     void assemble_templates(loop *l) {
         _pred_chain.resize(_seq.size());
         LOOP_TRAVERSE(l,
-L->print();
+//L->print();
             if (L->has_loop()) {
 //std::cout << num_residues(_templates[L].first) << std::endl;
                 auto &temp_residues = _templates[L].first;
@@ -450,7 +452,15 @@ L->print();
                     if (_is_test) continue; else templ_rec._score += 2;
                 }
                 for (int i = 0; i < templ_rec._seq.size(); i++) {
-                    if (seq[i] == templ_rec._seq[i]) templ_rec._score++;
+                    if (seq[i] == templ_rec._seq[i]) {
+                        if (ss[i] == templ_rec._ss[i] && ss[i] != '.' && ss[i] != '(' && ss[i] != ')') {
+                            templ_rec._score += 2;
+                        } else if (ss[i] == '(' || ss[i] == ')') {
+                            templ_rec._score += 0.2;
+                        } else {
+                            templ_rec._score += 1;
+                        }
+                    }
                 }
                 _records[l].first.push_back(templ_rec);
                 num++;

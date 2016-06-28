@@ -11,9 +11,9 @@ namespace geom {
     auto &&sp##C1 = -(sp.c1); auto &&sp##ROT = sp.rot; auto &&sp##C2 = sp.c2;
 
 #define APPLY_SUPPOS(m, sp) \
-    geom::translate(m, sp##C1); geom::rotate(m, sp##ROT); geom::translate(m, sp##C2);
+    ({geom::translate(m, sp##C1); geom::rotate(m, sp##ROT); geom::translate(m, sp##C2);})
 
-#define APPLY_SUPPOS_m(m, sp) \
+#define APPLY_SUPPOS_m(m, sp) ({\
     for (int i = 0; i < m.rows(); i++) {\
         for (int j = 0; j < 3; j++) {\
             m(i, j) += sp##C1[j];\
@@ -24,7 +24,8 @@ namespace geom {
         for (int j = 0; j < 3; j++) {\
             m(i, j) += sp##C2[j];\
         }\
-    }
+    }\
+})
 
 struct suppos_t {
     Mat rot; 

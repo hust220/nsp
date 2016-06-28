@@ -2,6 +2,7 @@
 #include "../../utils/Factory.hpp"
 
 namespace jian {
+namespace nuc3d {
 namespace quadruple {
 
 REGISTER_QUADRUPLE_MODULE_FACTORY("helix", Helix);
@@ -25,7 +26,12 @@ Helix::Helix(const Tuple &t1, const Tuple &t2) {
     }
 }
 
+std::string Helix::type() const {
+    return "helix";
+}
+
 } // namespace quadruple
+}
 } // namespace jian
 
 
