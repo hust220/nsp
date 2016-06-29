@@ -23,7 +23,7 @@ public:
     std::time_t _start_time, _end_time;
     int _hinge = 2;
     int _num = 1;
-    int _num_sampling = 1000;
+    int _num_sampling = 100;
     bool _is_test = false; // Is this a test case or not?
     std::string _method = "FA";
     std::string _native;
@@ -34,6 +34,7 @@ public:
 //    std::string m_out;
 //    bool m_no_mc = false;
     bool m_sample_hairpin = false;
+    bool m_sample_il = false;
     std::string m_mode = "auto";
     const Par *_par = NULL;
     std::string m_cmd;

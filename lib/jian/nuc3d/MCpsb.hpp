@@ -81,7 +81,7 @@ public:
 
         std::cout << "# Read initial structure" << std::endl;
         std::map<char, int> m{{'A', 0}, {'U', 1}, {'G', 2}, {'C', 3}};
-        _pred_chain = residues_from_file(par["pdb"][0]);
+        if (par.has("pdb")) _pred_chain = residues_from_file(par["pdb"][0]);
 
         std::cout << "# Set indices" << std::endl;
         m_indices.resize(_seq.size());
@@ -266,7 +266,7 @@ public:
             LOOP_TRAVERSE(l,
                 if (!m_sample_hairpin && is_first && is_hp(L)) {
                     update_range(make_hp_range(L));
-                } else if (is_first && is_il(L)) {
+                } else if (!m_sample_il && is_first && is_il(L)) {
                     update_range(make_il_range(L));
                 } else if (L->has_helix()) {
                     update_range(make_helix_range(L->s));
@@ -429,6 +429,21 @@ public:
 
     void run() {
         display_start_information();
+        std::cout << "# Display stacking information" << std::endl;
+        print_stacking();
+
+        predict();
+
+        std::cout << "# Display pairing information" << std::endl;
+        print_pairing();
+        std::cout << "# Writing to file." << std::endl;
+        std::ostringstream stream;
+        stream << _name << ".sample." << m_seed << ".pdb";
+        residues_to_file(_pred_chain, stream.str());
+        display_end_information();
+    }
+
+    void predict() {
         Debug::println("# Set pseudo-knots");
         set_pseudo_knots();
         std::cout << "# Coarse Grained" << std::endl;
@@ -444,15 +459,6 @@ public:
         coarse_grained_to_all_atom();
         std::cout << "# Transform." << std::endl;
         this->transform();
-        std::cout << "# Display stacking information" << std::endl;
-        print_stacking();
-        std::cout << "# Display pairing information" << std::endl;
-        print_pairing();
-        std::cout << "# Writing to file." << std::endl;
-        std::ostringstream stream;
-        stream << _name << ".sample." << m_seed << ".pdb";
-        residues_to_file(_pred_chain, stream.str());
-        display_end_information();
     }
 
     void set_arr(Mat &arr, int m, int n) {

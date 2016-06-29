@@ -113,7 +113,8 @@ public:
             stream << _name << ".assemble." << n << ".pdb";
             residues_to_file(_pred_chain, stream.str());
             for (n = 2; n <= _num; n++) {
-                predict_one();
+                sample_one_template();
+                assemble();
                 std::cout << "# Writing sampling structure " << n << std::endl;
                 stream.str("");
                 stream << _name << ".assemble." << n << ".pdb";
@@ -126,14 +127,29 @@ public:
         Debug::print("# Select Templates\n");
         select_templates(); 
         Debug::print("# Print Templates\n");
+        print_templates();
+        Debug::print("# Assemble\n");
+        assemble();
+    }
+
+    bool lack_templates() {
+        loop *l;
+        for (auto && pair : _templates) {
+            l = pair.first;
+            if (l->has_loop()) {
+                if (_records[l].first.empty()) return true;
+            }
+        }
+        return false;
+    }
+
+    void print_templates() {
         LOOP_TRAVERSE(_ss_tree.head(), Debug::print(L, " : ", _templates[L].first.model_name, ' ', _templates[L].second.model_name, '\n'));
-        Debug::print("# Position Templates\n");
+    }
+
+    void assemble() {
         position_templates();
-        Debug::print("# Assemble Templates\n");
         assemble_templates(_ss_tree.head());
-        std::cout << "# Build Strands." << std::endl;
-        build_strands(_pred_chain);
-        std::cout << "# Transform." << std::endl;
         this->transform();
     }
 
@@ -141,6 +157,45 @@ public:
         Model m;
         m.push_back(_pred_chain);
         _pred_chain = std::move(jian::transform(m, _seq, _type)[0]);
+    }
+
+    void select_templates() {
+        LOOP_TRAVERSE(_ss_tree.head(),
+            if (L->has_loop()) {
+                if (_records[L].first.empty()) {
+                    build_loop_dg.init(L->seq(), NucSS::lower_ss(L->ss())); 
+                    _templates[L].first = build_loop_dg();
+                } else {
+                    _templates[L].first = load_pdb(_records[L].first[0]);    
+                }
+            }
+            if (L->has_helix()) {
+                _templates[L].second = load_pdb(_records[L].second[0]);
+            }
+        );
+    }
+
+    void sample_one_template() {
+        sample_loop_template(select_loop());
+    }
+
+    void sample_all_templates() {
+        for (auto && pair : _templates) {
+            loop *l = pair.first;
+            if (l->has_loop()) {
+                sample_loop_template(l);
+            }
+        }
+    }
+
+    void sample_loop_template(loop *l) {
+        if (_records[l].first.empty()) {
+            build_loop_dg.init(l->seq(), NucSS::lower_ss(l->ss())); 
+            _templates[l].first = build_loop_dg();
+        } else {
+            int n = int(rand() * _records[l].first.size());
+            _templates[l].first = load_pdb(_records[l].first[n]);    
+        }
     }
 
     loop *select_loop() {
@@ -159,42 +214,6 @@ public:
             }
             i++;
         }
-    }
-
-    void select_templates() {
-        static int it = 0;
-
-        if (it == 0) {
-            LOOP_TRAVERSE(_ss_tree.head(),
-                if (L->has_loop()) {
-                    if (_records[L].first.empty()) {
-                        build_loop_dg.init(L->seq(), NucSS::lower_ss(L->ss())); 
-                        _templates[L].first = build_loop_dg();
-                    } else {
-                        _templates[L].first = load_pdb(_records[L].first[0]);    
-                    }
-                }
-                if (L->has_helix()) {
-                    _templates[L].second = load_pdb(_records[L].second[0]);
-                }
-            );
-        } else {
-            loop *l;
-            for (auto && pair : _templates) {
-                l = pair.first;
-                if (l->has_loop()) {
-                    if (_records[l].first.empty()) {
-                        build_loop_dg.init(l->seq(), NucSS::lower_ss(l->ss())); 
-                        _templates[l].first = build_loop_dg();
-                    } else {
-                        int n = int(rand() * _records[l].first.size());
-                        _templates[l].first = load_pdb(_records[l].first[n]);    
-                    }
-                }
-            }
-        }
-
-        it++;
     }
 
     Chain load_pdb(const TemplRec &templ_res, const std::string &type = "") {

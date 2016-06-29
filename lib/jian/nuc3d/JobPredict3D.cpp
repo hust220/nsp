@@ -40,6 +40,7 @@ JobPredict3D::JobPredict3D(const Par &pars) : _lib(Env::lib()) {
     boost::to_upper(_source_pdb);
 //    if (pars.has("no_mc")) m_no_mc = true;
     if (pars.has("sample_hairpin")) m_sample_hairpin = true;
+    if (pars.has("sample_il")) m_sample_il = true;
 
     if (_ss == "") throw "Please tell me the secondary structure!";
     if (_seq == "") throw "Please tell me the sequence!";

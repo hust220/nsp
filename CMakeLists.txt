@@ -1,23 +1,13 @@
 cmake_minimum_required(VERSION 2.8.7)
 project(nsp)
 
-find_package(Boost 1.55)
-
-if(Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIRS})
-    set(EXTRA_LIBS ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
-endif()
+set(CMAKE_VERBOSE_MAKEFILE on)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -g -pthread")
 
 include_directories(include)
 include_directories(lib)
 
-if (NOT MSVC)
-    ADD_COMPILE_OPTIONS("-g")
-    ADD_COMPILE_OPTIONS("-std=c++14")
-endif()
-
 add_subdirectory(src)
-#add_subdirectory(test)
 add_subdirectory(include)
 add_subdirectory(lib)
 

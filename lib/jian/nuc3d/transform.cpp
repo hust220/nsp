@@ -4,7 +4,7 @@
 
 namespace jian {
 
-static Convert cvt;
+thread_local static Convert cvt;
 
 Model to_rna(const Model &model, const std::string &seq) {
     Model m = model;

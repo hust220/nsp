@@ -73,9 +73,10 @@ public:
 
 };
 
+thread_local static C2A temp;
+
 Chain c2a(const Eigen::MatrixXd &c, int beg, int end) {
-    static C2A c2a;
-    return c2a.run(c, std::vector<int>{beg, end});
+    return temp.run(c, std::vector<int>{beg, end});
 }
 
 } // namespace jian

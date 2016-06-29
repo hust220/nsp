@@ -27,7 +27,7 @@ public:
     }
 };
 
-static HelixParImpl g_impl;
+thread_local static HelixParImpl g_impl;
 
 double HelixPar::dih_backbone = g_impl.dih_backbone;
 
