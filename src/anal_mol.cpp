@@ -1,7 +1,7 @@
 #include "nsp.hpp"
 #include <jian/pdb/Model.hpp>
 #include <jian/geom.hpp>
-#include <jian/utils/pp.hpp>
+#include <jian/pp.hpp>
 #include <jian/utils/Debug.hpp>
 #include <jian/nuc3d/ParseHelix.hpp>
 
