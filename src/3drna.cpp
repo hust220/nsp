@@ -6,7 +6,7 @@
 
 namespace jian {
 
-void refine(const Par &par, const Chain &chain, int i) {
+static void refine(const Par &par, const Chain &chain, int i) {
     std::ostringstream stream;
     nuc3d::MCpsb mc(par);
     mc._pred_chain = chain;

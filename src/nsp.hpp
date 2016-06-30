@@ -12,13 +12,13 @@
 namespace jian {
 
 #define REGISTER_NSP_COMPONENT(i)\
-    void BOOST_PP_CAT(nsp_, i)(const Par &par);\
+    void BOOST_PP_CAT(nsp_, i)(Par par);\
     NSPComponent BOOST_PP_CAT(component_, i)(#i, BOOST_PP_CAT(nsp_, i));\
-    void BOOST_PP_CAT(nsp_, i)(const Par &par)
+    void BOOST_PP_CAT(nsp_, i)(Par par)
 
 class NSP {
 public:
-    std::map<std::string, std::function<void(const Par &)>> _methods;
+    std::map<std::string, std::function<void(Par)>> _methods;
 //    std::map<std::string, std::function<>> _synopses;
 //    std::map<std::string, std::string> _details;
 

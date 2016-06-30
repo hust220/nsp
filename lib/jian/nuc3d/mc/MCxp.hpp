@@ -32,20 +32,20 @@ public:
     std::deque<Atom> _moved_atoms;
     Chain _pred_chain;
 
-    #define JN_MC_PARS1 heat_steps, cool_steps, cycle_steps, write_steps, heat_rate, dec_rate, init_tempr
-    #define JN_MC_PARS2 bond_length_weight, bond_angle_weight, bond_angle_std, bond_dihedral_weight, bond_dihedral_std, \
+    #define JN_MCXP_PARS1 heat_steps, cool_steps, cycle_steps, write_steps, heat_rate, dec_rate, init_tempr
+    #define JN_MCXP_PARS2 bond_length_weight, bond_angle_weight, bond_angle_std, bond_dihedral_weight, bond_dihedral_std, \
                         constraints_weight, crash_weight, pairing_weight, stacking_weight, vdw_weight, max_shift
 
-    #define JN_MCPSB_DEF_PAR(a) double PP_CAT(_mc_, a);
-    JN_MAP(JN_MCPSB_DEF_PAR, JN_MC_PARS2)
+    #define JN_MCXP_DEF_PAR(a) double PP_CAT(_mc_, a);
+    JN_MAP(JN_MCXP_DEF_PAR, JN_MCXP_PARS2)
 
     MCxp(const Par &par) : MC(), JobPredict3D(par) {
         std::cout << "# Read parameters..." << std::endl;
         read_parameters();
 
         std::cout << "# Set parameters..." << std::endl;
-        #define JN_MCPSB_PAR_SET(a) par.set(PP_CAT(_mc_, a), PP_STRING3(PP_CAT(mc_, a)));
-        JN_MAP(JN_MCPSB_PAR_SET, JN_MC_PARS1, JN_MC_PARS2)
+        #define JN_MCXP_PAR_SET(a) par.set(PP_CAT(_mc_, a), PP_STRING3(PP_CAT(mc_, a)));
+        JN_MAP(JN_MCXP_PAR_SET, JN_MCXP_PARS1, JN_MCXP_PARS2)
 
         std::cout << "# Print parameters..." << std::endl;
         print_parameters();
@@ -54,13 +54,13 @@ public:
 
     void read_parameters() {
         Par temp_par(Env::lib() + "/RNA/pars/mc/" + m_cmd + ".par");
-        #define JN_MCPSB_TEMPPAR_SET(a) temp_par.set(PP_CAT(_mc_, a), PP_STRING3(PP_CAT(mc_, a)));
-        JN_MAP(JN_MCPSB_TEMPPAR_SET, JN_MC_PARS1, JN_MC_PARS2)
+        #define JN_MCXP_TEMPPAR_SET(a) temp_par.set(PP_CAT(_mc_, a), PP_STRING3(PP_CAT(mc_, a)));
+        JN_MAP(JN_MCXP_TEMPPAR_SET, JN_MCXP_PARS1, JN_MCXP_PARS2)
     }
 
     void print_parameters() {
-        #define JN_MCPSB_TEMP(a) std::cout << PP_STRING3(PP_CAT(mc_, a)) << ' ' << PP_CAT(_mc_, a) << std::endl;
-        JN_MAP(JN_MCPSB_TEMP, JN_MC_PARS1, JN_MC_PARS2)
+        #define JN_MCXP_TEMP(a) std::cout << PP_STRING3(PP_CAT(mc_, a)) << ' ' << PP_CAT(_mc_, a) << std::endl;
+        JN_MAP(JN_MCXP_TEMP, JN_MCXP_PARS1, JN_MCXP_PARS2)
     }
 
     void mc_write() {
@@ -181,10 +181,10 @@ public:
         std::cout << "# Transform..." << std::endl;
         this->transform();
 
-        std::cout << "# Writing to file..." << std::endl;
-        std::ostringstream stream;
-        stream << _name << "." << m_cmd << "." << m_seed << ".pdb";
-        residues_to_file(_pred_chain, stream.str());
+//        std::cout << "# Writing to file..." << std::endl;
+//        std::ostringstream stream;
+//        stream << _name << "." << m_cmd << "." << m_seed << ".pdb";
+//        residues_to_file(_pred_chain, stream.str());
 
     }
 

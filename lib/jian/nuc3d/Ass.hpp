@@ -217,7 +217,7 @@ public:
     }
 
     Chain load_pdb(const TemplRec &templ_res, const std::string &type = "") {
-        std::string lib_path = _lib + "/" + _type + "/templates/";
+        std::string lib_path = _lib + "/RNA/templates/";
         std::string pdb_name = templ_res._name + ((type == "") ? "" : ("." + type)) + ".pdb";
         return residues_from_file(lib_path + pdb_name);
     }
@@ -438,7 +438,7 @@ public:
         std::string seq = l->seq(), ss = l->ss(), p_ss = NucSS::pure_ss(ss), lower_ss = NucSS::lower_ss(p_ss, 1), family = _family;
         int num_sons = l->num_sons();
 
-        std::string info_file = _lib + "/" + _type + "/" + "records/" + (l->is_open() ? "open_" : "") + "loop";
+        std::string info_file = _lib + "/RNA/records/" + (l->is_open() ? "open_" : "") + "loop";
         std::ifstream ifile(info_file.c_str());
         if (!ifile) throw "jian::FindTemplates error! Can't find '" + info_file + "'!";
 
@@ -504,7 +504,7 @@ public:
         std::string seq = l->s.seq(), ss = l->s.ss(), family = _family;
         int len = l->s.len();
 
-        std::string info_file = _lib + "/" + _type + "/" + "records/helix";
+        std::string info_file = _lib + "/RNA/records/helix";
         std::ifstream ifile(info_file.c_str());
         if (!ifile) throw "jian::FindTemplates error! Can't find '" + info_file + "'!";
 

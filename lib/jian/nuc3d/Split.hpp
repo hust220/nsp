@@ -39,7 +39,7 @@ public:
 
         if (par.count("hinge")) _hinge_size = boost::lexical_cast<int>(par["hinge"][0]);
 
-        _lib += "/" + _type;
+        _lib += "/RNA/";
 
         if (_ss == "") throw "Split::Split error! Please provide the 2D structure";
         if (_name == "") throw "Split::Split error! Please provide the pdb file";

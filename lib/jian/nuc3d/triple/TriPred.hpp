@@ -52,6 +52,11 @@ public:
 
     void run() {
         mc_t::display_start_information();
+        predict();
+        mc_t::display_end_information();
+    }
+
+    void predict() {
         std::cout << "# Convert 2D structure to tree..." << std::endl;
         ss_to_tree();
         std::cout << "# Set modules..." << std::endl;
@@ -64,7 +69,6 @@ public:
         mc_init();
         std::cout << "# MC..." << std::endl;
         mc_t::run();
-        mc_t::display_end_information();
     }
 
     void set_unrelated_residues() {
