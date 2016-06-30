@@ -4,24 +4,30 @@
 
 namespace jian {
 
-thread_local static Convert cvt;
-
 Model to_rna(const Model &model, const std::string &seq) {
-    Model m = model;
+    Model m;
     int i = 0;
-    for (auto &&chain: m) for (auto &&residue: chain) {
-        cvt(residue, std::string() + seq[i]);
-        i++;
+    for (auto && chain : model) {
+        Chain c;
+        for (auto && res : chain) {
+            c.push_back(convert_res(res, std::string() + seq[i]));
+            i++;
+        }
+        m.push_back(c);
     }
     return m;
 }
 
 Model to_dna(const Model &model, const std::string &seq) {
-    Model m = model;
+    Model m;
     int i = 0;
-    for (auto &&chain: m) for (auto &&residue: chain) {
-        cvt(residue, std::string("D") + seq[i]);
-        i++;
+    for (auto && chain : model) {
+        Chain c;
+        for (auto && res : chain) {
+            c.push_back(convert_res(res, std::string("D") + seq[i]));
+            i++;
+        }
+        m.push_back(c);
     }
     return m;
 }
