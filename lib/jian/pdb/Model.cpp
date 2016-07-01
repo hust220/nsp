@@ -77,9 +77,9 @@ bool is_empty(const Model &model) {
 
 std::ostream &operator <<(std::ostream &output, const Model &model) {
     int atom_num = 1;
-    int residue_num = 1;
     output << std::fixed << std::setprecision(3);
     for (auto &&chain: model) {
+        int residue_num = 1;
         for (auto &&residue: chain) {
             for (auto &&atom: residue) {
                 std::string atom_name = boost::replace_all_copy(atom.name, "*", "'");

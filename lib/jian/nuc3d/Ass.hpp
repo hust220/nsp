@@ -148,8 +148,13 @@ public:
     }
 
     void assemble() {
+        std::cout << "# Print Templates." << std::endl;
+        print_templates();
+        std::cout << "# Position Templates." << std::endl;
         position_templates();
+        std::cout << "# Assemble Templates." << std::endl;
         assemble_templates(_ss_tree.head());
+        std::cout << "# Transform." << std::endl;
         this->transform();
     }
 

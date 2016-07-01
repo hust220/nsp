@@ -21,7 +21,7 @@ JobPredict3D::JobPredict3D(const Par &pars) : _lib(Env::lib()) {
     pars.set(_hinge, "h", "hinge");
     pars.set(_strategy, "strategy");
     pars.set(_family, "family");
-    pars.set(_type, "t", "type");
+    pars.set(_type, "t", "type", "mol_type");
     pars.set(_file_constraints, "c", "constraints");
     pars.set(m_seed, "seed");
     pars.set(m_mode, "mode");
