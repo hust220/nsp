@@ -18,6 +18,7 @@ static void refine(const Par &par, const Chain &chain, int i) {
 
 static void tripred(const Par &par, int i) {
     nuc3d::triple::TriPred<nuc3d::mc::MCpsb> tri(par);
+    seed(tri.m_seed + i);
     tri.predict();
     std::ostringstream stream;
     stream << tri._name << ".3drna." << i+1 << ".pdb";

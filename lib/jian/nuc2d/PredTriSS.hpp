@@ -36,7 +36,7 @@ public:
     std::string _seq;
     std::vector<int> _types;
     std::vector<std::tuple<int, int, int>> _pairs;
-    std::map<char, int> _convert{{'A', 0}, {'U', 1}, {'T', 1}, {'G', 2}, {'C', 3}};
+    std::map<char, int> _convert{{'A', 0}, {'U', 1}, {'T', 1}, {'G', 2}, {'C', 3}, {'X', 999}};
     std::hash<std::string> hash_fn;
     int _min_hairpin_size;
     double _cutoff;
@@ -56,8 +56,9 @@ public:
                          -642.19, -735.33, -851.11, -509.75;
     }
 
-    void run(std::string seq) {
+    void run(std::string seq, int k) {
         _seq = seq;
+        _min_hairpin_size = k;
         seq_t vec(_seq.size());
         std::iota(vec.begin(), vec.end(), 0);
         auto &&best_infos = best_info(vec);
@@ -135,7 +136,7 @@ public:
         count_purine(ss, v);
         std::array<int, 3> arr {0, 1, 2};
         std::sort(arr.begin(), arr.end(), [&v](int a, int b){return v[a] > v[b];});
-        if (arr[1] == 1) std::swap(arr[0], arr[1]);
+        if (arr[1] == 1) std::swap(arr[1], arr[2]);
         std::array<char, 3> m;
         m[arr[0]] = '1'; m[arr[1]] = '3'; m[arr[2]] = '2';
         reset_ss(ss, m);
