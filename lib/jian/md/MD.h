@@ -20,8 +20,6 @@ public:
     double _min_time = 0.001;
     double _box_size = 20;
 
-    Log log;
-
     void operator ()(int num_atoms, const Mat &pos, const Mat &vel) {
         _num_atoms = num_atoms;
         md(pos, vel);

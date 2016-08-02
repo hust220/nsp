@@ -1,9 +1,11 @@
+#include <sstream>
 #include "JobPredict3D.hpp"
 #include "../utils/Debug.hpp"
 #include "../utils/Par.hpp"
 #include "../utils/Env.hpp"
 #include <boost/algorithm/string.hpp>
 #include "../utils/rand.hpp"
+#include "../utils/log.hpp"
 
 namespace jian {
 
@@ -50,6 +52,9 @@ JobPredict3D::JobPredict3D(const Par &pars) : _lib(Env::lib()) {
 //        }
 }
 
+JobPredict3D::~JobPredict3D() {
+}
+
 void JobPredict3D::set_constraints() {
     if (! _file_constraints.empty()) {
         _constraints.read_distances_file(_file_constraints);
@@ -58,7 +63,7 @@ void JobPredict3D::set_constraints() {
 
 void JobPredict3D::display_start_information() {
     _start_time = std::time(nullptr);
-    std::cout << "=========================================================\n"
+    LOG << "=========================================================\n"
               << "New Job: " << _name << '\n'
               << "Time: " << std::asctime(std::localtime(&(_start_time))) << '\n'
               << "Sequence: " << _seq << '\n'
@@ -71,7 +76,7 @@ void JobPredict3D::display_start_information() {
 
 void JobPredict3D::display_end_information() {
     _end_time = std::time(nullptr);
-    std::cout << "----------------------------------------\n"
+    LOG << "----------------------------------------\n"
               << "Finish Time: " << std::asctime(std::localtime(&(_end_time))) << '\n'
               << "Time elapsed: " << _end_time - _start_time << "s\n"
               << "=========================================================\n\n";

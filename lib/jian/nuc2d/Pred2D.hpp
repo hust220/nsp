@@ -4,14 +4,13 @@ namespace jian {
 namespace nuc2d {
 
 class Pred2D {
+public:
     using val_t = double;
     using Loop = struct {int beg; int end;};
     using Sons = std::list<Loop>;
     using Inf = struct {val_t score; Sons sons;};
     using Mat = std::array<std::array<val_t, 4>, 4>;
     using MatStack = std::array<std::array<Mat, 4>, 4>;
-
-    Log log;
 
     std::string _lib;
 
@@ -25,8 +24,6 @@ class Pred2D {
     std::array<val_t, 30> _en_bulge;
     MatStack _en_stack;
     val_t _offset,  _free_base_penalty,  _helix_penalty;
-
-public:
 
     Pred2D(const std::string &lib = "/home/jian/share/mfold") : _lib(lib) {
         log("# Predict 2D structure\n", 

@@ -1,5 +1,6 @@
+#include <mutex>
 #include "C2A.hpp"
-#include "../utils/Debug.hpp"
+#include "../utils/log.hpp"
 #include "../pp.hpp"
 #include "../utils/file.hpp"
 #include "../pdb.hpp"
@@ -7,6 +8,10 @@
 #include "../geom.hpp"
 
 namespace jian {
+
+namespace c2a_detail {
+
+std::mutex mt;
 
 class C2A {
 public:
@@ -27,7 +32,7 @@ public:
 
     template<typename T>
     auto get_residues(int i, T &&c) {
-        Debug::print(_path + _names[i] + ".pdb\n");
+        LOG << _path + _names[i] + ".pdb" << std::endl;
         auto residues = residues_from_file(_path + _names[i] + ".pdb");
         auto s = geom::suppos(*(_frags[i]), c);
         EACH(res, residues, EACH(atom, res, geom::apply_suppos(atom, s)));
@@ -36,7 +41,8 @@ public:
 
     template<typename T, typename U>
     auto run(T &&coord, U &&frag) {
-        Debug::print("## C2A\n");
+        std::lock_guard<std::mutex> gd(mt);
+        LOG << "## C2A" << std::endl;
         int len = frag[1] - frag[0] + 1; 
         Chain chain;
         for (int i = 0; i < len - _len_frag + 1; i++) {
@@ -73,10 +79,12 @@ public:
 
 };
 
-thread_local static C2A temp;
+C2A builder;
+
+} // namespace c2a_detail
 
 Chain c2a(const Eigen::MatrixXd &c, int beg, int end) {
-    return temp.run(c, std::vector<int>{beg, end});
+    return c2a_detail::builder.run(c, std::vector<int>{beg, end});
 }
 
 } // namespace jian

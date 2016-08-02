@@ -7,6 +7,7 @@
 #include "Connect.hpp"
 #include "Transform.hpp"
 #include "JobPredict3D.hpp"
+#include "../utils/log.hpp"
 
 namespace jian {
 
@@ -152,12 +153,12 @@ public:
         if (size == 3) {
             for (int i = 0; i < _frag_3_dists.size(); i++) 
                 rank.push(std::make_pair(i, geometry::distance(_frag_3_dists[i], std::forward<List>(list))));
-            std::cout << _frag_par_path + "/" + _frag_3_names[rank.top().first] + ".pdb" << std::endl;
+            LOG << _frag_par_path + "/" + _frag_3_names[rank.top().first] + ".pdb" << std::endl;
             return get_residues_from_file(_frag_par_path + "/" + _frag_3_names[rank.top().first] + ".pdb");
         } else if (size == 10) {
             for (int i = 0; i < _frag_5_dists.size(); i++) 
                 rank.push(std::make_pair(i, geometry::norm(_frag_5_dists[i], std::forward<List>(list), 10)));
-            std::cout << _frag_par_path + "/" + _frag_5_names[rank.top().first] + ".pdb" << std::endl;
+            LOG << _frag_par_path + "/" + _frag_5_names[rank.top().first] + ".pdb" << std::endl;
             return get_residues_from_file(_frag_par_path + "/" + _frag_5_names[rank.top().first] + ".pdb");
         } else {
             throw "JIAN::NUC3D::LM2::find_best_frag_model error!";
@@ -201,13 +202,13 @@ public:
 
         // ## Construct residue list and then sort
         std::vector<res> res_list;
-        std::cout << "helix anchors: " << std::endl;
+        LOG << "helix anchors: " << std::endl;
         for (auto &&anchor: _helix_anchors) {
             for (auto &&r: anchor) {
-                std::cout << r.name << '-' << r.num << ' ';
+                LOG << r.name << '-' << r.num << ' ';
                 res_list.push_back(r);
             }
-            std::cout << std::endl;
+            LOG << std::endl;
         }
         std::sort(res_list.begin(), res_list.end(), [](const res &res1, const res &res2){return res1.num < res2.num;});
 
@@ -312,8 +313,8 @@ public:
 
             // ## Calculate scaffold coordinates
             _dg = DG(_bound);
-            std::cout << "\nscaffold bound matrix: " << std::endl;
-            std::cout << _bound << "\n" << std::endl;
+            LOG << "\nscaffold bound matrix: " << std::endl;
+            LOG << _bound << "\n" << std::endl;
         }
     }
 
@@ -326,11 +327,11 @@ public:
         if (!_helix_anchors.empty()) {
 
             _helices = _dg();
-            std::cout << "DG...\n";
-            std::cout << "scaffold energy: " << dg.E << std::endl;
-            std::cout << "scaffold: " << std::endl;
-            std::cout << _helices << std::endl;
-            if (_native != "") std::cout << "RMSD: " << geom::rmsd(_helices, _native_helices) << std::endl;
+            LOG << "DG...\n";
+            LOG << "scaffold energy: " << dg.E << std::endl;
+            LOG << "scaffold: " << std::endl;
+            LOG << _helices << std::endl;
+            if (_native != "") LOG << "RMSD: " << geom::rmsd(_helices, _native_helices) << std::endl;
 
             // ## Copy scaffold coordinates to integral coordinates
             for (int i = 0; i < _helices.rows(); i++) {
@@ -338,10 +339,10 @@ public:
                     _scaffold(_m2[i], j) = _helices(i, j);
                 }
             }
-            std::cout << "\nIntegral coordinates: \n" << _scaffold << std::endl;
+            LOG << "\nIntegral coordinates: \n" << _scaffold << std::endl;
 
             // ## Calculate helix coordinates
-            std::cout << "\nCalculate helix coordinates:\n";
+            LOG << "\nCalculate helix coordinates:\n";
             for (auto &&anchor: _helix_anchors) {
                 MatrixXf anchor_coord(4, 3); // the index order of an anchor is n0-n3 n1-n2
                 for (int i = 0; i < 3; i++) {
@@ -368,9 +369,9 @@ public:
                     std::swap(residues[m], helix_model[i]);
                     std::swap(residues[n], helix_model[i + len]);
                 }
-                std::cout << "superposed helix:\n" << helix_coord << std::endl;
+                LOG << "superposed helix:\n" << helix_coord << std::endl;
             }
-            std::cout << "\nIntegral scaffold: \n" << _scaffold << std::endl;
+            LOG << "\nIntegral scaffold: \n" << _scaffold << std::endl;
         }
 
         // ## Construct fragments
@@ -389,7 +390,7 @@ public:
                     a(0, i) = _scaffold(beg[0], i);
                     a(1, i) = _scaffold(beg[1], i);
                 }
-                std::cout << "\na: \n" << a << std::endl;
+                LOG << "\na: \n" << a << std::endl;
             }
             if (end.size() != 0) {
                 b.resize(2, 3);
@@ -397,7 +398,7 @@ public:
                     b(0, i) = _scaffold(end[0], i);
                     b(1, i) = _scaffold(end[1], i);
                 }
-                std::cout << "\nb: \n" << b << std::endl;
+                LOG << "\nb: \n" << b << std::endl;
             }
 
             // ### Construct fragment
@@ -417,7 +418,7 @@ public:
         }
 
 
-        std::cout << "\nfinal coords: \n" << _scaffold << std::endl;
+        LOG << "\nfinal coords: \n" << _scaffold << std::endl;
 
         Model model;
         Chain chain;
@@ -446,7 +447,7 @@ public:
                 scaffold(i, j) = pos[j];
         }
 
-        std::cout << "helix:\n" << scaffold << std::endl;
+        LOG << "helix:\n" << scaffold << std::endl;
         SupPos sp;
         sp(scaffold, hstack(scaffold.row(0), scaffold.row(len - 1), scaffold.row(len), scaffold.row(2 * len - 1)), anchor);
         auto c1 = -sp.c1;
@@ -527,16 +528,16 @@ public:
             double dist6 = (a.row(1) - b.row(1)).norm();
             bound(1, len - 1) = bound(len - 1, 1) = dist6;
         }
-        std::cout << "\nfragment bound: \n" << bound << std::endl;
+        LOG << "\nfragment bound: \n" << bound << std::endl;
         DG dg(bound);
         auto coord = dg();
-    //    std::cout << coord << "\n" << "energy: " << dg.E << "\n" << std::endl;
-        std::cout << "DG...\nenergy: " << dg.E << "\n" << coord << std::endl;
-        std::cout << "distances: " << std::endl;
+    //    LOG << coord << "\n" << "energy: " << dg.E << "\n" << std::endl;
+        LOG << "DG...\nenergy: " << dg.E << "\n" << coord << std::endl;
+        LOG << "distances: " << std::endl;
         for (int i = 0; i < coord.rows() - 1; i++) {
-            std::cout << (coord.row(i) - coord.row(i + 1)).norm() << ' ';
+            LOG << (coord.row(i) - coord.row(i + 1)).norm() << ' ';
         }
-        std::cout << std::endl;
+        LOG << std::endl;
 
         // ## Superpose matrix
         SupPos sp;
@@ -560,8 +561,8 @@ public:
                 }
             }
             sp(coord, x, y);
-            std::cout << "after superpose: " << std::endl;
-            std::cout << coord << std::endl;
+            LOG << "after superpose: " << std::endl;
+            LOG << coord << std::endl;
         }
 
         // ## Find similar fragment model
@@ -733,13 +734,13 @@ public:
             }
 
             // ## Print fragments information
-            std::cout << "\nfragments: " << std::endl;
+            LOG << "\nfragments: " << std::endl;
             for (auto &&frag: fragments) {
-                for (auto &&i: std::get<0>(frag)) std::cout << i << '-';
-                for (auto &&i: std::get<1>(frag)) std::cout << i << '-';
-                for (auto &&i: std::get<2>(frag)) std::cout << i << '-';
-                std::cout << ' ';
-                std::cout << std::endl;
+                for (auto &&i: std::get<0>(frag)) LOG << i << '-';
+                for (auto &&i: std::get<1>(frag)) LOG << i << '-';
+                for (auto &&i: std::get<2>(frag)) LOG << i << '-';
+                LOG << ' ';
+                LOG << std::endl;
             }
         }
         return fragments;
@@ -771,15 +772,15 @@ public:
             if (std::count_if(_helix_anchors.begin(), _helix_anchors.end(), [&](const std::vector<res> &vec){
                 return std::count_if(vec.begin(), vec.end(), [&](const res &r2){
                     return b->res1.type == r2.type && b->res1.name == r2.name && b->res1.num == r2.num;});})) {
-                std::cout << b->res1.num << ' ' << b->res1.type << ' ' << b->res1.name << std::endl;
+                LOG << b->res1.num << ' ' << b->res1.type << ' ' << b->res1.name << std::endl;
             }
             if (std::count_if(_helix_anchors.begin(), _helix_anchors.end(), [&](const std::vector<res> &vec){return std::count_if(vec.begin(), vec.end(), [&](const res &r2){return b->res2.type == r2.type && b->res2.name == r2.name && b->res2.num == r2.num;});})) {
-                std::cout << b->res2.num << ' ' << b->res2.type << ' ' << b->res2.name << std::endl;
+                LOG << b->res2.num << ' ' << b->res2.type << ' ' << b->res2.name << std::endl;
             }
         }
         for (res *r = src->head; r != NULL; r = r->next) {
             if (std::count_if(_helix_anchors.begin(), _helix_anchors.end(), [&](const std::vector<res> &vec){return std::count_if(vec.begin(), vec.end(), [&](const res &r2){return r->type == r2.type && r->name == r2.name && r->num == r2.num;});})) {
-                std::cout << r->num << ' ' << r->type << ' ' << r->name << std::endl;
+                LOG << r->num << ' ' << r->type << ' ' << r->name << std::endl;
             }
         }
     }

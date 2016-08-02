@@ -6,8 +6,11 @@
 #include "loop.hpp"
 #include "NucSS.hpp"
 #include "../pdb.hpp"
+#include "../utils/log.hpp"
 
 namespace jian {
+
+namespace sstree_detail {
 
 void free_ss_tree(loop *l) {
     if (l != NULL) {
@@ -16,14 +19,6 @@ void free_ss_tree(loop *l) {
         delete l;
     }
 }
-
-struct SSTreeImpl {
-    loop *head = NULL;
-
-    ~SSTreeImpl() {
-        if (head != NULL) free_ss_tree(head);
-    }
-};
 
 void set_tree_relation(std::vector<loop *> &s, loop *l) {
     int num = l->num_sons();
@@ -37,9 +32,13 @@ void set_tree_relation(std::vector<loop *> &s, loop *l) {
 }
 
 int char_index(const char &c) {
-    static std::map<char, int> m {{'.', 0}, {'(', 1}, {')', 2}};
-    if (m.find(c) != m.end()) return m[c];
-    else return 0;
+    if (c == '(') {
+        return 1;
+    } else if (c == ')') {
+        return 2;
+    } else {
+        return 0;
+    }
 }
 
 bool find_hairpin_position(const std::deque<res> &v, int &left, int &right) {
@@ -73,8 +72,11 @@ loop *dig_hairpin(std::deque<res> &v, int left, int right, int len, int hinge) {
 }
 
 bool find_hairpin(std::deque<res> &v, std::vector<loop *> &ls, int hinge) {
+    int left, right;
+    loop *l;
+
     if (v.empty()) return false;
-    int left, right; loop *l;
+
     if (find_hairpin_position(v, left, right)) {
         int len = len_helix(v, left, right);
         if (len < hinge) {
@@ -84,7 +86,8 @@ bool find_hairpin(std::deque<res> &v, std::vector<loop *> &ls, int hinge) {
             l = dig_hairpin(v, left, right, len, hinge);
         }
     } else {
-        l = new loop; EACH(i, v, l->push_back(new res(i)));
+        l = new loop;
+        EACH(i, v, l->push_back(new res(i)));
         v.clear();
         if (std::regex_match(l->ss(), std::regex("Z+z+"))) return false; 
     }
@@ -117,6 +120,16 @@ void read_seq(loop *l, const std::string &seq, const std::string &ss) {
     );
 }
 
+} // namespace sstree_detail
+
+struct SSTreeImpl {
+    loop *head = NULL;
+
+    ~SSTreeImpl() {
+        if (head != NULL) sstree_detail::free_ss_tree(head);
+    }
+};
+
 SSTree::SSTree() : _impl(new SSTreeImpl) {}
 
 SSTree::~SSTree() {
@@ -132,14 +145,36 @@ bool SSTree::empty() const {
 }
 
 void SSTree::make(const std::string &seq, const std::string &ss, int hinge) {
-    Debug::print("## Make Secondary Structure Tree\n");
-    std::cout << seq << std::endl;
-    std::cout << ss << std::endl;
+    LOG << "## Make secondary structure tree with no broken tag" << std::endl;
+    LOG << seq << std::endl;
+    LOG << ss << std::endl;
     if (NucSS::seq_match_ss(seq, ss)) {
-        _impl->head = set_tree(ss, hinge);
-        read_seq(_impl->head, seq, ss);
+        std::string ss_nbt;
+        std::copy_if(ss.begin(), ss.end(), std::back_inserter(ss_nbt), [](auto &&c){return c!='&';});
+        _impl->head = sstree_detail::set_tree(ss_nbt, hinge);
+        sstree_detail::read_seq(_impl->head, seq, ss_nbt);
     } else {
-        throw "The sequence and the secondary structure don't match!";
+        LOG << "Error:" << std::endl;
+        LOG << "Sequence: " << seq << std::endl;
+        LOG << "SS: " << ss << std::endl;
+        LOG << "The sequence and the secondary structure don't match!" << std::endl;
+        throw "SSTree::make error!";
+    }
+}
+
+void SSTree::make_b(const std::string &seq, const std::string &ss, int hinge) {
+    LOG << "## Make secondary structure tree with broken tag" << std::endl;
+    LOG << seq << std::endl;
+    LOG << ss << std::endl;
+    if (NucSS::seq_match_ss(seq, ss)) {
+        _impl->head = sstree_detail::set_tree(ss, hinge);
+        sstree_detail::read_seq(_impl->head, seq, ss);
+    } else {
+        LOG << "Error:" << std::endl;
+        LOG << "Sequence: " << seq << std::endl;
+        LOG << "SS: " << ss << std::endl;
+        LOG << "The sequence and the secondary structure don't match!" << std::endl;
+        throw "SSTree::make_b error!";
     }
 }
 

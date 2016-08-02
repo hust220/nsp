@@ -2,10 +2,16 @@
 #include <map>
 #include <cmath>
 #include <Eigen/Dense>
+#include <mutex>
 #include "ParseHelix.hpp"
 #include "../geom.hpp"
+#include "../utils/log.hpp"
 
 namespace jian {
+
+namespace parse_helix_detail {
+
+std::mutex mt;
 
 class ParseHelix {
 public:
@@ -19,6 +25,7 @@ public:
     std::map<int, Mat> _cache;
 
     Mat make_standard_helix(int n) {
+        std::lock_guard<std::mutex> gd(mt);
         if (_cache.count(n)) return _cache[n];
         else {
             Mat helix = Mat::Zero(n * 2 + 2, 3);
@@ -43,7 +50,7 @@ public:
             for (int i = 0; i < 3; i++) mat(index, i) = atm[i];
             index++;
         }
-//        std::cout << mat << std::endl;
+//        LOG << mat << std::endl;
         return mat;
     }
 
@@ -61,21 +68,24 @@ public:
 
 };
 
-static ParseHelix parser;
+ParseHelix parser;
+
+} // namespace parse_helix_detail
 
 void dihs_std_helix() {
-    auto m = parser.make_standard_helix(20);
+    auto m = parse_helix_detail::parser.make_standard_helix(20);
     for (int i = 0; i < 15; i++) {
-        std::cout << geom::dihedral(m.row(i), m.row(i+1), m.row(i+2), m.row(i+3)) << std::endl;
+        LOG << geom::dihedral(m.row(i), m.row(i+1), m.row(i+2), m.row(i+3)) << std::endl;
     }
 }
 
 parse_helix_t parse_helix(const Model &helix) {
-    return parser.parse(helix);
+    return parse_helix_detail::parser.parse(helix);
 }
 
 Eigen::MatrixXd make_standard_helix(int n) {
-    return parser.make_standard_helix(n);
+    return parse_helix_detail::parser.make_standard_helix(n);
 }
+
 } // namespace jian
 

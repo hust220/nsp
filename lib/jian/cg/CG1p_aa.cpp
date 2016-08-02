@@ -73,7 +73,7 @@ public:
 
 };
 
-static C2A c2a;
+thread_local static C2A c2a;
 
 Chain CG1p::aa(const Mat &c, int beg, int end) {
     return c2a.run(c, std::vector<int>{beg, end});

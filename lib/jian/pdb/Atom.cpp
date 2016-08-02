@@ -2,7 +2,7 @@
 
 namespace jian {
 
-std::map<char, double> Atom::s_mass {
+thread_local std::map<char, double> Atom::s_mass {
     {'H', 1.00794},
     {'C', 12.0107},
     {'O', 15.9994},

@@ -77,7 +77,7 @@ public:
         std::ostringstream stream;
         stream << seq() << ' ' << ss();
         for (auto && i : nums()) {
-            stream << ' ' << i;
+            stream << ' ' << i+1;
         }
         return stream.str();
 //        stream >> str;
@@ -85,11 +85,11 @@ public:
 //        return str;
     }
 
-};
+    friend std::ostream &operator <<(std::ostream &out, const helix &h) {
+        out << "Helix: " << ' ' << (std::string)h;
+    }
 
-inline std::ostream &operator <<(std::ostream &out, const helix &h) {
-    out << (std::string)h;
-}
+};
 
 } // namespace jian
 

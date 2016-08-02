@@ -10,7 +10,9 @@ Model to_rna(const Model &model, const std::string &seq) {
     for (auto && chain : model) {
         Chain c;
         for (auto && res : chain) {
-            c.push_back(convert_res(res, std::string() + seq[i]));
+            if (seq[i] != 'X') {
+                c.push_back(convert_res(res, std::string() + seq[i]));
+            }
             i++;
         }
         m.push_back(c);
@@ -24,7 +26,9 @@ Model to_dna(const Model &model, const std::string &seq) {
     for (auto && chain : model) {
         Chain c;
         for (auto && res : chain) {
-            c.push_back(convert_res(res, std::string("D") + seq[i]));
+            if (seq[i] != 'X') {
+                c.push_back(convert_res(res, std::string("D") + seq[i]));
+            }
             i++;
         }
         m.push_back(c);

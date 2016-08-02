@@ -33,7 +33,7 @@ void Par::read(int argc, char **argv) {
     std::deque<std::string> values;
     int n = 0;
     for (int i = 1; i < argc; i++) {
-        if (argv[i][0] == '-') {
+        if (std::string(argv[i]).size() >=2 && argv[i][0] == '-' && std::isalpha(argv[i][1])) {
             if (n != 0) {
                 _pars[key] = values;
                 if (key == "par") {

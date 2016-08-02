@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../utils/Debug.hpp"
 #include "Job.hpp"
 #include "smooth.hpp"
 #include "CG.hpp"
 #include "MC.hpp"
 #include "../geom.hpp"
+#include "../utils/log.hpp"
 
 namespace jian {
 
@@ -26,10 +26,18 @@ public:
     }
 
     Mat operator ()() {
-        Debug::print("### Start DG...\n");
-        b2d(); metric(); d2c(); cg();
+        LOG << "### Start DG..." << std::endl;
+        LOG << "### DG b2d..." << std::endl;
+        b2d();
+        LOG << "### DG metric..." << std::endl;
+        metric();
+        LOG << "### DG d2c..." << std::endl;
+        d2c();
+        LOG << "### DG cg..." << std::endl;
+        cg();
+        LOG << "### DG mc..." << std::endl;
         if (_dist_en > 20 || _dih_en > 20) mc();
-        Debug::print("DG Energy (", _dist_en, ' ', _dih_en, ").\n");
+        LOG << "DG Energy (" << _dist_en << ' ' << _dih_en << ")." << std::endl;
         return c;
     }
 

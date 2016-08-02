@@ -8,7 +8,7 @@
 
 namespace jian {
 
-class Impl {
+class ConvertImpl {
 public:
     using names_t = std::vector<std::string>;
 
@@ -49,7 +49,7 @@ public:
         return residues_from_file(file_name)[0];
     }
 
-    Impl() {
+    ConvertImpl() {
         sugar_rna = read_res("sugar.rna");
         mat_sugar_rna = mat_sugar(sugar_rna);
         sugar_dna = read_res("sugar.dna");
@@ -112,10 +112,10 @@ public:
 
 };
 
-thread_local static Impl impl;
+ConvertImpl l_convert_impl;
 
 Residue convert_res(const Residue &res, const std::string &name) {
-    return impl.convert_res(res, name);
+    return l_convert_impl.convert_res(res, name);
 }
 
 } // namespace jian

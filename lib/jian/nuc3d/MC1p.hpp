@@ -60,33 +60,33 @@ public:
     }
 
     MC1p(const Par &par) : JobPredict3D(par) {
-        std::cout << "# Read parameters" << std::endl;
+        LOG << "# Read parameters" << std::endl;
         read_par();
 
-        std::cout << "# Set parameters" << std::endl;
+        LOG << "# Set parameters" << std::endl;
         #define JN_MCPSB_PAR_SET(a) par.set(PP_CAT(_mc_, a), PP_STRING3(PP_CAT(mc_, a)));
         JN_MAP(JN_MCPSB_PAR_SET, JN_MC_PARS1, JN_MC_PARS2)
 
-        std::cout << "# Print parameters" << std::endl;
+        LOG << "# Print parameters" << std::endl;
         print_parameters();
 
-        std::cout << "# Read initial structure" << std::endl;
+        LOG << "# Read initial structure" << std::endl;
         _pred_chain = residues_from_file(par["pdb"][0]);
 
-        std::cout << "# Set indices" << std::endl;
-        static std::map<char, int> m {{'A', 0}, {'U', 1}, {'G', 2}, {'C', 3}};
+        LOG << "# Set indices" << std::endl;
+        thread_local static std::map<char, int> m {{'A', 0}, {'U', 1}, {'G', 2}, {'C', 3}};
         m_indices.resize(_seq.size());
         for (int i = 0; i < _seq.size(); i++) {
             m_indices[i] = m[_seq[i]];
         }
 
-        std::cout << "# Set 2D trees" << std::endl;
+        LOG << "# Set 2D trees" << std::endl;
         set_trees();
 
-        std::cout << "# Set ranges" << std::endl;
+        LOG << "# Set ranges" << std::endl;
         set_ranges();
 
-        std::cout << "# Print ranges" << std::endl;
+        LOG << "# Print ranges" << std::endl;
         print_ranges();
 
     }
@@ -100,14 +100,14 @@ public:
     void print_ranges() {
         for (auto && range : m_range) {
             for (auto && i : *range) {
-                std::cout << i << ' ';
+                LOG << i << ' ';
             }
-            std::cout << std::endl;
+            LOG << std::endl;
         }
     }
 
     void print_parameters() {
-        #define JN_MCPSB_TEMP(a) std::cout << PP_STRING3(PP_CAT(mc_, a)) << ' ' << PP_CAT(_mc_, a) << std::endl;
+        #define JN_MCPSB_TEMP(a) LOG << PP_STRING3(PP_CAT(mc_, a)) << ' ' << PP_CAT(_mc_, a) << std::endl;
         JN_MAP(JN_MCPSB_TEMP, JN_MC_PARS1, JN_MC_PARS2)
     }
 
@@ -275,7 +275,7 @@ public:
     }
 
     void merge_ranges() {
-        std::cout << "# Merge ranges..." << std::endl;
+        LOG << "# Merge ranges..." << std::endl;
         while (true) {
             int flag = 0;
             for (auto && r1 : m_range) {
@@ -310,7 +310,7 @@ public:
     }
 
     void mc_write() {
-        static int n = 1;
+        thread_local static int n = 1;
         std::ostringstream stream;
         stream << _name << ".mc1p." << m_seed << ".traj.pdb";
         std::string name = stream.str();
@@ -323,7 +323,7 @@ public:
         en_t e;
         mc_total_energy(e);
         #define MC1p_print(a) << e.a << PP_STRING3((a)) << ' '
-        std::cout << _mc_step + 1 << ": " <<  e.sum() << "(total) "
+        LOG << _mc_step + 1 << ": " <<  e.sum() << "(total) "
                   JN_MAP(MC1p_print, MC1p_en_t_m) << _mc_tempr << "(tempr) " << _mc_local_succ_rate << "(rate)" << std::endl;
         n++;
     }
@@ -419,29 +419,29 @@ public:
     void run() {
         display_start_information();
 
-        std::cout << "# Set pseudo-knots" << std::endl;
+        LOG << "# Set pseudo-knots" << std::endl;
         set_pseudo_knots();
 
-        std::cout << "# Coarse Grained" << std::endl;
+        LOG << "# Coarse Grained" << std::endl;
         _pred_chain = CG1p::chain(_pred_chain);
 
-        std::cout << "# Init space" << std::endl;
+        LOG << "# Init space" << std::endl;
         init_space();
 
-        std::cout << "# MC..." << std::endl;
+        LOG << "# MC..." << std::endl;
         mc_heat();
         mc_cool();
 
-        std::cout << "# Print Constraints..." << std::endl;
+        LOG << "# Print Constraints..." << std::endl;
         print_constraints();
 
-        std::cout << "# Coarsed Grained To All Atom..." << std::endl;
+        LOG << "# Coarsed Grained To All Atom..." << std::endl;
         coarse_grained_to_all_atom();
 
-        std::cout << "# Transform." << std::endl;
+        LOG << "# Transform." << std::endl;
         this->transform();
 
-        std::cout << "# Writing to file." << std::endl;
+        LOG << "# Writing to file." << std::endl;
         std::ostringstream stream;
         stream << _name << ".mc1p." << m_seed << ".pdb";
         residues_to_file(_pred_chain, stream.str());
@@ -477,7 +477,7 @@ public:
             i = ct.key[0];
             j = ct.key[1];
             d = geom::distance(_pred_chain[i][0], _pred_chain[j][0]);
-            std::cout << i << ' ' << j << " value:" << ct.value << " weight:" << ct.weight << " dist:" << d << std::endl;
+            LOG << i << ' ' << j << " value:" << ct.value << " weight:" << ct.weight << " dist:" << d << std::endl;
         }
     }
 

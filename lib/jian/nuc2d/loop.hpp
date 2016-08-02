@@ -183,9 +183,16 @@ public:
         std::string seq; LOOP_EACH(this, IF(RES->type != '&', seq += RES->name)); return seq;
     }
 
-    friend std::ostream &operator <<(std::ostream &out, const loop &l) {
-        out << "Loop: " << l.seq() << ' ' << l.ss() << ' ';
-        LOOP_EACH(&l, out << RES->num << ' ');
+//    friend std::ostream &operator <<(std::ostream &out, const loop &l) {
+//        out << "Loop: " << l.seq() << ' ' << l.ss() << ' ';
+//        LOOP_EACH(&l, out << RES->num << ' ');
+//    }
+
+    operator std::string() const {
+        std::ostringstream stream;
+        stream << seq() << ' ' << ss() << ' ';
+        LOOP_EACH(this, stream << RES->num << ' ');
+        return stream.str();
     }
 
     void print() const {

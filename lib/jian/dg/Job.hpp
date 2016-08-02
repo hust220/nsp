@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../utils/rand.hpp"
-#include "../utils/Log.hpp"
+#include "../utils/log.hpp"
 #include "../matrix.hpp"
 #include "DihBound.hpp"
 
@@ -24,8 +24,6 @@ struct Job {
     double _dist_en = 0;
     double _dih_en = 0;
     int _num_mc_steps = 2000;
-
-    Log log;
 
 };
 

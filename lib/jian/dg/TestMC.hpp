@@ -10,8 +10,6 @@ class TestMC {
 public:
     using Mat = MatrixXd;
 
-    Log log;
-
     void operator ()(int n) {
         test_mc(n);
     }

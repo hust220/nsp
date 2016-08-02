@@ -9,7 +9,7 @@ namespace jian {
 
 class Atom : public std::array<double, 3> {
 public:
-    static std::map<char, double> s_mass;
+    thread_local static std::map<char, double> s_mass;
     std::string name;
     int num;
     double mass;

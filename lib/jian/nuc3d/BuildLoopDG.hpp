@@ -13,7 +13,6 @@ class BuildLoopDG {
 public:
     Eigen::MatrixXd _dist_bound;
     DihBound _dih_bound;
-//    std::deque<std::array<int, 2>> _frags;
 
     DG dg;
 
@@ -33,33 +32,13 @@ public:
             set_bound_loop(_dist_bound, _dih_bound, L); 
             set_bound_helix(_dist_bound, _dih_bound, L->s)
         );
-//        set_frags(ss);
     }
-
-//    void set_frags(const std::string &ss) {
-//        _frags.clear(); 
-//        int beg = 0; 
-//        FOR((i, ss.size()-1), IF(ss[i] == '(' && ss[i+1] == ')', _frags.push_back({beg, i}); beg = i+1));
-//        _frags.push_back({beg, int(ss.size()-1)});
-//    }
 
     Chain operator ()() {
         Debug::print("## Build Loop By DG\n");
         auto &&c = dg(_dist_bound);
         return c2a(c, 0, c.rows() - 1);
     }
-
-//    Model to_all_atom(const Eigen::MatrixXd &c) {
-//        Chain chain;
-//        for (auto && i : _frags) {
-//            for (auto && j : c2a(c, i[0], i[1])) {
-//                chain.push_back(j);
-//            }
-//        }
-//        Model m;
-//        m.push_back(chain);
-//        return m;
-//    }
 
     void set_bound_loop(Eigen::MatrixXd &b, DihBound &d, loop *l) {
         LOOP_EACH(l, 

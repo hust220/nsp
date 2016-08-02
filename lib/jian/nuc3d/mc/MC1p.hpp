@@ -7,10 +7,8 @@ namespace jian {
 namespace nuc3d {
 namespace mc {
 
-class MC1p : public MCxp {
+class MC1p : public MCxp<CG1p> {
 public:    
-    using cg_t = CG1p;
-
     #define MC1p_en_t_m len, ang, dih, crash, cons, vdw
     struct en_t {
         #define MC1p_en_t_m_def(a) double a = 0;
@@ -75,7 +73,7 @@ public:
     void mc_##name##_energy_bond(en_t &e) { \
         double d; \
         Mat arr = Mat::Zero(3, 3); \
-        for (int n = 0; n < _seq.size() - 1; n++) { \
+        for (auto && n : m_continuous_pts) { \
              cond { \
                 d = geom::distance(_pred_chain[n][0], _pred_chain[n+1][0]); \
                 e.len += _mc_bond_length_weight * square(d - 6.1); \
@@ -89,7 +87,7 @@ public:
     void mc_##name##_energy_angle(en_t &e) { \
         double d; \
         int len = _seq.size(); \
-        for (int i = 0; i < len - 2; i++) { \
+        for (auto && i : m_ang_pts) { \
              cond { \
                 d = geom::angle(_pred_chain[i][0],  \
                                 _pred_chain[i+1][0],  \
@@ -105,7 +103,7 @@ public:
     void mc_##name##_energy_dihedral(en_t &e) { \
         double d; \
         int len = _seq.size(); \
-        for (int i = 0; i < len - 3; i++) { \
+        for (auto && i : m_dih_pts) { \
             cond { \
                 d = geom::dihedral(_pred_chain[i][0],  \
                                    _pred_chain[i+1][0],  \
@@ -138,10 +136,6 @@ public:
     MC1P_ENERGY_CONSTRAINTS(partial,if (is_selected(row.key[0]) ^ is_selected(row.key[1])))
     MC1P_ENERGY_CONSTRAINTS(total,)
 
-    virtual void cg_to_aa(const Mat &c) {
-        _pred_chain = cg_t::aa(c, 0, c.rows() - 1);
-    }
-
     virtual double dist_two_res(const Residue &r1, const Residue &r2) const {
         return geom::distance(r1[0], r2[0]);
     }
@@ -150,11 +144,14 @@ public:
         en_t e;
         mc_total_energy(e);
         #define MC1p_print(a) << e.a << PP_STRING3((a)) << ' '
-        std::cout << _mc_step + 1 << ": " <<  e.sum() << "(total) "
-                  JN_MAP(MC1p_print, MC1p_en_t_m) << _mc_tempr << "(tempr) " << _mc_local_succ_rate << "(rate)" << std::endl;
+        LOG << _mc_step + 1 << ": " <<  e.sum() << "(total) "
+               JN_MAP(MC1p_print, MC1p_en_t_m) << _mc_tempr << "(tempr) " << _mc_local_succ_rate << "(rate)"  << std::endl;
     }
 
-    virtual void init_chain() = 0;
+    virtual std::string file_parameters() const {
+        return "mc1p";
+    }
+
     virtual void mc_select() = 0;
     virtual bool is_selected(const int &i) const = 0;
     virtual Vec rotating_center() const = 0;

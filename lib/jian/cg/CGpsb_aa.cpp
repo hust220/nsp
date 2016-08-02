@@ -92,7 +92,7 @@ public:
 
 };
 
-static PSB2AA psb;
+thread_local static PSB2AA psb;
 
 Chain CGpsb::aa(const Eigen::MatrixXd &c, int beg, int end) {
     return psb.run(c, std::vector<int>{beg, end});

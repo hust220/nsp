@@ -4,11 +4,11 @@
 #include "../matrix.hpp"
 
 namespace jian {
+namespace scoring {
 
-struct scoring {
-    static double new_score(const Model &model);
-    static double new_score(const Eigen::MatrixXd &mat, int index);
-};
+double new_score(const Model &model);
+double new_score(const Eigen::MatrixXd &mat, int index);
 
+}
 }
 

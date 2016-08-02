@@ -39,6 +39,8 @@ void Gradient::gradient() {
         g(i, j) = (C(3 * i + j, 2) - C(3 * i + j, 0)) / (2 * err);
         g2 += g(i, j) * g(i, j);
     }
+
+//    LOG << g2 << std::endl;
 }
 
 void Gradient::init_dihs() {

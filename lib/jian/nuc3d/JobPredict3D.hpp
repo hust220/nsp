@@ -2,8 +2,10 @@
 
 #include <string>
 #include <ctime>
+#include <fstream>
 #include "../pdb/Constraints.hpp"
 #include "../nuc2d/SSTree.hpp"
+#include "../utils/log.hpp"
 
 namespace jian {
 
@@ -40,6 +42,7 @@ public:
     std::string m_cmd;
 
     JobPredict3D();
+    ~JobPredict3D();
     JobPredict3D(const Par &pars);
     void set_constraints();
     void display_start_information();

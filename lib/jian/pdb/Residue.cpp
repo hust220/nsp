@@ -11,7 +11,7 @@
 namespace jian {
 
 auto Residue::get_sort_keys() {
-    static std::map<std::string, std::vector<std::string>> keys {
+    thread_local static std::map<std::string, std::vector<std::string>> keys {
         {"A",{"P","O1P","O2P",
               "O5*","C5*","C4*","O4*","C3*","O3*","C2*","O2*","C1*",
               "N9","C8","N7","C5","C6","N6","N1","C2","N3","C4"}},
@@ -37,7 +37,7 @@ auto Residue::get_sort_keys() {
 }
 
 void Residue::sort() {
-    static auto sort_keys = get_sort_keys();
+    thread_local static auto sort_keys = get_sort_keys();
     auto & keys = sort_keys;
     std::sort(this->begin(), this->end(), [&](auto &&a1, auto &&a2){
         return keys[name][a1.name] < keys[name][a2.name];

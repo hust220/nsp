@@ -1,3 +1,4 @@
+#include "../utils/log.hpp"
 #include "MC.hpp"
 
 namespace jian {
@@ -22,11 +23,11 @@ bool MC::mc_is_cooling() const {
 }
 
 void MC::mc_write() {
-    std::cout << __FUNCTION__ << "..." << std::endl;
+    LOG << __FUNCTION__ << "..." << std::endl;
 }
 
 void MC::mc_heat() {
-    std::cout << __FUNCTION__ << "..." << std::endl;
+    LOG << __FUNCTION__ << "..." << std::endl;
     _mc_state = 1;
     _mc_tempr = _mc_init_tempr;
     mc_base(_mc_heat_steps, [&](double rate){
@@ -43,7 +44,7 @@ void MC::mc_heat() {
 }
 
 void MC::mc_cool() {
-    std::cout << __FUNCTION__ << "..." << std::endl;
+    LOG << __FUNCTION__ << "..." << std::endl;
     _mc_state = 2;
     int n_rate = 0, n_en = 0;
     double en = 0;
@@ -70,15 +71,15 @@ double MC::mc_partial_energy() {
 }
 
 void MC::mc_select() {
-    std::cout << __FUNCTION__ << "..." << std::endl;
+    LOG << __FUNCTION__ << "..." << std::endl;
 }
 
 void MC::mc_sample() {
-    std::cout << __FUNCTION__ << "..." << std::endl;
+    LOG << __FUNCTION__ << "..." << std::endl;
 }
 
 void MC::mc_back() {
-    std::cout << __FUNCTION__ << "..." << std::endl;
+    LOG << __FUNCTION__ << "..." << std::endl;
 }
 
 } // namespace jian

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../utils/log.hpp"
 #include "Job.hpp"
 #include "Gradient.hpp"
 
@@ -15,8 +16,8 @@ public:
     void cg() {
         Mat d_o(len, 3), d_n(len, 3);
 
-//        log("Start CG...\n", 
-//            "step", ' ', "factor", ' ', "energy", ' ', "chirality\n");
+//        LOG << "Start CG..." <<  std::endl;
+//        LOG << "step" << ' ' << "factor" << ' ' << "energy" << ' ' << "chirality" << std::endl;
 
         double a = 0.0001, beta = 0;
         for (int i = 0; i < len; i++) for (int j = 0; j < 3; j++) d_o(i, j) = 0;
@@ -46,12 +47,11 @@ public:
                 for (int i = 0; i < len; i++) for (int j = 0; j < 3; j++) d_o(i, j) = d_n(i, j);
                 oldG2 = tempG2;
                 oldE = tempE;
-//                log(upd, ' ', a, ' ', _dist_en, ' ', _dih_en, '\n');
+//                LOG << upd << ' ' << a << ' ' << _dist_en << ' ' << _dih_en << std::endl;
                 if (_dist_en + _dih_en < 1.e-12 || g2 < 1.e-12) break;
             }
         }
-//        log("Finish CG.\n",
-//            "Energy: ", total_dist_energy(c), "(dist) ", total_dih_energy(), "(chir)\n\n");
+//        LOG << "Finish CG.\n"<< "Energy: "<< total_dist_energy(c)<< "(dist) "<< total_dih_energy()<< "(chir)\n" << std::endl;
     }
 
 };

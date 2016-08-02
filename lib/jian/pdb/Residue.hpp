@@ -11,9 +11,7 @@ class Residue : public std::deque<Atom> {
 public:
     int num = -1;
     std::string name = "X";
-    std::string type = "unknown";
 
-//    Residue() {}
     static auto get_sort_keys();
     void sort();
     std::string format_name(const std::string &s);

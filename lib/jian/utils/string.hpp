@@ -14,12 +14,15 @@
 
 namespace jian {
 
-void tokenize(const std::string &str, std::vector<std::string> &tokens, const std::string &delimiters = " ");
-void tokenize(const std::string &str, std::vector<std::string> &tokens, const std::string &delimiters, const std::string &temp);
-std::string upper(const std::string &str);
-std::string lower(const std::string &str);
-std::string &trim(std::string &);
-std::string trim_copy(const std::string &);
+using str_t = std::string;
+using tokenize_v_t = std::vector<str_t>;
+void tokenize(const str_t &str, tokenize_v_t &tokens, const str_t &delimiters = " ");
+void tokenize(const str_t &str, tokenize_v_t &tokens, const str_t &delimiters, const str_t &temp);
+
+str_t upper(const str_t &str);
+str_t lower(const str_t &str);
+str_t &trim(str_t &);
+str_t trim_copy(const str_t &);
 
 } // namespace jian
 

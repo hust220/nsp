@@ -96,7 +96,8 @@ inline double dihedral(const P1 &p1, const P2 &p2, const P3 &p3, const P4 &p4) {
         b1_ = b1; b2_ = c * b2 - s * b3; b3_ = s * b2 + c * b3;
         c1_ = c1; c2_ = c * c2 - s * c3; c3_ = s * c2 + c * c3;
     }
-    if (c2_ * c2_ + c3_ * c3_ == 0) throw "jian::geom::dihedral error!";
+//    if (c2_ * c2_ + c3_ * c3_ == 0) throw "jian::geom::dihedral error!";
+    if (c2_ * c2_ + c3_ * c3_ == 0) return 0;
     double temp = acos(c3_ / sqrt(c2_ * c2_ + c3_ * c3_));
     if (c2_ > 0) {
         temp = -temp;

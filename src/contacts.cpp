@@ -31,7 +31,7 @@ REGISTER_NSP_COMPONENT(contacts) {
     Chain c = residues_from_file(par[std::vector<std::string>{"pdb", "p"}][0]);
     int len = c.size();
     for (int i = 0; i < len; i++) {
-        for (int j = i + 1; j < len; j++) {
+        for (int j = i + 3; j < len; j++) {
             if (min_distance(c[i], c[j]) < std::stoi(par[std::vector<std::string>{"cutoff", "c"}][0])) {
                 std::cout << i+1 << ' ' << c[i].name << ' ' << j+1 << ' ' << c[j].name << std::endl;
                 if (par.has("write")) {

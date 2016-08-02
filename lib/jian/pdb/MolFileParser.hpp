@@ -20,6 +20,7 @@ struct MolParsedLine {
     double x, y, z;
 };
 
+
 class MolFileParser {
 public:
     using parser_creater_t = std::function<MolFileParser *(const std::string &)>;
@@ -30,6 +31,7 @@ public:
     MolFileParser(const std::string &f);
     ~MolFileParser();
     virtual MolParsedLine *line() = 0;
+
 protected:
     std::ifstream ifile;
 };

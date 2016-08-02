@@ -1,32 +1,69 @@
 #include "nsp.hpp"
 #include <thread>
 #include <jian/nuc3d/Ass.hpp>
-#include <jian/nuc3d/MCpsb.hpp>
-#include <jian/nuc3d/triple/TriPred.hpp>
+#include <jian/nuc3d/DHMC.hpp>
+#include <jian/nuc3d/triple/THMC.hpp>
+#include <jian/nuc3d/quadruple/QHMC.hpp>
 #include <jian/pdb/utils/cluster_chains.hpp>
 
 namespace jian {
 
-static void refine(const Par &par, const Chain &chain, int i) {
-    std::ostringstream stream;
-    nuc3d::MCpsb mc(par);
-    mc._pred_chain = chain;
-    mc.predict();
-    stream << mc._name << ".3drna." << i+1 << ".pdb";
-    residues_to_file(mc._pred_chain, stream.str());
+void jian_3drna_refine(const Par &par, const Chain &chain, int i) {
+    try {
+        std::string name;
+        par.set(name, "name", "job");
+
+        std::ostringstream stream;
+        stream << name << ".3drna." << i+1 << ".log";
+        log_file(stream.str());
+
+
+        nuc3d::DHMC<nuc3d::mc::MCpsb> mc(par);
+        mc._pred_chain = chain;
+
+        stream.clear();
+        stream.str("");
+        stream << name << ".3drna.traj." << i+1 << ".pdb";
+        mc.m_traj = stream.str();
+
+        mc.run();
+
+        stream.clear();
+        stream.str("");
+        stream << mc._name << ".3drna." << i+1 << ".pdb";
+        residues_to_file(mc._pred_chain, stream.str());
+    } catch (const char *c) {
+        LOG << c << std::endl;
+        exit(1);
+    }
 }
 
-static void tripred(const Par &par, int i) {
-    nuc3d::triple::TriPred<nuc3d::mc::MCpsb> tri(par);
-    seed(tri.m_seed + i);
-    tri.predict();
+void jian_3drna_tripred(const Par &par, int i) {
+    std::string name;
+    par.set(name, "name", "job");
+
     std::ostringstream stream;
+    stream << name << ".3drna." << i+1 << ".log";
+    log_file(stream.str());
+
+    nuc3d::triple::THMC<nuc3d::mc::MCpsb> tri(par);
+    seed(tri.m_seed + i);
+
+    stream.clear();
+    stream.str("");
+    stream << name << ".3drna.traj." << i+1 << ".pdb";
+    tri.m_traj = stream.str();
+
+    tri.run();
+
+    stream.clear();
+    stream.str("");
     stream << tri._name << ".3drna." << i+1 << ".pdb";
     residues_to_file(tri._pred_chain, stream.str());
 }
 
 REGISTER_NSP_COMPONENT(3drna) {
-    int n;
+    int n = 5;
     par.set(n, "n", "num", "number");
     assert(n <= 8);
 
@@ -39,45 +76,52 @@ REGISTER_NSP_COMPONENT(3drna) {
     if (pred_type == "triplex") {
         std::thread t[n];
         for (int i = 0; i < n; i++) {
-            t[i] = std::thread(tripred, par, i);
+            t[i] = std::thread(jian_3drna_tripred, par, i);
         }
         for (int i = 0; i < n; i++) {
             t[i].join();
         }
     } else {
+        LOG << "# Initializing Assemble Class..." << std::endl;
         nuc3d::Assemble ass(par);
+        LOG << "# Selecting templates..." << std::endl;
         ass.select_templates();
 
         if (std::find_if(ss.begin(), ss.end(), [](auto &&c){return c != '.' && c != '(' && c != ')';}) != ss.end() || ass.lack_templates()) {
             std::thread t[n];
             for (int i = 0; i < n; i++) {
+                LOG << "# Assembling..." << std::endl;
                 ass.assemble();
-                t[i] = std::thread(refine, par, ass._pred_chain, i);
+                LOG << "# Thread " << i+1 << " for mc..." << std::endl;
+                t[i] = std::thread(jian_3drna_refine, par, ass._pred_chain, i);
+                LOG << "# Sample all templates..." << std::endl;
                 ass.sample_all_templates();
             }
+            LOG << "All threads created..." << std::endl;
 
             for (int i = 0; i < n; i++) {
                 t[i].join();
             }
+            LOG << "All done..." << std::endl;
         } else {
-            std::cout << "Start sampling..." << std::endl;
+            LOG << "Start sampling..." << std::endl;
             std::deque<Chain> chains;
             for (int i = 0; i < ass._num_sampling; i++) {
                 ass.assemble();
                 chains.push_back(std::move(ass._pred_chain));
                 ass.sample_one_template();
             }
-            std::cout << "# Totally " << chains.size() << " models sampled." << std::endl;
+            LOG << "# Totally " << chains.size() << " models sampled." << std::endl;
 
-            std::cout << "# Clustering..." << std::endl;
+            LOG << "# Clustering..." << std::endl;
             auto result = pdb::cluster_chains(chains, n);
 
             for (int i = 0; i < n; i++) {
                 std::ostringstream stream;
                 stream << ass._name << ".3drna." << i+1 << ".pdb";
-//                std::cout << result[i][0] << std::endl;
-//                std::cout << chains[result[i][0]] << std::endl;
-                residues_to_file(chains[result[i][0]], stream.str());
+                std::string f = stream.str();
+                LOG << "# Writing " << f << "..." << std::endl;
+                residues_to_file(chains[result[i][0]], f);
             }
         }
     }

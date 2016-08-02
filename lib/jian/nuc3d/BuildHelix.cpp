@@ -7,9 +7,8 @@
 
 namespace jian {
 
-static std::string lib = Env::lib() + "/RNA";
-
 Model build_helix(std::string seq) {
+    std::string lib = Env::lib() + "/RNA";
     if (seq.size() < 2 || seq.size() % 2 == 1) {
         throw std::string("jian::BuildHelix::operator (std::string) error! Unreasonable length.\nSequence: ") + seq;
     } else if (seq.size() == 2) {

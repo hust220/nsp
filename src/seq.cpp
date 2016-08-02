@@ -23,7 +23,21 @@ REGISTER_NSP_COMPONENT(seq) {
         }
         std::cout << "This molecule has no chain named " << par["chain"][0] << std::endl;
     } else {
-        std::cout << seq(m) << std::endl;
+        std::vector<std::string> r {"A", "U", "G", "C"};
+        std::vector<std::string> d {"DA", "DT", "DG", "DC"};
+        std::string seq;
+        for (auto && chain : m) {
+            for (auto && res : chain) {
+                if (std::find(r.begin(), r.end(), res.name) != r.end()) {
+                    seq += res.name;
+                } else if (std::find(d.begin(), d.end(), res.name) != d.end()) {
+                    seq += res.name.back();
+                } else {
+                    seq += 'X';
+                }
+            }
+        }
+        std::cout << seq << std::endl;
     }
 }
 

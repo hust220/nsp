@@ -1,13 +1,15 @@
+#include <mutex>
 #include <iomanip>
 #include <set>
 #include <boost/format.hpp>
-//#include <boost/algorithm/string.hpp>
 #include "Chain.hpp"
-#include "MolFileParser.hpp"
+#include "PdbFileParser.hpp"
 #include "../utils/Debug.hpp"
 #include "../utils/file.hpp"
 
 namespace jian {
+
+static std::mutex mt;
 
 std::ostream &operator <<(std::ostream &output, const Chain &chain) {
     int atom_num = 1;
@@ -17,8 +19,6 @@ std::ostream &operator <<(std::ostream &output, const Chain &chain) {
         for (auto &&atom: residue) {
             std::string atom_name(atom.name);
             std::replace(atom_name.begin(), atom_name.end(), '*', '\'');
-//            std::string atom_name = boost::replace_all_copy(atom.name, "*", "'");
-//            if (residue_num == 1 and std::set<std::string>{"P", "O1P", "O2P"}.count(atom_name)) continue;
             output << boost::format("ATOM%7i  %-4s%3s%2s%4i%12.3lf%8.3lf%8.3lf%6.2f%6.2f%12c  \n") % 
                                     atom_num % atom_name % residue.name % chain.name % residue_num % 
                                     atom[0] % atom[1] % atom[2] % 1.00 % 0.00 % atom_name[0];
@@ -30,11 +30,14 @@ std::ostream &operator <<(std::ostream &output, const Chain &chain) {
 }
 
 Chain residues_from_file(const std::string &f) {
+    std::lock_guard<std::mutex> gd(mt);
     Residue residue;
     Chain chain;
     std::string file_name = file::name(f);
     std::string file_type = file::type(f);
-    MolFileParser *parser = MolFileParser::s_parsers[file_type](f);
+//std::cout << "pasers: " << MolFileParser::s_parsers.size() <<std::endl;
+//    MolFileParser *parser = MolFileParser::s_parsers[file_type](f);
+    MolFileParser *parser = new PdbFileParser(f);
     MolParsedLine *line = NULL, *old_line = NULL;
     chain.name = "X";
     chain.model_name = file_name;

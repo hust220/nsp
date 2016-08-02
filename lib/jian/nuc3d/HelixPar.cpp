@@ -27,13 +27,13 @@ public:
     }
 };
 
-thread_local static HelixParImpl g_impl;
+HelixParImpl l_helix_par_impl;
 
-double HelixPar::dih_backbone = g_impl.dih_backbone;
+double HelixPar::dih_backbone = l_helix_par_impl.dih_backbone;
 
-double HelixPar::dist_bp = g_impl.dist_bp;
+double HelixPar::dist_bp = l_helix_par_impl.dist_bp;
 
-double HelixPar::dist_bond = g_impl.dist_bond;
+double HelixPar::dist_bond = l_helix_par_impl.dist_bond;
 
 double HelixPar::dist_a(int n) {
     return std::sqrt(2*9.7*9.7*(1-std::cos(0.562*n-2*PI))+(2.84*n)*(2.84*n));
@@ -52,7 +52,7 @@ double HelixPar::dist_d(int n) {
 }
 
 double HelixPar::dih(int n) {
-    return g_impl.dihs[n-1];
+    return l_helix_par_impl.dihs[n-1];
 }
 
 } // namespace jian

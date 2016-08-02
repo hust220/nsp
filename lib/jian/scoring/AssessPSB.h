@@ -13,7 +13,6 @@ public:
     using val_t = double;
     using diff_t = struct {val_t dist, ang1, ang2, dih;};
 
-    Log log;
     pdb::PSB _model;
 
     std::array<val_t, 3> _weight_bond_length;

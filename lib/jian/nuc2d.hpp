@@ -3,6 +3,7 @@
 #include "nuc2d/NucSS.hpp"
 #include "nuc2d/SSTree.hpp"
 #include "nuc2d/loop.hpp"
+#include "nuc2d/helix.hpp"
 //#include "nuc2d/Seq2Ss.hpp"
 //#include "nuc2d/Seq2Tri.hpp"
 //#include "nuc2d/Seq2Qua.hpp"

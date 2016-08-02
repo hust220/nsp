@@ -4,7 +4,7 @@
 
 namespace jian {
 
-std::map<std::string, std::function<MolFileParser *(const std::string &)>> MolFileParser::s_parsers;
+MolFileParser::factory_t MolFileParser::s_parsers;
 
 MolFileParser::MolFileParser(const std::string &f) {
     ifile.open(f);

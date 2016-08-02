@@ -1,5 +1,8 @@
-#ifndef JIAN_NUC3D_TEMPLREC_H
-#define JIAN_NUC3D_TEMPLREC_H
+#pragma once
+
+#include <string>
+
+namespace jian {
 
 class TemplRec {
 public:
@@ -7,15 +10,14 @@ public:
     std::string _seq;
     std::string _ss;
     std::string _family;
-    int _len;
+    std::string _src;
+    int _len = 0;
     int _type;
-    double _score;
+    double _score = 0;
 };
 
+bool set_loop_rec(TemplRec &, const std::string &);
+bool set_helix_rec(TemplRec &, const std::string &);
 
-
-
-
-
-#endif
+}
 

@@ -1,17 +1,16 @@
 #pragma once
 
+#include <iostream>
+#include <set>
 #include <sstream>
 #include "../pdb.hpp"
 #include "../geom.hpp"
 #include "../nuc2d.hpp"
+#include "../utils/rand.hpp"
 #include "TemplRec.hpp"
 #include "transform.hpp"
-#include "AddPhos.hpp"
-#include "BuildStrand.hpp"
-#include "BuildLoop.hpp"
 #include "BuildLoopDG.hpp"
 #include "JobPredict3D.hpp"
-#include "CG2AA.hpp"
 
 namespace jian {
 namespace nuc3d {
@@ -22,6 +21,7 @@ public:
 
     std::map<loop *, std::pair<std::deque<TemplRec>, std::deque<TemplRec>>> _records;
     std::map<loop *, std::pair<Chain, Chain>> _templates;
+    std::map<loop *, std::pair<TemplRec, TemplRec>> m_selected_record;
     int _it_num = 0;
     std::map<loop *, bool> _is_virtual;
     std::map<loop *, bool> _is_sampled;
@@ -29,27 +29,30 @@ public:
     Chain _pred_chain;
     std::set<std::string> _suppos_atoms{"C5*", "O3*", "C1*"};
     bool m_sample = false;
+    std::string m_sample_mode = "sample_one";
 
-    BuildStrand build_strand;
-    BuildLoop build_loop;
     BuildLoopDG build_loop_dg;
 
     Assemble(const Par &par) : JobPredict3D(par) {
         m_sample = par.has("sample");
+        par.set(m_sample_mode, "sample_mode");
 
-        Debug::println("# Check input");
+        LOG << "# Check input" << std::endl;
         if (!NucSS::check_ss(_ss)) throw "The secondary structure includes illegal characters!";
 
-        Debug::println("# Construct 2D Structure Tree");
+        LOG << "# Construct 2D Structure Tree" << std::endl;
         _ss_tree.make(_seq, _ss, _hinge);
 
-        Debug::println("# Set Virtual Loops");
+        LOG << "# Set Virtual Loops" << std::endl;
         set_virtual_loops();
 
-        Debug::println("# Searching Templates");
+        LOG << "# Searching Templates..." << std::endl;
         find_templates();
 
-        Debug::println("# Set the Loops to be Sampled");
+        LOG << "# Printing records..." << std::endl;
+        print_records();
+
+        LOG << "# Set the Loops to be Sampled" << std::endl;
         set_loops_sampled();
 
     }
@@ -99,23 +102,29 @@ public:
         int n;
 
         predict_one();
-        std::cout << "# Writing assembly structure." << std::endl;
-        if (_par->has("pdb")) {
-            residues_to_file(_pred_chain, (*_par)["pdb"][0]);
+        LOG << "# Writing assembly structure." << std::endl;
+        if (_par->has("out")) {
+            residues_to_file(_pred_chain, (*_par)["out"][0]);
         } else {
             stream << _name << ".assemble.pdb";
             residues_to_file(_pred_chain, stream.str());
         }
         if (m_sample) {
             n = 1;
-            std::cout << "# Writing sampling structure " << n << std::endl;
+            LOG << "# Writing sampling structure " << n << std::endl;
             stream.str("");
             stream << _name << ".assemble." << n << ".pdb";
             residues_to_file(_pred_chain, stream.str());
             for (n = 2; n <= _num; n++) {
-                sample_one_template();
+                if (m_sample_mode == "sample_one") {
+                    sample_one_template();
+                } else if (m_sample_mode == "sample_all") {
+                    sample_all_templates();
+                } else {
+                    throw "Illegal sampling mode!";
+                }
                 assemble();
-                std::cout << "# Writing sampling structure " << n << std::endl;
+                LOG << "# Writing sampling structure " << n << std::endl;
                 stream.str("");
                 stream << _name << ".assemble." << n << ".pdb";
                 residues_to_file(_pred_chain, stream.str());
@@ -124,12 +133,28 @@ public:
     }
 
     void predict_one() {
-        Debug::print("# Select Templates\n");
+        LOG << "# Select Templates" << std::endl;
         select_templates(); 
-        Debug::print("# Print Templates\n");
+
+        LOG << "# Print Templates" << std::endl;
         print_templates();
-        Debug::print("# Assemble\n");
+
+        LOG << "# Assemble" << std::endl;
         assemble();
+    }
+
+    double score_templates() {
+        double e = 0;
+        for (auto && pair : _records) {
+            auto & l = pair.first;
+            if (l->has_loop()) {
+                e += m_selected_record[l].first._score;
+            }
+            if (l->has_helix()) {
+                e += m_selected_record[l].second._score;
+            }
+        }
+        return e;
     }
 
     bool lack_templates() {
@@ -144,17 +169,22 @@ public:
     }
 
     void print_templates() {
-        LOOP_TRAVERSE(_ss_tree.head(), Debug::print(L, " : ", _templates[L].first.model_name, ' ', _templates[L].second.model_name, '\n'));
+        LOOP_TRAVERSE(_ss_tree.head(), LOG << L << " : " << _templates[L].first.model_name << ' ' << _templates[L].second.model_name << std::endl;);
     }
 
     void assemble() {
-        std::cout << "# Print Templates." << std::endl;
+        LOG << "## Score of Templates: " << score_templates() << std::endl;
+
+        LOG << "## Print Templates." << std::endl;
         print_templates();
-        std::cout << "# Position Templates." << std::endl;
+
+        LOG << "## Position Templates." << std::endl;
         position_templates();
-        std::cout << "# Assemble Templates." << std::endl;
+
+        LOG << "## Assemble Templates." << std::endl;
         assemble_templates(_ss_tree.head());
-        std::cout << "# Transform." << std::endl;
+
+        LOG << "## Transform." << std::endl;
         this->transform();
     }
 
@@ -170,12 +200,15 @@ public:
                 if (_records[L].first.empty()) {
                     build_loop_dg.init(L->seq(), NucSS::lower_ss(L->ss())); 
                     _templates[L].first = build_loop_dg();
+                    m_selected_record[L].first = TemplRec{};
                 } else {
                     _templates[L].first = load_pdb(_records[L].first[0]);    
+                    m_selected_record[L].first = _records[L].first[0];
                 }
             }
             if (L->has_helix()) {
                 _templates[L].second = load_pdb(_records[L].second[0]);
+                m_selected_record[L].second = _records[L].second[0];
             }
         );
     }
@@ -197,28 +230,25 @@ public:
         if (_records[l].first.empty()) {
             build_loop_dg.init(l->seq(), NucSS::lower_ss(l->ss())); 
             _templates[l].first = build_loop_dg();
+            m_selected_record[l].first = TemplRec{};
         } else {
             int n = int(rand() * _records[l].first.size());
             _templates[l].first = load_pdb(_records[l].first[n]);    
+            m_selected_record[l].first = _records[l].first[n];
         }
     }
 
     loop *select_loop() {
-        int i = 0;
-        int n = int(_templates.size() * rand());
-        loop *l;
-
-        for (auto && pair : _templates) {
-            if (n == i) {
-                l = pair.first;
-                if (l->has_loop()) {
-                    return l;
-                } else {
-                    return select_loop();
-                }
+        std::deque<loop *> ls;
+        for (auto && pair : _records) {
+            auto &l = pair.first;
+            if (l->has_loop()) {
+                ls.push_back(l);
             }
-            i++;
         }
+        assert(!ls.empty());
+        int n = int(ls.size() * jian::rand());
+        return ls[n];
     }
 
     Chain load_pdb(const TemplRec &templ_res, const std::string &type = "") {
@@ -232,7 +262,6 @@ public:
         LOOP_TRAVERSE(l,
 //L->print();
             if (L->has_loop()) {
-//std::cout << num_residues(_templates[L].first) << std::endl;
                 auto &temp_residues = _templates[L].first;
                 int i = 0;
                 LOOP_EACH(L,
@@ -355,85 +384,24 @@ public:
         return mats;
     }
 
-    std::list<std::vector<int>> get_strands(loop *l) {
-        std::vector<std::vector<int>> fsm{{1, 0}, {1, 0}};
-        auto type_id = [](char c){
-            if (std::count_if(std::next(NucSS::instance().paired_keys.begin(), 1), NucSS::instance().paired_keys.end(), [&](const std::pair<char, char> &pair){
-                return c == pair.first || c == pair.second;
-            }) || std::count(NucSS::instance().unpaired_keys.begin(), NucSS::instance().unpaired_keys.end(), c)) return 0; 
-            else return 1;
-        };
-        int index = -1, left_index = -1, right_index = -1, state = 0;
-        std::list<std::vector<int>> strands;
-        LOOP_EACH(l,
-            if (RES->type != '&') {
-                auto new_state = fsm[state][type_id(RES->type)];
-                index = RES->num - 1;
-                if (new_state == 1 && state == 0) left_index = index;
-                else if (new_state == 0 && state == 1) {
-                    right_index = index;    
-                    std::vector<int> vec(right_index - left_index);
-                    std::iota(vec.begin(), vec.end(), left_index);
-                    strands.push_back(vec);
-                }
-                state = new_state;
-            }
-        );
-        if (left_index > right_index) {
-            std::vector<int> vec(index - left_index + 1);
-            std::iota(vec.begin(), vec.end(), left_index);
-            strands.push_back(vec);
-        }
-        return strands;
-    }
-
-    template<typename T, typename U>
-    Chain make_strand(T &&residues, U &&vec) {
-        int len = residues.size();
-        Debug::print("make strand ("); for (auto i : vec) Debug::print(i, ' '); Debug::println(")...");
-        Mat a, b;
-        if (vec[0] >= 2) {
-            a.resize(2, 3);
-            for (int i = 0; i < 3; i++) {
-                a(0, i) = residues[vec[0] - 2]["C4*"][i];
-                a(1, i) = residues[vec[0] - 1]["C4*"][i];
-            }
-        }
-        if (vec.back() <= len - 3) {
-            b.resize(2, 3);
-            for (int i = 0; i < 3; i++) {
-                b(0, i) = residues[vec.back() + 1]["C4*"][i];
-                b(1, i) = residues[vec.back() + 2]["C4*"][i];
-            }
-        }
-        return build_strand(vec.size(), a, b);
-    }
-
-    void build_strands(Chain &chain) {
-        int len = chain.size();
-        LOOP_TRAVERSE(_ss_tree.head(),
-            if (_is_virtual[L]) for (auto &&strand : get_strands(L)) {
-                auto strand_residues = make_strand(chain, strand);
-                for (int i = 0; i < strand.size(); i++) chain[strand[i]] = strand_residues[i];
-            }
-        );
-    }
-
     void find_templates() {
         LOOP_TRAVERSE(_ss_tree.head(), 
             _find_self[L] = false;
             find_loop_records(L); 
             find_helix_records(L)
         );
-        print_records();
     }
 
     void print_records() {
-        Debug::println("Records searching results:");
+        LOG << "Records searching results:" << std::endl;
         LOOP_TRAVERSE(_ss_tree.head(),
-            Debug::println("Hairpin(", L, "):");
-            Debug::println("  ", L->s, " (", _records[L].second.size(), ")");
-            Debug::println("  ", *L, " (", _records[L].first.size(), ")");
+            LOG << "Hairpin(" << L << "):" << std::endl;
+            if (L->has_helix()) {
+                LOG << "  Helix " << std::string(L->s) << " (" << _records[L].second.size() << ")" << std::endl;
+            }
+            if (L->has_loop()) {
+                LOG << "  Loop " << std::string(*L) << " (" << _records[L].first.size() << ")" << std::endl;
+            }
         );
     }
 
@@ -448,19 +416,19 @@ public:
         if (!ifile) throw "jian::FindTemplates error! Can't find '" + info_file + "'!";
 
         TemplRec templ_rec;
+        std::string line;
         int num = 0;
-        while (ifile >> templ_rec._name >> templ_rec._type >> templ_rec._seq >> templ_rec._ss >> templ_rec._family) {
-//            if (templ_rec._name.substr(0, 4) == _disused_pdb) {
-            if (std::find(m_disused_pdbs.begin(), m_disused_pdbs.end(), templ_rec._name.substr(0, 4)) != m_disused_pdbs.end()) {
+        while (std::getline(ifile, line) && set_loop_rec(templ_rec, line)) {
+            if (std::find(m_disused_pdbs.begin(), m_disused_pdbs.end(), templ_rec._src) != m_disused_pdbs.end()) {
                 continue;
             } else if (_is_virtual[l] && templ_rec._type == num_sons) {
                 templ_rec._score = 0;
-                if (templ_rec._name.substr(0, 4) == _name.substr(0, 4)) {
+                if (templ_rec._src == _name) {
                     if (_is_test) continue; else templ_rec._score += 5;
                 }
                 _records[l].first.push_back(templ_rec);
                 num++;
-                if ((!(_source_pdb.empty())) && (templ_rec._name.substr(0, 4) == _source_pdb.substr(0, 4))) {
+                if ((!(_source_pdb.empty())) && (templ_rec._src == _source_pdb)) {
                     _records[l].first.clear(); 
                     _records[l].first.push_back(templ_rec);
                     num = 1;
@@ -469,7 +437,7 @@ public:
                 }
             } else if (NucSS::pure_ss(NucSS::lower_ss(templ_rec._ss, 1)) == lower_ss) {
                 templ_rec._score = (templ_rec._ss == ss ? 5 : 0);
-                if (templ_rec._name.substr(0, 4) == _name.substr(0, 4)) {
+                if (templ_rec._src == _name) {
                     if (_is_test) continue; else templ_rec._score += 5;
                 }
                 if (templ_rec._family == family && family != "other") {
@@ -488,7 +456,7 @@ public:
                 }
                 _records[l].first.push_back(templ_rec);
                 num++;
-                if ((!(_source_pdb.empty())) && (templ_rec._name.substr(0, 4) == _source_pdb.substr(0, 4))) {
+                if ((!(_source_pdb.empty())) && (templ_rec._src == _source_pdb)) {
                     _records[l].first.clear(); 
                     _records[l].first.push_back(templ_rec);
                     num = 1;
@@ -500,7 +468,6 @@ public:
         ifile.close();
         std::sort(_records[l].first.begin(), _records[l].first.end(), []( const TemplRec &loop1, const TemplRec &loop2) {
             return loop1._score > loop2._score; });
-//        _loop_nums_table.push_back(std::make_tuple(l, num_sons, num, 0));
     }
 
     void find_helix_records(loop *l) {
@@ -514,15 +481,18 @@ public:
         if (!ifile) throw "jian::FindTemplates error! Can't find '" + info_file + "'!";
 
         TemplRec templ_rec;
+        std::string line;
         int num = 0;
-        while (ifile >> templ_rec._name >> templ_rec._len >> templ_rec._seq >> templ_rec._ss >> templ_rec._family) {
-            if (templ_rec._len == len) {
+        while (std::getline(ifile, line) && set_helix_rec(templ_rec, line)) {
+            /* if (std::find(m_disused_pdbs.begin(), m_disused_pdbs.end(), templ_rec._src) != m_disused_pdbs.end()) {
+                continue;
+            } else */ if (templ_rec._len == len) {
                 templ_rec._score = 0;
-                if (templ_rec._name.substr(0, 4) == _name.substr(0, 4)) {
-                    if (_is_test) continue; else templ_rec._score += 5;
+                if (templ_rec._src == jian::upper(_name)) {
+                    templ_rec._score += 5;
                 }
                 if (templ_rec._family == family && family != "other") {
-                    if (_is_test) continue; else templ_rec._score += 2;
+                    templ_rec._score += 2;
                 }
                 for (int i = 0; i < templ_rec._seq.size(); i++) {
                     if (seq[i] == templ_rec._seq[i]) {
@@ -536,7 +506,6 @@ public:
         ifile.close();
         std::sort(_records[l].second.begin(), _records[l].second.end(), []( const TemplRec &loop1, const TemplRec &loop2) {
             return loop1._score > loop2._score; });
-//        for (auto &&tuple: _loop_nums_table) if (std::get<0>(tuple) == l) {std::get<3>(tuple) = num; break;}
     }
 
 };

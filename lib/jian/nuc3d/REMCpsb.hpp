@@ -5,11 +5,12 @@
 #include <memory>
 #include <sstream>
 #include "../mc.hpp"
-#include "../utils/file.hpp"
 #include "../scoring/score_psb.hpp"
 #include "../pdb.hpp"
 #include "../geom.hpp"
 #include "../nuc2d.hpp"
+#include "../utils/file.hpp"
+#include "../utils/log.hpp"
 #include "BuildHelix.hpp"
 #include "transform.hpp"
 #include "TemplRec.hpp"
@@ -85,7 +86,7 @@ public:
         Par temp_par(Env::lib() + "/RNA/pars/nuc3d/mcpsb/mc.par");
         #define JN_REMCPSB_TEMPPAR_SET(a) temp_par.set(PP_CAT(_mc_, a), PP_STRING3(PP_CAT(mc_, a)));
         JN_MAP(JN_REMCPSB_TEMPPAR_SET, JN_REMC_PARS2)
-        std::cout << PP_STRING3(PP_CAT(mc_, bond_angle_weight)) << std::endl;
+        LOG << PP_STRING3(PP_CAT(mc_, bond_angle_weight)) << std::endl;
 
         std::map<char, int> m{{'A', 0}, {'U', 1}, {'G', 2}, {'C', 3}};
         _pred_chain = residues_from_file(par["pdb"][0]);
@@ -109,11 +110,11 @@ public:
 
 
         #define JN_REMCPSB_PAR_SET(a) par.set(PP_CAT(_mc_, a), PP_STRING3(PP_CAT(mc_, a)));
-        std::cout << "# Set parameters" << std::endl;
+        LOG << "# Set parameters" << std::endl;
         JN_MAP(JN_REMCPSB_PAR_SET, JN_REMC_PARS1, JN_REMC_PARS2)
 
-        std::cout << "# Print parameters" << std::endl;
-        #define JN_REMCPSB_TEMP(a) std::cout << PP_STRING3(PP_CAT(mc_, a)) << ' ' << PP_CAT(_mc_, a) << std::endl;
+        LOG << "# Print parameters" << std::endl;
+        #define JN_REMCPSB_TEMP(a) LOG << PP_STRING3(PP_CAT(mc_, a)) << ' ' << PP_CAT(_mc_, a) << std::endl;
         JN_MAP(JN_REMCPSB_TEMP, JN_REMC_PARS1, JN_REMC_PARS2)
 
     }
@@ -190,7 +191,7 @@ public:
                         n++;
                     }
                 );
-//                std::cout << flag << ' ' << n << std::endl;
+//                LOG << flag << ' ' << n << std::endl;
                 if (flag == 0 && n <= 14) {
                     return true;
                 } else {
@@ -269,7 +270,7 @@ public:
         append_chain_to_file(_pred_chain, name, n);
         en_t e;
         mc_total_energy(e);
-        std::cout << _mc_step + 1 << ": " <<  e.sum() << "(total) " << e.crash << "(crash) " << e.len << "(bond) " << e.ang << "(ang) " << e.dih << "(dih) " << e.cons << "(c) "<< e.stacking << "(stacking) "  << e.pairing << "(pairing) " << _mc_tempr << "(tempr) " << _mc_local_succ_rate << "(rate)" << std::endl;
+        LOG << _mc_step + 1 << ": " <<  e.sum() << "(total) " << e.crash << "(crash) " << e.len << "(bond) " << e.ang << "(ang) " << e.dih << "(dih) " << e.cons << "(c) "<< e.stacking << "(stacking) "  << e.pairing << "(pairing) " << _mc_tempr << "(tempr) " << _mc_local_succ_rate << "(rate)" << std::endl;
         n++;
     }
 
@@ -366,7 +367,7 @@ public:
         set_pseudo_knots();
         Debug::print("# Coarse Grained\n");
         _pred_chain = cg_psb_chain(_pred_chain);
-        std::cout << "# Init space..." << std::endl;
+        LOG << "# Init space..." << std::endl;
         init_space();
         Debug::print("# REMC...\n");
         REMC::run();
@@ -374,9 +375,9 @@ public:
         print_constraints();
         Debug::println("# Coarsed Grained To All Atom...");
         coarse_grained_to_all_atom();
-        std::cout << "# Transform." << std::endl;
+        LOG << "# Transform." << std::endl;
         this->transform();
-        std::cout << "# Writing to file." << std::endl;
+        LOG << "# Writing to file." << std::endl;
         std::ostringstream stream;
         stream << _name << ".sample." << m_seed << ".pdb";
         residues_to_file(_pred_chain, stream.str());
@@ -401,7 +402,7 @@ public:
             }
         }
         _pred_chain = psb2aa(c, 0, num_atoms-1);
-//        std::cout << _pred_chain << std::endl;
+//        LOG << _pred_chain << std::endl;
     }
 
     void print_constraints() {
@@ -411,7 +412,7 @@ public:
             i = ct.key[0];
             j = ct.key[1];
             d = geom::distance(residue_center(_pred_chain[i]), residue_center(_pred_chain[j]));
-            std::cout << i << ' ' << j << " value:" << ct.value << " weight:" << ct.weight << " dist:" << d << std::endl;
+            LOG << i << ' ' << j << " value:" << ct.value << " weight:" << ct.weight << " dist:" << d << std::endl;
         }
     }
 
@@ -486,9 +487,9 @@ public:
                     for (int j = 0; j < 3; j++) {
                         d = std::fabs(m(i, j) - m_pairing_pars[i][j]);
                         if (d > 1) { 
-//                            std::cout << a << ' ' << b << ' ' << i << ' ' << j << ' ' << m(i, j) << ' ' << m_pairing_pars[i][j] << ' ' << d << std::endl;
-//                            for (int k = 0; k < 3; k++) std::cout << _pred_chain[a][0][k] << ' '; std::cout << std::endl;
-//                            for (int k = 0; k < 3; k++) std::cout << _pred_chain[b][0][k] << ' '; std::cout << std::endl;
+//                            LOG << a << ' ' << b << ' ' << i << ' ' << j << ' ' << m(i, j) << ' ' << m_pairing_pars[i][j] << ' ' << d << std::endl;
+//                            for (int k = 0; k < 3; k++) LOG << _pred_chain[a][0][k] << ' '; LOG << std::endl;
+//                            for (int k = 0; k < 3; k++) LOG << _pred_chain[b][0][k] << ' '; LOG << std::endl;
                             return false;
                         }
                     }
@@ -498,7 +499,7 @@ public:
                     for (int j = 0; j < 3; j++) {
                         d = std::fabs(m(i, j) - m_pairing_pars[j][i]);
                         if (d > 1.5) {
-//                            std::cout << a << ' ' << b << ' ' << i << ' ' << j << ' ' << m(i, j) << ' ' << m_pairing_pars[i][j] << ' ' << d << std::endl;
+//                            LOG << a << ' ' << b << ' ' << i << ' ' << j << ' ' << m(i, j) << ' ' << m_pairing_pars[i][j] << ' ' << d << std::endl;
                             return false;
                         }
                     }

@@ -6,7 +6,7 @@
 
 namespace jian {
 
-RegisterMolFileParser reg_pdb_file_parser(".pdb", [](const std::string &f)->MolFileParser * {
+RegisterMolFileParser reg_pdb_file_parser("pdb", [](const std::string &f)->MolFileParser * {
     return new PdbFileParser(f);
 });
 
@@ -14,7 +14,7 @@ PdbFileParser::PdbFileParser(const std::string &f) : MolFileParser(f) {
 }
 
 MolParsedLine *PdbFileParser::line() {
-    static std::vector<std::string> v {"A5", "U5", "G5", "C5", "T5", "A3", "U3", "G3", "C3", "T3"};
+    thread_local static std::vector<std::string> v {"A5", "U5", "G5", "C5", "T5", "A3", "U3", "G3", "C3", "T3"};
     std::string line;
     std::vector<std::string> arr;
     int model_num = 1;

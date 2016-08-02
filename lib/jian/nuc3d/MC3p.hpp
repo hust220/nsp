@@ -70,7 +70,7 @@ public:
         par.set(_mc_cycle_steps, "mc_cycle_steps");
         par.set(_mc_write_steps, "mc_write_steps");
 
-        std::cout << "# Set MC energy weights." << std::endl;
+        LOG << "# Set MC energy weights." << std::endl;
         par.set(_mc_bond_length_weight, "mc_bond_length_weight");
         par.set(_mc_bond_angle_weight, "mc_bond_angle_weight");
         par.set(_mc_bond_angle_std, "mc_bond_angle_std");
@@ -160,7 +160,7 @@ public:
                         n++;
                     }
                 );
-//                std::cout << flag << ' ' << n << std::endl;
+//                LOG << flag << ' ' << n << std::endl;
                 if (flag == 0 && n <= 14) {
                     return true;
                 } else {
@@ -174,7 +174,7 @@ public:
         auto set_res_module_types_ss = [&](loop *l, bool is_first){
             LOOP_TRAVERSE(l,
 //                L->print();
-//                std::cout << "is_hairpin: " << is_hairpin(L) << std::endl;
+//                LOG << "is_hairpin: " << is_hairpin(L) << std::endl;
                 if (!m_sample_hairpin && is_first && is_hairpin(L)) {
                     for (int i = L->s.head->res1.num - 1; i <= L->s.head->res2.num - 1; i++) {
                         _res_module_types[i] = RES_HAIRPIN;
@@ -215,7 +215,7 @@ public:
         append_chain_to_file(_pred_chain, name, n);
         en_t e;
         mc_total_energy(e);
-        std::cout << _mc_step + 1 << ": " <<  mc_en_sum(e) << "(e_total) " << e.crash << "(e_crash) " << e.len << "(e_bond) " << e.ang << "(en_ang) " << e.dih << "(en_dih) " << e.cons << "(en_c) "<< e.stacking << "(en_stacking) "  << e.pairing << "(en_pairing) " << _mc_tempr << "(temprature) " << _mc_local_succ_rate << "(success rate)" << std::endl;
+        LOG << _mc_step + 1 << ": " <<  mc_en_sum(e) << "(e_total) " << e.crash << "(e_crash) " << e.len << "(e_bond) " << e.ang << "(en_ang) " << e.dih << "(en_dih) " << e.cons << "(en_c) "<< e.stacking << "(en_stacking) "  << e.pairing << "(en_pairing) " << _mc_tempr << "(temprature) " << _mc_local_succ_rate << "(success rate)" << std::endl;
         n++;
     }
 
@@ -283,9 +283,9 @@ public:
         print_constraints();
         Debug::println("# Coarsed Grained To All Atom...");
         coarse_grained_to_all_atom();
-        std::cout << "# Transform." << std::endl;
+        LOG << "# Transform." << std::endl;
         this->transform();
-        std::cout << "# Writing to file." << std::endl;
+        LOG << "# Writing to file." << std::endl;
         std::ostringstream stream;
         stream << _name << ".sample." << m_seed << ".pdb";
         residues_to_file(_pred_chain, stream.str());
@@ -322,7 +322,7 @@ public:
             i = ct.key[0];
             j = ct.key[1];
             d = geom::distance(residue_center(_pred_chain[i]), residue_center(_pred_chain[j]));
-            std::cout << i << ' ' << j << " value:" << ct.value << " weight:" << ct.weight << " dist:" << d << std::endl;
+            LOG << i << ' ' << j << " value:" << ct.value << " weight:" << ct.weight << " dist:" << d << std::endl;
         }
     }
 
@@ -503,7 +503,7 @@ public:
     }
 
     virtual void mc_select() {
-//        std::cout << "mc select." << std::endl;
+//        LOG << "mc select." << std::endl;
         int len = _free_atoms.size();
         _mc_index = _free_atoms[int(rand() * len)];
         _moved_residues.resize(4);

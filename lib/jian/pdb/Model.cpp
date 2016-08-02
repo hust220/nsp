@@ -16,7 +16,6 @@ Model::Model(const std::string &f) {
     Chain chain;
     std::string file_name = file::name(f);
     std::string file_type = file::type(f);
-//    std::cout << file_type << std::endl;
     MolFileParser *parser = MolFileParser::s_parsers[file_type](f);
     MolParsedLine *line = NULL, *old_line = NULL;
     name = file_name;
@@ -98,7 +97,7 @@ std::ostream &operator <<(std::ostream &output, const Model &model) {
 
 Model RNA(const Model &model) {
     Model rna;
-    static std::set<std::string> names {"A", "U", "G", "C"};
+    thread_local static std::set<std::string> names {"A", "U", "G", "C"};
     for (auto &&chain: model) {
         Chain temp_chain; temp_chain.name = chain.name;
         for (auto &&residue: chain) {
@@ -117,7 +116,7 @@ Model RNA(const std::string &s) {
 
 Model DNA(const Model &model) {
     Model dna;
-    static std::set<std::string> names {"DA", "DT", "DG", "DC"};
+    thread_local static std::set<std::string> names {"DA", "DT", "DG", "DC"};
     for (auto &&chain: model) {
         Chain temp_chain; temp_chain.name = chain.name;
         for (auto &&residue: chain) {
@@ -135,7 +134,7 @@ Model DNA(const std::string &s) {
 }
 
 Model R5P(const Model &model) {
-    static std::map<std::string, std::set<std::string>> names {
+    thread_local static std::map<std::string, std::set<std::string>> names {
         {"A", {"C5*", "O3*", "C1*", "N6", "C2"}},
         {"U", {"C5*", "O3*", "C1*", "O2", "O4"}},
         {"G", {"C5*", "O3*", "C1*", "O6", "N2"}},

@@ -37,7 +37,7 @@ public:
             mc_sample();
             auto &&en_new = mc_partial_energy();
             auto &&en_diff = en_new - en_old;
-            if (en_new > en_old && rand() > std::exp(-en_diff / _mc_tempr)) {
+            if (en_new > en_old && jian::rand() > std::exp(-en_diff / _mc_tempr)) {
                 mc_back();
             } else {
                 _mc_en += en_diff;
@@ -53,6 +53,7 @@ public:
                 if (! ctrl_tempr(_mc_local_succ_rate)) break;
             }
         }
+        mc_write();
     }
 
     virtual void mc_write();
