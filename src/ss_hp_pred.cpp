@@ -6,7 +6,9 @@
 #include <deque>
 #include <algorithm>
 #include <jian/nuc2d.hpp>
+#include <jian/nuc2d/ss_pred.hpp>
 #include <jian/utils/FSM.hpp>
+#include <jian/utils/log.hpp>
 #include "nsp.hpp"
 
 namespace jian {
@@ -35,26 +37,27 @@ int hp_len(const ss_t &ss, int left, int right) {
     return len;
 }
 
-ss_t ss_pred(const seq_t & seq) {
-    ss_t ss = seq;
-    return seq;
-}
-
-void hp_pred(const seq_t & seq, ss_t & ss, ss_t & ss_n, indices_t & indices, int left, int right) {
+void hp_pred(const seq_t & seq, ss_t & ss, indices_t & indices, int left, int right) {
+    //std::cout << "hp_pred: " << ss << std::endl;
     seq_t seq_new;
-    for (auto && i : indices) {
-        if (i != -1) {
-            seq_new += seq[i];
+    for (int i = left+1; i < right; i++) {
+        if (indices[i] != -1) {
+            seq_new += seq[indices[i]];
         } else {
             seq_new += 'X';
         }
     }
+    std::cout << "seq_new: " << seq_new << std::endl;
     ss_t ss_new = ss_pred(seq_new);
-    for (int i = 0; i < indices.size(); i++) {
-        if (i != -1) {
-            ss[indices[i]] = ss_new[i];
+    std::cout << "ss_new: " << ss_new << std::endl;
+    for (auto && i : indices) LOGV << i << ' '; LOGV << std::endl;
+    for (int i = left+1; i < right; i++) {
+        if (indices[i] != -1) {
+            ss[indices[i]] = ss_new[i-left-1];
         }
     }
+    std::cout << "hp_pred done" << std::endl;
+    //std::cout << "hp_pred: " << ss << std::endl;
 }
 
 bool hp_pred(const seq_t & seq, ss_t & ss, ss_t & ss_n, indices_t & indices) {
@@ -80,24 +83,26 @@ bool hp_pred(const seq_t & seq, ss_t & ss, ss_t & ss_n, indices_t & indices) {
         }
         if (state_o < 3 && fsm.state == 3) {
             right = i;
-            hp_pred(seq, ss, ss_n, indices, left, right);
+            hp_pred(seq, ss, indices, left, right);
             flag++;
             dq.push_back({left, right});
             init();
+        } else {
+            state_o = fsm.state;
         }
-        state_o = fsm.state;
         i++;
     }
 
     std::cout << "flag: " << flag << std::endl;
     if (flag == 0) {
+        hp_pred(seq, ss, indices, -1, indices.size());
         return false;
     } else {
         for (auto && arr : dq) {
             int len = hp_len(ss_n, arr[0], arr[1]);
             arr[0] -= len-1;
             arr[1] += len-1;
-            std::cout << arr[0] << ' ' << arr[1] << std::endl;
+            LOGV << arr[0] << ' ' << arr[1] << std::endl;
         }
 
         ss_t ss_temp;
@@ -123,7 +128,9 @@ ss_t ss_hp_pred(seq_t seq, ss_t ss) {
     ss_t ss_new = ss;
     indices_t indices(seq.size());
     std::iota(indices.begin(), indices.end(), 0);
-    while (hp_pred(seq, ss, ss_new, indices));
+    while (hp_pred(seq, ss, ss_new, indices)) {
+        std::cout << "ss_hp_pred: " << ss << std::endl;
+    }
     return ss;
 }
 
@@ -134,7 +141,8 @@ REGISTER_NSP_COMPONENT(ss_hp_pred) {
     seq_t seq = par["seq"][0];
     ss_t ss = par["ss"][0];
     ss = ss_hp_pred(seq, ss);
-    std::cout << ss << std::endl;
+    LOG << seq << std::endl;
+    LOG << ss << std::endl;
 }
 
 } // namespace jian

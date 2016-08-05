@@ -4,7 +4,7 @@
 namespace jian {
 
 REGISTER_NSP_COMPONENT(rna) {
-    Model m(par[2]);
+    Model m(par["pdb"][0]);
     std::cout << m << std::endl;
 }
 

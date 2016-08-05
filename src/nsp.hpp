@@ -6,6 +6,7 @@
 #include <jian/utils/Par.hpp>
 #include <jian/utils/file.hpp>
 #include <jian/utils/Env.hpp>
+#include <jian/utils/log.hpp>
 #include <string>
 #include <boost/preprocessor.hpp>
 
@@ -29,6 +30,9 @@ public:
 
     static void run(int argc, char **argv) {
         Par par(argc, argv);
+        if (par.has("log_level")) {
+            set_log_level(std::stoi(par["log_level"][0]));
+        }
         auto &m = instance()._methods;
         std::string path = Env::lib() + "/RNA/pars/src/";
         if (m.find(par[1]) == m.end()) {
