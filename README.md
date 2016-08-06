@@ -1,11 +1,21 @@
+核酸分子二级结构及三级结构预测
 Nucleic acid 2D and 3D Structure Prediction (NSP)
 
-#INSTALL
+#安装
 配置3dRNA预测的环境，在集群上里输入如下命令：
 `source /home/wangjian/wangjian.sh`
 
-#USAGE
-##组装
+#用法
+##二级结构预测
+###用自由能最小方法预测
+nsp ss_pred -seq <SEQUENCE>
+
+###结合自由能最小方法以及DCA预测的DI值进行二级结构预测
+nsp ss_dca -seq <SEQUENCE> -di <DI_FILE> [-k <K>]
+k值是用来设置读取前k*L个DI值，如果k=1，就代表读取前L个，如果k=0.5，就代表读取前L/2个。
+
+##三级结构预测
+###组装
 1. 组装
 命令是nsp assemble，并设置-name和-seq和-ss这3个参数的值
 例子：
@@ -18,7 +28,7 @@ Nucleic acid 2D and 3D Structure Prediction (NSP)
 这样就会生成一个test.assemble.pdb的文件，以及test.sample.1.pdb, test.sample.2.pdb,
 test.sample.3.pdb, ..., test.sample.1000.pdb这100个采样结构。
 
-##优化
+###优化
 命令是nsp mc3p，用-name设置名字，-seq设置序列，用-ss设置二级结构，用-seed设置种子，用-pdb设置起始结构，起始结构可以就用组装后得到的结构，也可以从组装加采样得到的结构中挑选一个
 例子：
 `nsp mc3p –name test –seqAAAAUUUU –ss ‘(((())))’ –seed 123 –pdb test.assemble.pdb`
@@ -45,7 +55,7 @@ nsp mc3p –name test –seqAAAAUUUU –ss ‘(((())))’ –pdb test.assemble.p
 这里前面两列代表碱基的序号，例如8代表第8个碱基，23代表第23个碱基，最后一列是碱基之间的最小距离。
 因此这里8 23 10就代笔第8个碱基和第23个碱基之间的最小的距离是10Å，9 22 10就代表第9个碱基和第22个碱基之间的最小距离是10Å。
 
-##聚类
+##结构聚类
 命令是nsp cluster，使用-list来设置需要对哪些结构进行聚类，用-k来设置聚类的数目。
 例子：
 `nsp cluster –list test.list–k 5`
@@ -59,7 +69,7 @@ test.sample.3.pdb
 test.sample.4.pdb
 test.sample.5.pdb
 ```
-##打分
+##RNA三级结构打分
 命令是3dRNAscore
 1. 对单个结构打分
 例子
