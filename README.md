@@ -3,7 +3,7 @@ Nucleic acid 2D and 3D Structure Prediction (NSP)
 
 #安装
 配置3dRNA预测的环境，在集群上里输入如下命令：
-`source /home/wangjian/wangjian.sh`
+`source $HOME/../wangjian/wangjian.sh`
 
 #用法
 ##二级结构预测
