@@ -101,7 +101,7 @@ LIST_FILE文件包含了要聚类的结构的名字:
 `nsp seq -pdb <PDB_FILE>`
 
 ##获取分子的碱基的个数
-`nsp seq -len <PDB_FILE>`
+`nsp len -pdb <PDB_FILE>`
 
 
 
