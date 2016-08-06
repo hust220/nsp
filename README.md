@@ -15,6 +15,8 @@ Nucleic acid 2D and 3D Structure Prediction (NSP)
 ###结合自由能最小方法以及DCA预测的DI值进行二级结构预测
 `nsp ss_dca -seq <SEQUENCE> -di <DI_FILE> [-k <K>]`
 
+k值是用来设置读取前k*L个DI值，如果k=1，就代表读取前L个，如果k=0.5，就代表读取前L/2个。
+
 ###计算MCC
 `nsp mcc -nat <SECONDARY_STRUCTURE_OF_NATIVE> -pred <SECONDARY_STRUCTURE_OF_PREDICTION>`
 
@@ -23,8 +25,6 @@ Nucleic acid 2D and 3D Structure Prediction (NSP)
 
 ###计算PPV
 `nsp ppv -nat <SECONDARY_STRUCTURE_OF_NATIVE> -pred <SECONDARY_STRUCTURE_OF_PREDICTION>`
-
-k值是用来设置读取前k*L个DI值，如果k=1，就代表读取前L个，如果k=0.5，就代表读取前L/2个。
 
 ##三级结构预测
 ###组装
@@ -35,7 +35,8 @@ k值是用来设置读取前k*L个DI值，如果k=1，就代表读取前L个，�
 `nsp assemble -name <JOB_NAME> -seq <SEQUENCE> -ss "<SECONDARY_STRUCTURE>" -sample -num <NUMBER_OF_PREDICTIONS>`
 
 ###优化
-`nsp mcpsb -name <JOB_NAME> -seq <SEQUENCE> -ss "<SECONDARY_STRUCTURE>" -pdb <INITIAL_PDB_FILE> -out <FINAL_STRUCTURE> [-traj <TRAJECTORY_FILE>] [-<constraints|c> <CONSTRAINTS_FILE>] [-seed <SEED>]`
+`nsp mcpsb -name <JOB_NAME> -seq <SEQUENCE> -ss "<SECONDARY_STRUCTURE>" -pdb <INITIAL_PDB_FILE> 
+-out <FINAL_STRUCTURE> [-traj <TRAJECTORY_FILE>] [-<constraints|c> <CONSTRAINTS_FILE>] [-seed <SEED>]`
 
 用-name设置名字，-seq设置序列，用-ss设置二级结构，用-seed设置种子
 
