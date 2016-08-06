@@ -4,6 +4,7 @@
 !src
 !test
 !CMakeLists.txt
+!README.md
 .svn
 *.bak
 *.o
