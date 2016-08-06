@@ -8,10 +8,10 @@ Nucleic acid 2D and 3D Structure Prediction (NSP)
 #用法
 ##二级结构预测
 ###用自由能最小方法预测
-nsp ss_pred -seq <SEQUENCE>
+nsp ss_pred -seq \<SEQUENCE\>
 
 ###结合自由能最小方法以及DCA预测的DI值进行二级结构预测
-nsp ss_dca -seq <SEQUENCE> -di <DI_FILE> [-k <K>]
+nsp ss_dca -seq \<SEQUENCE\> -di \<DI_FILE\> [-k \<K\>]
 k值是用来设置读取前k*L个DI值，如果k=1，就代表读取前L个，如果k=0.5，就代表读取前L/2个。
 
 ##三级结构预测
