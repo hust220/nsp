@@ -4,7 +4,7 @@ Nucleic acid 2D and 3D Structure Prediction (NSP)
 
 项目：<http://git.oschina.net/hust220/nsp>
 
-1. <a href="#安装">安装</a>
+1. [安装](#安装)
  - [安装要求](#安装要求)
  - [编译安装](#编译安装)
 2. [使用](#使用)
@@ -12,7 +12,7 @@ Nucleic acid 2D and 3D Structure Prediction (NSP)
  - [三级结构预测](#三级结构预测)
  - [聚类](#聚类)
  - [打分](#打分)
- - [RMSD](# RMSD)
+ - [RMSD](#RMSD)
  - [获取序列](#获取序列)
 
 <h2 id="安装">安装</h2>
@@ -25,26 +25,23 @@ Nucleic acid 2D and 3D Structure Prediction (NSP)
 1. 如果g++的版本小于4.8，需要先升级g++<br />
 首先下载g++的大于4.8的版本，这里以gcc-4.9.3为例<br />
  - root用户<br />
-
 ```
-wget http://mirror.hust.edu.cn/gnu/gcc/gcc-4.9.3/gcc-4.9.3.tar.gz
-tar xvzf gcc-4.9.3.tar.gz
-cd gcc-4.9.3
-./contrib/download_prerequisites
-mkdir build
-cd build
-../configure --enable-checking=release --enable-languages=c,c++ --disable-multilib
-make -j4
-sudo make install
+    wget http://mirror.hust.edu.cn/gnu/gcc/gcc-4.9.3/gcc-4.9.3.tar.gz
+    tar xvzf gcc-4.9.3.tar.gz
+    cd gcc-4.9.3
+    ./contrib/download_prerequisites
+    mkdir build
+    cd build
+    ../configure --enable-checking=release --enable-languages=c,c++ --disable-multilib
+    make -j4
+    sudo make install
 ```
-
  - 普通用户<br />
 在configure这一步的时候加上--prefix=<PATH/TO/INSTALL/GCC>
 2. 下载nsp<br />
 `git clone https://git.oschina.net/hust220/nsp.git`
 3. 编译安装<br />
  - root用户：<br />
-
 ```
     cd nsp
     mkdir build
@@ -52,9 +49,7 @@ sudo make install
     cmake ..
     make install
 ```
-
  - 普通用户：<br />
-
 ```
     cd nsp
     mkdir build
@@ -64,12 +59,11 @@ sudo make install
 ```
 
 ####本实验室
-本实验室可以直接在集群上里输入如下命令：
-
+本实验室可以直接在集群上里输入如下命令：<br />
 `source $HOME/../wangjian/wangjian.sh`
 
 <h2 id='用法'>用法</h2>
-使用之前需要设置环境变量NSP为模板库所在的文件夹
+使用之前需要设置环境变量NSP为模板库所在的文件夹: <br />
 `export NSP=<PATH/OF/TEMPLATES/LIBRARY>`
 
 <h4 id='二级结构预测'>二级结构预测</h4>
