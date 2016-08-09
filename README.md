@@ -36,7 +36,6 @@ cd build
 make -j4
 sudo make install
 ```
-
  - 普通用户<br />
 在configure这一步的时候加上--prefix=<PATH/TO/INSTALL/GCC>
 
@@ -52,7 +51,6 @@ sudo make install
     cmake ..
     make install
 ```
-
  - 普通用户：<br />
 ```
     cd nsp
