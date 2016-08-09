@@ -4,45 +4,45 @@ Nucleic acid 2D and 3D Structure Prediction (NSP)
 
 项目：<http://git.oschina.net/hust220/nsp>
 
-1. [安装](#安装)
-   - [安装要求](#安装要求)
-   - [编译安装](#编译安装)
-2. [使用](#使用)
-   - [二级结构预测](#二级结构预测)
-   - [三级结构预测](#三级结构预测)
-   - [聚类](#聚类)
-   - [打分](#打分)
-   - [RMSD](#RMSD)
-   - [获取序列](#获取序列)
+1.  [安装](#安装)
+    * [安装要求](#安装要求)
+    * [编译安装](#编译安装)
+2.  [使用](#使用)
+    * [二级结构预测](#二级结构预测)
+    * [三级结构预测](#三级结构预测)
+    * [聚类](#聚类)
+    * [打分](#打分)
+    * [RMSD](#RMSD)
+    * [获取序列](#获取序列)
 
 <h2 id="安装">安装</h2>
 ####安装要求
-- g++版本大于4.8
-- cmake版本大于2.8.7
-- 安装有boost库
+* g++版本大于4.8
+* cmake版本大于2.8.7
+* 安装有boost库
 
 ####编译安装
 1.  如果g++的版本小于4.8，需要先升级
 
     首先下载g++的大于4.8的版本，这里以gcc-4.9.3为例
 
-    -   root用户
+    * root用户
 
-        ```
-        wget http://mirror.hust.edu.cn/gnu/gcc/gcc-4.9.3/gcc-4.9.3.tar.gz
-        tar xvzf gcc-4.9.3.tar.gz
-        cd gcc-4.9.3
-        ./contrib/download_prerequisites
-        mkdir build
-        cd build
-        ../configure --enable-checking=release --enable-languages=c,c++ --disable-multilib
-        make -j4
-        sudo make install
-        ```
+      ```
+      wget http://mirror.hust.edu.cn/gnu/gcc/gcc-4.9.3/gcc-4.9.3.tar.gz
+      tar xvzf gcc-4.9.3.tar.gz
+      cd gcc-4.9.3
+      ./contrib/download_prerequisites
+      mkdir build
+      cd build
+      ../configure --enable-checking=release --enable-languages=c,c++ --disable-multilib
+      make -j4
+      sudo make install
+      ```
 
-    -   普通用户
+    * 普通用户
 
-        在configure这一步的时候加上--prefix=<PATH/TO/INSTALL/GCC>
+      在configure这一步的时候加上--prefix=<PATH/TO/INSTALL/GCC>
 
 2.  下载nsp
 
@@ -50,7 +50,7 @@ Nucleic acid 2D and 3D Structure Prediction (NSP)
 
 3.  编译安装
 
-     -   root用户
+     *   root用户
 
          ```
          cd nsp
@@ -60,7 +60,7 @@ Nucleic acid 2D and 3D Structure Prediction (NSP)
          make install
          ```
 
-     -   普通用户
+     *   普通用户
 
          ```
          cd nsp
