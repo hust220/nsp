@@ -22,9 +22,9 @@ Nucleic acid 2D and 3D Structure Prediction (NSP)
 * 安装有boost库
 
 ####编译安装
-1.  如果g++的版本小于4.8，需要先升级
+1.  升级g++
 
-    首先下载g++的大于4.8的版本，这里以gcc-4.9.3为例
+    如果g++的版本小于4.8，需要首先升级g++。这里以gcc-4.9.3为例:
     *   root用户
 
         ```
@@ -44,7 +44,7 @@ Nucleic acid 2D and 3D Structure Prediction (NSP)
 2.  下载nsp
 
     `git clone https://git.oschina.net/hust220/nsp.git`
-3.  编译安装
+3.  编译安装nsp
      *   root用户
 
          ```
@@ -65,40 +65,54 @@ Nucleic acid 2D and 3D Structure Prediction (NSP)
          ```
 
 ####本实验室
+
 本实验室可以直接在集群上里输入如下命令
+
 `source $HOME/../wangjian/wangjian.sh`
 
 <h2 id='用法'>用法</h2>
+
 使用之前需要设置环境变量NSP为模板库所在的文件夹
+
 `export NSP=<PATH/OF/TEMPLATES/LIBRARY>`
 
 <h4 id='二级结构预测'>二级结构预测</h4>
+
 ######用自由能最小方法预测
+
 `nsp ss_pred -seq <SEQUENCE>`
 
 ######结合自由能最小方法以及DCA预测的DI值进行二级结构预测
+
 `nsp ss_dca -seq <SEQUENCE> -di <DI_FILE> [-k <K>]`
 
-k值是用来设置读取前k*L个DI值，如果k=1，就代表读取前L个，如果k=0.5，就代表读取前L/2个。
+k值是用来设置读取前k\*L个DI值，如果k=1，就代表读取前L个，如果k=0.5，就代表读取前L/2个。
 
 ######计算MCC
+
 `nsp mcc -nat "<SECONDARY_STRUCTURE_OF_NATIVE>" -pred "<SECONDARY_STRUCTURE_OF_PREDICTION>"`
 
 ######计算STY
+
 `nsp sty -nat "<SECONDARY_STRUCTURE_OF_NATIVE>" -pred "<SECONDARY_STRUCTURE_OF_PREDICTION>"`
 
 ######计算PPV
+
 `nsp ppv -nat "<SECONDARY_STRUCTURE_OF_NATIVE>" -pred "<SECONDARY_STRUCTURE_OF_PREDICTION>"`
 
 <h4 id='三级结构预测'>三级结构预测</h4>
-######组装
-1. 组装
-`nsp assemble -name <JOB_NAME> -seq <SEQUENCE> -ss "<SECONDARY_STRUCTURE>"`
 
+######组装
+
+1.  组装
+
+`nsp assemble -name <JOB_NAME> -seq <SEQUENCE> -ss "<SECONDARY_STRUCTURE>"`
 2. 组装+采样
+
 `nsp assemble -name <JOB_NAME> -seq <SEQUENCE> -ss "<SECONDARY_STRUCTURE>" -sample -num <NUMBER_OF_PREDICTIONS>`
 
 ######优化
+
 `nsp mcpsb -name <JOB_NAME> -seq <SEQUENCE> -ss "<SECONDARY_STRUCTURE>" -pdb <INITIAL_PDB_FILE> 
 -out <FINAL_STRUCTURE> [-traj <TRAJECTORY_FILE>] [-<constraints|c> <CONSTRAINTS_FILE>] [-seed <SEED>]`
 
@@ -116,7 +130,7 @@ k值是用来设置读取前k*L个DI值，如果k=1，就代表读取前L个，�
 
 -constraints或者-c可以省略掉，表示不添加约束信息
 
-CONSTRAINTS_FILE文件里面需要包含约束信息，例如可以加进DCA分析的信息:
+CONSTRAINTS\_FILE文件里面需要包含约束信息，例如可以加进DCA分析的信息:
 
     8 23 10
     9 22 10
@@ -133,7 +147,7 @@ CONSTRAINTS_FILE文件里面需要包含约束信息，例如可以加进DCA分�
 
 经过一段时间的运行之后，会在屏幕上打印出聚类的结构。
 
-LIST_FILE文件包含了要聚类的结构的名字:
+LIST\_FILE文件包含了要聚类的结构的名字:
 
     test.sample.1.pdb
     test.sample.2.pdb
@@ -142,13 +156,16 @@ LIST_FILE文件包含了要聚类的结构的名字:
     test.sample.5.pdb
 
 <h4 id='打分'>RNA三级结构打分</h4>
+
 1. 对单个结构打分
+
 `3dRNAscore -s <PDB_FILE>`
 
 2. 对多个结构打分
+
 `3dRNAscore -s:l <LIST_FILE>`
 
-LIST_FILE文件包含了要聚类的结构的名字:
+LIST\_FILE文件包含了要聚类的结构的名字:
 
     test.sample.1.pdb
     test.sample.2.pdb
@@ -157,15 +174,19 @@ LIST_FILE文件包含了要聚类的结构的名字:
     test.sample.5.pdb
 
 <h4 id='RMSD'>计算RMSD</h4>
+
 `nsp rmsd -pdb <PDB_FILE_1> <PDB_FILE_2>`
 
 <h4 id='获取序列'>获取分子的序列</h4>
+
 `nsp seq -pdb <PDB_FILE>`
 
 ####获取分子的碱基的个数
+
 `nsp len -pdb <PDB_FILE>`
 
 ####截取分子中的指定的残基
+
 `nsp sub -pdb <PDB_FILE> -num <FRAG1> <FRAG2> <FRAG3> <FRAG4> ...`
 
 每个FRAG是指一个碱基段，格式为单个残基号`N`或者指定起点和终点的片段`BEGIN-END`。
@@ -173,4 +194,6 @@ LIST_FILE文件包含了要聚类的结构的名字:
 例如`1`代表第一个残基，`4-11`代表第4到第11个碱基组成的片段
 
 ####去掉分子中多余的行，只留下ATOM行
+
 `nsp rna -pdb <PDB_FILE>`
+
