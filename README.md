@@ -36,10 +36,13 @@ cd build
 make -j4
 sudo make install
 ```
+
  - 普通用户<br />
 在configure这一步的时候加上--prefix=<PATH/TO/INSTALL/GCC>
+
 2. 下载nsp
 `git clone https://git.oschina.net/hust220/nsp.git`
+
 3. 编译安装
  - root用户：<br />
 ```
@@ -49,6 +52,7 @@ sudo make install
     cmake ..
     make install
 ```
+
  - 普通用户：<br />
 ```
     cd nsp
