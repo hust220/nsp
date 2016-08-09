@@ -57,6 +57,7 @@ sudo make install
     cmake -D CMAKE_INSTALL_PREFIX=<PATH> ..
     make install
 ```
+
 ####本实验室
 本实验室可以直接在集群上里输入如下命令：
 
