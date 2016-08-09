@@ -157,13 +157,13 @@ LIST\_FILE文件包含了要聚类的结构的名字:
 
 <h4 id='打分'>RNA三级结构打分</h4>
 
-1. 对单个结构打分
+1.  对单个结构打分
 
-`3dRNAscore -s <PDB_FILE>`
+    `3dRNAscore -s <PDB_FILE>`
 
-2. 对多个结构打分
+2.  对多个结构打分
 
-`3dRNAscore -s:l <LIST_FILE>`
+    `3dRNAscore -s:l <LIST_FILE>`
 
 LIST\_FILE文件包含了要聚类的结构的名字:
 
