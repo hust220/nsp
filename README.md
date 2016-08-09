@@ -26,7 +26,6 @@ Nucleic acid 2D and 3D Structure Prediction (NSP)
 1.  升级g++
 
     如果g++的版本小于4.8，需要首先升级g++。这里以gcc-4.9.3为例:
-
     *   root用户
 
         ```
@@ -40,7 +39,6 @@ Nucleic acid 2D and 3D Structure Prediction (NSP)
         make -j4
         sudo make install
         ```
-
     *   普通用户
 
         在configure这一步的时候加上--prefix=<PATH/TO/INSTALL/GCC>
@@ -48,9 +46,7 @@ Nucleic acid 2D and 3D Structure Prediction (NSP)
 2.  下载nsp
 
     `git clone https://git.oschina.net/hust220/nsp.git`
-
 3.  编译安装nsp
-
      *   root用户
 
          ```
