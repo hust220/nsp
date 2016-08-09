@@ -5,15 +5,15 @@ Nucleic acid 2D and 3D Structure Prediction (NSP)
 项目：<http://git.oschina.net/hust220/nsp>
 
 1. [安装](#安装)
- - [安装要求](#安装要求)
- - [编译安装](#编译安装)
+   - [安装要求](#安装要求)
+   - [编译安装](#编译安装)
 2. [使用](#使用)
- - [二级结构预测](#二级结构预测)
- - [三级结构预测](#三级结构预测)
- - [聚类](#聚类)
- - [打分](#打分)
- - [RMSD](#RMSD)
- - [获取序列](#获取序列)
+   - [二级结构预测](#二级结构预测)
+   - [三级结构预测](#三级结构预测)
+   - [聚类](#聚类)
+   - [打分](#打分)
+   - [RMSD](#RMSD)
+   - [获取序列](#获取序列)
 
 <h2 id="安装">安装</h2>
 ####安装要求
@@ -22,41 +22,53 @@ Nucleic acid 2D and 3D Structure Prediction (NSP)
 - 安装有boost库
 
 ####编译安装
-1. 如果g++的版本小于4.8，需要先升级g++<br />
-首先下载g++的大于4.8的版本，这里以gcc-4.9.3为例<br />
- - root用户<br />
-```
-    wget http://mirror.hust.edu.cn/gnu/gcc/gcc-4.9.3/gcc-4.9.3.tar.gz
-    tar xvzf gcc-4.9.3.tar.gz
-    cd gcc-4.9.3
-    ./contrib/download_prerequisites
-    mkdir build
-    cd build
-    ../configure --enable-checking=release --enable-languages=c,c++ --disable-multilib
-    make -j4
-    sudo make install
-```
- - 普通用户<br />
-在configure这一步的时候加上--prefix=<PATH/TO/INSTALL/GCC>
-2. 下载nsp<br />
-`git clone https://git.oschina.net/hust220/nsp.git`
-3. 编译安装<br />
- - root用户：<br />
-```
-    cd nsp
-    mkdir build
-    cd build
-    cmake ..
-    make install
-```
- - 普通用户：<br />
-```
-    cd nsp
-    mkdir build
-    cd build
-    cmake -D CMAKE_INSTALL_PREFIX=<PATH> ..
-    make install
-```
+1. 如果g++的版本小于4.8，需要先升级
+
+   首先下载g++的大于4.8的版本，这里以gcc-4.9.3为例
+
+   - root用户
+
+     ```
+     wget http://mirror.hust.edu.cn/gnu/gcc/gcc-4.9.3/gcc-4.9.3.tar.gz
+     tar xvzf gcc-4.9.3.tar.gz
+     cd gcc-4.9.3
+     ./contrib/download_prerequisites
+     mkdir build
+     cd build
+     ../configure --enable-checking=release --enable-languages=c,c++ --disable-multilib
+     make -j4
+     sudo make install
+     ```
+
+   - 普通用户
+
+     在configure这一步的时候加上--prefix=<PATH/TO/INSTALL/GCC>
+
+2. 下载nsp
+
+   `git clone https://git.oschina.net/hust220/nsp.git`
+
+3. 编译安装
+
+    - root用户
+
+      ```
+      cd nsp
+      mkdir build
+      cd build
+      cmake ..
+      make install
+      ```
+
+    - 普通用户
+
+      ```
+      cd nsp
+      mkdir build
+      cd build
+      cmake -D CMAKE_INSTALL_PREFIX=<PATH> ..
+      make install
+      ```
 
 ####本实验室
 本实验室可以直接在集群上里输入如下命令
