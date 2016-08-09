@@ -22,9 +22,9 @@ Nucleic acid 2D and 3D Structure Prediction (NSP)
 - 安装有boost库
 
 ####编译安装
-1.  如果g++的版本小于4.8，需要先升级g++
+1. 如果g++的版本小于4.8，需要先升级g++
 首先下载g++的大于4.8的版本，这里以gcc-4.9.3为例
- - root用户
+ - root用户<br />
 ```
 wget http://mirror.hust.edu.cn/gnu/gcc/gcc-4.9.3/gcc-4.9.3.tar.gz
 tar xvzf gcc-4.9.3.tar.gz
@@ -36,28 +36,26 @@ cd build
 make -j4
 sudo make install
 ```
- - 普通用户
+ - 普通用户<br />
 在configure这一步的时候加上--prefix=<PATH/TO/INSTALL/GCC>
-
-2.  下载nsp
+2. 下载nsp
 `git clone https://git.oschina.net/hust220/nsp.git`
-
-3.  编译安装
- - root用户：
+3. 编译安装
+ - root用户：<br />
 ```
-cd nsp
-mkdir build
-cd build
-cmake ..
-make install
+    cd nsp
+    mkdir build
+    cd build
+    cmake ..
+    make install
 ```
- - 普通用户：
+ - 普通用户：<br />
 ```
-cd nsp
-mkdir build
-cd build
-cmake -D CMAKE_INSTALL_PREFIX=<PATH> ..
-make install
+    cd nsp
+    mkdir build
+    cd build
+    cmake -D CMAKE_INSTALL_PREFIX=<PATH> ..
+    make install
 ```
 
 ####本实验室
@@ -140,11 +138,8 @@ LIST_FILE文件包含了要聚类的结构的名字:
 
 <h4 id='打分'>RNA三级结构打分</h4>
 1. 对单个结构打分
-
 `3dRNAscore -s <PDB_FILE>`
-
 2. 对多个结构打分
-
 `3dRNAscore -s:l <LIST_FILE>`
 
 LIST_FILE文件包含了要聚类的结构的名字:
