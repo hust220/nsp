@@ -23,14 +23,31 @@ struct MolParsedLine {
 
 class MolFileParser {
 public:
+    MolFileParser(const std::string &f) {
+        ifile.open(f);
+        if (!ifile) {
+            throw std::string("Open file '") + f + "' failed!";
+        }
+    }
+
+    ~MolFileParser() {
+        ifile.close();
+    }
+
+    virtual MolParsedLine *line() = 0;
+
     using parser_creater_t = std::function<MolFileParser *(const std::string &)>;
     using factory_t = std::map<std::string, parser_creater_t>;
 
-    static factory_t s_parsers;
+    static factory_t &parsers() {
+        static factory_t parser;
+        return parser;
+    }
 
-    MolFileParser(const std::string &f);
-    ~MolFileParser();
-    virtual MolParsedLine *line() = 0;
+    static MolFileParser *make(const std::string &type, const std::string &par) {
+        return parsers().at(type)(par);
+    }
+
 
 protected:
     std::ifstream ifile;
@@ -40,7 +57,7 @@ class RegisterMolFileParser {
 public:
     template<typename F>
     RegisterMolFileParser(const std::string &s, F &&f) {
-        MolFileParser::s_parsers[s] = f;
+        MolFileParser::parsers()[s] = f;
     }
 };
 

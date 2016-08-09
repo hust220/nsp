@@ -76,7 +76,7 @@ Residue residue_from_file(const std::string &f) {
     Residue residue;
     std::string file_name = file::name(f);
     std::string file_type = file::type(f);
-    MolFileParser *parser = MolFileParser::s_parsers[file_type](f);
+    MolFileParser *parser = MolFileParser::make(file_type, f);
     MolParsedLine *line = NULL, *old_line = NULL;
     while ((line = parser->line()) != NULL) {
         if (old_line != NULL) {

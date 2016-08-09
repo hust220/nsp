@@ -6,7 +6,7 @@
 #include <Eigen/Dense>
 #include "nsp.hpp"
 #include <jian/pdb/Model.hpp>
-#include <jian/cluster/Cluster.hpp>
+#include <jian/utils/Cluster.hpp>
 #include <jian/geom/suppos.hpp>
 #include <jian/utils/file.hpp>
 

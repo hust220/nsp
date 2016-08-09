@@ -16,7 +16,7 @@ Model::Model(const std::string &f) {
     Chain chain;
     std::string file_name = file::name(f);
     std::string file_type = file::type(f);
-    MolFileParser *parser = MolFileParser::s_parsers[file_type](f);
+    MolFileParser *parser = MolFileParser::make(file_type, f);
     MolParsedLine *line = NULL, *old_line = NULL;
     name = file_name;
     while ((line = parser->line()) != NULL && (old_line == NULL || line->model_num == old_line->model_num)) {
