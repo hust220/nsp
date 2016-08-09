@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <list>
 #include <type_traits>
-#include "../utils/Debug.hpp"
+#include "../utils/log.hpp"
 #include "helix.hpp"
 #include "../pp.hpp"
 
@@ -196,17 +196,24 @@ public:
     }
 
     void print() const {
-        Debug::println("Hairpin (", this, ")");
+        LOGI << "Hairpin (" << this << ")" << std::endl;
         if (has_loop()) {
-            Debug::print("  Loop: ", seq(), ' ', ss(), ' '); LOOP_EACH(this, Debug::print(RES->num, ' ')); Debug::print('\n');
+            LOGI << "  Loop: " << seq() << ' ' << ss() << ' ';
+            LOOP_EACH(this,
+                LOGI << RES->num << ' ';
+            );
+            LOGI << std::endl;
         }
         if (has_helix()) {
-            Debug::print("  Helix: ", s.seq(), ' ', s.ss(), ' ');
+            LOGI << "  Helix: " << s.seq() << ' ' << s.ss() << ' ';
             std::list<int> d; 
-            HELIX_EACH(s, d.insert(std::next(d.begin(), N_BP), {BP->res1.num, BP->res2.num}));
-            EACH(i, d, Debug::print(i, ' ')); Debug::print('\n');
+            HELIX_EACH(s,
+                d.insert(std::next(d.begin(), N_BP), {BP->res1.num, BP->res2.num});
+            );
+            EACH(i, d, LOGI << i << ' ');
+            LOGI << std::endl;
         }
-        Debug::print('\n');
+        LOGI << std::endl;
     }
 
     void print_tree() const {

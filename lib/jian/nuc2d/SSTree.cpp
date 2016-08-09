@@ -10,7 +10,9 @@
 
 namespace jian {
 
-namespace sstree_detail {
+void print_ss_tree(loop *l) {
+    LOOP_TRAVERSE(l, L->print());
+}
 
 void free_ss_tree(loop *l) {
     if (l != NULL) {
@@ -19,6 +21,8 @@ void free_ss_tree(loop *l) {
         delete l;
     }
 }
+
+namespace sstree_detail {
 
 void set_tree_relation(std::vector<loop *> &s, loop *l) {
     int num = l->num_sons();
@@ -110,13 +114,26 @@ loop *set_tree(const std::string &ss, int hinge) {
 }
 
 void read_seq(loop *l, const std::string &seq, const std::string &ss) {
-    std::vector<int> v(ss.size()); int f = 1; EACH((c, i), ss, IF(c != '&', v[i] = f; f++, v[i] = -1));
+    std::vector<int> v(ss.size());
+    int f = 1;
+    EACH((c, i), ss, IF(c != '&', v[i] = f; f++, v[i] = -1));
     LOOP_TRAVERSE(l, 
-        if (L->has_loop())
-            LOOP_EACH(L, RES->num = v[RES->num - 1]; if (RES->num != -1) RES->name = seq[RES->num - 1]);
-        if (L->has_helix()) 
-            HELIX_EACH(L->s, BP->res1.num = v[BP->res1.num - 1]; BP->res1.name = seq[BP->res1.num - 1];
-                             BP->res2.num = v[BP->res2.num - 1]; BP->res2.name = seq[BP->res2.num - 1]);
+        if (L->has_loop()) {
+            LOOP_EACH(L,
+                RES->num = v[RES->num - 1];
+                if (RES->num != -1) {
+                    RES->name = seq[RES->num - 1];
+                }
+            );
+        }
+        if (L->has_helix()) {
+            HELIX_EACH(L->s,
+                BP->res1.num = v[BP->res1.num - 1];
+                BP->res1.name = seq[BP->res1.num - 1];
+                BP->res2.num = v[BP->res2.num - 1];
+                BP->res2.name = seq[BP->res2.num - 1]
+            );
+        }
     );
 }
 
@@ -126,7 +143,7 @@ struct SSTreeImpl {
     loop *head = NULL;
 
     ~SSTreeImpl() {
-        if (head != NULL) sstree_detail::free_ss_tree(head);
+        if (head != NULL) free_ss_tree(head);
     }
 };
 
@@ -176,6 +193,12 @@ void SSTree::make_b(const std::string &seq, const std::string &ss, int hinge) {
         LOG << "The sequence and the secondary structure don't match!" << std::endl;
         throw "SSTree::make_b error!";
     }
+}
+
+loop *ss_tree(std::string seq, std::string ss, int hinge) {
+    loop *tree = sstree_detail::set_tree(ss, hinge);
+    sstree_detail::read_seq(tree, seq, ss);
+    return tree;
 }
 
 } // namespace jian

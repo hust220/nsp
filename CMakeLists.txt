@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 2.8.7)
 project(nsp)
 
+if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8)
+    message(FATAL_ERROR "g++ version must be greater than 4.8, but now is ${CMAKE_CXX_COMPILER_VERSION}")
+endif()
+
 set(CMAKE_VERBOSE_MAKEFILE on)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -g -pthread")
 
