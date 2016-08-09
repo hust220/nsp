@@ -59,11 +59,11 @@ Nucleic acid 2D and 3D Structure Prediction (NSP)
 ```
 
 ####本实验室
-本实验室可以直接在集群上里输入如下命令：<br />
+本实验室可以直接在集群上里输入如下命令
 `source $HOME/../wangjian/wangjian.sh`
 
 <h2 id='用法'>用法</h2>
-使用之前需要设置环境变量NSP为模板库所在的文件夹: <br />
+使用之前需要设置环境变量NSP为模板库所在的文件夹
 `export NSP=<PATH/OF/TEMPLATES/LIBRARY>`
 
 <h4 id='二级结构预测'>二级结构预测</h4>
