@@ -28,14 +28,19 @@ public:
         LOGI << std::endl;
     }
 
+    std::pair<int, int> loop_head_tail(loop *l) {
+        int a = t->head->num;
+        int b;
+        LOOP_EACH(t,
+            if (RES->next == NULL) b = RES->num;
+        );
+        return {a, b};
+    }
+
     void set_pts(loop *l, pts_t &pts) {
         if (l != NULL) {
-            int a = l->head->num;
-            int b;
-            LOOP_EACH(l,
-                if (RES->next == NULL) b = RES->num;
-            );
-            if (b - a < _max_len) {
+            auto p = loop_head_tail(l);
+            if (p.second - p.first < _max_len) {
                 pts.push_back(l);
             } else {
                 for (loop *t = l->son; t != NULL; t = t->brother) {
@@ -43,6 +48,52 @@ public:
                 }
             }
         }
+    }
+
+    Chain *loop_pred(loop *l) {
+        if (l != NULL) {
+            Chain *chain = find_templ(l);
+            auto it = l->hinges.begin();
+            for (loop *t = l->son; t != NULL; t = t->brother) {
+                auto p = loop_head_tail(t);
+                if (p.second - p.first < _max_len) {
+                    splice(chain, assemble_mc(t), *it);
+                } else {
+                    splice(chain, loop_pred(t), *it);
+                }
+                it++;
+            }
+            return chain;
+        } else {
+            return NULL;
+        }
+    }
+
+    Chain *assemble_mc(loop *l) {
+        Chain *chain = assemble(l);
+        return mc(chain, l);
+    }
+
+    Chain *assemble(loop *l) {
+        if (l != NULL) {
+            Chain *chain = find_templ(l);
+            auto it = l->hinges.begin();
+            for (loop *t = l->son; t != NULL; t = t->brother) {
+                splice(chain, assemble(t), *it);
+                it++;
+            }
+            return chain;
+        } else {
+            return NULL;
+        }
+    }
+
+    Chain *splice(Chain *chain1, Chain *chain2, const hinge_t &hinge) {
+        Mat *m1 = mat_chain(chain1, hinge);
+        Mat *m2 = mat_chain(chain2);
+        delete m1;
+        delete m2;
+        return chain;
     }
 
     void traverse(loop *l) {
@@ -65,10 +116,13 @@ public:
 
     void pred() {
         loop *l = ss_tree(_seq, _ss);
-        traverse(l);
-        pts_t pts;
-        set_pts(l, pts);
-        print_pts(pts);
+        Chain *chain = loop_pred(l);
+        chain = mc(chain, l);
+        std::cout << *chain << std::endl;
+//        traverse(l);
+//        pts_t pts;
+//        set_pts(l, pts);
+//        print_pts(pts);
         free_ss_tree(l);
     }
 };

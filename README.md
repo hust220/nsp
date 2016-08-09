@@ -41,8 +41,7 @@ Nucleic acid 2D and 3D Structure Prediction (NSP)
         ```
     *   普通用户
 
-        在configure这一步的时候加上--prefix=<PATH/TO/INSTALL/GCC>
-
+        在configure这一步的时候加上`--prefix=<PATH/TO/INSTALL/GCC>`
 2.  下载nsp
 
     `git clone https://git.oschina.net/hust220/nsp.git`
@@ -109,7 +108,6 @@ k值是用来设置读取前k\*L个DI值，如果k=1，就代表读取前L个，
 1.  组装
 
     `nsp assemble -name <JOB_NAME> -seq <SEQUENCE> -ss "<SECONDARY_STRUCTURE>"`
-
 2.  组装+采样
 
     `nsp assemble -name <JOB_NAME> -seq <SEQUENCE> -ss "<SECONDARY_STRUCTURE>" -sample -num <NUMBER_OF_PREDICTIONS>`
