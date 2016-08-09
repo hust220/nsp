@@ -22,13 +22,12 @@ Nucleic acid 2D and 3D Structure Prediction (NSP)
 - 安装有boost库
 
 ####编译安装
-1. 如果g++的版本小于4.8，需要先升级g++
+1.  如果g++的版本小于4.8，需要先升级g++
 
-首先下载g++的大于4.8的版本，这里以gcc-4.9.3为例
+    首先下载g++的大于4.8的版本，这里以gcc-4.9.3为例
 
- - root用户
-
-```
+    - root用户
+      ```
 wget http://mirror.hust.edu.cn/gnu/gcc/gcc-4.9.3/gcc-4.9.3.tar.gz
 tar xvzf gcc-4.9.3.tar.gz
 cd gcc-4.9.3
@@ -40,19 +39,18 @@ make -j4
 sudo make install
 ```
 
- - 普通用户
+    - 普通用户
+      在configure这一步的时候加上--prefix=<PATH/TO/INSTALL/GCC>
 
-在configure这一步的时候加上--prefix=<PATH/TO/INSTALL/GCC>
+2.  下载nsp
 
-2. 下载nsp
+    `git clone https://git.oschina.net/hust220/nsp.git`
 
-`git clone https://git.oschina.net/hust220/nsp.git`
+3.  编译安装
 
-3. 编译安装
+    - root用户：
 
- - root用户：
-
-```
+      ```
     cd nsp
     mkdir build
     cd build
@@ -60,9 +58,9 @@ sudo make install
     make install
 ```
 
- - 普通用户：
+    - 普通用户：
 
-```
+      ```
     cd nsp
     mkdir build
     cd build
