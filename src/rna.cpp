@@ -4,8 +4,7 @@
 namespace jian {
 
 REGISTER_NSP_COMPONENT(rna) {
-    Model m(par["pdb"][0]);
-    std::cout << m << std::endl;
+    std::cout << mol_read_to<Model>(par.get("s", "pdb"), "RNA") << std::endl;
 }
 
 } // namespace jian

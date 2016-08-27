@@ -26,9 +26,10 @@ public:
     std::string &operator [](int n);
     const std::string &operator [](int n) const;
     bool count(const std::string &s) const;
-    bool has(const std::string &s) const;
     void read(std::string par_file);
     friend std::ostream &operator <<(std::ostream &out, const Par &par);
+
+    bool has(const std::string &s) const;
 
     template<typename T>
     void set(T &&v) const {}
@@ -38,6 +39,32 @@ public:
         if (_pars.count(s)) {
             v = parse<std::decay_t<T>>(_pars.at(s)[0]);
         } else set(v, pars...);
+    }
+
+    val_t getall() const {
+        throw "jian::Par::get error! Didn't found parameters for keys!";
+    }
+
+    template<typename K, typename... V>
+    val_t getall(K &&s, V && ...pars) const {
+        if (_pars.count(s)) {
+            return _pars.at(s);
+        } else {
+            return getall(pars...);
+        }
+    }
+
+    std::string get() const {
+        throw "jian::Par::get error! Didn't found parameters for keys!";
+    }
+
+    template<typename K, typename... V>
+    std::string get(K &&s, V && ...pars) const {
+        if (_pars.count(s)) {
+            return _pars.at(s)[0];
+        } else {
+            return get(pars...);
+        }
     }
 
     template<typename T, std::enable_if_t<std::is_integral<T>::value, int> = 42>

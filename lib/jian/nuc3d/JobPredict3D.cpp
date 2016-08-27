@@ -3,9 +3,9 @@
 #include "../utils/Debug.hpp"
 #include "../utils/Par.hpp"
 #include "../utils/Env.hpp"
-#include <boost/algorithm/string.hpp>
 #include "../utils/rand.hpp"
 #include "../utils/log.hpp"
+#include "../utils/string.hpp"
 
 namespace jian {
 
@@ -15,7 +15,7 @@ JobPredict3D::JobPredict3D(const Par &pars) : _lib(Env::lib()) {
     _par = &pars;
     m_cmd = (*_par)[1];
     pars.set(_seq, "seq", "sequence");
-    boost::to_upper(_seq);
+    jian::to_upper(_seq);
     pars.set(_ss, "ss", "secondary_structure");
     pars.set(_lib, "lib", "library_path");
     pars.set(_name, "job_name", "job", "name");
@@ -34,12 +34,12 @@ JobPredict3D::JobPredict3D(const Par &pars) : _lib(Env::lib()) {
     if (pars.has("disused_pdbs")) {
         m_disused_pdbs = pars["disused_pdbs"];
     }
-    for (auto && s : m_disused_pdbs) boost::to_upper(s);
+    for (auto && s : m_disused_pdbs) jian::to_upper(s);
     pars.set(_method, "method");
     pars.set(_is_test, "test");
     pars.set(_native, "native");
     pars.set(_source_pdb, "source_pdb");
-    boost::to_upper(_source_pdb);
+    jian::to_upper(_source_pdb);
 //    if (pars.has("no_mc")) m_no_mc = true;
     if (pars.has("sample_hairpin")) m_sample_hairpin = true;
     if (pars.has("sample_il")) m_sample_il = true;

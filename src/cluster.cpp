@@ -5,7 +5,7 @@
 #include <deque>
 #include <Eigen/Dense>
 #include "nsp.hpp"
-#include <jian/pdb/Model.hpp>
+#include <jian/pdb.hpp>
 #include <jian/geom/suppos.hpp>
 #include <jian/utils/file.hpp>
 #include <jian/utils/Cluster.hpp>
@@ -99,7 +99,7 @@ REGISTER_NSP_COMPONENT(cluster) {
         std::cout << "Reading molecules..." << std::endl;
         EACH_SPLIT_LINE(par["list"][0].c_str(), " ",
             std::cout << "read " << F[0] << std::endl;
-            Model model(F[0]);
+            auto && model = mol_read_to<Model>(F[0]);
             mats.push_back(method(model));
             names.push_back(model.name);
         );

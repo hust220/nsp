@@ -71,7 +71,7 @@ public:
         print_parameters();
 
         LOG << "# Read initial structure" << std::endl;
-        _pred_chain = residues_from_file(par["pdb"][0]);
+        chain_read_model(_pred_chain, par.get("pdb"));
 
         LOG << "# Set indices" << std::endl;
         thread_local static std::map<char, int> m {{'A', 0}, {'U', 1}, {'G', 2}, {'C', 3}};
@@ -444,7 +444,7 @@ public:
         LOG << "# Writing to file." << std::endl;
         std::ostringstream stream;
         stream << _name << ".mc1p." << m_seed << ".pdb";
-        residues_to_file(_pred_chain, stream.str());
+        write_chain(_pred_chain, stream.str());
 
         display_end_information();
     }

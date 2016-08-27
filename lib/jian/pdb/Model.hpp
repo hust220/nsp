@@ -50,33 +50,13 @@ class Model : public std::deque<Chain> {
 public:
     std::string name = "unknown";
     std::string type = "unknown";
-
-    Model() {}
-    Model(const std::string &pdbfile);
-
-    template<typename T>
-    Model coarse_grained(T &&names) const {
-        Model m;
-        m.name = name;
-        for (auto &&chain : *this) {
-            m.push_back(chain.coarse_grained(names));
-        }
-        return m;
-    }
+    int num = 1;
 };
 
 std::string seq(const Model &model);
 int num_residues(const Model &model);
 int num_atoms(const Model &model);
 bool is_empty(const Model &model);
-std::ostream &operator <<(std::ostream &output, const Model &model);
-Model RNA(const Model &model);
-Model RNA(const std::string &s);
-Model DNA(const Model &model);
-Model DNA(const std::string &s);
-Model R5P(const Model &model);
-Model R5P(const std::string &s);
-void write_pdb(const Model &model, const std::string &name);
 
 template<typename T> 
 auto sub(const Model &model, T &&t) {

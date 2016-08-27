@@ -45,7 +45,7 @@ public:
         char *lib = getenv("NSP");
         assert(lib);
         _lib = string() + lib;
-        _lib += "/" + boost::to_upper_copy(_type);
+        _lib += "/" + jian::to_upper_copy(_type);
 
         /// read mononucleotide parameters
         std::string file_name = _lib + "/pars/5p/mono_nuc_pars";
@@ -325,9 +325,9 @@ public:
                 }
                 break;
             }
-            boost::trim(line);
+            jian::trim(line);
             std::vector<std::string> splited_line;
-            boost::split(splited_line, line, boost::is_any_of(" ,-"), boost::token_compress_on);
+            jian::tokenize(line, splited_line, " ,-");
             if (splited_line == std::vector<std::string>{"G", "quadruplex", "helix"}) {
                 constraint_size = 4;
                 if (!temp_helix.empty()) {
@@ -354,7 +354,7 @@ public:
             std::vector<int> temp_vec;
             std::transform(std::begin(splited_line), std::end(splited_line), 
                            std::back_inserter(temp_vec), [](const std::string &s){
-                return boost::lexical_cast<int>(s) - 1;
+                return std::stoi(s) - 1;
             });
             temp_helix.push_back(temp_vec);
         }

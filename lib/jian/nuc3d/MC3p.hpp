@@ -50,7 +50,7 @@ public:
     double _mc_bond_dihedral_std = 0.27;
 
     MC3p(const Par &par) : JobPredict3D(par) {
-        _pred_chain = residues_from_file(par["pdb"][0]);
+        chain_read_model(_pred_chain, par.get("pdb"));
 
         Debug::println("# Set residue module types");
         set_res_module_types();
@@ -288,7 +288,7 @@ public:
         LOG << "# Writing to file." << std::endl;
         std::ostringstream stream;
         stream << _name << ".sample." << m_seed << ".pdb";
-        residues_to_file(_pred_chain, stream.str());
+        write_chain(_pred_chain, stream.str());
     }
 
     void transform() {

@@ -8,7 +8,7 @@
 namespace jian {
 
 REGISTER_NSP_COMPONENT(anal_mol) {
-    auto &&chain = residues_from_file(par["pdb"][0]);
+    auto &&chain = read_model_to_chain(par.get("s"));
     int len = chain.size();
     std::deque<int> ls; 
     if (par.has("num")) {
@@ -63,9 +63,9 @@ REGISTER_NSP_COMPONENT(anal_mol) {
 //}
 
 REGISTER_NSP_COMPONENT(dihs) {
-    std::string pdb = par["pdb"][0];
+    std::string pdb = par.get("s");
     std::deque<Atom> atoms;
-    Chain chain = residues_from_file(pdb);
+    Chain chain = read_model_to_chain(pdb);
     for (auto && r : chain) {
         for (auto && a : r) {
             if (a.name == "C5*" || a.name == "O3*") {

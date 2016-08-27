@@ -22,6 +22,8 @@
 namespace jian {
 namespace nuc3d {
 
+using fixed_ranges_t = std::list<std::array<int, 2>>;
+
 template<typename MC_T>
 class DHMC : public MC_T {
 public:    
@@ -31,6 +33,43 @@ public:
     std::deque<std::shared_ptr<SSTree>> m_trees;
     std::deque<range_t *> m_range;
     range_t _moved_residues;
+    fixed_ranges_t _fixed_ranges;
+
+    template<typename T>
+    std::string partial_ss(std::string ss, T &&pair) {
+        for (auto && c : ss) {
+            if (c == pair.first) {
+                c = '(';
+            } else if (c == pair.second) {
+                c = ')';
+            } else if (c != '&') {
+                c = '.';
+            }
+        }
+        return ss;
+    }
+
+    template<typename T>
+    auto make_hp_range(T &&l) {
+        return make_range(l->s.head->res1.num - 1, l->s.head->res2.num - 1, l->s.head->res1.num - 1, l->s.head->res2.num - 1 );
+    }
+
+    template<typename T>
+    auto make_il_range(T &&l) {
+        return make_range(l->s.head->res1.num - 1, l->son->s.head->res1.num - 2, l->son->s.head->res2.num, l->s.head->res2.num - 1 );
+    }
+
+    template<typename T>
+    auto make_helix_range(T &&h) {
+        auto p = make_range(h.head->res1.num - 1, 0, 0, h.head->res2.num - 1);
+        HELIX_EACH(h,
+            if (BP->next == NULL) {
+                (*p)[1] = BP->res1.num - 1;
+                (*p)[2] = BP->res2.num - 1;
+            }
+        );
+        return p;
+    }
 
     DHMC(const Par &par) : mc_t(par) {
         LOG << "# Set 2D trees" << std::endl;
@@ -56,20 +95,6 @@ public:
             }
             LOG << std::endl;
         }
-    }
-
-    template<typename T>
-    std::string partial_ss(std::string ss, T &&pair) {
-        for (auto && c : ss) {
-            if (c == pair.first) {
-                c = '(';
-            } else if (c == pair.second) {
-                c = ')';
-            } else if (c != '&') {
-                c = '.';
-            }
-        }
-        return ss;
     }
 
     void set_trees() {
@@ -155,28 +180,6 @@ public:
         return p;
     }
 
-    template<typename T>
-    auto make_hp_range(T &&l) {
-        return make_range(l->s.head->res1.num - 1, l->s.head->res2.num - 1, l->s.head->res1.num - 1, l->s.head->res2.num - 1 );
-    }
-
-    template<typename T>
-    auto make_il_range(T &&l) {
-        return make_range(l->s.head->res1.num - 1, l->son->s.head->res1.num - 2, l->son->s.head->res2.num, l->s.head->res2.num - 1 );
-    }
-
-    template<typename T>
-    auto make_helix_range(T &&h) {
-        auto p = make_range(h.head->res1.num - 1, 0, 0, h.head->res2.num - 1);
-        HELIX_EACH(h,
-            if (BP->next == NULL) {
-                (*p)[1] = BP->res1.num - 1;
-                (*p)[2] = BP->res2.num - 1;
-            }
-        );
-        return p;
-    }
-
     void set_ranges() {
         std::vector<int> v(mc_t::_seq.size(), 0);
 
@@ -253,6 +256,36 @@ public:
         }
 
         merge_ranges();
+        set_fixed_ranges();
+    }
+
+    bool in_fixed_ranges(const range_t &r) {
+        for (auto && range : _fixed_ranges) {
+            if ((range[0] >= r[1] && range[1] >= r[0]) || 
+                (range[0] >= r[3] && range[1] >= r[2])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void set_fixed_ranges() {
+        while (true) {
+            bool flag = false;
+            for (auto && r : m_range) {
+                auto & range = *r;
+                if (in_fixed_ranges(range)) {
+                    flag = true;
+                    m_range.erase(std::remove_if(m_range.begin(), m_range.end(), [&](auto && t){return t == r;}), m_range.end());
+                    delete r;
+                    break;
+                }
+            }
+            if (flag) continue; else break;
+        }
+        for (auto && range : _fixed_ranges) {
+            m_range.push_back(make_range(range[0], range[1], range[0], range[1]));
+        }
     }
 
     void merge_ranges() {
@@ -290,7 +323,7 @@ public:
         }
     }
 
-    // MC related methods
+// MC related methods
 
     virtual void init_run() {
         LOG << "# Set pseudo-knots" << std::endl;
@@ -327,6 +360,23 @@ public:
     }
 
 };
+
+template<typename T>
+void chain_refine(Chain &chain, loop *l, const fixed_ranges_t &fixed_ranges = {}, std::string traj = "") {
+    Par par;
+    par._orig_pars = {"nsp", ""};
+    std::string seq, ss;
+    seq_read_tree(seq, l);
+    ss_read_tree(ss, l);
+    par._pars["traj"].push_front(traj);
+    par._pars["seq"].push_front(seq);
+    par._pars["ss"].push_front(ss);
+    DHMC<T> mc(par);
+    mc._pred_chain = chain;
+    mc._fixed_ranges = fixed_ranges;
+    mc.run();
+    chain = mc._pred_chain;
+}
 
 } // namespace nuc3d
 } // namespace jian

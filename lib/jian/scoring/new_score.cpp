@@ -83,10 +83,8 @@ public:
     }
 
     Eigen::MatrixXd *mat_from_pdb(const std::string &s) {
-//        std::cout << "Reading " << s << std::endl;
-        Model m(s);
+        auto && m = mol_read_to<Model>(s);
         int len = 5 * num_residues(m);
-//        std::cout << len << std::endl;
         Eigen::MatrixXd *mat = new Eigen::MatrixXd(len, 3);
         int n_res = 0;
         for (auto && chain : m) {

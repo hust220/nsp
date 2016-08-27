@@ -26,7 +26,7 @@ public:
 
         par.set(_name, "name", "pdb", "pdb_file");
         assert(!_name.empty());
-        _mol = Model(_name);
+        mol_read(_mol, _name);
         _name = _mol.name;
         _seq = jian::seq(_mol);
 
@@ -69,7 +69,7 @@ public:
                 nums[2 * len - 1 - index] = b->res2.num - 1;
                 index++;
             }
-            write_pdb(sub(_mol, nums), pdb_path + helix_name + ".pdb");
+            mol_write(sub(_mol, nums), pdb_path + helix_name + ".pdb");
 
             // write to records file
             std::string helix_info_file = _lib + "/RNA/records/helix";
@@ -103,7 +103,7 @@ public:
             int len = l->len();
             std::string pdb_path = _lib + "/RNA/templates/";
             std::string loop_name = get_loop_name(l, _name, _loop_num);
-            write_pdb(sub(_mol, get_loop_nums(l)), pdb_path + loop_name + ".pdb");
+            mol_write(sub(_mol, get_loop_nums(l)), pdb_path + loop_name + ".pdb");
 
             // write to info file
             std::string l_ss = l->ss();

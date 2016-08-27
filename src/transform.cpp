@@ -5,7 +5,7 @@
 namespace jian {
 
 REGISTER_NSP_COMPONENT(transform) {
-    Model m(par["pdb"][0]);
+    auto && m = mol_read_to<Model>(par.get("s"));
     std::cout << transform(m, par["seq"][0], par["type"][0]) << std::endl;
 }
 

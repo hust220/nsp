@@ -4,6 +4,7 @@
 #include "../utils/file.hpp"
 #include "../geom.hpp"
 #include "../cg/CGpsb.hpp"
+#include "../pdb.hpp"
 #include "score_psb.hpp"
 
 namespace jian {
@@ -32,9 +33,10 @@ public:
         m_counts_stacking = Mati::Zero(144, m_bins);
         m_counts_pairing = Mati::Zero(144, m_bins);
         EACH_SPLIT_LINE(s.c_str(), " ",
-//            update_counts(residues_from_file(F[0]).coarse_grained(m_atoms_cg));
             std::cout << F[0] << std::endl;
-            update_counts(CGpsb::chain(residues_from_file(F[0])));
+            Chain chain;
+            chain_read_model(chain, F[0]);
+            update_counts(CGpsb::chain(chain));
         );
         std::cout << m_counts_stacking << std::endl;
         std::cout << m_counts_pairing << std::endl;

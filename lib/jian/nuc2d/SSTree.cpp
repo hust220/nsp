@@ -10,6 +10,55 @@
 
 namespace jian {
 
+std::pair<int, int> loop_head_tail(loop *l) {
+    int left, right;
+    if (l != NULL) {
+        if (l->has_helix()) {
+            left = l->s.head->res1.num-1;
+            right = l->s.head->res2.num-1;
+            return {left, right};
+        } else if (l->has_loop()) {
+            left = l->head->num-1;
+            LOOP_EACH(l,
+                if (RES->next == NULL) {
+                    right = RES->num-1;
+                }
+            );
+            return {left, right};
+        }
+    } else {
+        throw "loop_head_tail error!";
+    }
+}
+
+void ss_read_tree(std::string &ss, loop *l) {
+    auto p = loop_head_tail(l);
+    ss.resize(p.second - p.first + 1);
+    LOOP_TRAVERSE(l,
+        HELIX_EACH(L->s,
+            ss[BP->res1.num-1] = BP->res1.type;
+            ss[BP->res2.num-1] = BP->res2.type;
+        );
+        LOOP_EACH(L,
+            ss[RES->num-1] = RES->type;
+        );
+    );
+}
+
+void seq_read_tree(std::string &seq, loop *l) {
+    auto p = loop_head_tail(l);
+    seq.resize(p.second - p.first + 1);
+    LOOP_TRAVERSE(l,
+        HELIX_EACH(L->s,
+            seq[BP->res1.num-1] = BP->res1.name;
+            seq[BP->res2.num-1] = BP->res2.name;
+        );
+        LOOP_EACH(L,
+            seq[RES->num-1] = RES->name;
+        );
+    );
+}
+
 void print_ss_tree(loop *l) {
     LOOP_TRAVERSE(l, L->print());
 }

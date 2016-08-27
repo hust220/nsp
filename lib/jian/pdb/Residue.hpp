@@ -19,23 +19,9 @@ public:
     const Atom &operator [](int n) const;
     Atom &operator [](const std::string &s);
     const Atom &operator [](const std::string &s) const;
-
-    template<typename T>
-    Residue coarse_grained(T &&names) const {
-        Residue r;
-        r.name = name;
-        for (auto &&atom : *this) {
-            if (std::find(names.begin(), names.end(), atom.name) != names.end()) {
-                r.push_back(atom);
-            }
-        }
-        return r;
-    }
 };
 
-Residue residue_from_file(const std::string &f);
-
-void residue_to_file(const Residue &residue, const std::string &file_name);
+bool res_is_type(const Residue &res, std::string type);
 
 template<typename T>
 uniform_const_t<Atom, T> &atom(T &&res, const std::string &s) {

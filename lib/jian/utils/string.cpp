@@ -66,13 +66,31 @@ str_t lower(const str_t &str) {
     return s;
 }
 
-str_t& trim(str_t &s) {  
-    if (s.empty()) {  
-        return s;  
+void to_upper(str_t &s) {
+    std::transform(s.begin(), s.end(), s.begin(), ::toupper);
+}
+
+str_t to_upper_copy(const str_t &str) {
+    str_t s = str; 
+    std::transform(s.begin(), s.end(), s.begin(), ::toupper);
+    return s;
+}
+
+void to_lower(str_t &s) {
+    std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+}
+
+str_t to_lower_copy(const str_t &str) {
+    str_t s = str; 
+    std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+    return s;
+}
+
+void trim(str_t &s) {  
+    if (!(s.empty())) {  
+        s.erase(0, s.find_first_not_of(" "));  
+        s.erase(s.find_last_not_of(" ") + 1);  
     }
-    s.erase(0, s.find_first_not_of(" "));  
-    s.erase(s.find_last_not_of(" ") + 1);  
-    return s;  
 }  
 
 str_t trim_copy(const str_t &s) {

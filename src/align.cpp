@@ -5,7 +5,7 @@
 #include <deque>
 #include <Eigen/Dense>
 #include "nsp.hpp"
-#include <jian/pdb/Model.hpp>
+#include <jian/pdb.hpp>
 #include <jian/utils/Cluster.hpp>
 #include <jian/geom/suppos.hpp>
 #include <jian/utils/file.hpp>
@@ -41,8 +41,9 @@ static Eigen::MatrixXd * model_to_mat_aa(const Model &model) {
 }
 
 REGISTER_NSP_COMPONENT(align) {
-    Model m1(par["pdb"][0]);
-    Model m2(par["pdb"][1]);
+    Model m1, m2;
+    mol_read(m1, par["s"][0]);
+    mol_read(m2, par["s"][1]);
     Eigen::MatrixXd *mat1 = model_to_mat_aa(m1);
     Eigen::MatrixXd *mat2 = model_to_mat_aa(m2);
     auto sp = geom::suppos(*mat1, *mat2);

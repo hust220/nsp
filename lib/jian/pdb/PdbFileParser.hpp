@@ -1,12 +1,12 @@
 #include <string>
-#include "MolFileParser.hpp"
+#include "molstream.hpp"
 
 namespace jian {
 
-class PdbFileParser : public MolFileParser {
+class PdbFileParser : public molstream {
 public:
     PdbFileParser(const std::string &f);
-    MolParsedLine *line();
+    MolParsedLine *getline();
 };
 
 } // namespace jian

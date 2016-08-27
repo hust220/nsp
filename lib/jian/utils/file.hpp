@@ -24,7 +24,16 @@ struct file {
 //    }
 };
 
-#define EACH_LINE(f, c) {\
+#define FILE_OPEN(f, s) \
+    std::ifstream f; \
+    f.open(s);\
+    if (!f) {\
+        std::ostringstream stream;\
+        stream << "Can't open file '" << s << "'!" << std::endl;\
+        throw stream.str();\
+    }
+
+#define EACH_LINE(f, c) ({\
     std::ifstream ifile(f);\
     int N = 0;\
     std::string L;\
@@ -33,9 +42,9 @@ struct file {
         N++;\
     }\
     ifile.close();\
-}\
+})\
 
-#define EACH_SPLIT_LINE(f, t, c) {\
+#define EACH_SPLIT_LINE(f, t, c) ({\
     std::ifstream ifile(f);\
     int N = 0;\
     std::string L;\
@@ -46,7 +55,7 @@ struct file {
         N++;\
     }\
     ifile.close();\
-}\
+})\
 
 } // namespace jian
 

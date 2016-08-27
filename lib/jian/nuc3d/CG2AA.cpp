@@ -32,7 +32,8 @@ public:
     template<typename T>
     auto get_residues(int i, T &&c) {
         Debug::print(_path + _names[i] + ".pdb\n");
-        auto residues = residues_from_file(_path + _names[i] + ".pdb");
+        Chain residues;
+        chain_read_model(residues, _path + _names[i] + ".pdb");
         auto s = geom::suppos(*(_frags[i]), c);
         INIT_SUPPOS(s);
         EACH(res, residues, EACH(atom, res, APPLY_SUPPOS(atom, s)));
@@ -84,7 +85,7 @@ public:
                     }
                 }
                 ofile << '\n';
-                residues_to_file(dq, _path + name + ".pdb");
+                mol_write(dq, _path + name + ".pdb");
                 dq.pop_front();
             }
         );

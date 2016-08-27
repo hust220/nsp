@@ -1,8 +1,10 @@
+#include <iomanip>
+#include <iostream>
 #include "Atom.hpp"
 
 namespace jian {
 
-thread_local std::map<char, double> Atom::s_mass {
+thread_local std::map<char, double> s_mass {
     {'H', 1.00794},
     {'C', 12.0107},
     {'O', 15.9994},
@@ -11,15 +13,12 @@ thread_local std::map<char, double> Atom::s_mass {
     {'S', 32},
 };
  
-Atom::Atom(std::string name, double x, double y, double z) {
+void Atom::init(std::string name, double x, double y, double z, int n) {
     set_name(name);
-    at(0) = x; at(1) = y; at(2) = z;
-}
-
-Atom::Atom(const std::string &name, int num, double x, double y, double z) {
-    set_name(name);
+    at(0) = x;
+    at(1) = y;
+    at(2) = z;
     this->num = num;
-    at(0) = x; at(1) = y; at(2) = z;
 }
 
 void Atom::set_name(const std::string &s) {
@@ -45,8 +44,6 @@ void Atom::set_mass() {
     try {
         mass = s_mass.at(name[0]);
     } catch(std::exception e) {
-//        std::cout << "Unknown atom: " << name[0] << std::endl;
-//        throw e;
     }
 }
 

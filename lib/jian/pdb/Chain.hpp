@@ -12,22 +12,8 @@ public:
     std::string name = "X";
     std::string type = "unknown";
     std::string model_name = "unknown";
-
-    template<typename T>
-    Chain coarse_grained(T &&names) const {
-        Chain c;
-        c.name = name;
-        for (auto &&res : *this) {
-            c.push_back(res.coarse_grained(names));
-        }
-        return c;
-    }
-
 };
 
-std::ostream &operator <<(std::ostream &output, const Chain &chain);
-Chain residues_from_file(const std::string &file_name);
-void residues_to_file(const Chain &chain, const std::string &file_name);
 void append_chain_to_file(const Chain &chain, const std::string &file_name, int n);
 int num_atoms(const Chain &chain);
 

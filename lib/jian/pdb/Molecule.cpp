@@ -1,11 +1,12 @@
+#include <mutex>
+#include <iomanip>
+#include <set>
 #include <string>
+#include "../utils/file.hpp"
+#include "molstream.hpp"
 #include "Molecule.hpp"
 
 namespace jian {
-
-Molecule::Molecule() {}
-
-Molecule::Molecule(const std::string &file_name) {}
 
 } // namespace jian
 

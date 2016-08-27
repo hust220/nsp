@@ -30,8 +30,8 @@ void set_nums(nums_t &nums, const std::string &par) {
 } // namespace rmsd_detail
 
 REGISTER_NSP_COMPONENT(rmsd) {
-    Chain c1 = residues_from_file(par["pdb"][0]);
-    Chain c2 = residues_from_file(par["pdb"][1]);
+    Chain c1 = read_model_to_chain(par["s"][0]);
+    Chain c2 = read_model_to_chain(par["s"][1]);
     assert(c1.size() == c2.size());
 
     rmsd_detail::nums_t nums;

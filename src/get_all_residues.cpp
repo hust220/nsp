@@ -6,12 +6,12 @@
 namespace jian {
 
 REGISTER_NSP_COMPONENT(get_all_residues) {
-    Model m(par["pdb"][0]);
-    std::string name = file::name(par["pdb"][0]);
+    auto && m = mol_read_to<Model>(par.get("s"));
+    std::string name = file::name(par["s"][0]);
     int i = 1;
     for (auto && chain : m) {
         for (auto && res : chain) {
-            residue_to_file(res, name + "-" + std::to_string(i) + ".pdb");
+            mol_write(res, name + "-" + std::to_string(i) + ".pdb");
             i++;
         }
     }

@@ -60,21 +60,28 @@ public:
 
     void print_stacking() {
         Mat arr(3, 3);
+        double d;
         for (int i = 0; i < _seq.size(); i++) {
             for (int j = i + 1; j < _seq.size(); j++) {
                 set_arr(arr, i, j);
-//                if (i == 0 && j == 1) LOG << arr  << std::endl;
-                LOG << i+1 << ' ' << j+1 << ' ' << en_stacking(arr, i, j)  << std::endl;
+                d = en_stacking(arr, i, j);
+                if (d != 0) {
+                    LOG << i+1 << ' ' << j+1 << ' ' << d  << std::endl;
+                }
             }
         }
     }
 
     void print_pairing() {
         Mat arr(3, 3);
+        double d;
         for (int i = 0; i < _seq.size(); i++) {
             for (int j = i + 1; j < _seq.size(); j++) {
                 set_arr(arr, i, j);
-                LOG << i+1 << ' ' << j+1 << ' ' << en_pairing(arr, i, j)  << std::endl;
+                d = en_pairing(arr, i, j);
+                if (d != 0) {
+                    LOG << i+1 << ' ' << j+1 << ' ' << d  << std::endl;
+                }
             }
         }
     }

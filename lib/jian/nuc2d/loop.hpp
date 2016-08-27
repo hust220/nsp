@@ -46,16 +46,6 @@
     }\
 })
 
-#define LOOP_EQUAL(l, v) ({\
-    bool b = true;\
-    std::deque<char> ls;\
-    BOOST_PP_IF(BOOST_PP_IS_BEGIN_PARENS(v),\
-        EACH(i, v, ls.push_back(i)) ,\
-        LOOP_EACH(v, ls.push_back(RES->type)));\
-    LOOP_EACH(l, if (RES->type != ls[N_RES]) b = false);\
-    b;\
-})
-
 namespace jian {
 
 class loop {
@@ -196,7 +186,7 @@ public:
     }
 
     void print() const {
-        LOGI << "Hairpin (" << this << ")" << std::endl;
+        LOGI << "Hairpin (" << this << ", son: " << son << ", brother: " << brother << ")" << std::endl;
         if (has_loop()) {
             LOGI << "  Loop: " << seq() << ' ' << ss() << ' ';
             LOOP_EACH(this,

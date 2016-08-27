@@ -3,7 +3,6 @@
 #include <iostream>
 #include <fstream>
 #include <regex>
-#include <boost/lexical_cast.hpp>
 #include "../pdb/Model.hpp"
 #include "../geom.hpp"
 
@@ -236,7 +235,7 @@ public:
     std::string anonym() {
         static int n = 0;
         n++;
-        return "anonym_"s + boost::lexical_cast<std::string>(n);
+        return "anonym_"s + std::to_string(n);
     }
 
     void exec(const std::string &content) {}

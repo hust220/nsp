@@ -1,5 +1,5 @@
 #include "nsp.hpp"
-#include <jian/pdb/Model.hpp>
+#include <jian/pdb.hpp>
 #include <jian/geom.hpp>
 
 namespace jian {
@@ -20,7 +20,7 @@ REGISTER_NSP_COMPONENT(sub) {
             }
         }
     }
-    std::cout << sub(Model(par[std::vector<std::string>{"pdb", "p"}][0]), ls) << std::endl;
+    std::cout << sub(mol_read_to<Model>(par[std::vector<std::string>{"s", "pdb", "p"}][0]), ls) << std::endl;
 }
 
 } // namespace jian

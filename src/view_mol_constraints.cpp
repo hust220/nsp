@@ -11,7 +11,7 @@
 namespace jian {
 
 REGISTER_NSP_COMPONENT(view_constraints) {
-    auto &&chain = residues_from_file(par["pdb"][0]);
+    auto &&chain = read_model_to_chain(par["s"][0]);
     int i, j;
     std::map<std::string, std::function<double(const Residue &, const Residue &)>> methods {
         {"min", [](const Residue &r1, const Residue &r2){

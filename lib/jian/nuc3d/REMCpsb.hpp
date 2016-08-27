@@ -89,7 +89,7 @@ public:
         LOG << PP_STRING3(PP_CAT(mc_, bond_angle_weight)) << std::endl;
 
         std::map<char, int> m{{'A', 0}, {'U', 1}, {'G', 2}, {'C', 3}};
-        _pred_chain = residues_from_file(par["pdb"][0]);
+        chain_read_model(_pred_chain, par.get("pdb"));
 
         m_indices.resize(_seq.size());
         for (int i = 0; i < _seq.size(); i++) {
@@ -380,7 +380,7 @@ public:
         LOG << "# Writing to file." << std::endl;
         std::ostringstream stream;
         stream << _name << ".sample." << m_seed << ".pdb";
-        residues_to_file(_pred_chain, stream.str());
+        write_chain(_pred_chain, stream.str());
     }
 
     void transform() {

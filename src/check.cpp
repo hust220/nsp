@@ -4,8 +4,7 @@
 namespace jian {
 
 REGISTER_NSP_COMPONENT(check) {
-    Model m(par["pdb"][0]);
-    RNA::check(m);
+    RNA::check(mol_read_to<Model>(par.get("s")));
 }
 
 } // namespace jian

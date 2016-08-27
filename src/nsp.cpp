@@ -1,15 +1,31 @@
 #include "nsp.hpp"
-#include <jian/utils/exception.hpp>
 
-int main(int argc, char **argv) {
-    try {
-        jian::NSP::run(argc, argv);
-    } catch (const jian::Error &inf) {
-        std::cout << inf.what() << std::endl;
-    } catch (const char * inf) {
-        std::cout << inf << std::endl;
-    } catch (const std::string &s) {
-        std::cout << s << std::endl;
+namespace jian {
+
+    NSP &NSP::instance() {
+        static NSP nsp;
+        return nsp;
     }
-}
+
+    void NSP::run(int argc, char **argv) {
+        Par par(argc, argv);
+        if (par.has("log_level")) {
+            set_log_level(std::stoi(par["log_level"][0]));
+        }
+        auto &m = instance()._methods;
+        std::string path = Env::lib() + "/RNA/pars/src/";
+        if (m.find(par[1]) == m.end()) {
+            std::string name = path + "nsp.md";
+            EACH_LINE(name.c_str(), std::cout << L << std::endl;);
+            for (auto && pair : m) {std::cout << pair.first << ' ';}
+            std::cout << std::endl;
+        } else if (par.has("help") || par.has("h") || par.has("-help")) {
+            std::string name = path + par[1] + ".md";
+            EACH_LINE(name.c_str(), std::cout << L << std::endl;);
+        } else {
+            m[par[1]](par);
+        }
+    }
+
+} // namespace jian
 

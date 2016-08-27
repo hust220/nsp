@@ -41,7 +41,7 @@ std::string set_ss(std::string &ss, const break_pts_t &v) {
 
 REGISTER_NSP_COMPONENT(rebuild_chain) {
     rebuild_chain_detail::break_pts_t v;
-    rebuild_chain_detail::set_break_pts(v, residues_from_file(par["pdb"][0]));
+    rebuild_chain_detail::set_break_pts(v, read_model_to_chain(par.get("s", "pdb")));
     std::cout << rebuild_chain_detail::set_ss(par["ss"][0], v);
 }
 

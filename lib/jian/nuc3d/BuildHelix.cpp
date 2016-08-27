@@ -18,7 +18,7 @@ Model build_helix(std::string seq) {
             file_name = lib + "/basepair/XX.pdb";
         }
         ifile.close();
-        return Model(file_name);
+        return mol_read_to<Model>(file_name);
     } else if (seq.size() == 4) {
         std::string file_name = lib + "/basepair/" + seq + ".pdb";
         std::ifstream ifile(file_name.c_str());
@@ -26,7 +26,7 @@ Model build_helix(std::string seq) {
             file_name = lib + "/basepair/XXXX.pdb";
         }
         ifile.close();
-        return Model(file_name);
+        return mol_read_to<Model>(file_name);
     } else {
         std::string file_name = lib + "/basepair/" + seq.substr(0, 2) + seq.substr(seq.size() - 2, 2) + ".pdb";
         std::ifstream ifile(file_name.c_str());
@@ -36,7 +36,7 @@ Model build_helix(std::string seq) {
         ifile.close();
         Connect connect;
         connect._hinge_size = 1;
-        return connect(Model(file_name), build_helix(seq.substr(1, seq.size() - 2)), 1, 2);
+        return connect(mol_read_to<Model>(file_name), build_helix(seq.substr(1, seq.size() - 2)), 1, 2);
     }
 }
 

@@ -7,7 +7,10 @@ namespace jian {
 class loop;
 class SSTreeImpl;
 
+std::pair<int, int> loop_head_tail(loop *l);
 loop *ss_tree(std::string seq, std::string ss, int hinge = 2);
+void ss_read_tree(std::string &ss, loop *l);
+void seq_read_tree(std::string &seq, loop *l);
 void free_ss_tree(loop *l);
 void print_ss_tree(loop *l);
 

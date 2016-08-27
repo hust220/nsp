@@ -33,7 +33,8 @@ public:
     template<typename T>
     auto get_residues(int i, T &&c) {
         LOG << _path + _names[i] + ".pdb" << std::endl;
-        auto residues = residues_from_file(_path + _names[i] + ".pdb");
+        Chain residues;
+        chain_read_model(residues, _path + _names[i] + ".pdb");
         auto s = geom::suppos(*(_frags[i]), c);
         EACH(res, residues, EACH(atom, res, geom::apply_suppos(atom, s)));
         return residues;
@@ -70,7 +71,7 @@ public:
                 std::string name = model.name + "-" + JN_STR(N_RES); ofile << name;
                 FOR((i, _len_frag), FOR((j, 3), auto &&atom = dq[i]["C4*"]; ofile << ' ' << atom[j]));
                 ofile << '\n';
-                residues_to_file(dq, _path + name + ".pdb");
+                mol_write(dq, _path + name + ".pdb");
                 dq.pop_front();
             }
         );

@@ -1,6 +1,11 @@
+#include "../utils/log.hpp"
 #include "CifFileParser.hpp"
 
 namespace jian {
+
+reg_molstream reg_cif_file_parser("cif", [](const std::string &f)->molstream * {
+    return new CifFileParser(f);
+});
 
 class Cif : public std::map<std::string, std::string> {
 public:
@@ -9,7 +14,7 @@ public:
     char _ch {'\0'};
     std::map<std::string, std::vector<std::string>> _loop;
     std::vector<std::vector<int>> _fsm {
-        // space ret ' " word ;
+        // space return ' " word ;
         { 1,  0,  2,  3,  4,  5},
         { 1,  0,  2,  3,  4,  4},
         { 2, -2, -1,  2,  2,  2},
@@ -28,6 +33,7 @@ public:
 
     void read_name(std::ifstream &ifile) {
         _name = read_word(ifile);
+//LOGI << "name: " << _name << std::endl;
         _name = _name.substr(_name.size() - 4, 4);
         read_word(ifile);
     }
@@ -59,7 +65,7 @@ public:
             else {
                 while (true) {
                     for (int i = 0; i < names.size(); i++) {
-                        _loop[names[_i]].push_back(word);
+                        _loop[names[i]].push_back(word);
                         word = read_word(ifile);
                         if (word == "" || word == "#") {
                             if (i + 1 != names.size()) {
@@ -78,11 +84,14 @@ public:
         int state = 0, new_state;
         while (true) {
             char c = ifile.get();
+//            LOGI << "new line: " << c << ' ';
             if (c == '\n') _num_line++;
             auto i = char_type(c);
-            if (i == 6) return word;
-            new_state = _fsm[state][_i];
-            if (new_state == -1) return strip(word);
+//            LOGI << i << ' ';
+            if (i == 6) break;;
+            new_state = _fsm[state][i];
+//            LOGI << new_state << std::endl;
+            if (new_state == -1) break;
             else if (new_state == -2) throw "jian::pdb::read_word error! Line" + 
                 std::to_string(_num_line) + " in file " + _name + ".cif.";
             else if (new_state != 0 and new_state != 1) {
@@ -90,6 +99,8 @@ public:
                 state = new_state;
             }
         }
+//        LOGI << word << std::endl;
+        return strip(word);
     }
 
     std::string strip(const std::string &s) {
@@ -126,6 +137,7 @@ public:
     MolParsedLine *line() {
         if (!eof()) {
             MolParsedLine *line = new MolParsedLine;
+//std::cout << "MolParsedLine: " << line << std::endl;
             line->atom_type = _loop["_atom_site.type_symbol"][_i];
             line->atom_name = _loop["_atom_site.label_atom_id"][_i];
             line->res_name = _loop["_atom_site.label_comp_id"][_i];
@@ -155,7 +167,7 @@ public:
 
 };
 
-CifFileParser::CifFileParser(const std::string &f) : MolFileParser(f) {
+CifFileParser::CifFileParser(const std::string &f) : molstream(f) {
     _cif = new Cif(ifile);
 }
 
@@ -163,7 +175,7 @@ CifFileParser::~CifFileParser() {
     delete _cif;
 }
 
-MolParsedLine *CifFileParser::line() {
+MolParsedLine *CifFileParser::getline() {
     return _cif->line();
 }
 

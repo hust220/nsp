@@ -4,11 +4,26 @@
 #include <regex>
 #include <algorithm>
 #include "../utils/file.hpp"
-#include "MolFileParser.hpp"
+#include "molstream.hpp"
 #include "Residue.hpp"
-#include <boost/format.hpp>
 
 namespace jian {
+
+bool res_is_type(const Residue &res, std::string type) {
+    static std::vector<std::string> v {"A", "U", "G", "C", 
+                                       "RA", "RU", "RG", "RC",
+                                       "A5", "U5", "G5", "C5",
+                                       "A3", "U3", "G3", "C3"};
+    if (type == "RNA") {
+        if (std::find(v.begin(), v.end(), jian::upper(res.name)) != v.end()) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return true;
+    }
+}
 
 auto Residue::get_sort_keys() {
     thread_local static std::map<std::string, std::vector<std::string>> keys {
@@ -70,47 +85,6 @@ Atom &Residue::operator [](const std::string &s) {
 const Atom &Residue::operator [](const std::string &s) const {
     for (auto &&atom : *this) if (atom.name == s) {return atom;}
     throw "jian::Residue::operator[] error! Not found atom!";
-}
-
-Residue residue_from_file(const std::string &f) {
-    Residue residue;
-    std::string file_name = file::name(f);
-    std::string file_type = file::type(f);
-    MolFileParser *parser = MolFileParser::make(file_type, f);
-    MolParsedLine *line = NULL, *old_line = NULL;
-    while ((line = parser->line()) != NULL) {
-        if (old_line != NULL) {
-            if (line->res_num != old_line->res_num || line->res_name != old_line->res_name || line->res_flag != old_line->res_flag) {
-                break;
-            }
-            delete old_line;
-        }
-        residue.push_back(Atom(line->atom_name, line->atom_num, line->x, line->y, line->z));
-        old_line = line;
-    }
-    if (old_line != NULL) {
-        residue.name = old_line->res_name;
-        residue.num = old_line->res_num;
-        delete old_line;
-        delete parser;
-    }
-    return residue;
-}
-
-void residue_to_file(const Residue &residue, const std::string &file_name) {
-    std::ofstream output(file_name.c_str());
-    int atom_num = 1;
-    output << std::fixed << std::setprecision(3);
-    for (auto &&atom: residue) {
-        std::string atom_name(atom.name);
-        std::replace(atom_name.begin(), atom_name.end(), '*', '\'');
-        output << boost::format("ATOM%7i  %-4s%3s%2s%4i%12.3lf%8.3lf%8.3lf%6.2f%6.2f%12c  \n") % 
-                                atom_num % atom_name % residue.name % "X" % 1 % 
-                                atom[0] % atom[1] % atom[2] % 1.00 % 0.00 % atom_name[0];
-        atom_num++;
-    }
-    output << "TER" << std::endl;
-    output.close();
 }
 
 } // namespace jian

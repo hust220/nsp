@@ -1,6 +1,6 @@
 #include <sstream>
 #include "nsp.hpp"
-#include <jian/pdb/Model.hpp>
+#include <jian/pdb.hpp>
 #include <jian/geom.hpp>
 
 namespace jian {
@@ -28,7 +28,7 @@ static Chain make_chain(std::initializer_list<T> ls) {
 }
 
 REGISTER_NSP_COMPONENT(contacts) {
-    Chain c = residues_from_file(par[std::vector<std::string>{"pdb", "p"}][0]);
+    Chain c = read_model_to_chain(par[std::vector<std::string>{"s", "pdb", "p"}][0]);
     int len = c.size();
     for (int i = 0; i < len; i++) {
         for (int j = i + 3; j < len; j++) {
@@ -37,7 +37,7 @@ REGISTER_NSP_COMPONENT(contacts) {
                 if (par.has("write")) {
                     std::ostringstream stream;
                     stream << c.model_name << '-' << i+1 << '-' << j+1 << ".pdb";
-                    residues_to_file(make_chain({c[i], c[j]}), stream.str());
+                    mol_write(make_chain({c[i], c[j]}), stream.str());
                 }
             }
         }

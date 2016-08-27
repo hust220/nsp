@@ -25,8 +25,8 @@ REGISTER_NSP_COMPONENT(joint) {
             }
         }
     };
-    auto &&chain1 = residues_from_file(par["pdb1"][0]);
-    auto &&chain2 = residues_from_file(par["pdb2"][0]);
+    auto &&chain1 = read_model_to_chain(par["pdb1"][0]);
+    auto &&chain2 = read_model_to_chain(par["pdb2"][0]);
     std::deque<int> ls1;
     std::deque<int> ls2;
     set_nums(ls1, par["num1"]);
@@ -46,19 +46,19 @@ REGISTER_NSP_COMPONENT(joint) {
     for (auto && res : chain2) {
         chain1.push_back(std::move(res));
     }
-    residues_to_file(chain1, par["out"][0]);
+    mol_write(chain1, par["out"][0]);
 }
 
 REGISTER_NSP_COMPONENT(joint3) {
-    auto &&chain1 = residues_from_file(par[2]);
-    auto &&chain2 = residues_from_file(par[3]);
+    auto &&chain1 = read_model_to_chain(par[2]);
+    auto &&chain2 = read_model_to_chain(par[3]);
     JointHelix joint_helix;
     std::cout << joint_helix.joint<3>(chain1, chain2) << std::endl;
 }
 
 REGISTER_NSP_COMPONENT(joint4) {
-    auto &&chain1 = residues_from_file(par[2]);
-    auto &&chain2 = residues_from_file(par[3]);
+    auto &&chain1 = read_model_to_chain(par[2]);
+    auto &&chain2 = read_model_to_chain(par[3]);
     JointHelix joint_helix;
     std::cout << joint_helix._joint<4>(chain1, chain2) << std::endl;
 }

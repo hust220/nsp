@@ -46,7 +46,11 @@ public:
 
     Residue read_res(const std::string &name) {
         std::string file_name = Env::lib() + "/RNA/pars/nuc3d/Convert/" + name + ".pdb";
-        return residues_from_file(file_name)[0];
+        Chain chain;
+        chain_read_model(chain, file_name);
+//        std::cout << "chain read " << file_name << std::endl;
+//        std::cout << chain << std::endl;
+        return chain[0];
     }
 
     ConvertImpl() {

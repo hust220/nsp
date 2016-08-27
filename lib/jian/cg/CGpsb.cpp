@@ -13,11 +13,14 @@ Residue CGpsb::res(const Residue &r) {
     Residue res;
     res.name = r.name;
     std::array<double, 3> arr{0, 0, 0};
+    Atom atm;
     for (auto && atom : r) {
         if (atom.name == "C4*") {
-            res.push_back(Atom("P", atom[0], atom[1], atom[2]));
+            atm.init("P", atom[0], atom[1], atom[2]);
+            res.push_back(atm);
         } else if (atom.name == "C1*") {
-            res.push_back(Atom("S", atom[0], atom[1], atom[2]));
+            atm.init("S", atom[0], atom[1], atom[2]);
+            res.push_back(atm);
         } else if (std::find(v.begin(), v.end(), atom.name) != v.end()) {
             for (int i = 0; i < 3; i++) {
                 arr[i] += atom[i];
@@ -27,7 +30,8 @@ Residue CGpsb::res(const Residue &r) {
     for (int i = 0; i < 3; i++) {
         arr[i] /= 6.0;
     }
-    res.push_back(Atom("B", arr[0], arr[1], arr[2]));
+    atm.init("B", arr[0], arr[1], arr[2]);
+    res.push_back(atm);
     return res;
 }
 

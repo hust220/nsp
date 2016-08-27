@@ -1,4 +1,3 @@
-#include <boost/algorithm/string.hpp>
 #include "../utils/string.hpp"
 #include "TemplRec.hpp"
 
@@ -7,9 +6,9 @@ namespace jian {
 void templ_rec_set_src(TemplRec &rec) {
     int pos = rec._name.find_first_of("-");
     if (pos == str_t::npos) {
-        rec._src = boost::to_upper_copy(rec._name);
+        rec._src = jian::upper(rec._name);
     } else {
-        rec._src = boost::to_upper_copy(rec._name.substr(0, pos));
+        rec._src = jian::upper(rec._name.substr(0, pos));
     }
 }
 

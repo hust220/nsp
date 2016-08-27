@@ -1,11 +1,12 @@
 #include "nsp.hpp"
 #include <jian/geom.hpp>
 #include <jian/cg.hpp>
+#include <jian/pdb.hpp>
 
 namespace jian {
 
 REGISTER_NSP_COMPONENT(score_aa) {
-    auto && chain = CG1p::chain(residues_from_file(par["pdb"][0]));
+    auto && chain = CG1p::chain(read_model_to_chain(par.get("s")));
     double e = 0, d;
     for (int i = 0; i < chain.size() - 1; i++) {
         d = geom::distance(chain[i][0], chain[i+1][0]);

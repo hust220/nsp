@@ -13,7 +13,7 @@ static std::string seq_chain(const Chain &c) {
 }
 
 REGISTER_NSP_COMPONENT(seq) {
-    Model m(par["pdb"][0]);
+    auto && m = mol_read_to<Model>(par.get("s"));
     if (par.has("chain")) {
         for (auto && chain : m) {
             if (chain.name == par["chain"][0]) {

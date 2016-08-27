@@ -4,7 +4,7 @@
 namespace jian {
 
 REGISTER_NSP_COMPONENT(parse_helix) {
-    auto result = parse_helix(RNA(par["model"][0]));
+    auto result = parse_helix(mol_read_to<Model>(par.get("s")));
     auto print = [](auto &f) {
         for (int i = 0; i < 3; i++) std::cout << f[i] << ' '; std::cout << std::endl;
     };

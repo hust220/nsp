@@ -2,11 +2,12 @@
 #include <jian/utils/file.hpp>
 #include <jian/matrix.hpp>
 #include <jian/scoring/score_3p.hpp>
+#include <jian/pdb.hpp>
 
 namespace jian {
 
 static void score(const std::string &name) {
-    Chain chain = residues_from_file(name).coarse_grained(std::vector<std::string>{"C5*", "O3*", "C1*"});
+    Chain chain = coarse_grained(read_model_to_chain(name), std::vector<std::string>{"C5*", "O3*", "C1*"});
     int len = chain.size();
     double e = 0, s;
     for (int i = 0; i < len - 1; i++) {
@@ -21,7 +22,7 @@ static void score(const std::string &name) {
 }
 
 static void score_res(const std::string &name) {
-    Chain chain = residues_from_file(name).coarse_grained(std::vector<std::string>{"C5*", "O3*", "C1*"});
+    Chain chain = coarse_grained(read_model_to_chain(name), std::vector<std::string>{"C5*", "O3*", "C1*"});
     int len = chain.size();
     Mat m = Mat::Zero(len, len);
     double s;
@@ -37,8 +38,8 @@ static void score_res(const std::string &name) {
 }
 
 REGISTER_NSP_COMPONENT(score_3p) {
-    if (par.has("pdb")) {
-        std::string name = par["pdb"][0];
+    if (par.has("s")) {
+        std::string name = par.get("s");
         if (par.has("res")) {
             score_res(name);
         } else {

@@ -1,6 +1,6 @@
 #include "nsp.hpp"
 #include <jian/utils/file.hpp>
-#include <jian/pdb/Model.hpp>
+#include <jian/pdb.hpp>
 #include <jian/geom.hpp>
 
 namespace jian {
@@ -19,7 +19,7 @@ static double min_distance(const Residue &r1, const Residue &r2) {
 }
 
 REGISTER_NSP_COMPONENT(min_dist) {
-    Chain chain = residues_from_file(par[std::vector<std::string>{"pdb", "p"}][0]);
+    Chain chain = read_model_to_chain(par[std::vector<std::string>{"s", "pdb", "p"}][0]);
     int len = chain.size();
     std::deque<int> ls; 
     if (par.has("num")) {

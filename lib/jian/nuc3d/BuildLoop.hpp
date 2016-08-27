@@ -84,7 +84,7 @@ public:
     }
 
     Model read_standard_pairs() {
-        return Model(_lib + "/" + type + "/pars/nuc3d/BuildLoop/pairs.pdb");
+        return mol_read_to<Model>(_lib + "/" + type + "/pars/nuc3d/BuildLoop/pairs.pdb");
     }
 
     template<typename O, typename N>

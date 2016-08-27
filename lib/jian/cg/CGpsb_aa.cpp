@@ -31,7 +31,8 @@ public:
     template<typename T>
     auto get_residues(int i, T &&c) {
         Debug::print(_path + _names[i] + ".pdb\n");
-        auto residues = residues_from_file(_path + _names[i] + ".pdb");
+        Chain residues;
+        chain_read_model(residues, _path + _names[i] + ".pdb");
         auto s = geom::suppos(*(_frags[i]), c);
         INIT_SUPPOS(s);
         EACH(res, residues, EACH(atom, res, APPLY_SUPPOS(atom, s)));
@@ -63,7 +64,8 @@ public:
 
     void extract_frags(const std::string &pdb) {
         std::deque<int> dq; 
-        Chain full_chain = residues_from_file(pdb);
+        Chain full_chain;
+        chain_read_model(full_chain, pdb);
         Chain chain = CGpsb::chain(full_chain);
         std::ofstream ofile(_path + "inf.txt");
         for (int n = 0; n < chain.size(); n++) {
@@ -83,7 +85,7 @@ public:
                 ofile << '\n';
                 Chain temp_chain;
                 for (auto && i : dq) temp_chain.push_back(full_chain[i]);
-                residues_to_file(temp_chain, _path + name + ".pdb");
+                mol_write(temp_chain, _path + name + ".pdb");
                 dq.pop_front();
             }
         }

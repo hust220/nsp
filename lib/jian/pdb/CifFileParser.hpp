@@ -4,17 +4,17 @@
 #include <map>
 #include <vector>
 #include <fstream>
-#include "MolFileParser.hpp"
+#include "molstream.hpp"
 
 namespace jian {
 
 class Cif;
 
-class CifFileParser : public MolFileParser {
+class CifFileParser : public molstream {
 public:
     CifFileParser(const std::string &);
     ~CifFileParser();
-    MolParsedLine *line();
+    MolParsedLine *getline();
 private:
     Cif *_cif;
 };

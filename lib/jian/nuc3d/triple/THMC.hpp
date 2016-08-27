@@ -120,7 +120,7 @@ public:
         LOG << len << std::endl;
 //        Mat &&c = build_helix(len);
         Chain &&c = build_helix(len);
-//        residues_to_file(c, "aa.pdb");
+//        write_chain(c, "aa.pdb");
         LOG << "## Shrink to fit." << std::endl;
         shrink_to_fit(c);
     }
@@ -145,7 +145,9 @@ public:
 
     Chain load_triple_helix(int n) {
         std::string file_name = Env::lib() + "/RNA/pars/nuc3d/triple/triple-helix-" + JN_STR(n) + ".pdb";
-        return mc_t::cg_t::chain(residues_from_file(file_name));
+        Chain chain;
+        chain_read_model(chain, file_name);
+        return mc_t::cg_t::chain(chain);
     }
 
     void set_coords_residue(Mat &c1, int m, const Residue &r) {

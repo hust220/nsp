@@ -1,12 +1,13 @@
 #include "nsp.hpp"
 #include <jian/nuc3d/CG2AA.hpp>
 #include <jian/cg.hpp>
+#include <jian/pdb.hpp>
 
 namespace jian {
 
 REGISTER_NSP_COMPONENT(cg2aa) {
     std::vector<std::string> _suppos_atoms {"C5*", "O3*", "C1*"};
-    auto &&chain = residues_from_file(par[2]);
+    auto &&chain = read_model_to_chain(par[2]);
     int len = chain.size();
     int num_atoms = len * _suppos_atoms.size();
     Eigen::MatrixXd c(num_atoms, 3);
@@ -23,11 +24,11 @@ REGISTER_NSP_COMPONENT(cg2aa) {
         }
     }
     auto && new_chain = cg2aa(c, 0, num_atoms-1);
-    residues_to_file(new_chain, par[3]);
+    mol_write(new_chain, par[3]);
 }
 
 REGISTER_NSP_COMPONENT(psb_extract_frags) {
-    CGpsb::extract_frags(par["pdb"][0]);
+    CGpsb::extract_frags(par.get("s"));
 }
 
 } // namespace jian

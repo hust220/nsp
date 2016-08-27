@@ -9,7 +9,7 @@
 namespace jian {
 
 REGISTER_NSP_COMPONENT(anal_mol) {
-    auto &&chain = residues_from_file(par["pdb"][0]);
+    auto &&chain = read_chain(par["s"][0]);
     std::deque<int> ls; 
     if (par.has("num")) {
         EACH(s, par["num"], ls.push_back(JN_INT(s)));
@@ -51,8 +51,8 @@ REGISTER_NSP_COMPONENT(joint) {
             }
         }
     };
-    auto &&chain1 = residues_from_file(par["pdb1"][0]);
-    auto &&chain2 = residues_from_file(par["pdb2"][0]);
+    auto &&chain1 = read_chain(par["pdb1"][0]);
+    auto &&chain2 = read_chain(par["pdb2"][0]);
     std::deque<int> ls1;
     std::deque<int> ls2;
     set_nums(ls1, par["num1"]);
@@ -76,15 +76,15 @@ REGISTER_NSP_COMPONENT(joint) {
 }
 
 REGISTER_NSP_COMPONENT(joint3) {
-    auto &&chain1 = residues_from_file(par[2]);
-    auto &&chain2 = residues_from_file(par[3]);
+    auto &&chain1 = read_chain(par[2]);
+    auto &&chain2 = read_chain(par[3]);
     JointHelix joint_helix;
     std::cout << joint_helix.joint<3>(chain1, chain2) << std::endl;
 }
 
 REGISTER_NSP_COMPONENT(joint4) {
-    auto &&chain1 = residues_from_file(par[2]);
-    auto &&chain2 = residues_from_file(par[3]);
+    auto &&chain1 = read_chain(par[2]);
+    auto &&chain2 = read_chain(par[3]);
     JointHelix joint_helix;
     std::cout << joint_helix._joint<4>(chain1, chain2) << std::endl;
 }
@@ -105,7 +105,7 @@ REGISTER_NSP_COMPONENT(sub) {
             }
         }
     }
-    write_pdb(sub(Model(par["pdb"][0]), ls), par["out"][0]);
+    write_pdb(sub(Model(par["s"][0]), ls), par["out"][0]);
 }
 
 REGISTER_NSP_COMPONENT(num_residues) {

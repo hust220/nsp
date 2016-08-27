@@ -62,7 +62,7 @@ public:
         for (auto && i : m_dih_pts) LOG << i << ' '; LOG << std::endl;
 
         LOG << "# Read initial structure" << std::endl;
-        if (par.has("pdb")) _pred_chain = residues_from_file(par["pdb"][0]);
+        if (par.has("pdb")) chain_read_model(_pred_chain, par.get("pdb"));
 
     }
 
@@ -229,7 +229,7 @@ public:
         stream << _name << ".mc.pdb";
         m_out_pdb = stream.str();
         _par->set(m_out_pdb, "out", "out_pdb");
-        residues_to_file(_pred_chain, m_out_pdb);
+        mol_write(_pred_chain, m_out_pdb);
     }
 
     void run() {

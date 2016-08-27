@@ -6,6 +6,7 @@
 #include "pdb/Model.hpp"
 #include "pdb/RNA.hpp"
 #include "pdb/Molecule.hpp"
+#include "pdb/io.hpp"
 #include "pdb/RMSD.hpp"
 #include "pdb/Constraints.hpp"
 

@@ -1,9 +1,14 @@
 #pragma once
 
+#include <thread>
 #include <list>
 #include <string>
 #include "../nuc2d/loop.hpp"
 #include "../nuc2d/SSTree.hpp"
+#include "../nuc3d/Ass.hpp"
+#include "../nuc2d/NucSS.hpp"
+#include "../nuc3d/BuildLoopDG.hpp"
+#include "../nuc3d/DHMC.hpp"
 
 namespace jian {
 namespace lrsp {
@@ -11,118 +16,412 @@ namespace lrsp {
 class TSP {
 public:
     using pts_t = std::list<loop *>;
+    using record_t = nuc3d::record_t;
+    using records_t = nuc3d::records_t;
+    using map_records_t = std::map<loop *, records_t>;
+    using map_templates_t = std::map<loop *, Chain *>;
 
+    map_records_t    _helix_records;
+    map_templates_t  _helix_templates;
+    map_templates_t  _helix_templates_mc;
+    map_records_t    _loop_records;
+    map_templates_t  _loop_templates;
+    map_templates_t  _loop_templates_mc;
+
+    std::list<Chain *> _gc_chain;
+    std::list<std::thread> threads;
+
+    std::string _name;
     std::string _seq;
     std::string _ss;
+    std::string _out;
+    std::string _traj;
     int _max_len = 400;
 
     TSP(const Par &par) {
+        par.set(_name, "name", "job");
         par.set(_seq, "seq");
         par.set(_ss, "ss");
-    }
-
-    void print_pts(const pts_t & pts) {
-        for (auto && pt : pts) {
-            LOGI << pt << ' ';
+        if (par.has("out")) {
+            par.set(_out, "out");
+        } else {
+            std::cout << "Please input the output file name: ";
+            std::cin >> _out;
         }
-        LOGI << std::endl;
+        par.set(_traj, "traj");
     }
 
-    std::pair<int, int> loop_head_tail(loop *l) {
-        int a = t->head->num;
-        int b;
-        LOOP_EACH(t,
-            if (RES->next == NULL) b = RES->num;
-        );
-        return {a, b};
+    ~TSP() {
+        for (auto && chain : _gc_chain) {
+            delete chain;
+        }
     }
 
-    void set_pts(loop *l, pts_t &pts) {
+    int loop_length(loop *l) {
         if (l != NULL) {
             auto p = loop_head_tail(l);
-            if (p.second - p.first < _max_len) {
-                pts.push_back(l);
+            return p.second - p.first + 1;
+        } else {
+            return 0;
+        }
+    }
+
+    void set_templates(loop *l, bool &b_NR) {
+        if (l != NULL) {
+            if (l->has_loop() && ({
+                auto p = loop_head_tail(l);
+                p.second - p.first < _max_len;
+            })) {
+                set_templates_all(l);
             } else {
+                if (l->has_helix()) {
+                    set_helix_templates(l, b_NR);
+                }
+                if (l->has_loop()) {
+                    set_loop_templates(l, b_NR);
+                }
                 for (loop *t = l->son; t != NULL; t = t->brother) {
-                    set_pts(t, pts);
+                    set_templates(t, b_NR);
                 }
             }
         }
     }
 
-    Chain *loop_pred(loop *l) {
+    void set_fixed_ranges(loop *l, nuc3d::fixed_ranges_t &fixed_ranges) {
         if (l != NULL) {
-            Chain *chain = find_templ(l);
-            auto it = l->hinges.begin();
-            for (loop *t = l->son; t != NULL; t = t->brother) {
-                auto p = loop_head_tail(t);
+            if (l->has_loop()) {
+                auto p = loop_head_tail(l);
                 if (p.second - p.first < _max_len) {
-                    splice(chain, assemble_mc(t), *it);
+                    fixed_ranges.push_back({p.first, p.second});
                 } else {
-                    splice(chain, loop_pred(t), *it);
+                    for (loop *t = l->son; t != NULL; t = t->brother) {
+                        set_fixed_ranges(t, fixed_ranges);
+                    }
                 }
-                it++;
             }
-            return chain;
-        } else {
-            return NULL;
         }
     }
 
-    Chain *assemble_mc(loop *l) {
-        Chain *chain = assemble(l);
-        return mc(chain, l);
+    static void chain_refine(Chain *chain, loop *l, std::string log) {
+        log_file(log);
+        nuc3d::chain_refine<nuc3d::mc::MCpsb>(*chain, l, {});
     }
 
-    Chain *assemble(loop *l) {
+    void set_templates_all(loop *l) {
+        LOGI << "set templates all..." << std::endl;
+        bool b_NR = false; // NR: need_refining
+        set_templates_mc(l, b_NR);
+        print_templates(_loop_templates_mc, "loop templates mc");
+        position_templates_mc(NULL, l);
+        Chain *chain = make_chain();
+        chain->resize(loop_length(l));
+        auto p = loop_head_tail(l);
+        assemble_templates_mc(*chain, l, p.first);
+        if (b_NR) {
+            std::ostringstream stream;
+            stream << _out << '.' << threads.size() + 1 << ".log";
+            threads.push_back(std::thread(chain_refine, chain, l, stream.str()));
+//            nuc3d::chain_refine<nuc3d::mc::MCpsb>(*chain, l);
+        }
+        _loop_templates[l] = chain;
+        LOGI << l << ' ' << chain->size() << std::endl;
+    }
+
+    void set_templates_mc(loop *l, bool &b_NR) {
         if (l != NULL) {
-            Chain *chain = find_templ(l);
-            auto it = l->hinges.begin();
-            for (loop *t = l->son; t != NULL; t = t->brother) {
-                splice(chain, assemble(t), *it);
-                it++;
+            if (l->has_helix()) {
+                set_helix_templates_mc(l, b_NR);
             }
-            return chain;
-        } else {
-            return NULL;
+            if (l->has_loop()) {
+                set_loop_templates_mc(l, b_NR);
+            }
+            for (loop *t = l->son; t != NULL; t = t->brother) {
+                set_templates_mc(t, b_NR);
+            }
         }
     }
 
-    Chain *splice(Chain *chain1, Chain *chain2, const hinge_t &hinge) {
-        Mat *m1 = mat_chain(chain1, hinge);
-        Mat *m2 = mat_chain(chain2);
-        delete m1;
-        delete m2;
+    Chain *make_chain() {
+        Chain *chain = new Chain;
+        _gc_chain.push_back(chain);
         return chain;
     }
 
-    void traverse(loop *l) {
+    void set_helix_templates(loop *l, bool &b_NR) {
+        if (_helix_records[l].empty()) {
+            _helix_templates[l] = NULL;
+        } else {
+            _helix_templates[l] = make_chain();
+            nuc3d::chain_read_record(*(_helix_templates[l]), _helix_records[l][0]);
+        }
+    }
+
+    void set_loop_templates(loop *l, bool &b_NR) {
+        if (_loop_records[l].empty()) {
+            b_NR = true;
+            _loop_templates[l] = build_chain_dg(l->seq(), NucSS::lower_ss(l->ss()));
+        } else {
+            _loop_templates[l] = make_chain();
+            nuc3d::chain_read_record(*(_loop_templates[l]), _loop_records[l][0]);
+        }
+    }
+
+    void set_helix_templates_mc(loop *l, bool &b_NR) {
+        if (_helix_records[l].empty()) {
+            _helix_templates_mc[l] = NULL;
+        } else {
+            _helix_templates_mc[l] = make_chain();
+            nuc3d::chain_read_record(*(_helix_templates_mc[l]), _helix_records[l][0]);
+        }
+    }
+
+    void set_loop_templates_mc(loop *l, bool &b_NR) {
+        if (_loop_records[l].empty()) {
+            b_NR = true;
+            _loop_templates_mc[l] = build_chain_dg(l->seq(), NucSS::lower_ss(l->ss()));
+        } else {
+            _loop_templates_mc[l] = make_chain();
+            nuc3d::chain_read_record(*(_loop_templates_mc[l]), _loop_records[l][0]);
+        }
+    }
+
+    void position_templates(Mat *m, loop *l) {
         if (l != NULL) {
-            l->print();
-            int a = l->head->num;
-            int b;
-            LOOP_EACH(l,
-                if (RES->next == NULL) b = RES->num;
-            );
-            if (b - a < _max_len) {
-                LOGI << "pass: " << l << std::endl;
-            } else {
+            position_hairpin(m, _helix_templates[l], _loop_templates[l]);
+            if (l->has_loop() && ({
+                auto p = loop_head_tail(l);
+                p.second - p.first < _max_len;
+            })) {
+                // pass
+            } else if (_loop_templates[l] != NULL) {
+                auto it = l->hinges.begin();
                 for (loop *t = l->son; t != NULL; t = t->brother) {
-                    traverse(t);
+                    m = chain_mat(*(_loop_templates[l]), {it->first-1, it->first, it->second, it->second+1});
+                    position_templates(m, t);
+                    it++;
                 }
             }
         }
     }
 
+    void position_templates_mc(Mat *m, loop *l) {
+        if (l != NULL) {
+            position_hairpin(m, _helix_templates_mc[l], _loop_templates_mc[l]);
+            if (_loop_templates_mc[l] != NULL) {
+                auto it = l->hinges.begin();
+                for (loop *t = l->son; t != NULL; t = t->brother) {
+                    m = chain_mat(*(_loop_templates_mc[l]), {it->first-1, it->first, it->second, it->second+1});
+                    position_templates_mc(m, t);
+                    it++;
+                }
+            }
+        }
+    }
+
+    void position_hairpin(Mat *m, Chain *chain_helix, Chain *chain_loop) {
+        Chain *chain;
+        chain = chain_helix;
+        if (chain != NULL) {
+            int len = chain->size();
+            if (m != NULL) {
+                position_template(m, chain);
+            }
+            m = chain_mat(*chain, {len/2-2, len/2-1, len/2, len/2+1});
+        }
+        chain = chain_loop;
+        if (chain != NULL && m != NULL) {
+            position_template(m, chain);
+        }
+    }
+
+    void position_template(Mat *m, Chain *chain) {
+        if (m != NULL) {
+            int len = chain->size();
+            Mat *mat = chain_mat(*chain, {0, 1, len-2, len-1});
+            auto t = geom::suppos(*mat, *m);
+            INIT_SUPPOS(t);
+            for (auto && res : *chain) {
+                for (auto && atom : res) {
+                    APPLY_SUPPOS(atom, t);
+                }
+            }
+            delete m;
+            delete mat;
+        }
+    }
+
+    Mat *chain_mat(const Chain &chain, const std::list<int> &list) {
+        static std::set<std::string> _suppos_atoms{"C5*", "O3*", "C1*"};
+
+        Mat *mat = new Mat(_suppos_atoms.size() * list.size(), 3);
+        int index = 0;
+        for (int n = 0; n < chain.size(); n++) {
+            if (std::find(list.begin(), list.end(), n) != list.end()) {
+                for (auto && atom : chain[n]) {
+                    if (_suppos_atoms.find(atom.name) != _suppos_atoms.end()) {
+                        for (int i = 0; i < 3; i++) {
+                            (*mat)(index, i) = atom[i];
+                        }
+                        index++;
+                    }
+                }
+            }
+        }
+        return mat;
+    }
+
+    void assemble_templates(Chain &chain, loop *l) {
+        LOGI << "assemble loop " << l << std::endl;
+        if (l != NULL) {
+            if (l->has_loop() && ({
+                auto p = loop_head_tail(l);
+                p.second - p.first < _max_len;
+            })) {
+                // pass
+                chain_from_template(chain, l, _loop_templates[l]);
+            } else {
+                chain_from_template(chain, l, &_helix_templates, &_loop_templates, 0);
+                for (loop *t = l->son; t != NULL; t = t->brother) {
+                    assemble_templates(chain, t);
+                }
+            }
+        }
+    }
+
+    void assemble_templates_mc(Chain &chain, loop *l, int beg) {
+        LOGI << "assembling templates mc..." << std::endl;
+        if (l != NULL) {
+            chain_from_template(chain, l, &_helix_templates_mc, &_loop_templates_mc, beg);
+            if (l->has_loop()) {
+                for (loop *t = l->son; t != NULL; t = t->brother) {
+                    assemble_templates_mc(chain, t, beg);
+                }
+            }
+        }
+    }
+
+    void chain_from_template(Chain &chain, loop *l, Chain *chain_loop) {
+        auto p = loop_head_tail(l);
+        int n = 0;
+        for (int i = p.first; i <= p.second; i++) {
+            chain[i] = chain_loop->at(n);
+            n++;
+        }
+    }
+
+    void chain_from_template(Chain &chain, loop *l, map_templates_t *helix_templates, map_templates_t *loop_templates, int beg) {
+        if (l != NULL) {
+            std::cout << "beg: " << beg << std::endl;
+            l->print();
+            if (l->has_loop()) {
+                Chain *loop_chain = loop_templates->at(l);
+                if (loop_chain == NULL) {
+                    throw "chain_from_template error! no loop chain";
+                }
+                int i = 0;
+                for (res *r = l->head; r != NULL; r = r->next) {
+                    if (r->type != '&') {
+                        chain[r->num - 1 - beg] = loop_chain->at(i);
+                        i++;
+                    }
+                }
+                LOGI << std::endl;
+            }
+            if (l->has_helix()) {
+                int len = l->s.len();
+                Chain *helix_chain = helix_templates->at(l);
+                if (helix_chain == NULL) {
+                    throw "chain_from_template error! no helix chain";
+                }
+                HELIX_EACH(l->s,
+                    LOGI << BP->res1.num - 1 - beg << '-' << N_BP << ' ';
+                    LOGI << BP->res2.num - 1 - beg << '-' << 2*len-1-N_BP << std::endl;
+                    chain[BP->res1.num - 1 - beg] = (*helix_chain)[N_BP];
+                    chain[BP->res2.num - 1 - beg] = (*helix_chain)[2*len-1-N_BP];
+                );
+            }
+        }
+    }
+
+    void find_records(loop *l) {
+        if (l != NULL) {
+            l->print();
+            nuc3d::find_loop_records(l, _loop_records[l]);
+            nuc3d::find_helix_records(l, _helix_records[l]);
+            for (loop *t = l->son; t != NULL; t = t->brother) {
+                find_records(t);
+            }
+        }
+    }
+
+    void print_templates(const map_templates_t &m, std::string name) {
+        LOGI << name << std::endl;
+        for (auto && pair : m) {
+            if (pair.second != NULL) {
+                LOGI << pair.first << ' ' << (pair.second) << ' ' << pair.second->size() << std::endl;
+            }
+        }
+    }
+
+    void print_templates() {
+        print_templates(_helix_templates, "helix templates");
+        print_templates(_loop_templates, "loop templates");
+        print_templates(_helix_templates_mc, "helix templates of mc");
+        print_templates(_loop_templates_mc, "loop templates of mc");
+    }
+
+    void print_records() {
+        LOGI << "helix records" << std::endl;
+        for (auto && pair : _helix_records) {
+            LOGI << pair.first << ' ' << pair.second.size() << std::endl;
+        }
+        LOGI << "loop records" << std::endl;
+        for (auto && pair : _loop_records) {
+            LOGI << pair.first << ' ' << pair.second.size() << std::endl;
+        }
+    }
+
+    void init_templates(loop *l) {
+        LOOP_TRAVERSE(l,
+            _helix_templates[L] = NULL;
+            _loop_templates[L] = NULL;
+            _helix_templates_mc[L] = NULL;
+            _loop_templates_mc[L] = NULL;
+        );
+    }
+
     void pred() {
+        LOGI << "# constructing ss tree..." << std::endl;
         loop *l = ss_tree(_seq, _ss);
-        Chain *chain = loop_pred(l);
-        chain = mc(chain, l);
-        std::cout << *chain << std::endl;
-//        traverse(l);
-//        pts_t pts;
-//        set_pts(l, pts);
-//        print_pts(pts);
+        LOGI << "# initializing templates..." << std::endl;
+        init_templates(l);
+        LOGI << "# searching for records..." << std::endl;
+        find_records(l);
+        LOGI << "# printing records..." << std::endl;
+        print_records();
+        bool b_NR;
+        LOGI << "# setting templates..." << std::endl;
+        set_templates(l, b_NR);
+        LOGI << "# waiting for refining..." << std::endl;
+        for (auto && thread : threads) {
+            thread.join();
+        }
+        LOGI << "# printing templates..." << std::endl;
+        print_templates();
+        LOGI << "# positioning templates..." << std::endl;
+        position_templates(NULL, l);
+        LOGI << "# assembling templates..." << std::endl;
+        Chain *chain = make_chain();
+        chain->resize(_seq.size());
+        assemble_templates(*chain, l);
+        if (b_NR) {
+            LOGI << "# refining..." << std::endl;
+            nuc3d::fixed_ranges_t fixed_ranges;
+            set_fixed_ranges(l, fixed_ranges);
+            nuc3d::chain_refine<nuc3d::mc::MCpsb>(*chain, l, fixed_ranges, _traj);
+        }
+        mol_write(*chain, _out);
+        LOGI << "# free ss tree..." << std::endl;
         free_ss_tree(l);
     }
 };

@@ -31,7 +31,7 @@ void jian_3drna_refine(const Par &par, const Chain &chain, int i) {
         stream.clear();
         stream.str("");
         stream << mc._name << ".3drna." << i+1 << ".pdb";
-        residues_to_file(mc._pred_chain, stream.str());
+        mol_write(mc._pred_chain, stream.str());
     } catch (const char *c) {
         LOG << c << std::endl;
         exit(1);
@@ -59,7 +59,7 @@ void jian_3drna_tripred(const Par &par, int i) {
     stream.clear();
     stream.str("");
     stream << tri._name << ".3drna." << i+1 << ".pdb";
-    residues_to_file(tri._pred_chain, stream.str());
+    mol_write(tri._pred_chain, stream.str());
 }
 
 REGISTER_NSP_COMPONENT(3drna) {
@@ -121,7 +121,7 @@ REGISTER_NSP_COMPONENT(3drna) {
                 stream << ass._name << ".3drna." << i+1 << ".pdb";
                 std::string f = stream.str();
                 LOG << "# Writing " << f << "..." << std::endl;
-                residues_to_file(chains[result[i][0]], f);
+                mol_write(chains[result[i][0]], f);
             }
         }
     }

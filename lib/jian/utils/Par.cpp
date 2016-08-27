@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "Par.hpp"
 #include "file.hpp"
 
