@@ -3,6 +3,7 @@
 !include
 !src
 !test
+!docs
 !CMakeLists.txt
 !README.md
 .svn

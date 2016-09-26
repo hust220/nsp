@@ -5,6 +5,7 @@
 #include <list>
 #include "../utils/file.hpp"
 #include "io.hpp"
+#include "molmanip.hpp"
 
 namespace jian {
 

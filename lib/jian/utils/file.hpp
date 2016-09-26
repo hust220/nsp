@@ -50,7 +50,7 @@ struct file {
     std::string L;\
     std::vector<std::string> F;\
     while (std::getline(ifile, L)) {\
-        jian::tokenize(L, F, t);\
+        ::jian::tokenize(L, F, t);\
         c;\
         N++;\
     }\

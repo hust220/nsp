@@ -8,7 +8,7 @@
 #include "../nuc3d/Ass.hpp"
 #include "../nuc2d/NucSS.hpp"
 #include "../nuc3d/BuildLoopDG.hpp"
-#include "../nuc3d/DHMC.hpp"
+#include "../dhmc/DHMC.hpp"
 
 namespace jian {
 namespace lrsp {

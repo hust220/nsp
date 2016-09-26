@@ -1,8 +1,10 @@
+#pragma once
+
 #include "Module.hpp"
 
 namespace jian {
 namespace nuc3d {
-namespace quadruple {
+namespace triple {
 
 class HeadHairpin : public Module {
 public:
@@ -10,7 +12,7 @@ public:
     virtual std::string type() const;
 };
 
-} // namespace quadruple
+} // namespace triple
 }
 } // namespace jian
 

@@ -1,16 +1,18 @@
+#pragma once
+
 #include "Module.hpp"
 
 namespace jian {
 namespace nuc3d {
-namespace triple {
+namespace quadruple {
 
-class TailHairpin : public Module {
+class Helix : public Module {
 public:
-    TailHairpin(const Tuple &, const Tuple &);
+    Helix(const Tuple &, const Tuple &);
     virtual std::string type() const;
 };
 
-} // namespace triple
+} // namespace quadruple
 }
 } // namespace jian
 

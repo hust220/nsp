@@ -53,59 +53,5 @@ public:
     int num = 1;
 };
 
-std::string seq(const Model &model);
-int num_residues(const Model &model);
-int num_atoms(const Model &model);
-bool is_empty(const Model &model);
-
-template<typename T> 
-auto sub(const Model &model, T &&t) {
-    Model m;
-    int res_num = 0; 
-    for (auto &&chain: model) {
-        Chain temp_chain; 
-        temp_chain.name = chain.name;
-        for (auto &&res: chain) {
-            if (std::find(std::begin(t), std::end(t), res_num) != std::end(t)) temp_chain.push_back(res);
-            res_num++;
-        }
-        if (!temp_chain.empty()) m.push_back(temp_chain);
-    }
-    return m;
-}
-
-template<template<typename...> class L = std::deque>
-auto residues(const Model &model) {
-    L<Residue> v;
-    for (auto &&chain: model) for (auto &&res: chain) v.push_back(res);
-    return v;
-}
-
-template<typename T, template<typename...> class L = std::deque> 
-auto residues(const Model &model, T &&ls) {
-    L<Residue> v;
-    int i = 0; for (auto &&chain: model) for (auto &&res: chain) {
-        if (std::count(std::begin(ls), std::end(ls), i)) v.push_back(res);
-        i++;
-    }
-    return v;
-}
-
-template<typename T>
-uniform_const_t<Residue, T> &residue(T &&model, int n) {
-    int i = 0; for (auto &&chain: model) for (auto &&res: chain) {
-        if (i == n) return res;
-        i++;
-    }
-    throw "JIAN::MODEL::residue(int) error! Residue index out of range.";
-}
-
-template<typename T>
-auto residues_to_model(T &&ls) {
-    Model model; model.resize(1);
-    for (auto &&res : ls) model[0].push_back(res);
-    return model;
-}
-
 } // namespace jian
 

@@ -1,7 +1,6 @@
 #include <utility>
 #include <cmath>
 #include "HeadHairpin.hpp"
-#include "../../utils/Factory.hpp"
 
 namespace jian {
 namespace nuc3d {

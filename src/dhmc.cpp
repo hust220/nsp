@@ -1,5 +1,5 @@
 #include "nsp.hpp"
-#include <jian/nuc3d/DHMC.hpp>
+#include <jian/dhmc/DHMC.hpp>
 
 namespace jian {
 

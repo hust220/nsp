@@ -2,6 +2,7 @@
 
 #include "Molecule.hpp"
 #include "molstream.hpp"
+#include "../utils/file.hpp"
 
 namespace jian {
 
@@ -16,7 +17,7 @@ void mol_write(const T & t, std::string f) {
 
 template<typename T>
 void mol_read(T &t, std::string f, std::string type = "") {
-    molstream *parser = molstream::make(jian::file::type(f), f, type);
+    molstream *parser = molstream::make(file::type(f), f, type);
     (*parser) >> t;
     delete parser;
 }
@@ -63,5 +64,5 @@ T coarse_grained(const T &residue, U && ls) {
     return r;
 }
 
-}
+} // namespace jian
 

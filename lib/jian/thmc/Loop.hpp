@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Module.hpp"
 
 namespace jian {

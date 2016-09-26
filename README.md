@@ -1,200 +1,203 @@
-﻿核酸分子二级结构及三级结构预测
+# Nucleic acids 2D and 3D Structure Prediction (NSP)
 
-Nucleic acid 2D and 3D Structure Prediction (NSP)
+Project:[http://git.oschina.net/hust220/nsp](http://git.oschina.net/hust220/nsp)
 
-项目：<http://git.oschina.net/hust220/nsp>
+## Catalog
+1. INSTALLATION
+	* Installation requirements 
+	* Compile and install
+2. USAGE
+	* Secondary structure prediction
+	* Tertiary structure prediction
+	* Clustering
+	* RNA tertiary structure scoring
+	* Calculating RMSD
+	* Retrieving sequence
 
-1.  [安装](#安装)
-    * [安装要求](#安装要求)
-    * [编译安装](#编译安装)
-2.  [使用](#使用)
-    * [二级结构预测](#二级结构预测)
-    * [三级结构预测](#三级结构预测)
-    * [聚类](#聚类)
-    * [打分](#打分)
-    * [RMSD](#RMSD)
-    * [获取序列](#获取序列)
+# INSTALLATION
 
-<h2 id="安装">安装</h2>
-####安装要求
-* g++版本大于4.8
-* cmake版本大于2.8.7
-* 安装有boost库
+---
 
-####编译安装
+## Installation requirements
 
-1.  升级g++
+*   g++ version is greater than 4.8
+*   cmake version is greater than 2.8.7
+*   Install with boost database
 
-    如果g++的版本小于4.8，需要首先升级g++。这里以gcc-4.9.3为例:
-    *   root用户
+## Compile and install
 
-        ```
-        wget http://mirror.hust.edu.cn/gnu/gcc/gcc-4.9.3/gcc-4.9.3.tar.gz
-        tar xvzf gcc-4.9.3.tar.gz
-        cd gcc-4.9.3
-        ./contrib/download_prerequisites
-        mkdir build
-        cd build
-        ../configure --enable-checking=release --enable-languages=c,c++ --disable-multilib
-        make -j4
-        sudo make install
-        ```
-    *   普通用户
+1.  upgrade g++
+    
+    If the g++ version is less than 4.8, you need to upgrade the g++ firstly.Here take gcc-4.9.3 as an example:
+		
+    *   root user
+ 
+			wget http://mirror.hust.edu.cn/gnu/gcc/gcc-4.9.3/gcc-4.9.3.tar.gz
+			tar xvzf gcc-4.9.3.tar.gz
+			cd gcc-4.9.3
+			./contrib/download_prerequisites
+			mkdir build
+			cd build
+			../configure --enable-checking=release --enable-languages=c,c++ --disable-multilib
+			make -j4
+			sudo make install
 
-        在configure这一步的时候加上`--prefix=<PATH/TO/INSTALL/GCC>`
-2.  下载nsp
+    *   ordinary user
 
-    `git clone https://git.oschina.net/hust220/nsp.git`
-3.  编译安装nsp
-     *   root用户
+		in the step of the configure plus `--prefix=<PATH/TO/INSTALL/GCC>`
 
-         ```
-         cd nsp
-         mkdir build
-         cd build
-         cmake ..
-         make install
-         ```
-     *   普通用户
+2.  download nsp
 
-         ```
-         cd nsp
-         mkdir build
-         cd build
-         cmake -D CMAKE_INSTALL_PREFIX=<PATH> ..
-         make install
-         ```
+        git clone https://git.oschina.net/hust220/nsp.git
 
-####本实验室
+3.  compile and install nsp
 
-本实验室可以直接在集群上里输入如下命令
+    *   root user
+ 
+	        cd nsp
+		    mkdir build
+            cd build
+	    	cmake ..
+	    	make install
 
-`source $HOME/../wangjian/wangjian.sh`
+    *   ordinary user
 
-<h2 id='用法'>用法</h2>
+		    cd nsp
+		    mkdir build
+		    cd build
+		    cmake -D CMAKE_INSTALL_PREFIX=<PATH> ..
+		    make install
 
-使用之前需要设置环境变量NSP为模板库所在的文件夹
+4.  download and uncompress templates library
 
-`export NSP=<PATH/OF/TEMPLATES/LIBRARY>`
+	    wget http://biophy.hust.edu.cn/download/nsp-lib.tar.gz
+		tar xvzf nsp-lib.tar.gz
 
-<h4 id='二级结构预测'>二级结构预测</h4>
+5.  Set the enviroment
+	
+		export NSP=<PATH/TO/NSP/LIBRARY>
+    
 
-######用自由能最小方法预测
+## Our laboratory
 
-`nsp ss_pred -seq <SEQUENCE>`
+Members of our lab can enter the following commands directly on the server.
 
-######结合自由能最小方法以及DCA预测的DI值进行二级结构预测
+    source $HOME/../wangjian/wangjian.sh
 
-`nsp ss_dca -seq <SEQUENCE> -di <DI_FILE> [-k <K>]`
+# USAGE
 
-k值是用来设置读取前k\*L个DI值，如果k=1，就代表读取前L个，如果k=0.5，就代表读取前L/2个。
+Before use,you need to set the environment variable NSP to the folder where the template library is located. 
 
-######计算MCC
+    export NSP=<PATH/OF/TEMPLATES/LIBRARY>
 
-`nsp mcc -nat "<SECONDARY_STRUCTURE_OF_NATIVE>" -pred "<SECONDARY_STRUCTURE_OF_PREDICTION>"`
+## Secondary structure prediction
 
-######计算STY
+*   Free energy minimization method 
 
-`nsp sty -nat "<SECONDARY_STRUCTURE_OF_NATIVE>" -pred "<SECONDARY_STRUCTURE_OF_PREDICTION>"`
+	    nsp ss_pred -seq <SEQUENCE>
 
-######计算PPV
+*   Combining free energy minimization method and DI value of the DCA prediction for secondary structure prediction 
+	
+	    nsp ss_dca -seq <SEQUENCE> -di <DI_FILE> [-k <K>]
 
-`nsp ppv -nat "<SECONDARY_STRUCTURE_OF_NATIVE>" -pred "<SECONDARY_STRUCTURE_OF_PREDICTION>"`
+	k value is used to set to read the first K*L DI values,if k=1,on behalf of the read before L;if k=0.5,on behalf of the read before L/2. 
 
-<h4 id='三级结构预测'>三级结构预测</h4>
+*   Calculate MCC
 
-######组装
+	    nsp mcc -nat "<SECONDARY_STRUCTURE_OF_NATIVE>" -pred "<SECONDARY_STRUCTURE_OF_PREDICTION>"
 
-1.  组装
+*   Calculate STY
 
-    `nsp assemble -name <JOB_NAME> -seq <SEQUENCE> -ss "<SECONDARY_STRUCTURE>"`
-2.  组装+采样
+	    nsp sty -nat "<SECONDARY_STRUCTURE_OF_NATIVE>" -pred "<SECONDARY_STRUCTURE_OF_PREDICTION>"
 
-    `nsp assemble -name <JOB_NAME> -seq <SEQUENCE> -ss "<SECONDARY_STRUCTURE>" -sample -num <NUMBER_OF_PREDICTIONS>`
+*   Calculate PPV
 
-######优化
+	    nsp ppv -nat "<SECONDARY_STRUCTURE_OF_NATIVE>" -pred "<SECONDARY_STRUCTURE_OF_PREDICTION>"
 
-`nsp mcpsb -name <JOB_NAME> -seq <SEQUENCE> -ss "<SECONDARY_STRUCTURE>" -pdb <INITIAL_PDB_FILE> 
--out <FINAL_STRUCTURE> [-traj <TRAJECTORY_FILE>] [-<constraints|c> <CONSTRAINTS_FILE>] [-seed <SEED>]`
+## Tertiary structure prediction
 
-用-name设置名字，-seq设置序列，用-ss设置二级结构，用-seed设置种子
+*   Assembly
+	1.  assemble 
 
-用-out设置用于存放优化后的结构的文件
+		    nsp assemble -name <JOB_NAME> -seq <SEQUENCE> -ss "<SECONDARY_STRUCTURE>"
 
-用-traj设置轨道文件
+	2.  assemble and sampling
+	
+		    nsp assemble -name <JOB_NAME> -seq <SEQUENCE> -ss "<SECONDARY_STRUCTURE>" -sample -num <NUMBER_OF_PREDICTIONS>
 
-用-pdb设置起始结构，起始结构可以就用组装后得到的结构，也可以从组装加采样得到的结构中挑选一个
+*   Optimization
 
-用-c或者-constraints加上约束
+	    nsp mcpsb -name <JOB_NAME> -seq <SEQUENCE> -ss "<SECONDARY_STRUCTURE>" -pdb <INITIAL_PDB_FILE> -out <FINAL_STRUCTURE> [-traj <TRAJECTORY_FILE>] [-<constraints|c> <CONSTRAINTS_FILE>] [-seed <SEED>]
 
--seed可以省略掉，这样默认的种子是11
+	Set name with -name, set sequence with -seq,set secondary structure with -ss ,set seed with -seed.
 
--constraints或者-c可以省略掉，表示不添加约束信息
+	Set file for storing the optimized structure with -out.
 
-CONSTRAINTS\_FILE文件里面需要包含约束信息，例如可以加进DCA分析的信息:
+	Set track file with -traj.
 
-    8 23 10
-    9 22 10
-    10 21 10
+	Set the start structure with -pdb,the starting structure may be the structure after assembly, and the structure can be selected from the structure which is assemble with the sample.
 
-这里前面两列代表碱基的序号，例如8代表第8个碱基，23代表第23个碱基，最后一列是碱基之间的最小距离。
+	Add constraints with -constranits or -c
 
-因此这里8 23 10就代笔第8个碱基和第23个碱基之间的最小的距离是10Å，9 22 10就代表第9个碱基和第22个碱基之间的最小距离是10Å。
+	\-seed can be omitted and the default seed is 11.
 
-<h4 id='聚类'>聚类</h4>
-`nsp cluster -list <LIST_FILE> -k <NUMBER_OF_CLUSTERS>`
+	\-constraints or \-c also can be omitted on behalf of do not add constraint information.
 
-使用-list来设置需要对哪些结构进行聚类，用-k来设置聚类的数目。
+	Constraints_file file inside the information of  constraints, such as DCA analysis can be added to the file.
 
-经过一段时间的运行之后，会在屏幕上打印出聚类的结构。
+	    8 23 10
+		9 22 10
+		10 21 10
 
-LIST\_FILE文件包含了要聚类的结构的名字:
+	The first two column represents the base sequence number, for example 8 represents the eighth base, 23 represents the twenty-third base, the last column is the minimum distance between the base.
 
-    test.sample.1.pdb
-    test.sample.2.pdb
-    test.sample.3.pdb
-    test.sample.4.pdb
-    test.sample.5.pdb
+	Therefore,8 23 10 represents the minimum distance between the eighth base and the twenty-third base is 10Å,9 22 10 represents the minimum distance between the ninth base and the twenty-two base is 10Å.
 
-<h4 id='打分'>RNA三级结构打分</h4>
+## Clustering
 
-1.  对单个结构打分
+    nsp cluster -list <LIST_FILE> -k <NUMBER_OF_CLUSTERS>`
+
+Set the structures that need to cluster with -list and set the amount with -k.
+
+After a period of operation, the structure of the cluster will be printed out on the screen.
+
+The list_file file contains the name of the structure to cluster:
+
+## RNA tertiary structure scoring
+
+1.  score on a single structure
 
     `3dRNAscore -s <PDB_FILE>`
 
-2.  对多个结构打分
+2.  score on multiple structure
 
     `3dRNAscore -s:l <LIST_FILE>`
 
-LIST\_FILE文件包含了要聚类的结构的名字:
+    The list_file file contains the name of the structure to cluster. 
 
-    test.sample.1.pdb
-    test.sample.2.pdb
-    test.sample.3.pdb
-    test.sample.4.pdb
-    test.sample.5.pdb
+## Calculating RMSD
 
-<h4 id='RMSD'>计算RMSD</h4>
+    nsp rmsd -s <PDB_FILE_1> <PDB_FILE_2>
 
-`nsp rmsd -pdb <PDB_FILE_1> <PDB_FILE_2>`
+## Get the sequence of the molecule 
 
-<h4 id='获取序列'>获取分子的序列</h4>
+    nsp seq -s <PDB_FILE>
 
-`nsp seq -pdb <PDB_FILE>`
+## Get the number of residues in the molecule
 
-####获取分子的碱基的个数
+    nsp len -s <PDB_FILE>
 
-`nsp len -pdb <PDB_FILE>`
+## Get of specified residues in the molecul
 
-####截取分子中的指定的残基
+    nsp sub -s <PDB_FILE> -num <FRAG1> <FRAG2> <FRAG3> <FRAG4> ...
 
-`nsp sub -pdb <PDB_FILE> -num <FRAG1> <FRAG2> <FRAG3> <FRAG4> ...`
+Each frag refers to a base segment, the format is a single residue number n or the specified starting point and end point of the fragment  `begin-end.`
+for example, 1 represents the first residue, and 4-11 represents a fragment of fourth to eleventh bases.
 
-每个FRAG是指一个碱基段，格式为单个残基号`N`或者指定起点和终点的片段`BEGIN-END`。
+## Remove unwanted rows from the molecule, leaving only atom lines
 
-例如`1`代表第一个残基，`4-11`代表第4到第11个碱基组成的片段
+	nsp rna -s <PDB_FILE>
 
-####去掉分子中多余的行，只留下ATOM行
+	
 
-`nsp rna -pdb <PDB_FILE>`
-
+	

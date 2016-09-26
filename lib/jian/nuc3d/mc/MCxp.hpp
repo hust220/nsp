@@ -64,6 +64,22 @@ public:
         LOG << "# Read initial structure" << std::endl;
         if (par.has("pdb")) chain_read_model(_pred_chain, par.get("pdb"));
 
+        LOG << "# Check constraints" << std::endl;
+        validate_constraints();
+
+    }
+
+    void validate_constraints() {
+        int l = _seq.size();
+        int i, j;
+        for (auto && ct : _constraints.distances) {
+            i = ct.key[0];
+            j = ct.key[1];
+            if (i < 0 || i >= l || j < 0 || j >= l) {
+                std::cerr << "Illegal constraints pair (" << i << ", " << j << ") in your constraints file!" << std::endl;
+                std::exit(1);
+            }
+        }
     }
 
     void read_parameters() {
@@ -245,7 +261,7 @@ public:
         print_parameters();
 
         LOG << "# Initializing running..." << std::endl;
-        init_run();
+        before_run();
 
         LOG << "# Carrying on CG processing with the Chain..." << std::endl;
         _pred_chain = cg_t::chain(_pred_chain);
@@ -257,14 +273,17 @@ public:
         mc_heat();
         mc_cool();
 
-        LOG << "# Print Constraints..." << std::endl;
-        print_constraints();
+        LOG << "# Print Constraints and Distances..." << std::endl;
+        print_constraints_dists();
 
         LOG << "# Finishing running..." << std::endl;
         finish_run();
 
         LOG << "# Coarsed Grained To All Atom..." << std::endl;
         cg_to_aa(chain_to_coords());
+
+        LOG << "# Restore helix..." << std::endl;
+        restore_helices();
 
         LOG << "# Transform..." << std::endl;
         this->transform();
@@ -292,7 +311,7 @@ public:
         return c;
     }
 
-    void print_constraints() {
+    void print_constraints_dists() {
         double d;
         int i, j;
         for (auto && ct : _constraints.distances) {
@@ -311,12 +330,14 @@ public:
     virtual double dist_two_res(const Residue &, const Residue &) const = 0;
     virtual void write_en() = 0;
 
-    virtual void init_run() {}
+    virtual void before_run() {}
     virtual void finish_run() {}
 
     virtual std::string file_parameters() const {
         return "3drna";
     }
+
+    virtual void restore_helices() {}
 
     virtual void mc_select() = 0;
     virtual bool is_selected(const int &i) const = 0;

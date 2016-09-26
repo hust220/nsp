@@ -1,10 +1,9 @@
 #include <algorithm>
 #include "Module.hpp"
-#include "../../utils/Factory.hpp"
 
 namespace jian {
 namespace nuc3d {
-namespace quadruple {
+namespace triple {
 
 //int Module::max_len() const {
 //    return std::accumulate(d_frags.begin(), d_frags.end(), 0, [](auto &&n, auto &&frag){
@@ -25,14 +24,10 @@ void Module::set_indices(int n, int beg, int end) {
         for (int i = 0; i <= end - beg; i++) {
             (*d_indices)(i, 2) = beg + i;
         }
-    } else if (n == 3) {
-        for (int i = 0; i <= end - beg; i++) {
-            (*d_indices)(d_max_len - 1 - i, 3) = beg + i;
-        }
     }
 }
 
-} // namespace quadruple
+} // namespace triple
 }
 } // namespace jian
 

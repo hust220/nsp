@@ -9,26 +9,6 @@
 
 namespace jian {
 
-std::string seq(const Model &model) {
-    std::string seq;
-    for (auto &&chain : model) for (auto &&res : chain) { seq += res.name; }
-    return seq;
-}
-
-int num_residues(const Model &model) {
-    int i = 0; for (auto &&chain : model) for (auto &&res : chain) i++;
-    return i;
-}
-
-int num_atoms(const Model &model) {
-    int i = 0; for (auto &&chain : model) for (auto &&res : chain) for (auto &&atom : res) i++;
-    return i;
-}
-
-bool is_empty(const Model &model) {
-    return num_residues(model) == 0;
-}
-
 //Model RNA(const Model &model) {
 //    Model rna;
 //    thread_local static std::set<std::string> names {"A", "U", "G", "C"};

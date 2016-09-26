@@ -3,7 +3,7 @@
 
 namespace jian {
 
-REGISTER_NSP_COMPONENT(ss_pred) {
+REGISTER_NSP_COMPONENT(ssp_fe) {
     std::string seq = par["seq"][0];
     std::string ss = ss_pred(seq);
     std::cout << seq << std::endl;

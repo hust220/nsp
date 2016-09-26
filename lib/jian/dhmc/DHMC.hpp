@@ -12,12 +12,12 @@
 #include "../nuc2d.hpp"
 #include "../cg.hpp"
 #include "../pp.hpp"
-#include "BuildHelix.hpp"
-#include "transform.hpp"
-#include "TemplRec.hpp"
-#include "JobPredict3D.hpp"
-#include "mc/MC1p.hpp"
-#include "mc/MCpsb.hpp"
+#include "../nuc3d/BuildHelix.hpp"
+#include "../nuc3d/transform.hpp"
+#include "../nuc3d/TemplRec.hpp"
+#include "../nuc3d/JobPredict3D.hpp"
+#include "../nuc3d/mc/MC1p.hpp"
+#include "../nuc3d/mc/MCpsb.hpp"
 
 namespace jian {
 namespace nuc3d {
@@ -31,9 +31,11 @@ public:
     using range_t = std::array<int, 4>;
 
     std::deque<std::shared_ptr<SSTree>> m_trees;
-    std::deque<range_t *> m_range;
-    range_t _moved_residues;
-    fixed_ranges_t _fixed_ranges;
+    std::map<helix *, Chain *> m_saved_helices;
+    std::deque<range_t *> m_ranges;
+    std::vector<range_t *> m_range_bases;
+    range_t m_moved_residues;
+    fixed_ranges_t m_fixed_ranges;
 
     template<typename T>
     std::string partial_ss(std::string ss, T &&pair) {
@@ -78,18 +80,55 @@ public:
         LOG << "# Set ranges" << std::endl;
         set_ranges();
 
+        LOG << "# Set range of bases" << std::endl;
+        set_range_bases();
+
         LOG << "# Print ranges" << std::endl;
         print_ranges();
+
+        LOG << "# Remove useless constraints" << std::endl;
+        remove_useless_constraints();
+
+        LOG << "# Print constraints" << std::endl;
+        print_constraints();
+
     }
 
     ~DHMC() {
-        for (auto && r : m_range) {
+        for (auto && r : m_ranges) {
             delete r;
+        }
+        for (auto && h : m_saved_helices) {
+            delete h.second;
+        }
+    }
+
+    void set_range_bases() {
+        m_range_bases.resize(mc_t::_seq.size());
+        for (auto && r : m_ranges) {
+            for (int i = r->at(0); i <= r->at(1); i++) m_range_bases[i] = r;
+            for (int i = r->at(2); i <= r->at(3); i++) m_range_bases[i] = r;
+        }
+    }
+
+    void remove_useless_constraints() {
+        Constraints cs;
+        for (auto && c : mc_t::_constraints.distances) {
+            if (m_range_bases[c.key[0]] != m_range_bases[c.key[1]]) {
+                cs.distances.push_back(c);
+            }
+        }
+        mc_t::_constraints = cs;
+    }
+
+    void print_constraints() {
+        for (auto && c : mc_t::_constraints.distances) {
+            LOG << c.key[0] << ' ' << c.key[1] << std::endl;
         }
     }
 
     void print_ranges() {
-        for (auto && range : m_range) {
+        for (auto && range : m_ranges) {
             for (auto && i : *range) {
                 LOG << i << ' ';
             }
@@ -158,16 +197,68 @@ public:
     void set_pseudo_knots() {
         auto it = m_trees.begin();
 
+        // 设置第一个二级结构树中长度为1的helix
         LOOP_TRAVERSE((*it)->head(), 
             if (L->has_helix() && L->s.len() == 1) {
                 set_pseudo_knots_helix(L->s);
             }
         );
 
+        // 设置除了第一个二级结构树以外的其它的树中的helix
         for (it = m_trees.begin() + 1; it != m_trees.end(); it++) {
             LOOP_TRAVERSE((*it)->head(), 
                 if (L->has_helix()) {
                     set_pseudo_knots_helix(L->s);
+                }
+            );
+        }
+    }
+
+    void transform_saved_helix(Chain *h, auto && nums) {
+        int n = mc_t::cg_t::size_res * nums.size() / 2;
+        Mat x(n, 3), y(n, 3);
+        int i = 0;
+        int l = 0;
+        for (auto && j : nums) {
+            auto && res1 = mc_t::cg_t::res(h->at(i));
+            auto && res2 = mc_t::cg_t::res(mc_t::_pred_chain[j]);
+            for (int k = 0; k < mc_t::cg_t::size_res; k++) {
+                for (int t = 0; t < 3; t++) {
+                    x(l, t) = res1[k][t];
+                    y(l, t) = res2[k][t];
+                }
+                l++;
+            }
+            i++;
+        }
+        auto sp = geom::suppos(x, y);
+        INIT_SUPPOS(sp);
+        for (auto && res : *h) {
+            for (auto && atom : res) {
+                APPLY_SUPPOS(atom, sp);
+            }
+        }
+    }
+
+    void restore_helix(helix *h) {
+        auto && seq = h->seq();
+        auto && nums = h->nums();
+        Chain *saved = m_saved_helices[h];
+
+        transform_saved_helix(saved, nums);
+
+        int i = 0;
+        for (auto && n : nums) {
+            mc_t::_pred_chain[n] = std::move(saved->at(i));
+            i++;
+        }
+    }
+
+    virtual void restore_helices() {
+        for (auto it = m_trees.begin(); it != m_trees.end(); it++) {
+            LOOP_TRAVERSE((*it)->head(), 
+                if (L->has_helix()) {
+                    restore_helix(&(L->s));
                 }
             );
         }
@@ -230,7 +321,7 @@ public:
         auto update_range = [&](auto &&range) {
             for (int i = range->at(0); i <= range->at(1); i++) { v[i] = 1; }
             for (int i = range->at(2); i <= range->at(3); i++) { v[i] = 1; }
-            m_range.push_back(range);
+            m_ranges.push_back(range);
         };
 
         auto set_res_module_types_ss = [&](loop *l, bool is_first){
@@ -251,16 +342,16 @@ public:
 
         for (int i = 0; i < mc_t::_seq.size(); i++) {
             if (v[i] == 0) {
-                m_range.push_back(make_range(i, i, i, i));
+                m_ranges.push_back(make_range(i, i, i, i));
             }
         }
 
         merge_ranges();
-        set_fixed_ranges();
+        setm_fixed_ranges();
     }
 
-    bool in_fixed_ranges(const range_t &r) {
-        for (auto && range : _fixed_ranges) {
+    bool inm_fixed_ranges(const range_t &r) {
+        for (auto && range : m_fixed_ranges) {
             if ((range[0] >= r[1] && range[1] >= r[0]) || 
                 (range[0] >= r[3] && range[1] >= r[2])) {
                 return true;
@@ -269,22 +360,22 @@ public:
         return false;
     }
 
-    void set_fixed_ranges() {
+    void setm_fixed_ranges() {
         while (true) {
             bool flag = false;
-            for (auto && r : m_range) {
+            for (auto && r : m_ranges) {
                 auto & range = *r;
-                if (in_fixed_ranges(range)) {
+                if (inm_fixed_ranges(range)) {
                     flag = true;
-                    m_range.erase(std::remove_if(m_range.begin(), m_range.end(), [&](auto && t){return t == r;}), m_range.end());
+                    m_ranges.erase(std::remove_if(m_ranges.begin(), m_ranges.end(), [&](auto && t){return t == r;}), m_ranges.end());
                     delete r;
                     break;
                 }
             }
             if (flag) continue; else break;
         }
-        for (auto && range : _fixed_ranges) {
-            m_range.push_back(make_range(range[0], range[1], range[0], range[1]));
+        for (auto && range : m_fixed_ranges) {
+            m_ranges.push_back(make_range(range[0], range[1], range[0], range[1]));
         }
     }
 
@@ -292,21 +383,21 @@ public:
         LOG << "# Merge ranges..." << std::endl;
         while (true) {
             int flag = 0;
-            for (auto && r1 : m_range) {
-                for (auto && r2 : m_range) {
+            for (auto && r1 : m_ranges) {
+                for (auto && r2 : m_ranges) {
                     auto &range1 = *r1;
                     auto &range2 = *r2;
                     if (r1 != r2) {
                         if (range1[1] < range1[2]) {
                             if (range1[1] + 1 == range2[0] && range2[3] + 1 == range1[2]) {
                                 if (range2[1] < range2[2]) {
-                                    m_range.push_back(make_range(range1[0], range2[1], range2[2], range1[3]));
+                                    m_ranges.push_back(make_range(range1[0], range2[1], range2[2], range1[3]));
                                 } else {
-                                    m_range.push_back(make_range(range1[0], range1[3], range1[0], range1[3]));
+                                    m_ranges.push_back(make_range(range1[0], range1[3], range1[0], range1[3]));
                                 }
                                 delete r1;
                                 delete r2;
-                                m_range.erase(std::remove_if(m_range.begin(), m_range.end(), [&](auto && t){return t == r1 || t == r2;}), m_range.end());
+                                m_ranges.erase(std::remove_if(m_ranges.begin(), m_ranges.end(), [&](auto && t){return t == r1 || t == r2;}), m_ranges.end());
                                 flag++;
                                 break;
                             }
@@ -323,26 +414,51 @@ public:
         }
     }
 
-// MC related methods
+    // MC related methods
 
-    virtual void init_run() {
+    void save_helix(helix *h) {
+        auto && nums = h->nums();
+
+        Chain *c = new Chain;
+
+        for (auto && n : nums) {
+            c->push_back(mc_t::_pred_chain[n]);
+        }
+
+        m_saved_helices[h] = c;
+    }
+
+    void save_helices() {
+        for (auto it = m_trees.begin(); it != m_trees.end(); it++) {
+            LOOP_TRAVERSE((*it)->head(), 
+                if (L->has_helix()) {
+                    save_helix(&(L->s));
+                }
+            );
+        }
+    }
+
+    virtual void before_run() {
         LOG << "# Set pseudo-knots" << std::endl;
         set_pseudo_knots();
+
+        LOG << "# Save helices" << std::endl;
+        save_helices();
     }
 
     virtual void mc_select() {
-        int len = m_range.size();
-        _moved_residues = *(m_range[int(rand() * len)]);
+        int len = m_ranges.size();
+        m_moved_residues = *(m_ranges[int(rand() * len)]);
     }
 
     virtual bool is_selected(const int &i) const {
-        auto &p = _moved_residues;
+        auto &p = m_moved_residues;
         return (i >= p[0] && i <= p[1]) || (i >= p[2] && i <= p[3]);
     }
 
     virtual Vec rotating_center() const {
-        int beg = _moved_residues[0];
-        int end = _moved_residues[3];
+        int beg = m_moved_residues[0];
+        int end = m_moved_residues[3];
         auto &r1 = mc_t::_pred_chain[beg];
         auto &r2 = mc_t::_pred_chain[end];
         Vec origin = Vec::Zero(3);
@@ -373,7 +489,7 @@ void chain_refine(Chain &chain, loop *l, const fixed_ranges_t &fixed_ranges = {}
     par._pars["ss"].push_front(ss);
     DHMC<T> mc(par);
     mc._pred_chain = chain;
-    mc._fixed_ranges = fixed_ranges;
+    mc.m_fixed_ranges = fixed_ranges;
     mc.run();
     chain = mc._pred_chain;
 }

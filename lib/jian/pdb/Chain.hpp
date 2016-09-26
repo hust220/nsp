@@ -14,8 +14,5 @@ public:
     std::string model_name = "unknown";
 };
 
-void append_chain_to_file(const Chain &chain, const std::string &file_name, int n);
-int num_atoms(const Chain &chain);
-
 } // namespace jian
 

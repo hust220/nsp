@@ -5,16 +5,23 @@
 
 namespace jian {
 
-REGISTER_NSP_COMPONENT(ss_dca) {
+REGISTER_NSP_COMPONENT(ssp_dca) {
+    std::string seq = par["seq"][0];
+    double k = std::stof(par["k"][0]);
+    std::string di_file = par["di"][0];
+
     LOGI << "Sequence:" << std::endl;
-    dca::seq_t seq = par["seq"][0];
     LOGI << seq << std::endl;
 
     int size = seq.size();
     if (par.has("k")) {
-        size *= std::stof(par["k"][0]);
+        size *= k;
     }
-    auto && pairs = dca::pairs_from_file(par["di"][0], size);
+    LOGI << "Read first " << size << " pairs:" << std::endl;
+    auto && pairs = dca::pairs_from_file(di_file, size);
+
+    LOGI << "Print pairs:" << std::endl;
+    dca::print_pairs(pairs);
 
     LOGI << "Converting DI to ss: " << std::endl;
     dca::ss_t ss = dca::pairs_to_ss(pairs, seq.size());

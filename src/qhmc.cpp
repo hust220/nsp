@@ -1,5 +1,5 @@
 #include "nsp.hpp"
-#include <jian/nuc3d/quadruple/QHMC.hpp>
+#include <jian/qhmc/QHMC.hpp>
 
 namespace jian {
 

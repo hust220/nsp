@@ -1,7 +1,10 @@
+#pragma once
+
 #include <deque>
 #include <array>
 #include <memory>
-#include "../../matrix.hpp"
+#include "../matrix.hpp"
+#include "../utils/Factory.hpp"
 
 namespace jian {
 namespace nuc3d {
