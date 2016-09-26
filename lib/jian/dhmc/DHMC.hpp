@@ -215,7 +215,7 @@ public:
     }
 
     void transform_saved_helix(Chain *h, auto && nums) {
-        int n = mc_t::cg_t::size_res * nums.size() / 2;
+        int n = mc_t::cg_t::size_res * nums.size();
         Mat x(n, 3), y(n, 3);
         int i = 0;
         int l = 0;
