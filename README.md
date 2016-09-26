@@ -22,7 +22,7 @@ Project:[http://git.oschina.net/hust220/nsp](http://git.oschina.net/hust220/nsp)
 
 *   g++ version is greater than 4.8
 *   cmake version is greater than 2.8.7
-*   Install with boost database
+*   c++ boost library
 
 ## Compile and install
 
