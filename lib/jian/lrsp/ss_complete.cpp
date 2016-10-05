@@ -25,7 +25,7 @@ void ss_complete(pairs_t & pairs, const seq_t & seq) {
     while (true) {
         if (it != pairs.end()) {
             auto & pair = *it;
-            if (!is_paired(seq[pair[0]], seq[pair[1]])) {
+            if (pair[1] - pair[0] - 1 <= 3 || !is_paired(seq[pair[0]], seq[pair[1]])) {
                 it = pairs.erase(it);
                 continue;
             }
