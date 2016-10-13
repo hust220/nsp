@@ -90,15 +90,19 @@ Before use,you need to set the environment variable NSP to the folder where the 
 
     export NSP=<PATH/OF/TEMPLATES/LIBRARY>
 
+## DCA
+
+    nsp dca -method <METHOD> -in <FASTA_FILE> -out <DI_FILE> -n <N>
+
 ## Secondary structure prediction
 
 *   Free energy minimization method 
 
-	    nsp ss_pred -seq <SEQUENCE>
+	    nsp ssp_fe -seq <SEQUENCE>
 
 *   Combining free energy minimization method and DI value of the DCA prediction for secondary structure prediction 
 	
-	    nsp ss_dca -seq <SEQUENCE> -di <DI_FILE> [-k <K>]
+	    nsp ssp_dca -seq <SEQUENCE> -di <DI_FILE> [-k <K>]
 
 	k value is used to set to read the first K*L DI values,if k=1,on behalf of the read before L;if k=0.5,on behalf of the read before L/2. 
 
@@ -167,11 +171,11 @@ The list_file file contains the name of the structure to cluster:
 
 1.  score on a single structure
 
-    `3dRNAscore -s <PDB_FILE>`
+    `nsp score -s <PDB_FILE>`
 
 2.  score on multiple structure
 
-    `3dRNAscore -s:l <LIST_FILE>`
+    `nsp score -s:l <LIST_FILE>`
 
     The list_file file contains the name of the structure to cluster. 
 
