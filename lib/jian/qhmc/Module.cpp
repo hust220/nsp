@@ -3,14 +3,7 @@
 #include "../utils/Factory.hpp"
 
 namespace jian {
-namespace nuc3d {
-namespace quadruple {
-
-//int Module::max_len() const {
-//    return std::accumulate(d_frags.begin(), d_frags.end(), 0, [](auto &&n, auto &&frag){
-//        return std::max(n, int(frag.size()));
-//    });
-//}
+namespace qhmc {
 
 void Module::set_indices(int n, int beg, int end) {
     if (n == 0) {
@@ -32,8 +25,7 @@ void Module::set_indices(int n, int beg, int end) {
     }
 }
 
-} // namespace quadruple
-}
+} // namespace qhmc
 } // namespace jian
 
 

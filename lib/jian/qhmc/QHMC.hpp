@@ -15,45 +15,45 @@
 #include "../utils/Env.hpp"
 
 namespace jian {
-namespace nuc3d {
-namespace quadruple {
+namespace qhmc {
 
 using fac_t = Factory<Module::cons_t>;
 
-template<typename MC_T>
-class QHMC : public MC_T {
+template<typename CG_T>
+class QHMC : public nuc3d::mc::MCen<CG_T> {
 public:
-    using mc_t = MC_T;
+    using mc_t = nuc3d::mc::MCen<CG_T>;
 
-    using Res = struct {char seq; char ss; int num;};
+    using res_t = struct {char seq; char ss; int num;};
+    using res_list_t = std::deque<res_t>;
     using indices_t = std::deque<int>;
     using related_residues_t = std::vector<std::shared_ptr<indices_t>>;
 
-    Tree _tree;
-    std::deque<Module *> d_modules;
-    int d_mc_selected_index;
-    related_residues_t d_mc_related_residues;
-    related_residues_t d_mc_unrelated_residues;
+    Tree m_tree;
+    std::deque<Module *> m_modules;
+    int m_selected_index;
+    related_residues_t m_related_residues,
+                       m_unrelated_residues;
 
     QHMC(Par par) : mc_t(par) {}
 
     ~QHMC() {
-        for (auto && i : d_modules) {
+        for (auto && i : m_modules) {
             delete i;
         }
     }
 
     void set_modules() {
         int len = mc_t::_seq.size();
-        d_modules.push_back(fac_t::create("head_hairpin", _tree.front().front(), Tuple{0, len, 0, 0}));
+        m_modules.push_back(fac_t::create("head_hairpin", m_tree.front().front(), Tuple{0, len, 0, 0}));
         int i = 0;
-        for (; i + 1 < _tree.size(); i++) {
-            d_modules.push_back(fac_t::create("helix", _tree[i].front(), _tree[i].back()));
-            d_modules.push_back(fac_t::create("loop", _tree[i].back(), _tree[i+1].front()));
+        for (; i + 1 < m_tree.size(); i++) {
+            m_modules.push_back(fac_t::create("helix", m_tree[i].front(), m_tree[i].back()));
+            m_modules.push_back(fac_t::create("loop", m_tree[i].back(), m_tree[i+1].front()));
         }
-        d_modules.push_back(fac_t::create("helix", _tree[i].front(), _tree[i].back()));
-        d_modules.push_back(fac_t::create("tail_hairpin", _tree.back().back(), Tuple{0, len, 0, 0}));
-        for (auto && module : d_modules) {
+        m_modules.push_back(fac_t::create("helix", m_tree[i].front(), m_tree[i].back()));
+        m_modules.push_back(fac_t::create("tail_hairpin", m_tree.back().back(), Tuple{0, len, 0, 0}));
+        for (auto && module : m_modules) {
             LOG << module << ' ' << module->d_max_len;
             for (auto && frag : module->d_frags) {
                 LOG << ' ';
@@ -65,27 +65,32 @@ public:
         }
     }
 
-    void ss_to_tree() {
+    void set_res_list(res_list_t &res_list) {
         int len = mc_t::_seq.size();
-        std::deque<Res> res_list;
         for (int i = 0; i < len; i++) {
             res_list.push_back({mc_t::_seq[i], mc_t::_ss[i], i});
         }
-        Tuples &&tuples = get_tuples(res_list);
+    }
+
+    void ss_to_tree() {
+        res_list_t res_list;
+        set_res_list(res_list);
+        Tuples tuples;
+        set_tuples(tuples, res_list);
         print_helix(tuples);
         tuples_to_tree(tuples);
         print_tree();
     }
 
     void build_initial_scaffold() {
-        LOG << "## Compute maximum length." << std::endl;
-        int len = std::accumulate(d_modules.begin(), d_modules.end(), 0, [](int n, auto &&m){
+        LOG << "## Compute maximum length" << std::endl;
+        int len = std::accumulate(m_modules.begin(), m_modules.end(), 0, [](int n, auto &&m){
             return n + m->d_max_len;
         });
-        LOG << "## Build helix." << std::endl;
+        LOG << "## Build helix" << std::endl;
         Chain &&c = build_helix(len);
         mol_write(c, "bb.pdb");
-        LOG << "## Shrink to fit." << std::endl;
+        LOG << "## Shrink to fit" << std::endl;
         shrink_to_fit(c);
     }
 
@@ -154,8 +159,8 @@ public:
         int len = c.size()/4;
         LOG << "len: " << len << std::endl;
         int n = 0;
-        for (int i = 0; i < d_modules.size(); i++) {
-            Mat &m = *(d_modules[i]->d_indices);
+        for (int i = 0; i < m_modules.size(); i++) {
+            Mat &m = *(m_modules[i]->d_indices);
             int l = m.rows();
             LOG << m << std::endl;
             for (int j = 0; j < l; j++) {
@@ -177,9 +182,7 @@ public:
         }
     }
 
-    template<typename T>
-    Tuples get_tuples(T &&res_list) {
-        Tuples tuples;
+    void set_tuples(Tuples &tuples, const res_list_t &res_list) {
         std::vector<int> v(res_list.size());
         char b;
         int flag = 0;
@@ -197,7 +200,6 @@ public:
             std::sort(t.begin(), t.end(), [&res_list](int a, int b){return res_list[a].ss < res_list[b].ss;});
             tuples.push_back(std::move(t));
         }
-        return tuples;
     }
 
     template<typename T, typename U>
@@ -220,11 +222,11 @@ public:
         dq.push_back(tuples[0]);
         for (int i = 1; i < tuples.size(); i++) {
             if (!(adjacent(tuples[i-1], tuples[i]))) {
-                _tree.push_back(std::move(dq));
+                m_tree.push_back(std::move(dq));
             }
             dq.push_back(tuples[i]);
         }
-        _tree.push_back(std::move(dq));
+        m_tree.push_back(std::move(dq));
     }
 
     void print_tuple(const Tuple &tuple) {
@@ -249,13 +251,13 @@ public:
 
     void set_unrelated_residues() {
         int len = mc_t::_seq.size();
-        related_residues_t &r = d_mc_related_residues;
-        d_mc_unrelated_residues.resize(len);
+        related_residues_t &r = m_related_residues;
+        m_unrelated_residues.resize(len);
         for (int i = 0; i < len; i++) {
-            d_mc_unrelated_residues[i] = std::make_shared<std::deque<int>>();
+            m_unrelated_residues[i] = std::make_shared<std::deque<int>>();
             for (int j = 0; j < len; j++) {
                 if (std::none_of(r[i]->begin(), r[i]->end(), [&j](auto && n){return n == j;})) {
-                    d_mc_unrelated_residues[i]->push_back(j);
+                    m_unrelated_residues[i]->push_back(j);
                 }
             }
         }
@@ -272,34 +274,38 @@ public:
         }
     }
 
-    void mc_init() {
-        d_mc_related_residues.resize(mc_t::_seq.size());
-        for (auto && module : d_modules) {
+    void set_related_residues() {
+        m_related_residues.resize(mc_t::_seq.size());
+        for (auto && module : m_modules) {
             if (module->type() != "helix") {
                 for (auto && frag : module->d_frags) {
                     for (auto && i : frag) {
-                        d_mc_related_residues[i] = std::make_shared<std::deque<int>>();
-                        d_mc_related_residues[i]->push_back(i);
+                        m_related_residues[i] = std::make_shared<std::deque<int>>();
+                        m_related_residues[i]->push_back(i);
                     }
                 }
             }
         }
-        for (auto && module : d_modules) {
+        for (auto && module : m_modules) {
             if (module->type() == "helix") {
                 std::shared_ptr<std::deque<int>> p = std::make_shared<std::deque<int>>();
                 for (auto && frag : module->d_frags) {
                     for (auto && i : frag) {
-                        d_mc_related_residues[i] = p;
+                        m_related_residues[i] = p;
                         p->push_back(i);
                     }
                 }
             }
         }
+    }
+
+    void set_related_and_unrelated_residues() {
+        set_related_residues();
         set_unrelated_residues();
         LOG << "## Print related residues" << std::endl;
-        print_related_residues(d_mc_related_residues);
+        print_related_residues(m_related_residues);
         LOG << "## Print unrelated residues" << std::endl;
-        print_related_residues(d_mc_unrelated_residues);
+        print_related_residues(m_unrelated_residues);
     }
 
     virtual void before_run() {
@@ -312,33 +318,31 @@ public:
         LOG << "# Build initial scaffold." << std::endl;
         build_initial_scaffold();
 
-        LOG << "# MC initialization..." << std::endl;
-        mc_init();
+        LOG << "# Set related and unrelated residues..." << std::endl;
+        set_related_and_unrelated_residues();
     }
 
     virtual void mc_select() {
         int len = mc_t::_seq.size();
-        d_mc_selected_index = int(rand() * len);
+        m_selected_index = int(rand() * len);
     }
 
 
     virtual bool is_selected(const int &i) const {
-        auto &v = *(d_mc_related_residues[d_mc_selected_index]);
+        auto &v = *(m_related_residues[m_selected_index]);
         return std::find(v.begin(), v.end(), i) != v.end();
     }
 
     virtual Vec rotating_center() const {
         Vec vec = Vec::Zero(3);
-        indices_t &v = *(d_mc_related_residues[d_mc_selected_index]);
+        indices_t &v = *(m_related_residues[m_selected_index]);
         double n = 0;
-//        for (int i = 0; i < v.size(); i++) {
-            for (auto && atom : mc_t::_pred_chain[v[int(rand()*v.size())]]) {
-                for (int j = 0; j < 3; j++) {
-                    vec[j] += atom[j];
-                }
-                n++;
+        for (auto && atom : mc_t::_pred_chain[v[int(rand()*v.size())]]) {
+            for (int j = 0; j < 3; j++) {
+                vec[j] += atom[j];
             }
-//        }
+            n++;
+        }
         for (int j = 0; j < 3; j++) {
             vec[j] /= n;
         }
@@ -347,8 +351,7 @@ public:
 
 };
 
-} // namespace quadruple
-} // namespace nuc3d
+} // namespace qhmc
 } // namespace jian
 
 

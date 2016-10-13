@@ -1,13 +1,15 @@
 #pragma once
 
 #include "MCxp.hpp"
+#include "MCen.hpp"
 #include "../../cg.hpp"
 
 namespace jian {
 namespace nuc3d {
 namespace mc {
 
-class MCpsb : public MCxp<CGpsb> {
+template<>
+class MCen<CGpsb> : public MCxp<CGpsb> {
 public:    
     #define MCpsb_en_t_m len, ang, dih, crash, cons, vdw, stacking, pairing
     struct en_t {
@@ -21,7 +23,7 @@ public:
     Mat m_pairing_pars;
     std::vector<int> m_indices;
 
-    MCpsb(const Par &par) : MCxp(par) {
+    MCen(const Par &par) : MCxp(par) {
         LOG << "# Reading stacking and pairing parameters..." << std::endl;
         read_stacking_pairing_parameters();
 
@@ -314,6 +316,8 @@ public:
     virtual Vec rotating_center() const = 0;
 
 };
+
+using MCpsb = MCen<CGpsb>;
 
 } // namespace mc
 } // namespace nuc3d

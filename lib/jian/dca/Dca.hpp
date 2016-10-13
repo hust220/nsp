@@ -50,6 +50,7 @@ public:
     Dca &run(std::string input, std::string out_file, int n);
     virtual void calculate_eij() = 0;
     virtual float cal_di(int i, int j) = 0;
+    virtual void set_step(float) {}
 };
 
 #define REG_DCA_FAC(name, type) REGISTER_FACTORY(Dca::creator_t, name, type)

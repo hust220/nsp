@@ -75,6 +75,14 @@ Mat3 Mat3::Ones(int a, int b, int c) {
     return m;
 }
 
+Mat3 Mat3::Constant(int a, int b, int c, float v) {
+    Mat3 m(a, b, c);
+    m.each([&v](float &n, int a, int b, int c){
+        n = v;
+    });
+    return m;
+}
+
 Mat3::~Mat3() {
     clear();
 }

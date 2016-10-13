@@ -3,8 +3,7 @@
 #include "Module.hpp"
 
 namespace jian {
-namespace nuc3d {
-namespace quadruple {
+namespace qhmc {
 
 class Helix : public Module {
 public:
@@ -14,6 +13,5 @@ public:
 
 } // namespace quadruple
 }
-} // namespace jian
 
 

@@ -1,13 +1,15 @@
 #pragma once
 
 #include "MCxp.hpp"
+#include "MCen.hpp"
 #include "../../cg.hpp"
 
 namespace jian {
 namespace nuc3d {
 namespace mc {
 
-class MC1p : public MCxp<CG1p> {
+template<>
+class MCen<CG1p> : public MCxp<CG1p> {
 public:    
     #define MC1p_en_t_m len, ang, dih, crash, cons, vdw
     struct en_t {
@@ -17,7 +19,7 @@ public:
         double sum() const { return 0 JN_MAP(MC1p_en_t_m_sum, MC1p_en_t_m); }
     };
 
-    MC1p(const Par &par) : MCxp(par) {}
+    MCen(const Par &par) : MCxp(par) {}
 
     virtual double mc_partial_energy() {
         en_t e;
@@ -157,6 +159,8 @@ public:
     virtual Vec rotating_center() const = 0;
 
 };
+
+using MC1p = MCen<CG1p>;
 
 } // namespace mc
 } // namespace nuc3d

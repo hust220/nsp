@@ -3,8 +3,7 @@
 #include "TailHairpin.hpp"
 
 namespace jian {
-namespace nuc3d {
-namespace quadruple {
+namespace qhmc {
 
 REGISTER_QUADRUPLE_MODULE_FACTORY("tail_hairpin", TailHairpin);
 
@@ -34,6 +33,5 @@ std::string TailHairpin::type() const {
 
 } // namespace quadruple
 }
-} // namespace jian
 
 

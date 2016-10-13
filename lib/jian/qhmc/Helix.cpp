@@ -1,8 +1,7 @@
 #include "Helix.hpp"
 
 namespace jian {
-namespace nuc3d {
-namespace quadruple {
+namespace qhmc {
 
 REGISTER_QUADRUPLE_MODULE_FACTORY("helix", Helix);
 
@@ -31,6 +30,5 @@ std::string Helix::type() const {
 
 } // namespace quadruple
 }
-} // namespace jian
 
 

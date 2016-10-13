@@ -16,8 +16,9 @@ public:
     Mat4 eij;
     Mat4 pij;
     Mat5 mijk;
-    float m_step_size = 1;
+    float m_step_size;
 
+    MpDca();
     void init_val();
     void cal_pi();
     void cal_pij();
@@ -27,6 +28,7 @@ public:
     void update_hi(float &diff);
     virtual void calculate_eij();
     virtual float cal_di(int i, int j);
+    virtual void set_step(float);
 };
 
 } // namespace dca

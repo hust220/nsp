@@ -30,6 +30,7 @@ public:
     void clear();
     static Mat3 Zero(int a, int b, int c);
     static Mat3 Ones(int a, int b, int c);
+    static Mat3 Constant(int a, int b, int c, float v);
     ~Mat3();
     float &operator()(int a, int b, int c);
     const float &operator()(int a, int b, int c) const;

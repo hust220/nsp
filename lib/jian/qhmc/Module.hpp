@@ -7,8 +7,7 @@
 #include "../utils/Factory.hpp"
 
 namespace jian {
-namespace nuc3d {
-namespace quadruple {
+namespace qhmc {
 
 using Frag = std::deque<int>;
 using Frags = std::deque<Frag>;
@@ -27,10 +26,9 @@ public:
     virtual std::string type() const = 0;
 };
 
-#define REGISTER_QUADRUPLE_MODULE_FACTORY(name, Type) REGISTER_FACTORY(jian::nuc3d::quadruple::Module::cons_t, name, Type)
+#define REGISTER_QUADRUPLE_MODULE_FACTORY(name, Type) REGISTER_FACTORY(jian::qhmc::Module::cons_t, name, Type)
 
-} // namespace quadruple
-}
+} // namespace qhmc
 } // namespace jian
 
 
