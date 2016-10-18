@@ -33,20 +33,19 @@ public:
     std::string _strategy = "loose";
     std::string _source_pdb;
     double m_seed = 11;
-//    std::string m_out;
-//    bool m_no_mc = false;
     bool m_sample_hairpin = false;
     bool m_sample_il = false;
     std::string m_mode = "auto";
     const Par *_par = NULL;
     std::string m_cmd;
 
-    JobPredict3D();
+    JobPredict3D() = default;
     ~JobPredict3D();
-    JobPredict3D(const Par &pars);
+    void init(const Par &pars);
     void set_constraints();
     void display_start_information();
     void display_end_information();
+    virtual void read_ss();
 
 };
 

@@ -99,6 +99,7 @@ molstream &operator >>(molstream &parser, Atom &atom) {
     if (line != NULL) {
         atom.init(line->atom_name, line->x, line->y, line->z, line->atom_num);
     }
+    return parser;
 }
 
 molstream &operator >>(molstream &parser, Residue &residue) {
@@ -114,6 +115,7 @@ molstream &operator >>(molstream &parser, Residue &residue) {
             break;
         }
     }
+    return parser;
 }
 
 molstream &operator >>(molstream &parser, Chain &chain) {
@@ -131,6 +133,7 @@ molstream &operator >>(molstream &parser, Chain &chain) {
             break;
         }
     }
+    return parser;
 }
 
 molstream &operator >>(molstream &parser, Model &model) {
@@ -146,6 +149,7 @@ molstream &operator >>(molstream &parser, Model &model) {
             break;
         }
     }
+    return parser;
 }
 
 molstream &operator >>(molstream &parser, Molecule &mol) {
@@ -156,6 +160,7 @@ molstream &operator >>(molstream &parser, Molecule &mol) {
         parser >> model;
         mol.push_back(model);
     }
+    return parser;
 }
 
 std::ostream &operator <<(std::ostream &output, const Molecule &mol) {
@@ -180,6 +185,7 @@ std::ostream &operator <<(std::ostream &output, const Molecule &mol) {
         output << "ENDMDL" << std::endl;
         model_num++;
     }
+    return output;
 }
 
 std::ostream &operator <<(std::ostream &output, const Model &model) {
@@ -214,6 +220,7 @@ std::ostream &operator <<(std::ostream &output, const Chain &chain) {
         residue_num++;
     }
     output << "TER" << std::endl;
+    return output;
 }
 
 std::ostream &operator <<(std::ostream &output, const Residue &residue) {
@@ -224,12 +231,14 @@ std::ostream &operator <<(std::ostream &output, const Residue &residue) {
         mol_write_line(output, atom_num, atom_name, residue.name, "X", 1, atom[0], atom[1], atom[2], 1, 0, atom_name[0]);
         atom_num++;
     }
+    return output;
 }
 
 std::ostream &operator <<(std::ostream &output, const Atom &atom) {
     std::string atom_name = atom.name;
     std::replace(atom_name.begin(), atom_name.end(), '*', '\'');
     mol_write_line(output, 1, atom_name, "X", "X", 1, atom[0], atom[1], atom[2], 1, 0, atom_name[0]);
+    return output;
 }
 
 }

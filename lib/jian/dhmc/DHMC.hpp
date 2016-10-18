@@ -6,7 +6,6 @@
 #include <sstream>
 #include "../mc.hpp"
 #include "../utils/file.hpp"
-#include "../scoring/score_psb.hpp"
 #include "../pdb.hpp"
 #include "../geom.hpp"
 #include "../nuc2d.hpp"
@@ -16,18 +15,17 @@
 #include "../nuc3d/transform.hpp"
 #include "../nuc3d/TemplRec.hpp"
 #include "../nuc3d/JobPredict3D.hpp"
-#include "../nuc3d/mc/MC1p.hpp"
-#include "../nuc3d/mc/MCpsb.hpp"
+#include "../mcsm.hpp"
 
 namespace jian {
 namespace nuc3d {
 
 using fixed_ranges_t = std::list<std::array<int, 2>>;
 
-template<typename MC_T>
-class DHMC : public MC_T {
+template<typename CG_T>
+class DHMC : public mc::MCen<CG_T> {
 public:    
-    using mc_t = MC_T;
+    using mc_t = mc::MCen<CG_T>;
     using range_t = std::array<int, 4>;
 
     std::deque<std::shared_ptr<SSTree>> m_trees;
@@ -73,7 +71,11 @@ public:
         return p;
     }
 
-    DHMC(const Par &par) : mc_t(par) {
+    DHMC() = default;
+
+    void init(const Par &par) {
+        mc_t::init(par);
+
         LOG << "# Set 2D trees" << std::endl;
         set_trees();
 
@@ -254,7 +256,7 @@ public:
         }
     }
 
-    virtual void restore_helices() {
+    virtual void restore_fixed_ranges() {
         for (auto it = m_trees.begin(); it != m_trees.end(); it++) {
             LOOP_TRAVERSE((*it)->head(), 
                 if (L->has_helix()) {
@@ -265,7 +267,6 @@ public:
     }
 
     auto make_range(int a, int b, int c,  int d) {
-//        std::shared_ptr<range_t> p = std::make_shared<range_t>();
         range_t *p = new range_t;
         (*p) = {a, b, c, d};
         return p;
@@ -428,7 +429,7 @@ public:
         m_saved_helices[h] = c;
     }
 
-    void save_helices() {
+    virtual void save_fixed_ranges() {
         for (auto it = m_trees.begin(); it != m_trees.end(); it++) {
             LOOP_TRAVERSE((*it)->head(), 
                 if (L->has_helix()) {
@@ -441,9 +442,6 @@ public:
     virtual void before_run() {
         LOG << "# Set pseudo-knots" << std::endl;
         set_pseudo_knots();
-
-        LOG << "# Save helices" << std::endl;
-        save_helices();
     }
 
     virtual void mc_select() {
@@ -487,7 +485,8 @@ void chain_refine(Chain &chain, loop *l, const fixed_ranges_t &fixed_ranges = {}
     par._pars["traj"].push_front(traj);
     par._pars["seq"].push_front(seq);
     par._pars["ss"].push_front(ss);
-    DHMC<T> mc(par);
+    DHMC<T> mc;
+    mc.init(par);
     mc._pred_chain = chain;
     mc.m_fixed_ranges = fixed_ranges;
     mc.run();

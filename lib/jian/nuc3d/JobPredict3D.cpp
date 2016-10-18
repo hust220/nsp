@@ -9,14 +9,14 @@
 
 namespace jian {
 
-JobPredict3D::JobPredict3D() : _lib(Env::lib()) {}
-
-JobPredict3D::JobPredict3D(const Par &pars) : _lib(Env::lib()) {
-    _par = &pars;
+void JobPredict3D::init(const Par &pars) {
+    _par = new Par(pars);
+    _lib = Env::lib();
     m_cmd = (*_par)[1];
     pars.set(_seq, "seq", "sequence");
     jian::to_upper(_seq);
-    pars.set(_ss, "ss", "secondary_structure");
+    LOG << "# Reading secondary structure" << std::endl;
+    read_ss();
     pars.set(_lib, "lib", "library_path");
     pars.set(_name, "job_name", "job", "name");
     pars.set(_num, "n", "num", "number");
@@ -30,7 +30,6 @@ JobPredict3D::JobPredict3D(const Par &pars) : _lib(Env::lib()) {
     seed(m_seed);
 //    pars.set(m_out, "out");
     set_constraints();
-//    pars.set(m_disused_pdbs, "disused_pdbs");
     if (pars.has("disused_pdbs")) {
         m_disused_pdbs = pars["disused_pdbs"];
     }
@@ -40,19 +39,16 @@ JobPredict3D::JobPredict3D(const Par &pars) : _lib(Env::lib()) {
     pars.set(_native, "native");
     pars.set(_source_pdb, "source_pdb");
     jian::to_upper(_source_pdb);
-//    if (pars.has("no_mc")) m_no_mc = true;
     if (pars.has("sample_hp")) m_sample_hairpin = true;
     if (pars.has("sample_il")) m_sample_il = true;
 
     if (_ss == "") throw "Please tell me the secondary structure!";
     if (_seq == "") throw "Please tell me the sequence!";
 
-//        if (_method != "tri-assemble" && NucSS::len_ss(_ss) != _seq.size()) {
-//            throw "The length of the secondary structure and sequence should be equal!";
-//        }
 }
 
 JobPredict3D::~JobPredict3D() {
+    delete _par;
 }
 
 void JobPredict3D::set_constraints() {
@@ -80,6 +76,10 @@ void JobPredict3D::display_end_information() {
               << "Finish Time: " << std::asctime(std::localtime(&(_end_time))) << '\n'
               << "Time elapsed: " << _end_time - _start_time << "s\n"
               << "=========================================================\n\n";
+}
+
+void JobPredict3D::read_ss() {
+    _par->set(_ss, "ss", "secondary_structure");
 }
 
 } // namespace jian

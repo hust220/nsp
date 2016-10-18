@@ -7,7 +7,7 @@ namespace qhmc {
 
 class Loop : public Module {
 public:
-    Loop(const Tuple &, const Tuple &);
+    Loop(const Tuple &, const Tuple &, int);
     virtual std::string type() const;
 };
 

@@ -17,12 +17,13 @@ using Tree = std::deque<Tuples>;
 
 class Module {
 public:
-    using cons_t = Module*(const Tuple &, const Tuple &);
+    using cons_t = Module*(const Tuple &, const Tuple &, const int &);
+
     Frags d_frags;
     int d_max_len {0};
-    std::unique_ptr<Mat> d_indices;
+    Mat d_indices;
 
-    void set_indices(int, int, int);
+    void set_indices(int, const Frag &, bool);
     virtual std::string type() const = 0;
 };
 

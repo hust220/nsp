@@ -7,7 +7,7 @@ namespace qhmc {
 
 class HeadHairpin : public Module {
 public:
-    HeadHairpin(const Tuple &, const Tuple &);
+    HeadHairpin(const Tuple &, const Tuple &, int);
     virtual std::string type() const;
 };
 

@@ -12,6 +12,7 @@ public:
     static Chain chain(const Chain &chain);
     static Chain aa(const Mat &c, int beg, int end);
     static void extract_frags(const std::string &s);
+    static bool is_psb(const Residue &r);
 };
 
 } // namespace jian

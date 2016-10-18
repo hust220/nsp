@@ -38,7 +38,7 @@ public:
 //        LOGI << m << std::endl;
         int i = N, j = M;
         char a, b;
-        while (i != 0 || j != 0) {
+        while (i > 0 && j > 0) {
             a = _seq2[i-1];
             b = _seq1[j-1];
             if (a == b) {

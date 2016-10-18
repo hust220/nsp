@@ -104,7 +104,7 @@ public:
 
     static void chain_refine(Chain *chain, loop *l, std::string log) {
         log_file(log);
-        nuc3d::chain_refine<nuc3d::mc::MCpsb>(*chain, l, {});
+        nuc3d::chain_refine<CGpsb>(*chain, l, {});
     }
 
     void set_templates_all(loop *l) {
@@ -418,7 +418,7 @@ public:
             LOGI << "# refining..." << std::endl;
             nuc3d::fixed_ranges_t fixed_ranges;
             set_fixed_ranges(l, fixed_ranges);
-            nuc3d::chain_refine<nuc3d::mc::MCpsb>(*chain, l, fixed_ranges, _traj);
+            nuc3d::chain_refine<CGpsb>(*chain, l, fixed_ranges, _traj);
         }
         mol_write(*chain, _out);
         LOGI << "# free ss tree..." << std::endl;

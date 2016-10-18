@@ -14,7 +14,7 @@ Par::Par(std::string str) {
 }
 
 void Par::read(std::string par_file) {
-    EACH_SPLIT_LINE(par_file.c_str(), " :,",
+    EACH_SPLIT_LINE(par_file.c_str(), " ",
         if (!(F.empty())) {
             _pars[F[0]] = val_t();
             for (auto it = std::next(F.begin()); it != F.end(); it++) {

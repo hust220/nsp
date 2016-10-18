@@ -12,8 +12,7 @@
 #include "../pp.hpp"
 #include "../nuc3d/transform.hpp"
 #include "../nuc3d/JobPredict3D.hpp" 
-#include "../nuc3d/mc/MC1p.hpp"
-#include "../nuc3d/mc/MCpsb.hpp"
+#include "../mcsm.hpp"
 #include "../utils/Factory.hpp"
 #include "../utils/Par.hpp"
 #include "../utils/rand.hpp"
@@ -41,7 +40,11 @@ public:
     related_residues_t d_mc_related_residues;
     related_residues_t d_mc_unrelated_residues;
 
-    THMC(Par par) : mc_t(par) {}
+    THMC() = default;
+
+    void init(const Par &par) {
+        mc_t::init(par);
+    }
 
     ~THMC() {
         for (auto && i : d_modules) {

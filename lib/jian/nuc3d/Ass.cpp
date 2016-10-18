@@ -106,7 +106,9 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
     });
 }
 
-    Assemble::Assemble(const Par &par) : JobPredict3D(par) {
+    Assemble::Assemble(const Par &par) {
+        JobPredict3D::init(par);
+
         m_sample = par.has("sample");
         par.set(m_sample_mode, "sample_mode");
 

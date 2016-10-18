@@ -7,29 +7,55 @@ namespace qhmc {
 
 REGISTER_QUADRUPLE_MODULE_FACTORY("head_hairpin", HeadHairpin);
 
-HeadHairpin::HeadHairpin(const Tuple &tuple, const Tuple &size) {
-    int len = size[1];
-    Tuple t = tuple;
-    std::sort(t.begin(), t.end(), std::less<int>{});
+HeadHairpin::HeadHairpin(const Tuple &head, const Tuple &tail, int len) {
+    int i, j;
     Frag frag;
-    for (int i = 0; i <= t[0]; i++) {
+
+    for (i = 0; i < head[0]; i++) {
         frag.push_back(i);
     }
     d_frags.push_back(std::move(frag));
-    for (int i = t[1]; i <= t[2]; i++) {
-        frag.push_back(i);
+
+    if (head[1] >= tail[1]) {
+        if (head[2] < tail[2]) {
+            for (i = head[1]+1; i < head[2]; i++) {
+                frag.push_back(i);
+            }
+        } else {
+            for (i = head[1]+1; i < tail[2]; i++) {
+                frag.push_back(i);
+            }
+        }
     }
     d_frags.push_back(std::move(frag));
-    for (int i = t[3]; i < len; i++) {
-        frag.push_back(i);
+
+    if (head[2] >= tail[2]) {
+        if (head[3] < tail[3]) {
+            for (i = head[2]+1; i < head[3]; i++) {
+                frag.push_back(i);
+            }
+        } else {
+            for (i = head[2]+1; i < tail[3]; i++) {
+                frag.push_back(i);
+            }
+        }
     }
     d_frags.push_back(std::move(frag));
-    d_max_len = std::max({t[0], t[2] - t[1] - 1, len - 1 - t[3]});
-    d_indices = std::make_unique<Mat>(d_max_len, 4);
-    for (int i = 0; i < d_max_len; i++) for (int j = 0; j < 4; j++) (*d_indices)(i, j) = -1;
-    set_indices(0, d_frags[0].front(), d_frags[0].back() - 1);
-    set_indices(1, d_frags[1].front() + 1, d_frags[1].back() - 1);
-    set_indices(2, d_frags[2].front() + 1, d_frags[2].back());
+
+    if (head[3] >= tail[3]) {
+        for (i = head[3]+1; i < len; i++) {
+            frag.push_back(i);
+        }
+    }
+    d_frags.push_back(std::move(frag));
+
+    d_max_len = std::accumulate(d_frags.begin(), d_frags.end(), 0, [&](int l, auto && frag){return std::max(l, int(frag.size()));});
+
+    // Set indices
+    d_indices = Mat::Constant(d_max_len, 4, -1);
+    for (int i = 0; i < 4; i++) {
+        set_indices(i, d_frags[i], head[i] <= tail[i]);
+    }
 }
 
 std::string HeadHairpin::type() const {

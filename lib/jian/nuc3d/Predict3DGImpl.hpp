@@ -22,8 +22,8 @@ public:
 
     DG dg;
 
-    Predict3DGImpl(const Par &par) : JobPredict3D(par) {
-//        par.set(dg._num_mc_steps, "n_mc");
+    Predict3DGImpl(const Par &par) {
+        JobPredict3D::init(par);
         Debug::print("# Set Bound Eigen::Matrix\n");
         set_bound();
         set_frags();
