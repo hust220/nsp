@@ -33,7 +33,7 @@ Scoring &Scoring::run(const Chain &chain) {
     return *this;
 }
 
-Scoring & train(std::string filename) {
+Scoring & Scoring::train(std::string filename) {
 	return *this;
 }
 
