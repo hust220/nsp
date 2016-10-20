@@ -1,0 +1,895 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{76c7958b-09db-496e-afea-dea931652f66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jian">
+      <UniqueIdentifier>{440a46fd-2ed9-4176-b5e5-e1deaafbf96a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jian\utils">
+      <UniqueIdentifier>{9af6702c-6722-41b6-b1af-cd5d71e87c74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jian\mcsm">
+      <UniqueIdentifier>{60a04cbf-358c-4899-b120-075800a5a8dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jian\pdb">
+      <UniqueIdentifier>{fcc04008-9f7e-41be-9389-7bdf03e52d9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jian\pdb\utils">
+      <UniqueIdentifier>{bd4fc24e-2423-41c4-98ca-5cc72e9c2cc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jian\nuc2d">
+      <UniqueIdentifier>{4affaf5b-73ac-4108-81db-be0594f0fc80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jian\nuc3d">
+      <UniqueIdentifier>{6eef18e4-16cc-4b1f-845b-0cf22f6ab96d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jian\dg">
+      <UniqueIdentifier>{1459965a-df25-4d2d-9fb2-9289adf4788e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jian\qhmc">
+      <UniqueIdentifier>{920e2e47-1cf1-4f35-ac36-ac1150df0f56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jian\dhmc">
+      <UniqueIdentifier>{62488afe-d8a7-470b-8f4e-ddba29788a9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jian\thmc">
+      <UniqueIdentifier>{dfbdb406-93f7-4e8b-86d3-18fb0cabc662}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jian\mc">
+      <UniqueIdentifier>{62450980-03c7-4218-8ddc-d01e6fb6077e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jian\matrix">
+      <UniqueIdentifier>{edd80390-8a7d-405b-a66a-13a322d8ca76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jian\geom">
+      <UniqueIdentifier>{5ed29220-c7ce-4d68-990f-2604a09fb118}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jian\cg">
+      <UniqueIdentifier>{eb2e4bb7-21ae-4710-bc00-57be8efe59e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jian\dca">
+      <UniqueIdentifier>{075bc218-d6d7-43a5-bda0-97ee32717b91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jian\lrsp">
+      <UniqueIdentifier>{11191779-5649-483a-b4ef-f87d2ad8bbf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jian\mpl">
+      <UniqueIdentifier>{beb78b81-c1b6-46d6-aa01-6291d6881a86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jian\md">
+      <UniqueIdentifier>{480e24c0-a3b9-404c-b834-c4a622046280}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jian\scoring">
+      <UniqueIdentifier>{2ea51bc7-d11b-41b3-98a0-f9f7b699b065}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jian\script">
+      <UniqueIdentifier>{f9109b47-0da2-49df-b307-31489038a7cf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="3drna.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="aa.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="aa2psb.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="align.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="anal_mol.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="assemble.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="build_loop.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="build_loop_dg.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="chain.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="check.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="contacts.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="dhmc.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="dist_frequencies.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="dist_weighted_frequencies.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="dist_weights.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="en_psb.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="extract_frags.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="get_all_residues.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="helix_par.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="joint.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="len.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="lrtsp.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="mcc.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="md.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="min_dist.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="nsp.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="parse_helix.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="qhmc.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="rebuild_chain.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="rmsd.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="score.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="score_aa.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="seq.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="ss_tree.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="ssa.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="ssp_dca.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="ssp_fe.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="sub.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="thmc.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="tri2d.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="view_mol_constraints.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\utils\Cluster.cpp">
+      <Filter>jian\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\utils\file.cpp">
+      <Filter>jian\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\utils\log.cpp">
+      <Filter>jian\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\utils\Par.cpp">
+      <Filter>jian\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\utils\rand.cpp">
+      <Filter>jian\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\utils\string.cpp">
+      <Filter>jian\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\pdb\Atom.cpp">
+      <Filter>jian\pdb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\pdb\CifFileParser.cpp">
+      <Filter>jian\pdb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\pdb\Constraints.cpp">
+      <Filter>jian\pdb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\pdb\io.cpp">
+      <Filter>jian\pdb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\pdb\Model.cpp">
+      <Filter>jian\pdb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\pdb\molstream.cpp">
+      <Filter>jian\pdb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\pdb\names.cpp">
+      <Filter>jian\pdb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\pdb\PdbFileParser.cpp">
+      <Filter>jian\pdb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\pdb\Residue.cpp">
+      <Filter>jian\pdb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\pdb\RNA.cpp">
+      <Filter>jian\pdb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\pdb\utils\cluster_chains.cpp">
+      <Filter>jian\pdb\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\nuc2d\NucSS.cpp">
+      <Filter>jian\nuc2d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\nuc2d\SSTree.cpp">
+      <Filter>jian\nuc2d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\nuc2d\ss_pred.cpp">
+      <Filter>jian\nuc2d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\nuc3d\Ass.cpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\nuc3d\BuildHelix.cpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\nuc3d\BuildLoopDG.cpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\nuc3d\C2A.cpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\nuc3d\CG2AA.cpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\nuc3d\Convert.cpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\nuc3d\Format.cpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\nuc3d\HelixPar.cpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\nuc3d\JobPredict3D.cpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\nuc3d\ParseHelix.cpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\nuc3d\Predict3DG.cpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\nuc3d\split.cpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\nuc3d\TemplRec.cpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\nuc3d\transform.cpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\dg\DG.cpp">
+      <Filter>jian\dg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\dg\DihBound.cpp">
+      <Filter>jian\dg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\dg\Gradient.cpp">
+      <Filter>jian\dg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\dg\smooth.cpp">
+      <Filter>jian\dg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\qhmc\HeadHairpin.cpp">
+      <Filter>jian\qhmc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\qhmc\Helix.cpp">
+      <Filter>jian\qhmc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\qhmc\Loop.cpp">
+      <Filter>jian\qhmc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\qhmc\Module.cpp">
+      <Filter>jian\qhmc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\qhmc\TailHairpin.cpp">
+      <Filter>jian\qhmc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\thmc\THeadHairpin.cpp">
+      <Filter>jian\thmc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\thmc\THelix.cpp">
+      <Filter>jian\thmc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\thmc\TLoop.cpp">
+      <Filter>jian\thmc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\thmc\TModule.cpp">
+      <Filter>jian\thmc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\thmc\TTailHairpin.cpp">
+      <Filter>jian\thmc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\mc\MC.cpp">
+      <Filter>jian\mc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\geom\suppos.cpp">
+      <Filter>jian\geom</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\cg\CG1p.cpp">
+      <Filter>jian\cg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\cg\CG1p_aa.cpp">
+      <Filter>jian\cg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\cg\CGpsb.cpp">
+      <Filter>jian\cg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\cg\CGpsb_aa.cpp">
+      <Filter>jian\cg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\dca\Dca.cpp">
+      <Filter>jian\dca</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\dca\Mat3.cpp">
+      <Filter>jian\dca</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\dca\Mat4.cpp">
+      <Filter>jian\dca</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\dca\Mat5.cpp">
+      <Filter>jian\dca</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\dca\MfDca.cpp">
+      <Filter>jian\dca</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\dca\MpDca.cpp">
+      <Filter>jian\dca</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\dca\ss_pairs.cpp">
+      <Filter>jian\dca</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\lrsp\ss_complete.cpp">
+      <Filter>jian\lrsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\lrsp\ss_del_sm_hp.cpp">
+      <Filter>jian\lrsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\lrsp\ss_hp_pred.cpp">
+      <Filter>jian\lrsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\scoring\DihAnal.cpp">
+      <Filter>jian\scoring</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\scoring\DistAnal.cpp">
+      <Filter>jian\scoring</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\scoring\new_score.cpp">
+      <Filter>jian\scoring</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\scoring\score_3p.cpp">
+      <Filter>jian\scoring</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\scoring\Scoring.cpp">
+      <Filter>jian\scoring</Filter>
+    </ClCompile>
+    <ClCompile Include="m_dca.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_cluster.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_split.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_transform.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_score_3p.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_rna.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_new_score.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\mcsm\EnPsb.cpp">
+      <Filter>jian\mcsm</Filter>
+    </ClCompile>
+    <ClCompile Include="m_en_psb.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_score_psb.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="nsp.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\Cluster.hpp">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\control.hpp">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\Debug.hpp">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\Env.hpp">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\exception.hpp">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\Factory.hpp">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\file.hpp">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\FSM.hpp">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\fun.hpp">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\lexical_cast.hpp">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\Lib.hpp">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\log.hpp">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\ls.hpp">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\math.hpp">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\Par.hpp">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\queue.h">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\rand.hpp">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\string.hpp">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\Time.hpp">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\Trace.hpp">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\traits.hpp">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\tree.h">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\mcsm\MC1p.hpp">
+      <Filter>jian\mcsm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\mcsm\MCen.hpp">
+      <Filter>jian\mcsm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\mcsm\MCpsb.hpp">
+      <Filter>jian\mcsm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\mcsm\MCxp.hpp">
+      <Filter>jian\mcsm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\pdb\Atom.hpp">
+      <Filter>jian\pdb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\pdb\Chain.hpp">
+      <Filter>jian\pdb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\pdb\CifFileParser.hpp">
+      <Filter>jian\pdb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\pdb\Constraints.hpp">
+      <Filter>jian\pdb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\pdb\io.hpp">
+      <Filter>jian\pdb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\pdb\Model.hpp">
+      <Filter>jian\pdb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\pdb\Molecule.hpp">
+      <Filter>jian\pdb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\pdb\molmanip.hpp">
+      <Filter>jian\pdb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\pdb\molstream.hpp">
+      <Filter>jian\pdb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\pdb\names.hpp">
+      <Filter>jian\pdb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\pdb\PdbFileParser.hpp">
+      <Filter>jian\pdb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\pdb\Residue.hpp">
+      <Filter>jian\pdb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\pdb\RNA.hpp">
+      <Filter>jian\pdb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\pdb\utils\cluster_chains.hpp">
+      <Filter>jian\pdb\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc2d\bp.hpp">
+      <Filter>jian\nuc2d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc2d\BuildSST.hpp">
+      <Filter>jian\nuc2d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc2d\GetSS.hpp">
+      <Filter>jian\nuc2d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc2d\helix.hpp">
+      <Filter>jian\nuc2d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc2d\loop.hpp">
+      <Filter>jian\nuc2d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc2d\MergeRings.hpp">
+      <Filter>jian\nuc2d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc2d\NucSS.hpp">
+      <Filter>jian\nuc2d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc2d\PredQuaSS.hpp">
+      <Filter>jian\nuc2d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc2d\PredTriSS.hpp">
+      <Filter>jian\nuc2d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc2d\res.hpp">
+      <Filter>jian\nuc2d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc2d\SST.hpp">
+      <Filter>jian\nuc2d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc2d\SSTree.hpp">
+      <Filter>jian\nuc2d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc2d\ss_pred.hpp">
+      <Filter>jian\nuc2d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc2d\Tree.hpp">
+      <Filter>jian\nuc2d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\AddPhos.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\Ass.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\BasicPredict3D.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\BuildHelix.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\BuildLoop.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\BuildLoopDG.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\BuildNuc.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\BuildStrand.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\C2A.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\CG2AA.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\Connect.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\Convert.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\Format.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\HelixPar.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\JobPredict3D.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\JointHelix.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\LM.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\LM2.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\LoopModelling2.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\MC1p.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\MC3p.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\ParseHelix.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\Predict3DG.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\Predict3DGImpl.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\REMCpsb.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\SampleLoop.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\split.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\SplitModel.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\TemplRec.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\transform.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dg\CG-dev.hpp">
+      <Filter>jian\dg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dg\CG.hpp">
+      <Filter>jian\dg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dg\Constraints.hpp">
+      <Filter>jian\dg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dg\DG.hpp">
+      <Filter>jian\dg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dg\DGImpl.hpp">
+      <Filter>jian\dg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dg\DihBound.hpp">
+      <Filter>jian\dg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dg\Gradient.hpp">
+      <Filter>jian\dg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dg\Job.hpp">
+      <Filter>jian\dg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dg\MC.hpp">
+      <Filter>jian\dg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dg\Move.hpp">
+      <Filter>jian\dg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dg\smooth.hpp">
+      <Filter>jian\dg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dg\Sys.hpp">
+      <Filter>jian\dg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dg\TestMC.hpp">
+      <Filter>jian\dg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dg\_DG.hpp">
+      <Filter>jian\dg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\qhmc\HeadHairpin.hpp">
+      <Filter>jian\qhmc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\qhmc\Helix.hpp">
+      <Filter>jian\qhmc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\qhmc\Loop.hpp">
+      <Filter>jian\qhmc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\qhmc\Module.hpp">
+      <Filter>jian\qhmc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\qhmc\QHMC.hpp">
+      <Filter>jian\qhmc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\qhmc\TailHairpin.hpp">
+      <Filter>jian\qhmc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dhmc\DHMC.hpp">
+      <Filter>jian\dhmc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\thmc\THeadHairpin.hpp">
+      <Filter>jian\thmc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\thmc\THelix.hpp">
+      <Filter>jian\thmc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\thmc\TLoop.hpp">
+      <Filter>jian\thmc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\thmc\TModule.hpp">
+      <Filter>jian\thmc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\thmc\TTailHairpin.hpp">
+      <Filter>jian\thmc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\thmc\THMC.hpp">
+      <Filter>jian\thmc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\mc\MC.hpp">
+      <Filter>jian\mc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\mc\REMC.hpp">
+      <Filter>jian\mc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\matrix\traits.hpp">
+      <Filter>jian\matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\matrix\util.hpp">
+      <Filter>jian\matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\geom\core.hpp">
+      <Filter>jian\geom</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\geom\rotate.hpp">
+      <Filter>jian\geom</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\geom\suppos.hpp">
+      <Filter>jian\geom</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\cg\CG1p.hpp">
+      <Filter>jian\cg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\cg\CGpsb.hpp">
+      <Filter>jian\cg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dca\Dca.hpp">
+      <Filter>jian\dca</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dca\Mat3.hpp">
+      <Filter>jian\dca</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dca\Mat4.hpp">
+      <Filter>jian\dca</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dca\Mat5.hpp">
+      <Filter>jian\dca</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dca\MfDca.hpp">
+      <Filter>jian\dca</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dca\MpDca.hpp">
+      <Filter>jian\dca</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dca\ss_pairs.hpp">
+      <Filter>jian\dca</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\lrsp\ss_complete.hpp">
+      <Filter>jian\lrsp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\lrsp\ss_del_sm_hp.hpp">
+      <Filter>jian\lrsp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\lrsp\ss_hp_pred.hpp">
+      <Filter>jian\lrsp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\lrsp\TSP.hpp">
+      <Filter>jian\lrsp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\mpl\algorithm.h">
+      <Filter>jian\mpl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\mpl\arithmetic.h">
+      <Filter>jian\mpl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\mpl\list.h">
+      <Filter>jian\mpl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\mpl\mpl.h">
+      <Filter>jian\mpl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\md\MD.h">
+      <Filter>jian\md</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\scoring\AssessPSB.h">
+      <Filter>jian\scoring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\scoring\DihAnal.hpp">
+      <Filter>jian\scoring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\scoring\DistAnal.hpp">
+      <Filter>jian\scoring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\scoring\new_score.hpp">
+      <Filter>jian\scoring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\scoring\Score.hpp">
+      <Filter>jian\scoring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\scoring\ScorePsb.hpp">
+      <Filter>jian\scoring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\scoring\score_3p.hpp">
+      <Filter>jian\scoring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\scoring\score_aa.hpp">
+      <Filter>jian\scoring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\scoring\Scoring.hpp">
+      <Filter>jian\scoring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\scoring\Train.h">
+      <Filter>jian\scoring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\script\Script.hpp">
+      <Filter>jian\script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\mcsm\EnPsb.hpp">
+      <Filter>jian\mcsm</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\README.md" />
+  </ItemGroup>
+</Project>
