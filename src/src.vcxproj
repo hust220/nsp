@@ -253,9 +253,8 @@
     <ClCompile Include="rebuild_chain.cpp" />
     <ClCompile Include="rmsd.cpp" />
     <ClCompile Include="m_rna.cpp" />
-    <ClCompile Include="score.cpp" />
+    <ClCompile Include="m_score_aa.cpp" />
     <ClCompile Include="m_score_3p.cpp" />
-    <ClCompile Include="score_aa.cpp" />
     <ClCompile Include="m_score_psb.cpp" />
     <ClCompile Include="seq.cpp" />
     <ClCompile Include="m_split.cpp" />

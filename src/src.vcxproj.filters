@@ -166,12 +166,6 @@
     <ClCompile Include="rmsd.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="score.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="score_aa.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="seq.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -434,6 +428,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="m_score_psb.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_score_aa.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

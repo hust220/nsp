@@ -28,7 +28,8 @@ public:
 
     Scoring();
     ~Scoring();
-    Scoring &run(const Chain &);
+    Scoring & run(const Chain &);
+	Scoring & train(std::string filename);
 };
 
 } // namespace jian
