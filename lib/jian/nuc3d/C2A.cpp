@@ -74,7 +74,7 @@ public:
         Chain dq; std::ofstream ofile(_path + "inf.txt");
 		int n_res = 0;
 		for (auto && chain : model) for (auto && res : chain) {
-			dq.push_back(RES);
+			dq.push_back(res);
 			if (dq.size() >= 2 && geom::distance(dq.back()["C4*"], dq[dq.size() - 2]["C4*"]) > 10) {
 				dq.clear();
 			}
