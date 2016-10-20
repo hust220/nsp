@@ -885,6 +885,66 @@
     <ClInclude Include="..\lib\jian\mcsm\EnPsb.hpp">
       <Filter>jian\mcsm</Filter>
     </ClInclude>
+    <ClInclude Include="..\lib\jian\cg.hpp">
+      <Filter>jian</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dca.hpp">
+      <Filter>jian</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dg.hpp">
+      <Filter>jian</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dhmc.hpp">
+      <Filter>jian</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\geom.hpp">
+      <Filter>jian</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\lrsp.hpp">
+      <Filter>jian</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\matrix.hpp">
+      <Filter>jian</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\mc.hpp">
+      <Filter>jian</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\mcsm.hpp">
+      <Filter>jian</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\md.hpp">
+      <Filter>jian</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\mpl.hpp">
+      <Filter>jian</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc2d.hpp">
+      <Filter>jian</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d.hpp">
+      <Filter>jian</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\pdb.hpp">
+      <Filter>jian</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\pp.hpp">
+      <Filter>jian</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\qhmc.hpp">
+      <Filter>jian</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\scoring.hpp">
+      <Filter>jian</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\script.hpp">
+      <Filter>jian</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\thmc.hpp">
+      <Filter>jian</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils.hpp">
+      <Filter>jian</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\CMakeLists.txt" />
