@@ -247,7 +247,7 @@ void SSTree::make(const std::string &seq, const std::string &ss, int hinge) {
         LOG << "Error:" << std::endl;
         LOG << "Sequence: " << seq << std::endl;
         LOG << "SS: " << ss << std::endl;
-        LOG << "The sequence and the secondary structure don't match!" << std::endl;
+        LOG << "The lengh of the sequence should equal to the length of the secondary structure!" << std::endl;
         throw "SSTree::make error!";
     }
 }
