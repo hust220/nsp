@@ -30,8 +30,9 @@ void find_helix_records(loop *l, records_t &records, std::string name = "", std:
 class Assemble : public JobPredict3D {
 public:    
     using Mat = Eigen::MatrixXd;
+	using RecordsPair = std::pair<records_t, records_t>;
 
-    std::map<loop *, std::pair<std::deque<TemplRec>, std::deque<TemplRec>>> _records;
+    std::map<loop *, RecordsPair> _records;
     std::map<loop *, std::pair<Chain, Chain>> _templates;
     std::map<loop *, std::pair<TemplRec, TemplRec>> m_selected_record;
     int _it_num = 0;
@@ -70,6 +71,8 @@ public:
     void sample_all_templates();
 
     void sample_loop_template(loop *l);
+
+	void sample_helix_template();
 
     loop *select_loop();
 

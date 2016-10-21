@@ -83,13 +83,15 @@ namespace jian {
 			for (j = i + 1; j < len; j++) {
 				for (k = 0; k < size_nt[i]; k++) {
 					for (l = 0; l < size_nt[j]; l++) {
-						type1 = unsigned int(m_coords[i][k][3]);
-						type2 = unsigned int(m_coords[j][l][3]);
+						type1 = static_cast<unsigned int>(m_coords[i][k][3]);
+						type2 = static_cast<unsigned int>(m_coords[j][l][3]);
 						if (num[j] - num[i] == 1 && !in_base(type1) && !in_base(type2)) continue;
 						temp = geom::distance(m_coords[i][k], m_coords[j][l]);
 						if (temp >= cutoff) continue;
-						m_counts[unsigned int(m_coords[i][k][3] * 85 + m_coords[j][l][3]) * bins + unsigned int(temp / interval)]++;
-						m_counts[unsigned int(m_coords[j][l][3] * 85 + m_coords[i][k][3]) * bins + unsigned int(temp / interval)]++;
+						m_counts[static_cast<unsigned int>(m_coords[i][k][3] * 85 + m_coords[j][l][3]) * bins +
+							     static_cast<unsigned int>(temp / interval)]++;
+						m_counts[static_cast<unsigned int>(m_coords[j][l][3] * 85 + m_coords[i][k][3]) * bins +
+							     static_cast<unsigned int>(temp / interval)]++;
 					}
 				}
 			}

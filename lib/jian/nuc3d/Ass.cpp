@@ -1,6 +1,7 @@
 #include "../utils/Par.hpp"
 #include "../utils/Env.hpp"
 #include "../utils/file.hpp"
+#include "../jian.hpp"
 #include "Ass.hpp"
 
 namespace jian {
@@ -46,7 +47,7 @@ void find_loop_records(loop *l, records_t &records, std::string name,
             if (templ_rec._family == family && family != "other") {
                 templ_rec._score += 2;
             }
-            for (unsigned int i = 0; i < templ_rec._seq.size(); i++) {
+            for (uint i = 0; i < templ_rec._seq.size(); i++) {
                 if (seq[i] == templ_rec._seq[i]) {
                     if (ss[i] == templ_rec._ss[i] && ss[i] != '.' && ss[i] != '(' && ss[i] != ')') {
                         templ_rec._score += 2;
@@ -92,7 +93,7 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
             if (templ_rec._family == family && family != "other") {
                 templ_rec._score += 2;
             }
-            for (unsigned int i = 0; i < templ_rec._seq.size(); i++) {
+            for (uint i = 0; i < templ_rec._seq.size(); i++) {
                 if (seq[i] == templ_rec._seq[i]) {
                     templ_rec._score++;
                 }
@@ -217,7 +218,9 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
     }
 
     void Assemble::print_templates() {
-        LOOP_TRAVERSE(_ss_tree.head(), LOG << L << " : " << _templates[L].first.model_name << ' ' << _templates[L].second.model_name << std::endl;);
+        LOOP_TRAVERSE(_ss_tree.head(),
+			LOG << L << " : " << _templates[L].first.model_name << ' ' << _templates[L].second.model_name << std::endl;
+		);
     }
 
     void Assemble::assemble() {
@@ -261,8 +264,23 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
         );
     }
 
+	void Assemble::sample_helix_template() {
+		assert(_records.size() == 1);
+		records_t & r = _records.begin()->second.second;
+		uint n = static_cast<uint>(rand() * r.size());
+		std::cout << r.size() << ' ' << n << std::endl;
+		_templates[0].second = load_pdb(r[n]);
+		m_selected_record[0].second = r[n];
+	}
+
     void Assemble::sample_one_template() {
-        sample_loop_template(select_loop());
+		loop * l = select_loop();
+		if (l == NULL) {
+			sample_helix_template();
+		}
+		else {
+			sample_loop_template(select_loop());
+		}
     }
 
     void Assemble::sample_all_templates() {
@@ -294,9 +312,7 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
                 ls.push_back(l);
             }
         }
-        assert(!ls.empty());
-        int n = int(ls.size() * jian::rand());
-        return ls[n];
+		return (ls.empty() ? NULL : ls[static_cast<uint>(ls.size() * jian::rand())]);
     }
 
     Chain Assemble::load_pdb(const TemplRec &templ_res, std::string type) {
@@ -395,11 +411,11 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
     Mat Assemble::model_mat(const Chain &chain, const std::list<int> &list) {
         Mat mat(_suppos_atoms.size() * list.size(), 3);
         int index = 0;
-        for (unsigned int n = 0; n < chain.size(); n++) {
+        for (uint n = 0; n < chain.size(); n++) {
             if (std::find(list.begin(), list.end(), n) != list.end()) {
                 for (auto && atom : chain[n]) {
                     if (_suppos_atoms.find(atom.name) != _suppos_atoms.end()) {
-                        for (unsigned int i = 0; i < 3; i++) {
+                        for (uint i = 0; i < 3; i++) {
                             mat(index, i) = atom[i];
                         }
                         index++;
@@ -469,7 +485,7 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
                 if (templ_rec._family == family && family != "other") {
                     templ_rec._score += 2;
                 }
-                for (unsigned int i = 0; i < templ_rec._seq.size(); i++) {
+                for (uint i = 0; i < templ_rec._seq.size(); i++) {
                     if (seq[i] == templ_rec._seq[i]) {
                         if (ss[i] == templ_rec._ss[i] && ss[i] != '.' && ss[i] != '(' && ss[i] != ')') {
                             templ_rec._score += 2;
@@ -512,22 +528,23 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
         while (std::getline(ifile, line) && set_helix_rec(templ_rec, line)) {
             /* if (std::find(m_disused_pdbs.begin(), m_disused_pdbs.end(), templ_rec._src) != m_disused_pdbs.end()) {
                 continue;
-            } else */ if (templ_rec._len == len) {
-                templ_rec._score = 0;
-                if (templ_rec._src == jian::upper(_name)) {
-                    templ_rec._score += 5;
-                }
-                if (templ_rec._family == family && family != "other") {
-                    templ_rec._score += 2;
-                }
-                for (unsigned int i = 0; i < templ_rec._seq.size(); i++) {
-                    if (seq[i] == templ_rec._seq[i]) {
-                        templ_rec._score++;
-                    }
-                }
-                _records[l].second.push_back(std::move(templ_rec));
-                num++;
-            }
+			} else */ 
+			if (templ_rec._len == len) {
+				templ_rec._score = 0;
+				if (templ_rec._src == jian::upper(_name)) {
+					templ_rec._score += 5;
+				}
+				if (templ_rec._family == family && family != "other") {
+					templ_rec._score += 2;
+				}
+				for (uint i = 0; i < templ_rec._seq.size(); i++) {
+					if (seq[i] == templ_rec._seq[i]) {
+						templ_rec._score++;
+					}
+				}
+				_records[l].second.push_back(std::move(templ_rec));
+				num++;
+			}
         }
         ifile.close();
         std::sort(_records[l].second.begin(), _records[l].second.end(), []( const TemplRec &loop1, const TemplRec &loop2) {

@@ -67,7 +67,7 @@ void jian_3drna_tripred(const Par &par, int i) {
 REGISTER_NSP_COMPONENT(3drna) {
     int n = 5;
     par.set(n, "n", "num", "number");
-    assert(n <= 8);
+    assert(n <= 10);
 
     std::string ss;
     par.set(ss, "ss", "secondary_structure");

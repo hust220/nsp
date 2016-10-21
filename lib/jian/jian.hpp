@@ -10,3 +10,6 @@
 	a = NULL; \
 } while (0)
 
+namespace jian {
+	using uint = unsigned int;
+}
