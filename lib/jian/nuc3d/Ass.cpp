@@ -268,7 +268,6 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
 		assert(_records.size() == 1);
 		records_t & r = _records.begin()->second.second;
 		uint n = static_cast<uint>(rand() * r.size());
-		std::cout << r.size() << ' ' << n << std::endl;
 		_templates[0].second = load_pdb(r[n]);
 		m_selected_record[0].second = r[n];
 	}
