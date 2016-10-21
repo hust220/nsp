@@ -1,9 +1,12 @@
 #pragma once
 
+#include "DistAnal.hpp"
+#include "DihAnal.hpp"
+
 namespace jian {
 
-class DistAnal;
-class DihAnal;
+//class DistAnal;
+//class DihAnal;
 
 class Scoring {
 public:
@@ -26,10 +29,10 @@ public:
     double m_weight_dih = 1.59348;
 
 
-    Scoring();
+    void init();
     ~Scoring();
     Scoring & run(const Chain &);
-	Scoring & train(std::string filename);
+	Scoring & train(const Chain &);
 };
 
 } // namespace jian

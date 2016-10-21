@@ -301,6 +301,7 @@
     <ClInclude Include="..\lib\jian\geom\core.hpp" />
     <ClInclude Include="..\lib\jian\geom\rotate.hpp" />
     <ClInclude Include="..\lib\jian\geom\suppos.hpp" />
+    <ClInclude Include="..\lib\jian\jian.hpp" />
     <ClInclude Include="..\lib\jian\lrsp.hpp" />
     <ClInclude Include="..\lib\jian\lrsp\ss_complete.hpp" />
     <ClInclude Include="..\lib\jian\lrsp\ss_del_sm_hp.hpp" />

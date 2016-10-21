@@ -25,7 +25,6 @@ struct file {
 };
 
 #define FOPEN(f, s) \
-    std::ifstream f; \
 	jian::file::open(f, s); \
     if (!f) {\
         std::ostringstream stream;\
@@ -36,8 +35,9 @@ struct file {
 #define FCLOSE(f) f.close()
 
 #define EACH_LINE(f, c) do {\
-	FOPEN(ifile, f); \
     int N = 0;\
+	std::ifstream ifile; \
+	FOPEN(ifile, f); \
     std::string L;\
     while (std::getline(ifile, L)) {\
         c;\
@@ -47,8 +47,9 @@ struct file {
 } while(0)
 
 #define EACH_SPLIT_LINE(f, t, c) do {\
-	FOPEN(ifile, f); \
     int N = 0;\
+	std::ifstream ifile; \
+	FOPEN(ifile, f); \
     std::string L;\
     std::vector<std::string> F;\
     while (std::getline(ifile, L)) {\

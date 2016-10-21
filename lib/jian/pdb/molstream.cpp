@@ -5,14 +5,11 @@
 namespace jian {
 
 molstream::molstream(const std::string &f) {
-    ifile.open(f);
-    if (!ifile) {
-        throw std::string("Open file '") + f + "' failed!";
-    }
+	FOPEN(ifile, f);
 }
 
 molstream::~molstream() {
-    ifile.close();
+	FCLOSE(ifile);
     for (auto && l : gc_line) {
         delete l;
     }

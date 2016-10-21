@@ -26,7 +26,8 @@ void find_loop_records(loop *l, records_t &records, std::string name,
     std::ostringstream stream;
     stream << Env::lib() << "/RNA/records/" << (l->is_open() ? "open_" : "") << "loop";
 //LOGI << "FIND LOOP RECORDS OF: " << l << ' ' << stream.str() << std::endl;
-    FOPEN(ifile, stream.str());
+	std::ifstream ifile;
+	FOPEN(ifile, stream.str());
 
     record_t templ_rec;
     std::string line;
@@ -76,6 +77,7 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
 
     std::ostringstream stream;
     stream << Env::lib() << "/RNA/records/helix";
+	std::ifstream ifile;
     FOPEN(ifile, stream.str());
 
     record_t templ_rec;
@@ -450,7 +452,8 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
         int num_sons = l->num_sons();
 
         std::string info_file = _lib + "/RNA/records/" + (l->is_open() ? "open_" : "") + "loop";
-        FOPEN(ifile, info_file.c_str());
+		std::ifstream ifile;
+        FOPEN(ifile, info_file);
 
         TemplRec templ_rec;
         std::string line;

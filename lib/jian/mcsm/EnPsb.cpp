@@ -23,6 +23,7 @@ namespace jian {
 		m_stacking_pars.resize(8, 8);
 		file_name = Env::lib() + "/RNA/pars/nuc3d/mc/mcpsb.stacking.par";
 		//std::cout << file_name << std::endl;
+		std::ifstream ifile;
 		FOPEN(ifile, file_name);
 		for (i = 0; i < 8; i++) for (j = 0; j < 8; j++) ifile >> m_stacking_pars(i, j);
 		ifile.close();

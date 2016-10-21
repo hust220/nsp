@@ -942,6 +942,9 @@
     <ClInclude Include="..\lib\jian\utils.hpp">
       <Filter>jian</Filter>
     </ClInclude>
+    <ClInclude Include="..\lib\jian\jian.hpp">
+      <Filter>jian</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\CMakeLists.txt" />

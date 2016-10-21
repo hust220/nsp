@@ -17,7 +17,8 @@ public:
     double _rmin = 3;
 
     void read_coords(std::string f) {
-        FOPEN(ifile, f.c_str());
+		std::ifstream ifile;
+        FOPEN(ifile, f);
         ifile >> _n;
         _c.resize(_n, 3);
         for (int i = 0; i < _n; i++) {
