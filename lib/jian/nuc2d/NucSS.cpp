@@ -143,8 +143,8 @@ std::string NucSS::hinge_ss(const std::string &ss) {
 }
 
 bool NucSS::seq_match_ss(const std::string &seq, const std::string &ss) {
-    int len_ss = 0; EACH(i, ss, if (i != '&') len_ss++);
-    return seq.size() == len_ss;
+	return std::count_if(seq.begin(), seq.end(), [](auto && c) {return c != '&'; }) ==
+		std::count_if(ss.begin(), ss.end(), [](auto && c) {return c != '&'; });
 }
 
 } // namespace jian
