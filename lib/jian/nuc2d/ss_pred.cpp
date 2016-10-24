@@ -307,7 +307,7 @@ public:
     }
 
     bool is_pair(int i, int j) {
-        static std::map<int, unsigned int> m{{0, 1}, {1, 2}, {2, 4}, {3, 8}, {-1, 16}};
+        static std::map<int, int> m{{0, 1}, {1, 2}, {2, 4}, {3, 8}, {-1, 16}};
         auto n = m[i] | m[j];
         return n == 9 || n == 6 || n == 12;
     }

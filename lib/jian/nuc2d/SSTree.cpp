@@ -118,7 +118,7 @@ bool find_hairpin_position(const std::deque<res> &v, int &left, int &right) {
 }
 
 int len_helix(const std::deque<res> &v, int left, int right) {
-    unsigned int len = 1;
+    int len = 1;
 	while (left >= len && v[left - len].type == '(' &&
 		right + len < v.size() && v[right + len].type == ')') {
 		len++;

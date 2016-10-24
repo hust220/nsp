@@ -26,7 +26,7 @@ public:
         { 5,  6,  5,  5,  5,  7},
         { 7, -1,  5,  5,  5,  5}
     };
-    unsigned int _num_line {1};
+    int _num_line {1};
 
     Cif(std::ifstream &ifile) {
         read_name(ifile);

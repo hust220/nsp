@@ -24,7 +24,7 @@ namespace jian {
 	//}
 
 	void Score<CGpsb>::run(const Chain & c) {
-		unsigned int i, j, l;
+		int i, j, l;
 		Chain chain;
 
 		chain = CGpsb::chain(c);

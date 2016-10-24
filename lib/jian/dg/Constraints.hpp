@@ -5,8 +5,8 @@ namespace dg {
 
 class hash {
 public:
-    unsigned int operator ()(const vector<int> &vec) const {
-        return fold([](unsigned int result, int i){return result ^ (std::hash<int>{}(i) << 1);}, 0, vec);
+    int operator ()(const vector<int> &vec) const {
+        return fold([](int result, int i){return result ^ (std::hash<int>{}(i) << 1);}, 0, vec);
     }
 };
 

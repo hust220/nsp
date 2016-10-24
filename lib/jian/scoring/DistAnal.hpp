@@ -14,15 +14,15 @@ namespace jian {
 		double score = 0;
 		double interval;
 		double cutoff;
-		unsigned int bins;
+		int bins;
 		double penalty = 0;
 
-		unsigned int len = 0;
-		std::vector<unsigned int> num, type, size_nt;
+		int len = 0;
+		std::vector<int> num, type, size_nt;
 		std::vector<Point *> m_coords;
 
 		std::vector<double> m_freqs;
-		std::vector<unsigned int> m_counts;
+		std::vector<int> m_counts;
 
 		DistAnal & init(double = 0.5, int = 20);
 		~DistAnal();
@@ -34,7 +34,7 @@ namespace jian {
 		void read_freqs(std::string);
 		void print_freqs() const;
 		void print_counts(std::ostream &) const;
-		bool in_base(unsigned int type);
+		bool in_base(int type);
 		int res_type(std::string name);
 
 	};

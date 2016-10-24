@@ -7,10 +7,10 @@
 namespace jian {
 namespace DihBoundImpl {
 
-unsigned int hash::operator ()(const key_t &v) const {
+int hash::operator ()(const key_t &v) const {
     std::hash<int> h; 
-    //return JN_FOLD(_1 ^ (h(_2) << 1), (unsigned int, 0), v);
-	return std::accumulate(v.begin(), v.end(), 0, [&h](unsigned int n, auto && m) {return n ^ (h(m) << 1); });
+    //return JN_FOLD(_1 ^ (h(_2) << 1), (int, 0), v);
+	return std::accumulate(v.begin(), v.end(), 0, [&h](int n, auto && m) {return n ^ (h(m) << 1); });
 }
 
 bool equal_to::operator ()(const key_t &vec1, const key_t &vec2) const{

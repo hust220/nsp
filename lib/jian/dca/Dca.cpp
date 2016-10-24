@@ -83,7 +83,7 @@ void Dca::init(std::string Rfamfile, int n) {
 
 float Dca::seqid(int a, int b) {
     int sum = 0;
-    for (unsigned int i = 0; i < M; i++) {
+    for (int i = 0; i < M; i++) {
         if (align(a, i) == align(b, i)) {
             sum++;
         }
@@ -92,7 +92,7 @@ float Dca::seqid(int a, int b) {
 }
 
 void Dca::cal_seqids() {
-    unsigned int i, j;
+    int i, j;
     seqids = Matf::Zero(N, N);
     for (i = 0; i < N; i++) {
         seqids(i, i) = 1;
@@ -116,15 +116,15 @@ void Dca::cal_ma() {
 
 void Dca::cal_meff() {
     Meff = 0;
-    for (unsigned int i = 0; i < N; i++) {
+    for (int i = 0; i < N; i++) {
         Meff += 1.0f / ma[i];
     }
 }
 
 void Dca::cal_fi() {
     fi = Matf::Zero(M, q);
-    for (unsigned int i = 0; i < N; i++) {
-        for (unsigned int j = 0; j < M; j++) {
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < M; j++) {
             int a = align(i, j);
             fi(j, a) += 1.0f / ma[i];
         }
@@ -134,7 +134,7 @@ void Dca::cal_fi() {
 void Dca::cal_fij() {
     fij = Mat4::Zero(M, M, q, q);
     int a, b;
-	unsigned int i, j, k;
+	int i, j, k;
     for (i = 0; i < M; i++) {
         for (j = 0; j < M; j++) {
             for (k = 0; k < N; k++) {
@@ -150,7 +150,7 @@ void Dca::calculate_f() {
     cal_seqids();
     cal_ma();
     cal_meff();
-    for (unsigned int i = 0; i < N; i++) {
+    for (int i = 0; i < N; i++) {
         ma[i] *= Meff;
     }
     cal_fi();
@@ -158,7 +158,7 @@ void Dca::calculate_f() {
 }
 
 void Dca::calculate_P() {
-	unsigned int i, j, k, l;
+	int i, j, k, l;
 
     Pi = Matf::Zero(M, q);
     for (i = 0; i < M; i++) {
@@ -182,7 +182,7 @@ void Dca::calculate_DI(std::string out_file) {
     calculate_eij();
 
     std::ofstream ofile(out_file.c_str());
-	unsigned int i, j;
+	int i, j;
 	int a, b;
     DI = Matf::Zero(M, M);
     for (i = 0; i < M; i++) {

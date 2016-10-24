@@ -11,7 +11,7 @@ namespace jian {
 } while (0)
 
 #define PRINT_MAT3(a, stream) do { \
-	unsigned int i, j, k; \
+	int i, j, k; \
 	for (i = 0; i < 85; i++) {\
 		for (j = 0; j < 85; j++) {\
 			for (k = 0; k < bins; k++) {\
@@ -75,7 +75,7 @@ namespace jian {
 	}
 
 	DistAnal & DistAnal::train(const Chain & c) {
-		unsigned int i, j, k, l, type1, type2;
+		int i, j, k, l, type1, type2;
 		double temp;
 
 		read_mol(c);
@@ -83,15 +83,15 @@ namespace jian {
 			for (j = i + 1; j < len; j++) {
 				for (k = 0; k < size_nt[i]; k++) {
 					for (l = 0; l < size_nt[j]; l++) {
-						type1 = static_cast<unsigned int>(m_coords[i][k][3]);
-						type2 = static_cast<unsigned int>(m_coords[j][l][3]);
+						type1 = static_cast<int>(m_coords[i][k][3]);
+						type2 = static_cast<int>(m_coords[j][l][3]);
 						if (num[j] - num[i] == 1 && !in_base(type1) && !in_base(type2)) continue;
 						temp = geom::distance(m_coords[i][k], m_coords[j][l]);
 						if (temp >= cutoff) continue;
-						m_counts[static_cast<unsigned int>(m_coords[i][k][3] * 85 + m_coords[j][l][3]) * bins +
-							     static_cast<unsigned int>(temp / interval)]++;
-						m_counts[static_cast<unsigned int>(m_coords[j][l][3] * 85 + m_coords[i][k][3]) * bins +
-							     static_cast<unsigned int>(temp / interval)]++;
+						m_counts[static_cast<int>(m_coords[i][k][3] * 85 + m_coords[j][l][3]) * bins +
+							     static_cast<int>(temp / interval)]++;
+						m_counts[static_cast<int>(m_coords[j][l][3] * 85 + m_coords[i][k][3]) * bins +
+							     static_cast<int>(temp / interval)]++;
 					}
 				}
 			}
@@ -99,7 +99,7 @@ namespace jian {
 		return *this;
 	}
 
-	bool DistAnal::in_base(unsigned int type) {
+	bool DistAnal::in_base(int type) {
 		return (type > 11 && type < 22) ||
 			   (type > 33 && type < 42) ||
 			   (type > 54 && type < 62) ||
@@ -107,7 +107,7 @@ namespace jian {
 	}
 
 	DistAnal & DistAnal::run(const Chain &chain) {
-		unsigned int i, j, k, l, type1, type2;
+		int i, j, k, l, type1, type2;
 		double a, b, temp;
 
 		read_mol(chain);
@@ -134,7 +134,7 @@ namespace jian {
 	}
 
 	void DistAnal::read_freqs(std::string filename) {
-		unsigned int i, j, k;
+		int i, j, k;
 		std::ifstream ifile;
 
 		FOPEN(ifile, filename);

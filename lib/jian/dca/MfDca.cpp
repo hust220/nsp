@@ -6,7 +6,7 @@ namespace dca {
 REG_DCA_FAC("mf", MfDca);
 
 void MfDca::calculate_C() {
-    unsigned int i, j, k, l;
+    int i, j, k, l;
     C = Matf::Zero(M * (q - 1), M * (q-1));
     for (i = 0; i < M; i++) for (j = 0; j < M; j++) for (k = 0; k < q-1; k++) for (l = 0; l < q-1; l++) {
         C(i*(q-1)+k, j*(q-1)+l) = Pij(i, j, k, l) - Pi(i, k) * Pi(j, l);
@@ -28,7 +28,7 @@ void MfDca::set_mu(const Matf &m, const Vecf &pi, const Vecf &pj, Vecf &mu1, Vec
     float diff = 1.0f;
     Vecf v1, v2;
     float sum1, sum2;
-    unsigned int i;
+    int i;
     float d;
 
     while (diff > epsilon) {
@@ -68,7 +68,7 @@ float MfDca::cal_di(int i, int j) {
 
     // calculate Pdir
 
-    unsigned int a, b;
+    int a, b;
     float sum = 0;
     for (a = 0; a < q; a++) for (b = 0; b < q; b++) {
         Pdir(a, b) *= mu1(a) * mu2(b);

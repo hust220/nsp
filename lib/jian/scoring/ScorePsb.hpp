@@ -20,11 +20,11 @@ public:
     Mat m_freqs_pairing;
     Mati m_counts_stacking;
     Mati m_counts_pairing;
-    std::map<std::string, unsigned int> m_map {{"A", 0}, {"U", 1}, {"G", 2}, {"C", 3}};
+    std::map<std::string, int> m_map {{"A", 0}, {"U", 1}, {"G", 2}, {"C", 3}};
     double m_cutoff = 20;
     double m_bin = 0.2;
-    unsigned int m_bins;
-    std::vector<unsigned int> m_indices;
+    int m_bins;
+    std::vector<int> m_indices;
     const Chain *m_chain;
 
 	virtual void init();

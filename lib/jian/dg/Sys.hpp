@@ -5,9 +5,9 @@ namespace dg {
 
 class State {
 public:
-    const static unsigned int EN = 1;
-    const static unsigned int G = 2;
-    const static unsigned int G2 = 4;
+    const static int EN = 1;
+    const static int G = 2;
+    const static int G2 = 4;
 
     double energy;
     MatrixXf g;
@@ -19,7 +19,7 @@ public:
     MatrixXf c;
     Constraints constraints;
 
-    State state(unsigned int type = 1) {
+    State state(int type = 1) {
         State s;
         MatrixXf C = MatrixXf::Zero(3 * len, 3);
         double err = 1.e-6;

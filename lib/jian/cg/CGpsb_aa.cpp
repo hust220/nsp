@@ -87,14 +87,14 @@ public:
         chain_read_model(full_chain, pdb);
         Chain chain = CGpsb::chain(full_chain);
         std::ofstream ofile(_path + "inf.txt");
-        for (unsigned int n = 0; n < chain.size(); n++) {
+        for (int n = 0; n < chain.size(); n++) {
             dq.push_back(n);
             if (dq.size() >= 2 && geom::distance(chain[dq.back()][0], chain[dq[dq.size()-2]][0]) > 10) {
                 dq.clear();
             } else if (dq.size() == _num_residues_frag) {
                 std::string name = chain.model_name + "-" + std::to_string(n); 
                 ofile << name;
-                for (unsigned int i = 0; i < dq.size(); i++) {
+                for (int i = 0; i < dq.size(); i++) {
                     for (auto && atom : chain[dq[i]]) {
                         for (int j = 0; j < 3; j++) {
                             ofile << ' ' << atom[j];

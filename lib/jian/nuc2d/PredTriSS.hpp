@@ -18,7 +18,7 @@ namespace seq2tri {
 struct MyHash {
     std::size_t operator ()(const std::vector<int> &s) const {
         long hash = 5381;  
-        for(unsigned int i = 0; i < s.size(); i++) hash = ((hash << 5) + hash) + s[i];
+        for(int i = 0; i < s.size(); i++) hash = ((hash << 5) + hash) + s[i];
         return hash;
     }
 };
@@ -79,7 +79,7 @@ public:
     double score_ss(const std::string &ss) {
         seq_t loop;
         double e = 0;
-        for (unsigned int i = 0; i < ss.size(); i++) {
+        for (int i = 0; i < ss.size(); i++) {
             if (i < ss.size() - 1) {
                 if (ss[i] != '0' && ss[i+1] != '0') {
                     e += -1;
@@ -104,7 +104,7 @@ public:
 
     std::string dbn(const tuples_t &tuples, int len) {
         auto init_ss = [&](auto &&ss){
-            for (unsigned int i = 0; i < tuples.size(); i++) {
+            for (int i = 0; i < tuples.size(); i++) {
                 if (tuples[i].size() != 0) {
                     std::vector<int> v {tuples[i][0], tuples[i][1], tuples[i][2]};
                     std::sort(v.begin(), v.end());
@@ -114,7 +114,7 @@ public:
         };
 
         auto count_purine = [&](auto &&ss, auto &&v){
-            for (unsigned int i = 0; i < ss.size(); i++) {
+            for (int i = 0; i < ss.size(); i++) {
                 if (_seq[i] == 'A' || _seq[i] == 'G') {
                     if (ss[i] == '1') v[0]++;
                     else if (ss[i] == '2') v[1]++;
@@ -146,7 +146,7 @@ public:
 
     infos_t best_info(const seq_t &seq) {
         infos_t info_list;
-		unsigned int i, j;
+		int i, j;
 
         if (seq.size() < 3) {
             info_list.push_back(strand_info(seq));
@@ -191,7 +191,7 @@ public:
 
         std::vector<int> score_list;
         score_list.push_back(0);
-        for (unsigned int i = 1; i < temp_info_list.size(); i++) {
+        for (int i = 1; i < temp_info_list.size(); i++) {
             if (temp_info_list[i].first.size() == 0) continue;
             double en1 = temp_info_list[i].second;
             double en2 = temp_info_list[score_list[0]].second;
@@ -256,7 +256,7 @@ public:
 
     infos_t sub_info(const seq_t &seq, double cutoff) {
         infos_t info_list;
-		unsigned int i, j;
+		int i, j;
 
         if (seq.size() < 3) {
             info_list.push_back(strand_info(seq));

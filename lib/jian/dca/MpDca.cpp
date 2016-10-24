@@ -16,7 +16,7 @@ void MpDca::set_step(float n) {
 }
 
 void MpDca::init_val() {
-    unsigned int i, ai;
+    int i, ai;
     float v_sum;
     Vecf v(q);
 
@@ -41,7 +41,7 @@ void MpDca::init_val() {
 }
 
 void MpDca::cal_pi() {
-    unsigned int i, k, ai, ak;
+    int i, k, ai, ak;
     float v_sum, sum, prod;
     Vecf v(q);
 
@@ -68,7 +68,7 @@ void MpDca::cal_pi() {
 }
 
 void MpDca::cal_pij() {
-    unsigned int i, j, l, ai, aj, al;
+    int i, j, l, ai, aj, al;
     float v_sum, pi_sum, sum, sum1, sum2;
     Vecf v(q);
 
@@ -101,7 +101,7 @@ void MpDca::cal_pij() {
 }
 
 void MpDca::solve_pi() {
-    unsigned int ai, aj;
+    int ai, aj;
     float v_sum, sum, diff, d;
     Vecf v(q);
     std::vector<int> ls1(M), ls2(M);
@@ -161,10 +161,10 @@ void MpDca::solve_pi() {
 }
 
 void MpDca::solve_pij() {
-    unsigned int l, ai, ak, al;
+    int l, ai, ak, al;
     float v_sum, mij_sum, sum, sum1, sum2, diff, d;
     Vecf v(q);
-    std::vector<unsigned int> ls1(M), ls2(M), ls3(M);
+    std::vector<int> ls1(M), ls2(M), ls3(M);
 
     std::iota(ls1.begin(), ls1.end(), 0);
     std::iota(ls2.begin(), ls2.end(), 0);
@@ -210,7 +210,7 @@ void MpDca::solve_pij() {
 }
 
 void MpDca::update_eij(float &diff) {
-    unsigned int i, j, ai, aj;
+    int i, j, ai, aj;
     float d;
 
     for (i = 0; i < M; i++) for (j = 0; j < M; j++) for (ai = 0; ai < q; ai++) for (aj = 0; aj < q; aj++) {
@@ -222,7 +222,7 @@ void MpDca::update_eij(float &diff) {
 }
 
 void MpDca::update_hi(float &diff) {
-    unsigned int i, ai;
+    int i, ai;
     float d;
     Vecf v(q);
 
@@ -257,7 +257,7 @@ void MpDca::update_hi(float &diff) {
 }
 
 void MpDca::calculate_eij() {
-    unsigned int i;
+    int i;
     float diff;
 
     init_val();
@@ -294,7 +294,7 @@ void MpDca::calculate_eij() {
 }
 
 float MpDca::cal_di(int i, int j) {
-    unsigned int ai, aj, a1, a2;
+    int ai, aj, a1, a2;
     float DI, sum;
     Matf Pdir(q, q);
 

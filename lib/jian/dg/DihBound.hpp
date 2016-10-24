@@ -12,7 +12,7 @@ using key_t = std::vector<int>;
 
 using val_t = double;
 
-struct hash { unsigned int operator ()(const key_t &v) const; };
+struct hash { int operator ()(const key_t &v) const; };
 
 struct equal_to { bool operator ()(const key_t &vec1, const key_t &vec2) const; };
 

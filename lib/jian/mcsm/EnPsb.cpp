@@ -17,7 +17,7 @@ namespace jian {
 
 
 	void EnPsb::read_stacking_pairing_parameters() {
-		unsigned int i, j;
+		int i, j;
 		std::string file_name;
 
 		m_stacking_pars.resize(8, 8);
@@ -48,7 +48,7 @@ namespace jian {
 	double EnPsb::en_stacking(const Mat &m, int a, int b) const {
 		double en = 0, d;
 		int x, y;
-		unsigned int i, j;
+		int i, j;
 
 		x = a * 2;
 		y = b * 2;
@@ -115,7 +115,7 @@ namespace jian {
 
 	double EnPsb::en_crash(const Residue & a, const Residue & b, Mat & arr) const {
 		double d, e;
-		unsigned int i, j;
+		int i, j;
 
 		e = 0;
 		for (i = 0; i < 3; i++) {

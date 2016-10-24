@@ -4,20 +4,20 @@
 
 namespace jian {
 	namespace {
-		void set_indices(const Chain & c, std::vector<unsigned int> & v) {
+		void set_indices(const Chain & c, std::vector<int> & v) {
 			static std::vector<std::string> names{ "A", "U", "G", "C" };
-			unsigned int l = c.size();
+			int l = c.size();
 			v.resize(l);
-			for (unsigned int i = 0; i < l; i++) {
+			for (int i = 0; i < l; i++) {
 				v[i] = std::distance(names.begin(), std::find(names.begin(), names.end(), c[i].name));
 			}
 		}
 
 		REGISTER_NSP_COMPONENT(en_psb) {
 			Chain c;
-			unsigned int i, j, l;
+			int i, j, l;
 			std::string file_name = par.get("s", "pdb", "cif");
-			std::vector<unsigned int> v;
+			std::vector<int> v;
 			EnPsb en_psb;
 			Mat arr(3, 3);
 			//double en_crash, en_stacking, en_pairing;

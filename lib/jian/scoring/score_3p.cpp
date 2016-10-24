@@ -19,7 +19,7 @@ public:
     std::map<std::string, int> m_map {{"A", 0}, {"U", 1}, {"G", 2}, {"C", 3}};
     double m_cutoff = 20;
     double m_bin = 0.2;
-    unsigned int m_bins;
+    int m_bins;
     std::vector<int> m_indices;
     const Chain *m_chain;
 
@@ -94,7 +94,7 @@ public:
     }
 
     void read_counts() {
-		unsigned int i, j;
+		int i, j;
         m_counts_stacking = Mati::Zero(144, m_bins);
         m_counts_pairing = Mati::Zero(144, m_bins);
         std::string name = Env::lib() + "/RNA/pars/scoring/score_3p/counts";
@@ -113,7 +113,7 @@ public:
     }
 
     void set_freqs() {
-		unsigned int i, j;
+		int i, j;
         m_freqs_stacking = Mat::Zero(144, m_bins);
         m_freqs_pairing = Mat::Zero(144, m_bins);
         Vec vs = Vec::Zero(m_bins);
@@ -157,7 +157,7 @@ public:
     double score_stacking(const Residue &r1, const Residue &r2) {
         double e = 0, d, f;
         int a, b, t1 = m_map[r1.name], t2 = m_map[r2.name];
-		unsigned int i, j;
+		int i, j;
 
         for (i = 0; i < 3; i++) {
             for (j = 0; j < 3; j++) {
@@ -180,7 +180,7 @@ public:
     double score_pairing(const Residue &r1, const Residue &r2) {
         double e = 0, d, f;
         int a, b, t1 = m_map[r1.name], t2 = m_map[r2.name];
-		unsigned int i, j;
+		int i, j;
 
         for (i = 0; i < 3; i++) {
             for (j = 0; j < 3; j++) {

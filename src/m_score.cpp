@@ -7,9 +7,9 @@
 
 namespace jian {
 	namespace {
-		void sum_counts(std::string filename, unsigned int rows, unsigned int cols) {
+		void sum_counts(std::string filename, int rows, int cols) {
 			Veci v;
-			unsigned int i, j, d;
+			int i, j, d;
 			std::ifstream ifile;
 
 			v = Veci::Zero(cols);
@@ -64,8 +64,8 @@ namespace jian {
 			if (par.has("sum_counts")) {
 				Par::pars_t & pars = par["sum_counts"];
 				std::string filename = pars[0];
-				unsigned int rows = std::stoi(pars[1]);
-				unsigned int cols = std::stoi(pars[2]);
+				int rows = std::stoi(pars[1]);
+				int cols = std::stoi(pars[2]);
 				sum_counts(filename, rows, cols);
 			}
 			else {

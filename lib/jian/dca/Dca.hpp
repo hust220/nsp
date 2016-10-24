@@ -22,7 +22,7 @@ public:
     using seqs_t = std::deque<std::string>;
     using creator_t = Dca *();
 
-    unsigned int N, M, q;
+    int N, M, q;
 	Mati align;
     Matf seqids, fi, Pi, DI;
     Vecf ma;
@@ -33,7 +33,7 @@ public:
     std::string m_seq;
     std::vector<int> m_indices;
     std::vector<char> m_symbols {'A', 'U', 'C', 'G'};
-    std::map<char, unsigned int> m_map_symbols;
+    std::map<char, int> m_map_symbols;
 
     ~Dca();
     void fastaread(std::string fastafile, seqs_t &seqs);

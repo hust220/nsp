@@ -12,10 +12,10 @@
 namespace jian {
 namespace lrsp {
 
-std::map<char, unsigned int> index_base {{'X', 0}, {'A', 1}, {'U', 2}, {'T', 2}, {'G', 4}, {'C', 8}};
+std::map<char, int> index_base {{'X', 0}, {'A', 1}, {'U', 2}, {'T', 2}, {'G', 4}, {'C', 8}};
 
 bool is_paired(const char & a, const char & b) {
-    unsigned int n = index_base[a] | index_base[b];
+    int n = index_base[a] | index_base[b];
     return n == 3 || n == 12 || n == 6;
 }
 

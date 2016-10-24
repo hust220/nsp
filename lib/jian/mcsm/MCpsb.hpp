@@ -14,7 +14,7 @@
     void mc_##name##_energy_crash(en_t &e) { \
         int a, b, c; \
         double d; \
-		unsigned int i, j, k; \
+		int i, j, k; \
         Mat arr = Mat::Zero(3, 3); \
         for (int n = 0; n < _seq.size(); n++) { \
             cond1 { \
@@ -155,7 +155,7 @@ namespace jian {
 
 				void set_indices() {
 					std::map<char, int> m{ {'A', 0}, {'U', 1}, {'T', 1}, {'G', 2}, {'C', 3} };
-					unsigned int i;
+					int i;
 					m_indices.resize(_seq.size());
 					for (i = 0; i < _seq.size(); i++) {
 						m_indices[i] = m[_seq[i]];
@@ -186,7 +186,7 @@ namespace jian {
 				void print_stacking() {
 					Mat arr(3, 3);
 					double d;
-					unsigned int i, j;
+					int i, j;
 
 					for (i = 0; i < _seq.size(); i++) {
 						for (j = i + 1; j < _seq.size(); j++) {
@@ -202,7 +202,7 @@ namespace jian {
 				void print_pairing() {
 					Mat arr(3, 3);
 					double d;
-					unsigned int i, j;
+					int i, j;
 
 					for (i = 0; i < _seq.size(); i++) {
 						for (j = i + 1; j < _seq.size(); j++) {
