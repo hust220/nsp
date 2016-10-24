@@ -397,9 +397,6 @@
     <ClCompile Include="..\lib\jian\scoring\score_3p.cpp">
       <Filter>jian\scoring</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\jian\scoring\Scoring.cpp">
-      <Filter>jian\scoring</Filter>
-    </ClCompile>
     <ClCompile Include="m_dca.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -427,10 +424,13 @@
     <ClCompile Include="m_en_psb.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="m_score_psb.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="..\lib\jian\scoring\ScoreAa.cpp">
+      <Filter>jian\scoring</Filter>
     </ClCompile>
-    <ClCompile Include="m_score_aa.cpp">
+    <ClCompile Include="..\lib\jian\scoring\ScorePsb.cpp">
+      <Filter>jian\scoring</Filter>
+    </ClCompile>
+    <ClCompile Include="m_score.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -867,12 +867,6 @@
     <ClInclude Include="..\lib\jian\scoring\score_3p.hpp">
       <Filter>jian\scoring</Filter>
     </ClInclude>
-    <ClInclude Include="..\lib\jian\scoring\score_aa.hpp">
-      <Filter>jian\scoring</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\scoring\Scoring.hpp">
-      <Filter>jian\scoring</Filter>
-    </ClInclude>
     <ClInclude Include="..\lib\jian\scoring\Train.h">
       <Filter>jian\scoring</Filter>
     </ClInclude>
@@ -944,6 +938,9 @@
     </ClInclude>
     <ClInclude Include="..\lib\jian\jian.hpp">
       <Filter>jian</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\scoring\ScoreAa.hpp">
+      <Filter>jian\scoring</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

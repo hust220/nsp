@@ -11,10 +11,10 @@ namespace jian {
 
 class Par {
 public:
-    using val_t = std::deque<std::string>;
+    using pars_t = std::deque<std::string>;
 
-    std::map<std::string, val_t> _pars;
-    val_t _orig_pars;
+    std::map<std::string, pars_t> _pars;
+    pars_t _orig_pars;
 
     Par() {}
     Par(int argc, char **argv);
@@ -42,12 +42,12 @@ public:
         } else set(v, pars...);
     }
 
-    val_t getall() const {
+    pars_t getall() const {
         throw "jian::Par::get error! Didn't found parameters for keys!";
     }
 
     template<typename K, typename... V>
-    val_t getall(K &&s, V && ...pars) const {
+    pars_t getall(K &&s, V && ...pars) const {
         if (_pars.count(s)) {
             return _pars.at(s);
         } else {

@@ -204,8 +204,9 @@
     <ClCompile Include="..\lib\jian\scoring\DihAnal.cpp" />
     <ClCompile Include="..\lib\jian\scoring\DistAnal.cpp" />
     <ClCompile Include="..\lib\jian\scoring\new_score.cpp" />
+    <ClCompile Include="..\lib\jian\scoring\ScorePsb.cpp" />
     <ClCompile Include="..\lib\jian\scoring\score_3p.cpp" />
-    <ClCompile Include="..\lib\jian\scoring\Scoring.cpp" />
+    <ClCompile Include="..\lib\jian\scoring\ScoreAa.cpp" />
     <ClCompile Include="..\lib\jian\thmc\THeadHairpin.cpp" />
     <ClCompile Include="..\lib\jian\thmc\THelix.cpp" />
     <ClCompile Include="..\lib\jian\thmc\TLoop.cpp" />
@@ -253,9 +254,8 @@
     <ClCompile Include="rebuild_chain.cpp" />
     <ClCompile Include="rmsd.cpp" />
     <ClCompile Include="m_rna.cpp" />
-    <ClCompile Include="m_score_aa.cpp" />
+    <ClCompile Include="m_score.cpp" />
     <ClCompile Include="m_score_3p.cpp" />
-    <ClCompile Include="m_score_psb.cpp" />
     <ClCompile Include="seq.cpp" />
     <ClCompile Include="m_split.cpp" />
     <ClCompile Include="ssa.cpp" />
@@ -403,8 +403,7 @@
     <ClInclude Include="..\lib\jian\scoring\Score.hpp" />
     <ClInclude Include="..\lib\jian\scoring\ScorePsb.hpp" />
     <ClInclude Include="..\lib\jian\scoring\score_3p.hpp" />
-    <ClInclude Include="..\lib\jian\scoring\score_aa.hpp" />
-    <ClInclude Include="..\lib\jian\scoring\Scoring.hpp" />
+    <ClInclude Include="..\lib\jian\scoring\ScoreAa.hpp" />
     <ClInclude Include="..\lib\jian\scoring\Train.h" />
     <ClInclude Include="..\lib\jian\script.hpp" />
     <ClInclude Include="..\lib\jian\script\Script.hpp" />

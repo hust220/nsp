@@ -101,7 +101,7 @@ public:
         return ss;
     }
 
-    void set_free_atoms(const Par::val_t &par) {
+    void set_free_atoms(const Par::pars_t &par) {
         std::vector<std::string> v;
         for (auto && s : par) {
             tokenize(s, v, "-");

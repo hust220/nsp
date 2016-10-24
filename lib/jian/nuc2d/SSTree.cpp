@@ -2,11 +2,16 @@
 #include <string>
 #include <regex>
 #include <vector>
+#include <algorithm>
 #include "SSTree.hpp"
 #include "loop.hpp"
 #include "NucSS.hpp"
 #include "../pdb.hpp"
 #include "../utils/log.hpp"
+
+#define TRUE_LENGTH(a) \
+	std::count_if(a.begin(), a.end(), [](auto && c){return c != '&';})
+
 
 namespace jian {
 
@@ -113,7 +118,7 @@ bool find_hairpin_position(const std::deque<res> &v, int &left, int &right) {
 }
 
 int len_helix(const std::deque<res> &v, int left, int right) {
-    int len = 1; 
+    unsigned int len = 1; 
     while (left-len>=0 && v[left-len].type == '(' && 
            right+len < v.size() && v[right+len].type == ')') len++; 
     return len;
@@ -245,8 +250,8 @@ void SSTree::make(const std::string &seq, const std::string &ss, int hinge) {
         sstree_detail::read_seq(_impl->head, seq, ss_nbt);
     } else {
         LOG << "Error:" << std::endl;
-        LOG << "Sequence: " << seq << std::endl;
-        LOG << "SS: " << ss << std::endl;
+        LOG << "Sequence: " << seq << " (" << TRUE_LENGTH(seq) << " nt)" << std::endl;
+        LOG << "SS: " << ss << " (" << TRUE_LENGTH(ss) << " nt)" << std::endl;
         LOG << "The lengh of the sequence should equal to the length of the secondary structure!" << std::endl;
         throw "SSTree::make error!";
     }

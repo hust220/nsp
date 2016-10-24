@@ -33,7 +33,7 @@ namespace jian {
 
 		void read_freqs(std::string);
 		void print_freqs() const;
-		void print_counts() const;
+		void print_counts(std::ostream &) const;
 		bool in_base(unsigned int type);
 		int res_type(std::string name);
 

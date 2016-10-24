@@ -48,7 +48,7 @@ NucSS::NucSS() {
 			if (F[1] == "paired_keys") {
 				std::getline(ifile, L);
 				jian::tokenize(L, F, " ");
-				for (int i = 0; i < F.size() / 2; i++) {
+				for (unsigned int i = 0; i < F.size() / 2; i++) {
 					paired_keys.push_back({ F[2 * i][0], F[2 * i + 1][0] });
 				}
 			} else if (F[1] == "unpaired_keys") {

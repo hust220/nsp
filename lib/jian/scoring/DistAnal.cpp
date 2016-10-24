@@ -5,19 +5,19 @@
 namespace jian {
 
 #define FREE_COORDS do {\
-	for (unsigned int i = 0; i < len; i++) {\
-		delete m_coords[i];\
+	for (auto && p : m_coords) {\
+		delete [] p;\
 	}\
 } while (0)
 
-#define PRINT_MAT3(a) do { \
+#define PRINT_MAT3(a, stream) do { \
 	unsigned int i, j, k; \
 	for (i = 0; i < 85; i++) {\
 		for (j = 0; j < 85; j++) {\
 			for (k = 0; k < bins; k++) {\
-				std::cout << a[(i * 85 + j) * bins + k] << ' ';\
+				stream << a[(i * 85 + j) * bins + k] << ' ';\
 			}\
-			std::cout << std::endl;\
+			stream << std::endl;\
 		}\
 	}\
 } while (0)
@@ -149,11 +149,11 @@ namespace jian {
 	}
 
 	void DistAnal::print_freqs() const {
-		PRINT_MAT3(m_freqs);
+		PRINT_MAT3(m_freqs, std::cout);
 	}
 
-	void DistAnal::print_counts() const {
-		PRINT_MAT3(m_counts);
+	void DistAnal::print_counts(std::ostream & stream) const {
+		PRINT_MAT3(m_counts, stream);
 	}
 
 
