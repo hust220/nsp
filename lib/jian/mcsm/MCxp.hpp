@@ -285,7 +285,7 @@ public:
         mc_cool();
 
         LOG << "# Print Constraints and Distances..." << std::endl;
-        print_constraints_dists();
+        print_final_constraints();
 
         LOG << "# Finishing running..." << std::endl;
         finish_run();
@@ -322,16 +322,24 @@ public:
         return c;
     }
 
-    void print_constraints_dists() {
+    void print_final_constraints() {
         double d;
         int i, j;
-        for (auto && ct : _constraints.distances) {
-            i = ct.key[0];
-            j = ct.key[1];
-            d = dist_two_res(_pred_chain[i], _pred_chain[j]);
-            LOG << i << ' ' << j << " value:" << ct.value << " weight:" << ct.weight << " dist:" << d << std::endl;
-        }
-    }
+		LOG << "Print Contacts:" << std::endl;
+		for (auto && c : _constraints.contacts) {
+			i = c.key[0];
+			j = c.key[1];
+			d = dist_two_res(_pred_chain[i], _pred_chain[j]);
+			LOG << i << ' ' << j << " weight:" << c.weight << " dist:" << d << std::endl;
+		}
+		LOG << "Print Distances:" << std::endl;
+		for (auto && c : _constraints.distances) {
+			i = c.key[0];
+			j = c.key[1];
+			d = dist_two_res(_pred_chain[i], _pred_chain[j]);
+			LOG << i << ' ' << j << " value:" << c.value << " weight:" << c.weight << " dist:" << d << std::endl;
+		}
+	}
 
     void cg_to_aa(const Mat &c) {
         _pred_chain = cg_t::aa(c, 0, c.rows()-1);

@@ -116,7 +116,7 @@
 			cond { \
 				d = geom::distance(_pred_chain[c.key[0]][0], _pred_chain[c.key[1]][0]); \
 				if (d < 17) { \
-					e.cons += -1000.0 * k; \
+					e.cons += -100.0 * k; \
 				} else { \
 					e.cons += square(d - 17) * k; \
 				} \
