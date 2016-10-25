@@ -9,7 +9,7 @@ namespace qhmc {
 REGISTER_QUADRUPLE_MODULE_FACTORY("tail_hairpin", TailHairpin);
 
 TailHairpin::TailHairpin(const Tuple &head, const Tuple &tail, int len) {
-    int i, j;
+    int i;
     Frag frag;
 
     if (head[1] >= tail[1]) {
@@ -59,7 +59,7 @@ TailHairpin::TailHairpin(const Tuple &head, const Tuple &tail, int len) {
     d_max_len = std::accumulate(d_frags.begin(), d_frags.end(), 0, [&](int l, auto && frag){return std::max(l, int(frag.size()));});
 
     // Set indices
-    d_indices = Mat::Constant(d_max_len, 4, -1);
+    d_indices = Mati::Constant(d_max_len, 4, -1);
     for (int i = 0; i < 4; i++) {
         set_indices(i, d_frags[i], head[i] <= tail[i]);
     }

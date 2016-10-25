@@ -6,12 +6,12 @@
 #include "../geom.hpp"
 #include "Connect.hpp"
 #include "Transform.hpp"
-#include "JobPredict3D.hpp"
+#include "TSP.hpp"
 #include "../utils/log.hpp"
 
 namespace jian {
 
-class LM2 : public virtual JobPredict3D {
+class LM2 : public virtual TSP {
 public:
     DG _dg;
     std::map<int, int> _m1, _m2;
@@ -75,7 +75,7 @@ public:
 //    MatrixXf read_constraints_pos(std::string, int);
 //    MatrixXf read_constraints_par(std::string, int);
 
-    LM2(const Par &par) : JobPredict3D(par) {
+    LM2(const Par &par) : TSP(par) {
         init();
     }
 

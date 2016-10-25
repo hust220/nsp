@@ -121,6 +121,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\Users\Jian\Desktop\项目\nsp\lib;C:\Users\Jian\Desktop\项目\nsp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions> /wd4018 /wd4305 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -176,10 +177,11 @@
     <ClCompile Include="..\lib\jian\nuc3d\BuildLoopDG.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\C2A.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\CG2AA.cpp" />
+    <ClCompile Include="..\lib\jian\nuc3d\Constraints.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\Convert.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\Format.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\HelixPar.cpp" />
-    <ClCompile Include="..\lib\jian\nuc3d\JobPredict3D.cpp" />
+    <ClCompile Include="..\lib\jian\nuc3d\TSP.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\ParseHelix.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\Predict3DG.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\split.cpp" />
@@ -187,7 +189,6 @@
     <ClCompile Include="..\lib\jian\nuc3d\transform.cpp" />
     <ClCompile Include="..\lib\jian\pdb\Atom.cpp" />
     <ClCompile Include="..\lib\jian\pdb\CifFileParser.cpp" />
-    <ClCompile Include="..\lib\jian\pdb\Constraints.cpp" />
     <ClCompile Include="..\lib\jian\pdb\io.cpp" />
     <ClCompile Include="..\lib\jian\pdb\Model.cpp" />
     <ClCompile Include="..\lib\jian\pdb\molstream.cpp" />
@@ -353,10 +354,11 @@
     <ClInclude Include="..\lib\jian\nuc3d\C2A.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\CG2AA.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\Connect.hpp" />
+    <ClInclude Include="..\lib\jian\nuc3d\Constraints.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\Convert.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\Format.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\HelixPar.hpp" />
-    <ClInclude Include="..\lib\jian\nuc3d\JobPredict3D.hpp" />
+    <ClInclude Include="..\lib\jian\nuc3d\TSP.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\JointHelix.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\LM.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\LM2.hpp" />
@@ -376,7 +378,6 @@
     <ClInclude Include="..\lib\jian\pdb\Atom.hpp" />
     <ClInclude Include="..\lib\jian\pdb\Chain.hpp" />
     <ClInclude Include="..\lib\jian\pdb\CifFileParser.hpp" />
-    <ClInclude Include="..\lib\jian\pdb\Constraints.hpp" />
     <ClInclude Include="..\lib\jian\pdb\io.hpp" />
     <ClInclude Include="..\lib\jian\pdb\Model.hpp" />
     <ClInclude Include="..\lib\jian\pdb\Molecule.hpp" />

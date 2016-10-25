@@ -14,7 +14,7 @@
 #include "../nuc3d/BuildHelix.hpp"
 #include "../nuc3d/transform.hpp"
 #include "../nuc3d/TemplRec.hpp"
-#include "../nuc3d/JobPredict3D.hpp"
+#include "../nuc3d/TSP.hpp"
 #include "../mcsm.hpp"
 
 namespace jian {
@@ -115,12 +115,17 @@ public:
 
     void remove_useless_constraints() {
         Constraints cs;
-        for (auto && c : mc_t::_constraints.distances) {
-            if (m_range_bases[c.key[0]] != m_range_bases[c.key[1]]) {
-                cs.distances.push_back(c);
-            }
-        }
-        mc_t::_constraints = cs;
+		for (auto && c : mc_t::_constraints.contacts) {
+			if (m_range_bases[c.key[0]] != m_range_bases[c.key[1]]) {
+				cs.contacts.push_back(c);
+			}
+		}
+		for (auto && c : mc_t::_constraints.distances) {
+			if (m_range_bases[c.key[0]] != m_range_bases[c.key[1]]) {
+				cs.distances.push_back(c);
+			}
+		}
+		mc_t::_constraints = cs;
     }
 
     void print_constraints() {
@@ -327,9 +332,9 @@ public:
 
         auto set_res_module_types_ss = [&](loop *l, bool is_first){
             LOOP_TRAVERSE(l,
-                if (!mc_t::m_sample_hairpin && is_first && is_hp(L)) {
+                if (!mc_t::_sample_hp && is_first && is_hp(L)) {
                     update_range(make_hp_range(L));
-                } else if (!mc_t::m_sample_il && is_first && is_il(L)) {
+                } else if (!mc_t::_sample_il && is_first && is_il(L)) {
                     update_range(make_il_range(L));
                 } else if (L->has_helix()) {
                     update_range(make_helix_range(L->s));

@@ -15,7 +15,9 @@ namespace dca {
 std::vector<std::array<char, 2>> patterns = {{'.', '.'}, {'(', ')'}};
 
 void pairs_sort(pairs_t &pairs) {
-    pairs.sort([](auto && pair1, auto && pair2){return pair1[0] < pair2[0] || (pair1[0] == pair2[0] && pair1[1] < pair2[1]);});
+    pairs.sort([](auto && pair1, auto && pair2){
+		return pair1[0] < pair2[0] || (pair1[0] == pair2[0] && pair1[1] < pair2[1]);
+	});
 }
 
 pairs_t pairs_from_file(const std::string &file_name, int size) {

@@ -4,7 +4,7 @@
 #include <set>
 #include <memory>
 #include <sstream>
-#include "../nuc3d/JobPredict3D.hpp"
+#include "../nuc3d/TSP.hpp"
 #include "../nuc3d/transform.hpp"
 #include "../utils/Env.hpp"
 #include "../mc/MC.hpp"
@@ -18,7 +18,7 @@ namespace nuc3d {
 namespace mc {
 
 template<typename CG_T>
-class MCxp : public JobPredict3D, public MC {
+class MCxp : public TSP, public MC {
 public:    
     using cg_t = CG_T;
 
@@ -52,7 +52,7 @@ public:
     MCxp() = default;
 
     void init(const Par &par) {
-        JobPredict3D::init(par);
+        TSP::init(par);
 
         LOG << "# Set the file of trajectory..." << std::endl;
         par.set(m_traj, "traj");
@@ -208,7 +208,7 @@ public:
     }
 
     int space_index(double n) const {
-        return (n+1000)/m_box_size;
+        return int((n+1000)/m_box_size);
     }
 
     item_t &item(int i) {
@@ -252,6 +252,11 @@ public:
     }
 
     void run() {
+		LOG << "# Check initial structure..." << std::endl;
+		if (num_residues(_pred_chain) == 0) {
+			throw "Please give an initial structure before the optimization procedure!";
+		}
+
         LOG << "# Read parameters..." << std::endl;
         m_par_file = file_parameters();
         _par->set(m_par_file, "par_file");

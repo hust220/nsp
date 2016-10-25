@@ -14,14 +14,14 @@
 #include "BuildHelix.hpp"
 #include "transform.hpp"
 #include "TemplRec.hpp"
-#include "JobPredict3D.hpp"
+#include "TSP.hpp"
 #include "psb2aa.hpp"
 #include "../pp.hpp"
 
 namespace jian {
 namespace nuc3d {
 
-class REMCpsb : public JobPredict3D, public REMC {
+class REMCpsb : public TSP, public REMC {
 public:    
 //    enum res_module_t {RES_LOOP, RES_HELIX, RES_HAIRPIN};
 
@@ -78,7 +78,7 @@ public:
     double _mc_bond_angle_std;
     double _mc_bond_dihedral_std;
 
-    REMCpsb(const Par &par) : JobPredict3D(par) {
+    REMCpsb(const Par &par) : TSP(par) {
         #define JN_REMC_PARS1 heat_steps, cool_steps, cycle_steps, write_steps, heat_rate
         #define JN_REMC_PARS2 bond_length_weight, bond_angle_weight, bond_angle_std, bond_dihedral_weight, bond_dihedral_std, \
                             constraints_weight, crash_weight, pairing_weight, stacking_weight, vdw_weight, max_shift
@@ -225,7 +225,7 @@ public:
 
         auto set_res_module_types_ss = [&](loop *l, bool is_first){
             LOOP_TRAVERSE(l,
-                if (!m_sample_hairpin && is_first && is_hairpin(L)) {
+                if (!_sample_hp && is_first && is_hairpin(L)) {
                     m_range.push_back(make_hairpin_range(L));
                     for (int i = L->s.head->res1.num - 1; i <= L->s.head->res2.num - 1; i++) {
                         v[i] = 1;
@@ -262,7 +262,7 @@ public:
     void mc_write() {
         static int n = 1;
         std::ostringstream stream;
-        stream << _name << ".mc." << m_seed << ".pdb";
+        stream << _name << ".mc." << _seed << ".pdb";
         std::string name = stream.str();
         if (n == 1) {
             file::clean(name);
@@ -379,7 +379,7 @@ public:
         this->transform();
         LOG << "# Writing to file." << std::endl;
         std::ostringstream stream;
-        stream << _name << ".sample." << m_seed << ".pdb";
+        stream << _name << ".sample." << _seed << ".pdb";
         write_chain(_pred_chain, stream.str());
     }
 

@@ -1,5 +1,5 @@
 #include <sstream>
-#include "JobPredict3D.hpp"
+#include "TSP.hpp"
 #include "../utils/Debug.hpp"
 #include "../utils/Par.hpp"
 #include "../utils/Env.hpp"
@@ -9,7 +9,7 @@
 
 namespace jian {
 
-void JobPredict3D::init(const Par &pars) {
+void TSP::init(const Par &pars) {
     _par = new Par(pars);
     _lib = Env::lib();
     m_cmd = (*_par)[1];
@@ -24,40 +24,41 @@ void JobPredict3D::init(const Par &pars) {
     pars.set(_strategy, "strategy");
     pars.set(_family, "family");
     pars.set(_type, "t", "type", "mol_type");
-    pars.set(_file_constraints, "c", "constraints");
-    pars.set(m_seed, "seed");
+    pars.set(_seed, "seed");
+    seed(int(_seed));
     pars.set(m_mode, "mode");
-    seed(m_seed);
-//    pars.set(m_out, "out");
     set_constraints();
-    if (pars.has("disused_pdbs")) {
-        m_disused_pdbs = pars["disused_pdbs"];
-    }
-    for (auto && s : m_disused_pdbs) jian::to_upper(s);
+	set_disused_pdbs();
     pars.set(_method, "method");
     pars.set(_is_test, "test");
     pars.set(_native, "native");
     pars.set(_source_pdb, "source_pdb");
     jian::to_upper(_source_pdb);
-    if (pars.has("sample_hp")) m_sample_hairpin = true;
-    if (pars.has("sample_il")) m_sample_il = true;
-
-    if (_ss == "") throw "Please tell me the secondary structure!";
-    if (_seq == "") throw "Please tell me the sequence!";
-
+    if (pars.has("sample_hp")) _sample_hp = true;
+    if (pars.has("sample_il")) _sample_il = true;
 }
 
-JobPredict3D::~JobPredict3D() {
+TSP::~TSP() {
     delete _par;
 }
 
-void JobPredict3D::set_constraints() {
-    if (! _file_constraints.empty()) {
-        _constraints.read_distances_file(_file_constraints);
-    }
+void TSP::set_disused_pdbs() {
+	if (_par->has("disused_pdbs")) {
+		_disused_pdbs = (*_par)["disused_pdbs"];
+	}
+	for (auto && s : _disused_pdbs) jian::to_upper(s);
 }
 
-void JobPredict3D::display_start_information() {
+void TSP::set_constraints() {
+	_par->set(_file_distances, "distances");
+	_par->set(_file_dca, "dca");
+	_par->set(_file_contacts, "contacts");
+	_constraints.read_dca(_file_dca, int(_seq.size() * 0.5));
+	_constraints.read_contacts(_file_contacts);
+	_constraints.read_distances(_file_distances);
+}
+
+void TSP::display_start_information() {
     _start_time = std::time(nullptr);
     LOG << "=========================================================\n"
               << "New Job: " << _name << '\n'
@@ -70,7 +71,7 @@ void JobPredict3D::display_start_information() {
               << "----------------------------------------\n";
 }
 
-void JobPredict3D::display_end_information() {
+void TSP::display_end_information() {
     _end_time = std::time(nullptr);
     LOG << "----------------------------------------\n"
               << "Finish Time: " << std::asctime(std::localtime(&(_end_time))) << '\n'
@@ -78,7 +79,7 @@ void JobPredict3D::display_end_information() {
               << "=========================================================\n\n";
 }
 
-void JobPredict3D::read_ss() {
+void TSP::read_ss() {
     _par->set(_ss, "ss", "secondary_structure");
 }
 

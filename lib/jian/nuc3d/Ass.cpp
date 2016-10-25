@@ -110,7 +110,7 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
 }
 
     Assemble::Assemble(const Par &par) {
-        JobPredict3D::init(par);
+        TSP::init(par);
 
         m_sample = par.has("sample");
         par.set(m_sample_mode, "sample_mode");
@@ -474,7 +474,7 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
         std::string line;
         int num = 0;
         while (std::getline(ifile, line) && set_loop_rec(templ_rec, line)) {
-            if (std::find(m_disused_pdbs.begin(), m_disused_pdbs.end(), templ_rec._src) != m_disused_pdbs.end()) {
+            if (std::find(_disused_pdbs.begin(), _disused_pdbs.end(), templ_rec._src) != _disused_pdbs.end()) {
                 continue;
             } else if (NucSS::pure_ss(NucSS::lower_ss(templ_rec._ss, 1)) == lower_ss) {
                 templ_rec._score = (templ_rec._ss == ss ? 5 : 0);
@@ -525,7 +525,7 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
         std::string line;
         int num = 0;
         while (std::getline(ifile, line) && set_helix_rec(templ_rec, line)) {
-            /* if (std::find(m_disused_pdbs.begin(), m_disused_pdbs.end(), templ_rec._src) != m_disused_pdbs.end()) {
+            /* if (std::find(_disused_pdbs.begin(), _disused_pdbs.end(), templ_rec._src) != _disused_pdbs.end()) {
                 continue;
 			} else */ 
 			if (templ_rec._len == len) {

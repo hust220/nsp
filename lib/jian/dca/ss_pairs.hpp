@@ -17,8 +17,8 @@ using pairs_t = std::list<pair_t>;
 using seq_t = std::string;
 using ss_t = std::string;
 
-tuples_t tuples_from_file(const std::string &file_name, int size = -1);
-pairs_t pairs_from_file(const std::string &file_name, int size = -1);
+tuples_t tuples_from_file(const std::string &file_name, int size);
+pairs_t pairs_from_file(const std::string &file_name, int size);
 pairs_t pairs_from_ss(const ss_t &ss);
 ss_t pairs_to_ss(const pairs_t &pairs, int size);
 

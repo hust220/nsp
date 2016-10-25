@@ -23,7 +23,7 @@ namespace jian {
 } while (0)
 
 
-	DistAnal & DistAnal::init(double interval, int cutoff) {
+	DistAnal & DistAnal::init(double interval, double cutoff) {
 		this->interval = interval;
 		this->cutoff = cutoff;
 		bins = int(ceil(cutoff / interval));
@@ -116,8 +116,8 @@ namespace jian {
 			for (j = i + 1; j < len; j++) {
 				for (k = 0; k < size_nt[i]; k++) {
 					for (l = 0; l < size_nt[j]; l++) {
-						type1 = m_coords[i][k][3];
-						type2 = m_coords[j][l][3];
+						type1 = int(m_coords[i][k][3]);
+						type2 = int(m_coords[j][l][3]);
 						if (num[j] - num[i] == 1 && !in_base(type1) && !in_base(type2)) continue;
 						temp = geom::distance(m_coords[i][k], m_coords[j][l]);
 						if (temp >= cutoff) continue;

@@ -8,5 +8,4 @@
 #include "pdb/Molecule.hpp"
 #include "pdb/io.hpp"
 #include "pdb/molmanip.hpp"
-#include "pdb/Constraints.hpp"
 

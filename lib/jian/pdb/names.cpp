@@ -6,62 +6,82 @@
 
 namespace jian {
 	namespace pdb {
+		using map_Names = std::map<std::string, Names>;
 
-		Names & Names::instance() {
-			static Names names;
-			return names;
+		namespace names_detail {
+			void print_names(const Names & names) {
+				for (auto && i : names.alias) {
+					std::cout << i.first << ' ';
+					for (auto && j : i.second) std::cout << j << ' '; std::cout << std::endl;
+				}
+				for (auto && i : names.atoms_base) {
+					std::cout << i.first << ' ';
+					for (auto && j : i.second) std::cout << j << ' '; std::cout << std::endl;
+				}
+				for (auto && i : names.atoms_res) {
+					std::cout << i.first << ' ';
+					for (auto && j : i.second) std::cout << j << ' '; std::cout << std::endl;
+				}
+			}
+
+			map_Names init_names() {
+				map_Names map_names;
+				Names *p;
+				std::string filename = Env::lib() + "/RNA/pars/pdb/names";
+				int i;
+				jian::tokenize_v_t v;
+
+				EACH_SPLIT_LINE(filename, "#: []", 
+					if (F.size() > 0) {
+						//std::cout << F[0] << std::endl;
+						if (F[0] == "mol_type") {
+							map_names[F[1]] = Names{};
+							p = &(map_names[F[1]]);
+						}
+						else if (F[0] == "phos") {
+							for (i = 1; i < F.size(); i++) {
+								p->atoms_phos.push_back(F[i]);
+							}
+						}
+						else if (F[0] == "sugar") {
+							for (i = 1; i < F.size(); i++) {
+								p->atoms_sugar.push_back(F[i]);
+							}
+						}
+						else {
+							jian::tokenize(L, v, ":");
+							//for (auto && i : v) std::cout << i << ' '; std::cout << std::endl;
+							jian::tokenize(std::string(v[0]), v, " []");
+							for (i = 1; i < v.size(); i++) p->alias[F[0]].push_back(v[i]);
+
+							p->res.push_back(F[0]);
+							for (auto && s : p->atoms_phos) p->atoms_res[F[0]].push_back(s);
+							for (auto && s : p->atoms_sugar) p->atoms_res[F[0]].push_back(s);
+							for (i = v.size(); i < F.size(); i++) {
+								p->atoms_base[F[0]].push_back(F[i]);
+								p->atoms_res[F[0]].push_back(F[i]);
+							}
+						}
+					}
+					else {
+						// pass
+					}
+				);
+				//for (auto && names : map_names) {
+				//	print_names(names.second);
+				//}
+				return map_names;
+			}
+
 		}
 
-		Names::Names() {
-			bases = { "A", "U", "T", "G", "C" };
-			std::string file_name = Env::lib() + "/RNA/pars/pdb/names";
-			std::vector<std::string> v;
-			EACH_LINE(file_name.c_str(),
-				if (std::regex_search(L, std::regex("Phos"))) {
-					std::getline(ifile, L);
-					jian::tokenize(L, atoms_phos, " ");
-				}
-				else if (std::regex_search(L, std::regex("Sugar"))) {
-					if (std::regex_search(L, std::regex("RNA"))) {
-						std::getline(ifile, L);
-						jian::tokenize(L, atoms_sugar["RNA"], " ");
-					}
-					else if (std::regex_search(L, std::regex("DNA"))) {
-						std::getline(ifile, L);
-						jian::tokenize(L, atoms_sugar["DNA"], " ");
-					}
-				}
-				else if (std::regex_search(L, std::regex("Base\\s+A"))) {
-					std::getline(ifile, L);
-					jian::tokenize(L, atoms_base["A"], " ");
-				}
-				else if (std::regex_search(L, std::regex("Base\\s+T"))) {
-					std::getline(ifile, L);
-					jian::tokenize(L, atoms_base["T"], " ");
-				}
-				else if (std::regex_search(L, std::regex("Base\\s+U"))) {
-					std::getline(ifile, L);
-					jian::tokenize(L, atoms_base["U"], " ");
-				}
-				else if (std::regex_search(L, std::regex("Base\\s+G"))) {
-					std::getline(ifile, L);
-					jian::tokenize(L, atoms_base["G"], " ");
-				}
-				else if (std::regex_search(L, std::regex("Base\\s+C"))) {
-					std::getline(ifile, L);
-					jian::tokenize(L, atoms_base["C"], " ");
-				}
-			);
-			for (auto && name : bases) {
-				res.push_back(name);
-				std::copy(atoms_phos.begin(), atoms_phos.end(), std::back_inserter(atoms_res[name]));
-				std::copy(atoms_sugar["RNA"].begin(), atoms_sugar["RNA"].end(), std::back_inserter(atoms_res[name]));
-				std::copy(atoms_base[name].begin(), atoms_base[name].end(), std::back_inserter(atoms_res[name]));
-				std::string s = std::string("D") + name;
-				res.push_back(s);
-				std::copy(atoms_phos.begin(), atoms_phos.end(), std::back_inserter(atoms_res[s]));
-				std::copy(atoms_sugar["DNA"].begin(), atoms_sugar["DNA"].end(), std::back_inserter(atoms_res[s]));
-				std::copy(atoms_base[name].begin(), atoms_base[name].end(), std::back_inserter(atoms_res[s]));
+		const Names & Names::instance(std::string mol_type) {
+			static map_Names names = names_detail::init_names();
+			if (names.find(mol_type) == names.end()) {
+				return names["RNA"];
+			}
+			else {
+				return names[mol_type];
 			}
 		}
 

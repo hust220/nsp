@@ -14,12 +14,12 @@
 #include "BuildHelix.hpp"
 #include "transform.hpp"
 #include "TemplRec.hpp"
-#include "JobPredict3D.hpp"
+#include "TSP.hpp"
 
 namespace jian {
 namespace nuc3d {
 
-class MC1p : public JobPredict3D, public MC {
+class MC1p : public TSP, public MC {
 public:    
     #define MC1p_en_t_m len, ang, dih, crash, cons, vdw
     struct en_t {
@@ -59,7 +59,7 @@ public:
         JN_MAP(JN_MCPSB_TEMPPAR_SET, JN_MC_PARS2)
     }
 
-    MC1p(const Par &par) : JobPredict3D(par) {
+    MC1p(const Par &par) : TSP(par) {
         LOG << "# Read parameters" << std::endl;
         read_par();
 
@@ -251,7 +251,7 @@ public:
 
         auto set_res_module_types_ss = [&](loop *l, bool is_first){
             LOOP_TRAVERSE(l,
-                if (!m_sample_hairpin && is_first && is_hp(L)) {
+                if (!_sample_hp && is_first && is_hp(L)) {
                     update_range(make_hp_range(L));
                 } else if (is_first && is_il(L)) {
                     update_range(make_il_range(L));
@@ -312,7 +312,7 @@ public:
     void mc_write() {
         thread_local static int n = 1;
         std::ostringstream stream;
-        stream << _name << ".mc1p." << m_seed << ".traj.pdb";
+        stream << _name << ".mc1p." << _seed << ".traj.pdb";
         std::string name = stream.str();
 
         double old_len; double old_ang; double old_dih; double old_cons; double old_crash;
@@ -443,7 +443,7 @@ public:
 
         LOG << "# Writing to file." << std::endl;
         std::ostringstream stream;
-        stream << _name << ".mc1p." << m_seed << ".pdb";
+        stream << _name << ".mc1p." << _seed << ".pdb";
         write_chain(_pred_chain, stream.str());
 
         display_end_information();

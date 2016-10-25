@@ -219,7 +219,8 @@ void read_seq(loop *l, const std::string &seq, const std::string &ss) {
 
 } // namespace sstree_detail
 
-struct SSTreeImpl {
+class SSTreeImpl {
+public:
     loop *head = NULL;
 
     ~SSTreeImpl() {

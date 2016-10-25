@@ -6,6 +6,7 @@
 #include <map>
 #include <vector>
 #include <iostream>
+#include "string.hpp"
 
 namespace jian {
 
@@ -68,20 +69,25 @@ public:
         }
     }
 
-    template<typename T, std::enable_if_t<std::is_integral<T>::value, int> = 42>
-    T parse(const std::string &s) const {
-        return std::stoi(s);
-    }
+ //   template<typename T, std::enable_if_t<std::is_integral<T>::value, int> = 42>
+ //   T parse(const std::string &s) const {
+ //       return std::stoi(s);
+ //   }
 
-    template<typename T, std::enable_if_t<std::is_floating_point<T>::value, int> = 42>
-    T parse(const std::string &s) const {
-        return std::stod(s);
-    }
+ //   template<typename T, std::enable_if_t<std::is_floating_point<T>::value, int> = 42>
+ //   T parse(const std::string &s) const {
+ //       return std::stod(s);
+ //   }
 
-    template<typename T, std::enable_if_t<std::is_same<std::decay_t<T>, std::string>::value, int> = 42>
-    T parse(const std::string &s) const {
-        return s;
-    }
+	//template<typename T, std::enable_if_t<std::is_same<std::decay_t<T>, std::string>::value, int> = 42>
+	//T parse(const std::string &s) const {
+	//	return s;
+	//}
+
+	template<typename T>
+	T parse(const std::string &s) const {
+		return jian::lexical_cast<T>(s);
+	}
 
 };
 

@@ -178,7 +178,7 @@ public:
         int n = 0;
         mc_t::_pred_chain.resize(mc_t::_seq.size());
         for (i = 0; i < m_modules.size(); i++) {
-            Mat &m = m_modules[i]->d_indices;
+            Mati &m = m_modules[i]->d_indices;
             l = m.rows();
             LOG << "module: " << i << std::endl;
             LOG << m << std::endl;

@@ -14,7 +14,7 @@ void mol_write_line(
     const int         & atom_num,
     const std::string & atom_name,
     const std::string & residue_name,
-    const std::string & chain_name,
+    std::string chain_name,
     const int         & residue_num,
     const double      & x,
     const double      & y,
@@ -23,6 +23,9 @@ void mol_write_line(
     const double      & b,
     const char        & atom_name_label
 ) {
+	if (std::count_if(chain_name.begin(), chain_name.end(), [](auto && c) {return c != ' '; }) == 0) {
+		chain_name = "X";
+	}
     output << std::fixed
            << "ATOM" 
            << std::setw(7)  << atom_num

@@ -10,7 +10,7 @@
 #include "TemplRec.hpp"
 #include "transform.hpp"
 #include "BuildLoopDG.hpp"
-#include "JobPredict3D.hpp"
+#include "TSP.hpp"
 
 namespace jian {
 namespace nuc3d {
@@ -27,7 +27,7 @@ void find_loop_records(loop *l, records_t &records, std::string name = "",
 
 void find_helix_records(loop *l, records_t &records, std::string name = "", std::string family = "");
 
-class Assemble : public JobPredict3D {
+class Assemble : public TSP {
 public:    
     using Mat = Eigen::MatrixXd;
 	using RecordsPair = std::pair<records_t, records_t>;

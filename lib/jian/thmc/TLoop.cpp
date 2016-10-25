@@ -23,7 +23,7 @@ TLoop::TLoop(const Tuple &t1, const Tuple &t2) {
     d_max_len = std::accumulate(d_frags.begin(), d_frags.end(), 0, [](int n, auto &&frag){
         return std::max(n, int(frag.size() - 2));
     });
-    d_indices = std::make_unique<Mat>(d_max_len, 3);
+    d_indices = std::make_unique<Mati>(d_max_len, 3);
     for (int i = 0; i < d_max_len; i++) for (int j = 0; j < 3; j++) (*d_indices)(i, j) = -1;
     for (int i = 0; i < 3; i++) {
         set_indices(i, p[i].first + 1, p[i].second - 1);

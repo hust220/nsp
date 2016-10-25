@@ -49,7 +49,7 @@ void jian_3drna_tripred(const Par &par, int i) {
 
     nuc3d::triple::THMC<nuc3d::mc::MCpsb> tri;
     tri.init(par);
-    seed(tri.m_seed + i);
+    seed(int(tri._seed + i));
 
     stream.clear();
     stream.str("");

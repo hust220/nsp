@@ -4,19 +4,18 @@
 #include "MCen.hpp"
 #include "../cg.hpp"
 
-#define MCpsb_en_t_m len, ang, dih, crash, cons, vdw, stacking, pairing
-#define MCpsb_en_t_m_def(a) double a = 0;
-#define MCpsb_en_t_m_sum(a) + a
-#define MCpsb_print_en(a) << a << PP_STRING3((a)) << ' '
-#define MCpsb_print(a) << e.a << PP_STRING3((a)) << ' '
+#define MEM_EN_MCPSB len, ang, dih, crash, cons, vdw, stacking, pairing
+#define DEF_MEM_EN_MCPSB(a) double a = 0;
+#define SUM_MEM_EN_MCPSB(a) + a
+#define PRINT_MEM_EN_MCPSB(a) << a << PP_STRING3((a)) << ' '
+#define PRINT_MEM_MCPSB(a) << e.a << PP_STRING3((a)) << ' '
 
 #define MCPSB_ENERGY_CRASH(name, cond1, cond2) \
     void mc_##name##_energy_crash(en_t &e) { \
-        int a, b, c; \
+        int a, b, c, i, j, k, n; \
         double d; \
-		int i, j, k; \
         Mat arr = Mat::Zero(3, 3); \
-        for (int n = 0; n < _seq.size(); n++) { \
+        for (n = 0; n < _seq.size(); n++) { \
             cond1 { \
                 for (i = -m_box; i <= m_box; i++) { \
                     for (j = -m_box; j <= m_box; j++) { \
@@ -108,21 +107,29 @@
         } \
     }
 
+
 #define MCPSB_ENERGY_CONSTRAINTS(name, cond) \
     void mc_##name##_energy_constraints(en_t &e) { \
-        double d; \
-        int n = _constraints.distances.size(); \
-        for (auto && row : _constraints.distances) { \
-            cond { \
-                d = geom::distance(_pred_chain[row.key[0]][0], _pred_chain[row.key[1]][0]); \
-                if (d < 17) { \
-                    e.cons += -100.0 / (_constraints.distances.size()); \
-                } else { \
-                    e.cons += _mc_constraints_weight * 0.1 * row.weight * square(d - 17) / (_constraints.distances.size()); \
-                } \
-            } \
-        } \
-    }
+        double d, k; \
+		k = _mc_constraints_weight / _constraints.contacts.size(); \
+		for (auto && c : _constraints.contacts) { \
+			cond { \
+				d = geom::distance(_pred_chain[c.key[0]][0], _pred_chain[c.key[1]][0]); \
+				if (d < 17) { \
+					e.cons += -1000.0 * k; \
+				} else { \
+					e.cons += square(d - 17) * k; \
+				} \
+			} \
+		}\
+		k = _mc_constraints_weight / _constraints.distances.size(); \
+		for (auto && c : _constraints.distances) { \
+			cond { \
+				d = geom::distance(_pred_chain[c.key[0]][0], _pred_chain[c.key[1]][0]); \
+				e.cons += square(d - c.value) * k; \
+			} \
+		}\
+	}
 
 namespace jian {
 	namespace nuc3d {
@@ -132,9 +139,9 @@ namespace jian {
 			class MCen<CGpsb> : public MCxp<CGpsb> {
 			public:
 				struct en_t {
-					JN_MAP(MCpsb_en_t_m_def, MCpsb_en_t_m);
-					double sum() const { return 0 JN_MAP(MCpsb_en_t_m_sum, MCpsb_en_t_m); }
-					void print() const { LOG << sum() << "(total) " JN_MAP(MCpsb_print_en, MCpsb_en_t_m) << std::endl; }
+					JN_MAP(DEF_MEM_EN_MCPSB, MEM_EN_MCPSB);
+					double sum() const { return 0 JN_MAP(SUM_MEM_EN_MCPSB, MEM_EN_MCPSB); }
+					void print() const { LOG << sum() << "(total) " JN_MAP(PRINT_MEM_EN_MCPSB, MEM_EN_MCPSB) << std::endl; }
 				};
 
 				Mat m_stacking_pars;
@@ -307,7 +314,7 @@ namespace jian {
 				MCPSB_ENERGY_DIHEDRAL(partial, if ((is_selected(i) + is_selected(i + 1) + is_selected(i + 2) + is_selected(i + 3)) % 4 != 0));
 				MCPSB_ENERGY_DIHEDRAL(total, );
 
-				MCPSB_ENERGY_CONSTRAINTS(partial, if (is_selected(row.key[0]) ^ is_selected(row.key[1])));
+				MCPSB_ENERGY_CONSTRAINTS(partial, if (is_selected(c.key[0]) ^ is_selected(c.key[1])));
 				MCPSB_ENERGY_CONSTRAINTS(total, );
 
 				virtual double dist_two_res(const Residue &r1, const Residue &r2) const {
@@ -325,7 +332,7 @@ namespace jian {
 					en_t e;
 					mc_total_energy(e);
 					LOG << _mc_step + 1 << ": " << e.sum() << "(total) "
-						JN_MAP(MCpsb_print, MCpsb_en_t_m) << _mc_tempr << "(tempr) "
+						JN_MAP(PRINT_MEM_MCPSB, MEM_EN_MCPSB) << _mc_tempr << "(tempr) "
 						<< _mc_local_succ_rate << "(rate)" << std::endl;
 				}
 
@@ -352,6 +359,4 @@ namespace jian {
 		} // namespace mc
 	} // namespace nuc3d
 } // namespace jian
-
-#undef MCpsb_print_en
 

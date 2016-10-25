@@ -5,24 +5,23 @@
 #include <map>
 
 namespace jian {
-namespace pdb {
+	namespace pdb {
 
-using names_t = std::vector<std::string>;
-using map_names_t = std::map<std::string, names_t>;
+		using names_t = std::vector<std::string>;
+		using map_names_t = std::map<std::string, names_t>;
 
-class Names {
-public:
-	Names();
-	static Names & instance();
+		class Names {
+		public:
+			static const Names & instance(std::string mol_type);
 
-    names_t res;
-    names_t bases;
-    map_names_t atoms_res;
-    names_t atoms_phos;
-    map_names_t atoms_sugar;
-    map_names_t atoms_base;
-};
+			names_t res;
+			map_names_t alias;
+			names_t atoms_phos;
+			names_t atoms_sugar;
+			map_names_t atoms_base;
+			map_names_t atoms_res;
+		};
 
-}
-}
+	}
+} // namespace jian
 

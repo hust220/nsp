@@ -21,7 +21,7 @@ public:
     using cons_t = TModule*(const Tuple &, const Tuple &);
     Frags d_frags;
     int d_max_len {0};
-    std::unique_ptr<Mat> d_indices;
+    std::unique_ptr<Mati> d_indices;
 
     void set_indices(int, int, int);
     virtual std::string type() const = 0;

@@ -19,7 +19,7 @@ Helix::Helix(const Tuple &t1, const Tuple &t2, int len) {
 
     d_max_len = p[0].second - p[0].first + 1;
 
-    d_indices = Mat::Constant(d_max_len, 4, -1);
+    d_indices = Mati::Constant(d_max_len, 4, -1);
 
     for (int i = 0; i < 4; i++) {
         set_indices(i, d_frags[i], t1[i] <= t2[i]);

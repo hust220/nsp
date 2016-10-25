@@ -13,14 +13,14 @@
 #include "BuildHelix.hpp"
 #include "transform.hpp"
 #include "TemplRec.hpp"
-#include "JobPredict3D.hpp"
+#include "TSP.hpp"
 #include "CG2AA.hpp"
 
 
 namespace jian {
 namespace nuc3d {
 
-class MC3p : public JobPredict3D, public MC {
+class MC3p : public TSP, public MC {
 public:    
     enum res_module_t {RES_LOOP, RES_HELIX, RES_HAIRPIN};
     using en_t = struct {double len = 0, ang = 0, dih = 0, crash = 0, cons = 0, stacking = 0, pairing = 0;};
@@ -49,7 +49,7 @@ public:
     double _mc_bond_angle_std = 2.6;
     double _mc_bond_dihedral_std = 0.27;
 
-    MC3p(const Par &par) : JobPredict3D(par) {
+    MC3p(const Par &par) : TSP(par) {
         chain_read_model(_pred_chain, par.get("pdb"));
 
         Debug::println("# Set residue module types");
@@ -175,7 +175,7 @@ public:
             LOOP_TRAVERSE(l,
 //                L->print();
 //                LOG << "is_hairpin: " << is_hairpin(L) << std::endl;
-                if (!m_sample_hairpin && is_first && is_hairpin(L)) {
+                if (!_sample_hp && is_first && is_hairpin(L)) {
                     for (int i = L->s.head->res1.num - 1; i <= L->s.head->res2.num - 1; i++) {
                         _res_module_types[i] = RES_HAIRPIN;
                         _res_module[i] = L;
@@ -207,7 +207,7 @@ public:
     void mc_write() {
         static int n = 1;
         std::ostringstream stream;
-        stream << _name << ".mc." << m_seed << ".pdb";
+        stream << _name << ".mc." << _seed << ".pdb";
         std::string name = stream.str();
         if (n == 1) {
             file::clean(name);
@@ -287,7 +287,7 @@ public:
         this->transform();
         LOG << "# Writing to file." << std::endl;
         std::ostringstream stream;
-        stream << _name << ".sample." << m_seed << ".pdb";
+        stream << _name << ".sample." << _seed << ".pdb";
         write_chain(_pred_chain, stream.str());
     }
 

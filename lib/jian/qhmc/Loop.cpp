@@ -20,7 +20,7 @@ Loop::Loop(const Tuple &t1, const Tuple &t2, int len) {
     d_max_len = std::accumulate(d_frags.begin(), d_frags.end(), 0, [](int n, auto &&frag){
         return std::max(n, int(frag.size()));
     });
-    d_indices = Mat::Constant(d_max_len, 4, -1);
+    d_indices = Mati::Constant(d_max_len, 4, -1);
     for (int i = 0; i < 4; i++) {
         set_indices(i, d_frags[i], t1[i] <= t2[i]);
     }

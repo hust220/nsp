@@ -15,7 +15,7 @@ REGISTER_NSP_COMPONENT(ssp_dca) {
 
     int size = seq.size();
     if (par.has("k")) {
-        size *= k;
+        size = int(size * k);
     }
     LOGI << "Read first " << size << " pairs:" << std::endl;
     auto && pairs = dca::pairs_from_file(di_file, size);

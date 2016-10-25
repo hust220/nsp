@@ -22,7 +22,7 @@ THeadHairpin::THeadHairpin(const Tuple &tuple, const Tuple &size) {
         }
         d_frags.push_back(std::move(frag));
         d_max_len = std::max(t[0], t[2] - t[1] - 1);
-    d_indices = std::make_unique<Mat>(d_max_len, 3);
+    d_indices = std::make_unique<Mati>(d_max_len, 3);
     for (int i = 0; i < d_max_len; i++) for (int j = 0; j < 3; j++) (*d_indices)(i, j) = -1;
     set_indices(0, d_frags[0].front(), d_frags[0].back() - 1);
     set_indices(1, d_frags[1].front() + 1, d_frags[1].back() - 1);

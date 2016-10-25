@@ -47,9 +47,9 @@ public:
     Residue read_res(const std::string &name) {
         std::string file_name = Env::lib() + "/RNA/pars/nuc3d/Convert/" + name + ".pdb";
         Chain chain;
+		//std::cout << file_name << std::endl;
         chain_read_model(chain, file_name);
-//        std::cout << "chain read " << file_name << std::endl;
-//        std::cout << chain << std::endl;
+		//std::cout << chain << std::endl;
         return chain[0];
     }
 

@@ -3,15 +3,15 @@
 #include <string>
 #include <ctime>
 #include <fstream>
-#include "../pdb/Constraints.hpp"
+#include "Constraints.hpp"
 #include "../nuc2d/SSTree.hpp"
 #include "../utils/log.hpp"
+#include "../utils/Par.hpp"
+#include "../dca.hpp"
 
 namespace jian {
 
-class Par;
-
-class JobPredict3D {
+class TSP {
 public:
     std::string _name = "assemble";
     std::string _seq;
@@ -19,9 +19,11 @@ public:
     std::string _lib;
     std::string _family = "other";
     std::string _type = "RNA";
-    std::string _file_constraints;
+    std::string _file_distances;
+	std::string _file_dca;
+	std::string _file_contacts;
     Constraints _constraints;
-    std::deque<std::string> m_disused_pdbs;
+    std::deque<std::string> _disused_pdbs;
     std::time_t _start_time, _end_time;
     int _hinge = 2;
     int _num = 1;
@@ -32,17 +34,18 @@ public:
     SSTree _ss_tree;
     std::string _strategy = "loose";
     std::string _source_pdb;
-    double m_seed = 11;
-    bool m_sample_hairpin = false;
-    bool m_sample_il = false;
+    double _seed = 11;
+    bool _sample_hp = false;
+    bool _sample_il = false;
     std::string m_mode = "auto";
     const Par *_par = NULL;
     std::string m_cmd;
 
-    JobPredict3D() = default;
-    ~JobPredict3D();
+    TSP() = default;
+    ~TSP();
     void init(const Par &pars);
     void set_constraints();
+	void set_disused_pdbs();
     void display_start_information();
     void display_end_information();
     virtual void read_ss();

@@ -11,7 +11,7 @@
 #include "../geom.hpp"
 #include "../pp.hpp"
 #include "../nuc3d/transform.hpp"
-#include "../nuc3d/JobPredict3D.hpp" 
+#include "../nuc3d/TSP.hpp" 
 #include "../mcsm.hpp"
 #include "../utils/Factory.hpp"
 #include "../utils/Par.hpp"
@@ -192,7 +192,7 @@ public:
         int len = c.size() / 3;
         int n = 0;
         for (int i = 0; i < d_modules.size(); i++) {
-            Mat &m = *(d_modules[i]->d_indices);
+            Mati &m = *(d_modules[i]->d_indices);
             int l = m.rows();
             LOG << m << std::endl;
             for (int j = 0; j < l; j++) {

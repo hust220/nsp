@@ -5,7 +5,7 @@ namespace jian {
 	REG_SCORER("psb", Score<CGpsb>);
 
 	void Score<CGpsb>::init() {
-		m_bins = m_cutoff / m_bin;
+		m_bins = int(std::ceil(m_cutoff / m_bin));
 		read_counts();
 		set_freqs();
 	}

@@ -21,7 +21,7 @@ public:
 
     Frags d_frags;
     int d_max_len {0};
-    Mat d_indices;
+    Mati d_indices;
 
     void set_indices(int, const Frag &, bool);
     virtual std::string type() const = 0;

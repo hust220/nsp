@@ -2,8 +2,8 @@
 
 namespace jian {
 
-double rand();
-void seed(const double &t);
+	double rand();
+	void seed(int t);
 
 } // namespace jian
 

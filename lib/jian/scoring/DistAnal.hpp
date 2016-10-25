@@ -24,7 +24,7 @@ namespace jian {
 		std::vector<double> m_freqs;
 		std::vector<int> m_counts;
 
-		DistAnal & init(double = 0.5, int = 20);
+		DistAnal & init(double = 0.5, double = 20);
 		~DistAnal();
 
 		void read_mol(const Chain &);

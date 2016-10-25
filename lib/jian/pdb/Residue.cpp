@@ -6,24 +6,22 @@
 #include "../utils/file.hpp"
 #include "molstream.hpp"
 #include "Residue.hpp"
+#include "names.hpp"
 
 namespace jian {
 
-	bool res_is_type(const Residue &res, std::string type) {
-		static std::vector<std::string> v{ "A", "U", "G", "C",
-										   "RA", "RU", "RG", "RC",
-										   "A5", "U5", "G5", "C5",
-										   "A3", "U3", "G3", "C3" };
-		if (type == "RNA") {
-			if (std::find(v.begin(), v.end(), jian::upper(res.name)) != v.end()) {
-				return true;
-			}
-			else {
-				return false;
-			}
+	bool res_is_type(const Residue &res, std::string type = "") {
+		if (type == "") {
+			return true;
 		}
 		else {
-			return true;
+			const pdb::Names & v = pdb::Names::instance(type);
+			std::string name = jian::upper(res.name);
+
+			return std::find_if(v.res.begin(), v.res.end(), [&name, &v](const std::string & s) {
+				const pdb::names_t & l = v.alias.at(s);
+				return name == s || std::find(l.begin(), l.end(), name) != l.end();
+			}) != v.res.end();
 		}
 	}
 

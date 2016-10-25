@@ -1,6 +1,6 @@
 #pragma once
 
-#include "JobPredict3D.hpp"
+#include "TSP.hpp"
 #include "../pdb.hpp"
 #include "../nuc2d.hpp"
 #include "../dg.hpp"
@@ -12,7 +12,7 @@
 
 namespace jian {
 
-class Predict3DGImpl : public BasicPredict3D, public JobPredict3D {
+class Predict3DGImpl : public BasicPredict3D, public TSP {
 public:
     Eigen::MatrixXd _dist_bound;
     DihBound _dih_bound;
@@ -25,7 +25,7 @@ public:
     DG dg;
 
     Predict3DGImpl(const Par &par) {
-        JobPredict3D::init(par);
+        TSP::init(par);
         Debug::print("# Set Bound Eigen::Matrix\n");
         set_bound();
         set_frags();
@@ -84,7 +84,7 @@ public:
     }
 
     void set_bound_constraints() {
-        EACH_SPLIT_LINE(_file_constraints.c_str(), " ",
+        EACH_SPLIT_LINE(_file_distances.c_str(), " ",
             if (F.size() == 3) {
                 int i = JN_INT(F[0]) - 1;
                 int j = JN_INT(F[1]) - 1;
