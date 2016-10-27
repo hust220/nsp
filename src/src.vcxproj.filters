@@ -403,9 +403,6 @@
     <ClCompile Include="m_score_3p.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="m_rna.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="m_new_score.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -431,6 +428,9 @@
       <Filter>jian\nuc3d</Filter>
     </ClCompile>
     <ClCompile Include="m_chan.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_format.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

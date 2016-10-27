@@ -9,7 +9,7 @@ namespace jian {
 		std::ofstream ofile;
 
 		FOPEN(ofile, out);
-		ofile << mol_read_to<Model>(in, "RNA") << std::endl;
+		ofile << mol_read_to<Molecule>(in, "RNA") << std::endl;
 		FCLOSE(ofile);
 	}
 
@@ -19,7 +19,7 @@ namespace jian {
 		std::ofstream ofile;
 
 		FOPEN(ofile, out);
-		ofile << mol_read_to<Model>(in, "DNA") << std::endl;
+		ofile << mol_read_to<Molecule>(in, "DNA") << std::endl;
 		FCLOSE(ofile);
 	}
 
