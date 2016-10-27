@@ -2,7 +2,7 @@
 
 namespace jian {
 
-int CG1p::size_res = 1;
+//Residue::cg_code CG1p::m_cg = Residue::CG_1P;
 
 Residue CG1p::res(const Residue &r) {
     Residue res;
@@ -20,7 +20,8 @@ Chain CG1p::chain(const Chain &chain) {
     c.name = chain.name;
     c.model_name = chain.model_name;
     for (auto && r : chain) {
-        c.push_back(res(r));
+		Residue res = r;
+        c.push_back(res.cg<CG1p>());
     }
     return c;
 }

@@ -154,7 +154,7 @@ public:
     }
 
     void set_coords_residue(Mat &c1, int m, const Residue &r) {
-        int & l = mc_t::cg_t::size_res;
+        int l = mc_t::cg_t::size_res;
         for (int i = 0; i < mc_t::cg_t::size_res; i++) {
             for (int j = 0; j < 3; j++) {
                 c1(m * l + i, j) = r[i][j];
@@ -163,7 +163,7 @@ public:
     }
 
     Chain connect_triple_helix(Chain &c1, Chain &c2) {
-        int & l = mc_t::cg_t::size_res;
+        int l = mc_t::cg_t::size_res;
         int len1 = c1.size() / 3, len2 = c2.size() / 3;
         int len = len1 + len2 - 1;
         Mat m1(3*l, 3), m2(3*l, 3);

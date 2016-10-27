@@ -14,9 +14,19 @@ namespace jian {
 		double m_score;
 
 		virtual void init() = 0;
+
 		virtual void run(const Chain &) = 0;
+
 		virtual void train(const Chain &) = 0;
+
 		virtual void print_counts(std::ostream &) const = 0;
+
+		virtual void print_freqs(std::ostream &) const = 0;
+
+		virtual double en_stacking(const Residue &r1, const Residue &r2) = 0;
+
+		virtual double en_pairing(const Residue &r1, const Residue &r2) = 0;
+
 	};
 
 	using FacScorer = Factory<ScoreBase::Constructor>;

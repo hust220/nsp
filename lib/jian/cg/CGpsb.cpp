@@ -7,8 +7,6 @@
 
 namespace jian {
 
-int CGpsb::size_res = 3;
-
 bool CGpsb::is_psb(const Residue &r) {
     std::set<std::string> ls;
     for (auto && atom : r) ls.insert(atom.name);
@@ -51,7 +49,8 @@ Chain CGpsb::chain(const Chain &chain) {
     c.name = chain.name;
     c.model_name = chain.model_name;
     for (auto && r : chain) {
-        c.push_back(res(r));
+		Residue res = r;
+        c.push_back(res.cg<CGpsb>());
     }
     return c;
 }

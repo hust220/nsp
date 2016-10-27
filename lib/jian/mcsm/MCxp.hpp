@@ -275,7 +275,8 @@ public:
         save_fixed_ranges();
 
         LOG << "# Carrying on CG processing with the Chain..." << std::endl;
-        _pred_chain = cg_t::chain(_pred_chain);
+        //_pred_chain = cg_t::chain(_pred_chain);
+		_pred_chain.cg<cg_t>();
 
         LOG << "# Init space..." << std::endl;
         init_space();

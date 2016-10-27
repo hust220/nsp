@@ -21,8 +21,8 @@ public:
     Mati m_counts_stacking;
     Mati m_counts_pairing;
     std::map<std::string, int> m_map {{"A", 0}, {"U", 1}, {"G", 2}, {"C", 3}};
-    double m_cutoff = 20;
-    double m_bin = 0.2;
+    double m_cutoff;
+    double m_bin;
     int m_bins;
     std::vector<int> m_indices;
     const Chain *m_chain;
@@ -35,7 +35,11 @@ public:
 
 	virtual void print_counts(std::ostream &) const;
 
-	//void update_counts(const Chain &chain);
+	virtual void print_freqs(std::ostream &) const;
+
+	virtual double en_stacking(const Residue &r1, const Residue &r2);
+
+	virtual double en_pairing(const Residue &r1, const Residue &r2);
 
 	void set_indices();
 
@@ -43,21 +47,17 @@ public:
 
 	void update_counts_pairing(int n1, int n2);
 
+	void read_counts(Mati & mat, std::string path, int cutoff);
+
 	void read_counts();
+
+	void set_freqs(Mat & m, const Mati & c);
 
 	void set_freqs();
 
-	double en_stacking(const Residue &r1, const Residue &r2);
+	void print_counts(std::ostream &, const Mati &) const;
 
-	double en_pairing(const Residue &r1, const Residue &r2);
-
-	void print_freqs_stacking(std::ostream &) const;
-
-	void print_freqs_pairing(std::ostream &) const;
-
-	void print_counts_stacking(std::ostream &) const;
-
-	void print_counts_pairing(std::ostream &) const;
+	void print_freqs(std::ostream &, const Mat &) const;
 
 };
 

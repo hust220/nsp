@@ -97,9 +97,6 @@
     <ClCompile Include="build_loop_dg.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="chain.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="check.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -432,6 +429,9 @@
     </ClCompile>
     <ClCompile Include="..\lib\jian\nuc3d\Constraints.cpp">
       <Filter>jian\nuc3d</Filter>
+    </ClCompile>
+    <ClCompile Include="m_chan.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -9,9 +9,16 @@ namespace jian {
 
 class Residue : public std::deque<Atom> {
 public:
-    int num = -1;
-    std::string name = "X";
+	enum cg_code {
+		CG_AA,
+		CG_1P,
+		CG_PSB
+	};
 
+    int num;
+    std::string name;
+
+	Residue();
     static auto get_sort_keys();
     void sort();
     std::string format_name(const std::string &s);
@@ -19,6 +26,20 @@ public:
     const Atom &operator [](int n) const;
     Atom &operator [](const std::string &s);
     const Atom &operator [](const std::string &s) const;
+
+	template<typename CG_T>
+	bool is_cg() const {
+		return m_cg == CG_T::m_cg;
+	}
+
+	template<typename CG_T>
+	Residue & cg() {
+		*this = CG_T::res(*this);
+		m_cg = CG_T::m_cg;
+		return *this;
+	}
+
+	cg_code m_cg;
 };
 
 bool res_is_type(const Residue &res, std::string type);

@@ -11,6 +11,17 @@ namespace jian {
 	void Score<AA>::init() {
 		std::string lib = Env::lib() + "/RNA/pars/scoring";
 
+		m_bin_dist = 0.3;
+		m_bin_dih = 4.5;
+		m_cutoff = 20;
+
+		m_score_dist = 0;
+		m_score_dih = 0;
+
+		m_constant = 27.1118;
+		m_weight_dist = 0.433513;
+		m_weight_dih = 1.59348;
+
 		m_par_dist = lib + "/dist.frequencies";
 		m_par_dih = lib + "/par_dih";
 
@@ -40,6 +51,20 @@ namespace jian {
 	void Score<AA>::print_counts(std::ostream & stream) const {
 		m_dist_anal->print_counts(stream);
 	}
+
+	void Score<AA>::print_freqs(std::ostream & stream) const {
+		m_dist_anal->print_freqs(stream);
+	}
+
+	double Score<AA>::en_stacking(const Residue &r1, const Residue &r2) {
+		return m_dist_anal->en_stacking(r1, r2);
+	}
+
+	double Score<AA>::en_pairing(const Residue &r1, const Residue &r2) {
+		return m_dist_anal->en_pairing(r1, r2);
+
+	}
+
 
 } // namespace jian
 

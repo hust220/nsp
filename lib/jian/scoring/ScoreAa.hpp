@@ -18,23 +18,33 @@ namespace jian {
 		std::string m_par_dist;
 		std::string m_par_dih;
 
-		double m_bin_dist = 0.3;
-		double m_bin_dih = 4.5;
-		double m_cutoff = 20;
+		double m_bin_dist;
+		double m_bin_dih;
+		double m_cutoff;
 
-		double m_score_dist = 0;
-		double m_score_dih = 0;
+		double m_score_dist;
+		double m_score_dih;
 
-		double m_constant = 27.1118;
-		double m_weight_dist = 0.433513;
-		double m_weight_dih = 1.59348;
-
+		double m_constant;
+		double m_weight_dist;
+		double m_weight_dih;
 
 		~Score();
+
 		virtual void init();
+
 		virtual void run(const Chain &);
+
 		virtual void train(const Chain &);
+
 		virtual void print_counts(std::ostream &) const;
+
+		virtual void print_freqs(std::ostream &) const;
+
+		virtual double en_stacking(const Residue &r1, const Residue &r2);
+
+		virtual double en_pairing(const Residue &r1, const Residue &r2);
+
 	};
 
 	using ScoreAa = Score<AA>;

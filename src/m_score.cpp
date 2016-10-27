@@ -28,12 +28,28 @@ namespace jian {
 			std::cout << std::endl;
 		}
 
+		void score_res(ScoreBase * scoring, std::string filename) {
+			Chain chain;
+			int i, j, l;
+
+			chain_read_model(chain, filename);
+			l = chain.size();
+			for (i = 0; i < l; i++) {
+				for (j = 0; j < l; j++) {
+					if (i == j) std::cout << 0 << "\t";
+					//else if (std::abs(i - j) == 1) std::cout << scoring->en_stacking(chain[i], chain[j]) << "\t";
+					else std::cout << scoring->en_pairing(chain[i], chain[j]) << "\t";
+				}
+				std::cout << std::endl;
+			}
+		}
+
 		void score_s(ScoreBase * scoring, std::string filename) {
 			Chain chain;
 			chain_read_model(chain, filename);
 			scoring->run(chain);
 			std::cout <<
-				"Score of " << filename << ": " << 
+				"Score of " << filename << ": " <<
 				//scoring->m_score_dih << "(dih) " <<
 				//scoring->m_score_dist << "(dist) " <<
 				scoring->m_score << "(total)" <<
@@ -61,6 +77,15 @@ namespace jian {
 		}
 
 		REGISTER_NSP_COMPONENT(score) {
+			std::ofstream stream;
+			std::string method;
+
+			if (par.has("out") && par["out"].size() > 0) {
+				FOPEN(stream, par.get("out"));
+			} else {
+				stream.set_rdbuf(std::cout.rdbuf());
+			}
+
 			if (par.has("sum_counts")) {
 				Par::pars_t & pars = par["sum_counts"];
 				std::string filename = pars[0];
@@ -69,32 +94,35 @@ namespace jian {
 				sum_counts(filename, rows, cols);
 			}
 			else {
-				std::string method = "aa";
-
+				method = "aa";
 				par.set(method, "method", "m");
 
 				ScoreBase *scoring = FacScorer::create(method);
 				scoring->init();
-				if (par.has("train")) {
+
+				if (par.has("print_freqs")) {
+					scoring->print_freqs(stream);
+				}
+				else if (par.has("print_counts")) {
+					scoring->print_counts(stream);
+				}
+				else if (par.has("train")) {
 					if (par.has("s)")) {
 						train_s(scoring, par.get("s"));
 					}
 					else if (par.has("l")) {
 						train_l(scoring, par.get("l", "list"));
 					}
-					if (par.has("out")) {
-						std::ofstream ofile;
-						FOPEN(ofile, par.get("out"));
-						scoring->print_counts(ofile);
-						FCLOSE(ofile);
-					}
-					else {
-						scoring->print_counts(std::cout);
-					}
+					scoring->print_counts(stream);
 				}
 				else {
 					if (par.has("s")) {
-						score_s(scoring, par.get("s"));
+						if (par.has("res")) {
+							score_res(scoring, par.get("s"));
+						}
+						else {
+							score_s(scoring, par.get("s"));
+						}
 					}
 					else if (par.has("l")) {
 						score_l(scoring, par.get("l", "list"));
@@ -102,6 +130,7 @@ namespace jian {
 				}
 				delete scoring;
 			}
+			FCLOSE(stream);
 		}
 	}
 } // namespace jian

@@ -227,7 +227,7 @@
     <ClCompile Include="assemble.cpp" />
     <ClCompile Include="build_loop.cpp" />
     <ClCompile Include="build_loop_dg.cpp" />
-    <ClCompile Include="chain.cpp" />
+    <ClCompile Include="m_chan.cpp" />
     <ClCompile Include="check.cpp" />
     <ClCompile Include="m_cluster.cpp" />
     <ClCompile Include="contacts.cpp" />

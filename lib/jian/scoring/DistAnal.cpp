@@ -36,8 +36,13 @@ namespace jian {
 		FREE_COORDS;
 	}
 
-	int DistAnal::res_type(std::string name) {
+	inline int DistAnal::res_type(std::string name) {
 		return (name == "A" ? 1 : (name == "U" ? 2 : (name == "G" ? 3 : (name == "C" ? 4 : (name == "T" ? 2 : -1)))));
+	}
+
+	inline int DistAnal::atom_type(const Residue &r, int k) {
+		int t = res_type(r.name);
+		return (r[0].name == "P" ? 0 : 3) + (t == 1 ? k : (t == 2 ? 22 + k : (t == 3 ? 42 + k : 65 + k)));
 	}
 
 	void DistAnal::read_mol(const Chain &chain) {
@@ -58,8 +63,9 @@ namespace jian {
 			int k = 0;
 			for (auto && atom : res) {
 				for (int l = 0; l < 3; l++) m_coords[n][k][l] = atom[l];
-				m_coords[n][k][3] = (res[0].name == "P" ? 0 : 3);
-				m_coords[n][k][3] += (type[n] == 1 ? k : (type[n] == 2 ? 22 + k : (type[n] == 3 ? 42 + k : 65 + k)));
+				m_coords[n][k][3] = atom_type(res, k);
+				//m_coords[n][k][3] = (res[0].name == "P" ? 0 : 3);
+				//m_coords[n][k][3] += (type[n] == 1 ? k : (type[n] == 2 ? 22 + k : (type[n] == 3 ? 42 + k : 65 + k)));
 				if (atom.name == "O5*" && n != 0) {
 					double dist = geom::distance(m_coords[n][k], p);
 					if (dist > 4) m += 10000;
@@ -121,8 +127,8 @@ namespace jian {
 						if (num[j] - num[i] == 1 && !in_base(type1) && !in_base(type2)) continue;
 						temp = geom::distance(m_coords[i][k], m_coords[j][l]);
 						if (temp >= cutoff) continue;
-						a = m_freqs[int(m_coords[i][k][3] * 85 + m_coords[j][l][3]) * bins + int(temp / interval)];
-						b = m_freqs[int(m_coords[j][l][3] * 85 + m_coords[i][k][3]) * bins + int(temp / interval)];
+						a = m_freqs[(type1 * 85 + type2) * bins + int(temp / interval)];
+						b = m_freqs[(type2 * 85 + type1) * bins + int(temp / interval)];
 						score += (a == 0 ? penalty : (-log(a) * ((in_base(type1) && in_base(type2)) ? 2.5 : 1)));
 						score += (b == 0 ? penalty : (-log(b) * ((in_base(type1) && in_base(type2)) ? 2.5 : 1)));
 					}
@@ -148,12 +154,61 @@ namespace jian {
 		FCLOSE(ifile);
 	}
 
-	void DistAnal::print_freqs() const {
-		PRINT_MAT3(m_freqs, std::cout);
+	void DistAnal::print_freqs(std::ostream & stream) const {
+		PRINT_MAT3(m_freqs, stream);
 	}
 
 	void DistAnal::print_counts(std::ostream & stream) const {
 		PRINT_MAT3(m_counts, stream);
+	}
+
+	double DistAnal::en_stacking(const Residue &r1, const Residue &r2) {
+		int n1, n2, t1, t2;
+		double d, a, b, e;
+
+		e = 0;
+		n1 = 0;
+		for (auto && a1 : r1) {
+			t1 = atom_type(r1, n1);
+			n2 = 0;
+			for (auto && a2 : r2) {
+				t2 = atom_type(r2, n2);
+				if (!in_base(t1) && !in_base(t2)) continue;
+				d = geom::distance(a1, a2);
+				if (d >= cutoff) continue;
+				a = m_freqs[(t1 * 85 + t2) * bins + int(d / interval)];
+				b = m_freqs[(t2 * 85 + t1) * bins + int(d / interval)];
+				e += (a == 0 ? penalty : (-log(a) * ((in_base(t1) && in_base(t2)) ? 2.5 : 1)));
+				e += (b == 0 ? penalty : (-log(b) * ((in_base(t1) && in_base(t2)) ? 2.5 : 1)));
+				n2++;
+			}
+			n1++;
+		}
+		return e;
+	}
+
+	double DistAnal::en_pairing(const Residue &r1, const Residue &r2) {
+		int n1, n2, t1, t2;
+		double d, a, b, e;
+
+		e = 0;
+		n1 = 0;
+		for (auto && a1 : r1) {
+			t1 = atom_type(r1, n1);
+			n2 = 0;
+			for (auto && a2 : r2) {
+				t2 = atom_type(r2, n2);
+				d = geom::distance(a1, a2);
+				if (d >= cutoff) continue;
+				a = m_freqs[(t1 * 85 + t2) * bins + int(d / interval)];
+				b = m_freqs[(t2 * 85 + t1) * bins + int(d / interval)];
+				e += (a == 0 ? penalty : (-log(a) * ((in_base(t1) && in_base(t2)) ? 2.5 : 1)));
+				e += (b == 0 ? penalty : (-log(b) * ((in_base(t1) && in_base(t2)) ? 2.5 : 1)));
+				n2++;
+			}
+			n1++;
+		}
+		return e;
 	}
 
 

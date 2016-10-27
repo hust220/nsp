@@ -26,13 +26,13 @@ struct file {
 
 #define FOPEN(f, s) \
 	jian::file::open(f, s); \
-    if (!f) {\
+    if (!(f)) {\
         std::ostringstream stream;\
         stream << "Can't open file '" << s << "'!" << std::endl;\
         throw stream.str();\
     }
 
-#define FCLOSE(f) f.close()
+#define FCLOSE(f) (f).close()
 
 #define EACH_LINE(f, c) do {\
     int N = 0;\

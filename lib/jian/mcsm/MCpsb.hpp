@@ -3,6 +3,7 @@
 #include "MCxp.hpp"
 #include "MCen.hpp"
 #include "../cg.hpp"
+#include "../scoring/ScorePsb.hpp"
 
 #define MEM_EN_MCPSB len, ang, dih, crash, cons, vdw, stacking, pairing
 #define DEF_MEM_EN_MCPSB(a) double a = 0;
@@ -43,16 +44,15 @@
                                             } \
                                         } \
                                     } \
-                                    e.stacking += en_stacking(arr, p.first, p.second); \
-                                    e.pairing += en_pairing(arr, p.first, p.second); \
-                                } \
-                            } \
-                        } \
-                    } \
-                } \
-            } \
-        } \
-    }
+									e.pairing += _mc_pairing_weight * m_scorer.en_pairing(_pred_chain[p.first], _pred_chain[p.second]);\
+								} \
+							} \
+						} \
+					} \
+				} \
+			} \
+		} \
+	}
 
 #define MCPSB_ENERGY_BOND(name, cond) \
     void mc_##name##_energy_bond(en_t &e) { \
@@ -71,7 +71,7 @@
                         }  \
                     }  \
                 }  \
-                e.stacking += en_stacking(arr, n, n+1);  \
+				e.pairing += _mc_pairing_weight * m_scorer.en_pairing(_pred_chain[n], _pred_chain[n+1]);\
              } \
         } \
     }
@@ -144,17 +144,21 @@ namespace jian {
 					void print() const { LOG << sum() << "(total) " JN_MAP(PRINT_MEM_EN_MCPSB, MEM_EN_MCPSB) << std::endl; }
 				};
 
-				Mat m_stacking_pars;
-				Mat m_pairing_pars;
+				//Mat m_stacking_pars;
+				//Mat m_pairing_pars;
 				std::vector<int> m_indices;
+				Score<CGpsb> m_scorer;
 
 				MCen() = default;
 
 				void init(const Par &par) {
 					MCxp<CGpsb>::init(par);
 
-					LOG << "# Reading stacking and pairing parameters..." << std::endl;
-					read_stacking_pairing_parameters();
+					LOG << "# Initializing scorer..." << std::endl;
+					m_scorer.init();
+
+					//LOG << "# Reading stacking and pairing parameters..." << std::endl;
+					//read_stacking_pairing_parameters();
 
 					LOG << "# Seting indices..." << std::endl;
 					set_indices();
@@ -169,43 +173,6 @@ namespace jian {
 					}
 				}
 
-				void read_stacking_pairing_parameters() {
-					m_stacking_pars.resize(8, 8);
-					std::string file_name = Env::lib() + "/RNA/pars/nuc3d/mc/mcpsb.stacking.par";
-					std::ifstream ifile(file_name.c_str());
-					for (int i = 0; i < 8; i++) for (int j = 0; j < 8; j++) ifile >> m_stacking_pars(i, j);
-					ifile.close();
-					m_pairing_pars.resize(3, 3);
-					file_name = Env::lib() + "/RNA/pars/nuc3d/mc/mcpsb.pairing.par";
-					ifile.open(file_name.c_str());
-					for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) ifile >> m_pairing_pars(i, j);
-					ifile.close();
-				}
-
-				void set_arr(Mat &arr, int m, int n) {
-					for (int i = 0; i < 3; i++) {
-						for (int j = 0; j < 3; j++) {
-							arr(i, j) = geom::distance(_pred_chain[m][i], _pred_chain[n][j]);
-						}
-					}
-				}
-
-				void print_stacking() {
-					Mat arr(3, 3);
-					double d;
-					int i, j;
-
-					for (i = 0; i < _seq.size(); i++) {
-						for (j = i + 1; j < _seq.size(); j++) {
-							set_arr(arr, i, j);
-							d = en_stacking(arr, i, j);
-							if (d != 0) {
-								LOG << i + 1 << ' ' << j + 1 << ' ' << d << std::endl;
-							}
-						}
-					}
-				}
-
 				void print_pairing() {
 					Mat arr(3, 3);
 					double d;
@@ -213,8 +180,8 @@ namespace jian {
 
 					for (i = 0; i < _seq.size(); i++) {
 						for (j = i + 1; j < _seq.size(); j++) {
-							set_arr(arr, i, j);
-							d = en_pairing(arr, i, j);
+							//set_arr(arr, i, j);
+							d = m_scorer.en_pairing(_pred_chain[i], _pred_chain[j]);
 							if (d != 0) {
 								LOG << i + 1 << ' ' << j + 1 << ' ' << d << std::endl;
 							}
@@ -238,68 +205,6 @@ namespace jian {
 					mc_total_energy_angle(e);
 					mc_total_energy_dihedral(e);
 					mc_total_energy_constraints(e);
-				}
-
-				double en_stacking(const Mat &m, int a, int b) const {
-					//        LOG << __FUNCTION__ << ": " << std::endl;
-					//        LOG << m << std::endl;
-					//        LOG << "\n" << m_stacking_pars << std::endl;
-					double en = 0, d;
-					int x = m_indices[a] * 2, y = m_indices[b] * 2;
-					if (m(0, 0) > 4 && m(0, 0) < 7 && m(1, 1) > 3.5 && m(1, 1) < 5.5) {
-						for (int i = 0; i < 2; i++) {
-							for (int j = 0; j < 2; j++) {
-								d = square(m(i, j) - m_stacking_pars(x + i, y + j));
-								if (d > 1) return 0;
-								en += d;
-							}
-						}
-						return (-40 + en) * _mc_stacking_weight;
-					}
-					else {
-						return 0;
-					}
-				}
-
-				double en_pairing(const Mat &m, int a, int b) const {
-					int x = m_indices[a] + m_indices[b];
-					int y = m_indices[a] * m_indices[b];
-					double d, en = 0;
-					if (m(0, 0) > 14.5 && m(0, 0) < 17.5 && m(1, 1) > 9.5 && m(1, 1) < 14.5) {
-						if (_seq[a] == 'A' || _seq[a] == 'G') {
-							for (int i = 0; i < 3; i++) {
-								for (int j = 0; j < 3; j++) {
-									d = square(m(i, j) - m_pairing_pars(i, j));
-									if (d > 1) return 0;
-									en += d;
-								}
-							}
-						}
-						else {
-							for (int i = 0; i < 3; i++) {
-								for (int j = 0; j < 3; j++) {
-									d = square(m(i, j) - m_pairing_pars(j, i));
-									if (d > 1) return 0;
-									en += d;
-								}
-							}
-						}
-						if (x == 1) {
-							return (-100 + en) * 2 * _mc_pairing_weight;
-						}
-						else if (x == 5) {
-							return (-100 + en) * 3 * _mc_pairing_weight;
-						}
-						else if (y == 2) {
-							return (-100 + en) * 1 * _mc_pairing_weight;
-						}
-						else {
-							return (-100 + en) * 0.5 * _mc_pairing_weight;
-						}
-					}
-					else {
-						return 0;
-					}
 				}
 
 				MCPSB_ENERGY_CRASH(partial, if (is_selected(n)), if (!(is_selected(t)) && (t - n != 1 && n - t != 1)));
@@ -341,8 +246,8 @@ namespace jian {
 				}
 
 				virtual void finish_run() {
-					LOG << "# Displaying stacking information" << std::endl;
-					print_stacking();
+					//LOG << "# Displaying stacking information" << std::endl;
+					//print_stacking();
 
 					LOG << "# Displaying pairing information" << std::endl;
 					print_pairing();
