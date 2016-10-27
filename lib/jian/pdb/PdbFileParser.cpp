@@ -19,7 +19,7 @@ MolParsedLine *PdbFileParser::getline() {
     thread_local static std::vector<std::string> v {"A5", "U5", "G5", "C5", "T5", "A3", "U3", "G3", "C3", "T3"};
     std::string line;
     std::vector<std::string> arr;
-    int model_num = 1;
+    int model_num = 0;
     while (std::getline(ifile, line)) {
         if (line.compare(0, 4, "ATOM") == 0 ||
             line.compare(0, 6, "HETATM") == 0) {
