@@ -199,7 +199,9 @@ std::ostream &operator <<(std::ostream &output, const Model &model) {
             for (auto &&atom: residue) {
                 std::string atom_name = atom.name;
                 std::replace(atom_name.begin(), atom_name.end(), '*', '\'');
-                if (residue_num == 1 && std::set<std::string>{"P", "O1P", "O2P"}.count(atom_name)) continue;
+				if (atom_name == "O1P") atom_name = "OP1";
+				if (atom_name == "O2P") atom_name = "OP2";
+//                if (residue_num == 1 && std::set<std::string>{"P", "O1P", "O2P"}.count(atom_name)) continue;
                 mol_write_line(output, atom_num, atom_name, residue.name, chain.name, residue_num, atom[0], atom[1], atom[2], 1, 0, atom_name[0]);
                 atom_num++;
             }
