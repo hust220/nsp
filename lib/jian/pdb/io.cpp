@@ -134,6 +134,7 @@ namespace jian {
 				<< std::setw(2) << chain_name
 				<< std::setw(4) << residue_num - 1
 				<< std::endl;
+			atom_num++;
 		}
 
 	};
