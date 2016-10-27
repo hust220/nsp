@@ -83,6 +83,7 @@ namespace jian {
 				write(residue);
 			}
 			write_chain_end();
+			residue_num = 1;
 		}
 
 		void write(const Model &model) {
@@ -93,7 +94,6 @@ namespace jian {
 			write_model_end();
 			model_num++;
 			atom_num = 1;
-			residue_num = 1;
 			residue_name = "X";
 			chain_name = "X";
 		}
