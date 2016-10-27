@@ -15,13 +15,13 @@ public:
 
 	template<typename CG_T>
 	bool is_cg() const {
-		return m_cg == typename CG_T::m_cg;
+		return m_cg == CG_T::m_cg;
 	}
 
 	template<typename CG_T>
 	Chain & cg() {
 		*this = CG_T::chain(*this);
-		m_cg = typename CG_T::m_cg;
+		m_cg = CG_T::m_cg;
 		return *this;
 	}
 
