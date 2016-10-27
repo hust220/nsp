@@ -77,13 +77,15 @@ namespace jian {
 		}
 
 		REGISTER_NSP_COMPONENT(score) {
-			std::ofstream stream;
+			//std::ofstream stream;
+			std::ofstream ofile;
+			std::ostream &stream = std::cout;
 			std::string method;
+			std::streambuf *buf = stream.rdbuf();
 
 			if (par.has("out") && par["out"].size() > 0) {
-				FOPEN(stream, par.get("out"));
-			} else {
-				stream.set_rdbuf(std::cout.rdbuf());
+				FOPEN(ofile, par.get("out"));
+				stream.rdbuf(ofile.rdbuf());
 			}
 
 			if (par.has("sum_counts")) {
@@ -130,7 +132,8 @@ namespace jian {
 				}
 				delete scoring;
 			}
-			FCLOSE(stream);
+			FCLOSE(ofile);
+			stream.rdbuf(buf);
 		}
 	}
 } // namespace jian
