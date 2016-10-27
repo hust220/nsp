@@ -117,19 +117,19 @@ void Format::sort(Residue &res) {
 
 void Format::sort(Chain &chain) {
     for (auto &&residue: chain) {
-        (*this)(residue);
+        this->sort(residue);
     }
 }
 
 void Format::sort(Model &mol) {
     for (auto &&chain: mol) {
-        (*this)(chain);
+        this->sort(chain);
     }
 }
 
 void Format::sort(Molecule &pdb) {
     for (auto &&mol: pdb) {
-        (*this)(mol);
+        this->sort(mol);
     }
 }
 
