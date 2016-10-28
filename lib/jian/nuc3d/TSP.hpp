@@ -40,6 +40,8 @@ public:
     std::string m_mode = "auto";
     const Par *_par = NULL;
     std::string m_cmd;
+	std::vector<int> m_chain_lens;
+	std::vector<std::string> m_chain_names;
 
     TSP() = default;
     ~TSP();
@@ -48,6 +50,7 @@ public:
 	void set_disused_pdbs();
     void display_start_information();
     void display_end_information();
+	void read_seq();
     virtual void read_ss();
 
 };

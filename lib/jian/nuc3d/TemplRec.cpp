@@ -13,7 +13,7 @@ void templ_rec_set_src(TemplRec &rec) {
 }
 
 bool set_loop_rec(TemplRec &rec, const std::string &s) {
-    tokenize_v_t v;
+    tokenize_v v;
     jian::tokenize(s, v, " ");
     if (v.size() != 5) {
         return false;
@@ -29,7 +29,7 @@ bool set_loop_rec(TemplRec &rec, const std::string &s) {
 }
 
 bool set_helix_rec(TemplRec &rec, const std::string &s) {
-    tokenize_v_t v;
+    tokenize_v v;
     jian::tokenize(s, v, " ");
     if (v.size() != 5) {
         return false;

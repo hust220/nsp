@@ -16,9 +16,9 @@ namespace jian {
 
 using str_t = std::string;
 
-using tokenize_v_t = std::vector<str_t>;
-void tokenize(const str_t &str, tokenize_v_t &tokens, const str_t &delimiters = " ");
-void tokenize(const str_t &str, tokenize_v_t &tokens, const str_t &delimiters, const str_t &temp);
+using tokenize_v = std::vector<str_t>;
+void tokenize(const str_t &str, tokenize_v &tokens, const str_t &delimiters = " ");
+void tokenize(const str_t &str, tokenize_v &tokens, const str_t &delimiters, const str_t &temp);
 
 str_t upper(const str_t &str);
 str_t lower(const str_t &str);

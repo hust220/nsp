@@ -29,7 +29,7 @@ namespace jian {
 				Names *p;
 				std::string filename = Env::lib() + "/RNA/pars/pdb/names";
 				int i;
-				jian::tokenize_v_t v;
+				jian::tokenize_v v;
 
 				EACH_SPLIT_LINE(filename, "#: []", 
 					if (F.size() > 0) {

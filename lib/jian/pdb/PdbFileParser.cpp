@@ -8,11 +8,7 @@ namespace jian {
 
 REG_MOL_PARSER("pdb", PdbFileParser)
 
-//reg_molstream reg_pdb_file_parser("pdb", [](const std::string &f)->molstream * {
-//    return new PdbFileParser(f);
-//});
-
-PdbFileParser::PdbFileParser(const std::string &f) : molstream(f) {
+PdbFileParser::PdbFileParser(const std::string &f) : MolParser(f) {
 }
 
 MolParsedLine *PdbFileParser::getline() {

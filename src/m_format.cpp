@@ -13,7 +13,12 @@ namespace jian {
 
 			FOPEN(ofile, out);
 			mol_read(mol, in, mol_type);
-			format.sort(mol);
+			if (par.has("format")) {
+				mol = format(mol);
+			}
+			else {
+				format.sort(mol);
+			}
 			ofile << mol << std::endl;
 			FCLOSE(ofile);
 		}

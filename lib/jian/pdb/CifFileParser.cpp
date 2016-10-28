@@ -5,10 +5,6 @@ namespace jian {
 
 REG_MOL_PARSER("cif", CifFileParser)
 
-//reg_molstream reg_cif_file_parser("cif", [](const std::string &f)->molstream * {
-//    return new CifFileParser(f);
-//});
-
 class Cif : public std::map<std::string, std::string> {
 public:
     std::string _name;
@@ -169,7 +165,7 @@ public:
 
 };
 
-CifFileParser::CifFileParser(const std::string &f) : molstream(f) {
+CifFileParser::CifFileParser(const std::string &f) : MolParser(f) {
     _cif = new Cif(ifile);
 }
 

@@ -3,7 +3,7 @@
 
 namespace jian {
 
-void tokenize(const str_t &str, tokenize_v_t &tokens, const str_t &delimiters) {
+void tokenize(const str_t &str, tokenize_v &tokens, const str_t &delimiters) {
     tokens.clear();
     auto lastPos = str.find_first_not_of(delimiters, 0);
     auto pos = str.find_first_of(delimiters, lastPos);
@@ -14,7 +14,7 @@ void tokenize(const str_t &str, tokenize_v_t &tokens, const str_t &delimiters) {
     }
 }
 
-void tokenize(const str_t &str, tokenize_v_t &tokens, const str_t &delimiters, const str_t &temp) {
+void tokenize(const str_t &str, tokenize_v &tokens, const str_t &delimiters, const str_t &temp) {
     tokens.clear();
     std::vector<std::pair<str_t::size_type, str_t::size_type>> vec;
     str_t::size_type first_i, first_j, second_i, second_j;

@@ -12,14 +12,25 @@
 namespace jian {
 
 	struct Line {
-		int atom_num = 1, residue_num = 1, model_num = 1;
-		std::string atom_name = "X", residue_name = "X", chain_name = "X", atom_name_label = "X";
-		double x = 0, y = 0, z = 0, a = 1, b = 0;
+		const static std::vector<std::string> chain_names;
+		int atom_num, residue_num, model_num;
+		std::string atom_name, residue_name, chain_name, atom_name_label;
+		double x, y, z, a, b;
 		std::ostream stream;
 
-		Line() : stream(std::cout.rdbuf()) {}
+		Line() : stream(std::cout.rdbuf()) {
+			init();
+		}
 
-		Line(std::ostream &out) : stream(out.rdbuf()) {}
+		Line(std::ostream &out) : stream(out.rdbuf()) {
+			init();
+		}
+
+		void init() {
+			atom_num = 1; residue_num = 1; model_num = 1;
+			atom_name = "X"; residue_name = "X"; chain_name = chain_names[0]; atom_name_label = "X";
+			x = 0; y = 0; z = 0; a = 1; b = 0;
+		}
 
 		void bind_stream(std::ostream &s) {
 			stream.rdbuf(s.rdbuf());
@@ -30,7 +41,7 @@ namespace jian {
 			if (atom_name == "O1P") atom_name = "OP1";
 			if (atom_name == "O2P") atom_name = "OP2";
 			if (std::count_if(chain_name.begin(), chain_name.end(), [](auto && c) {return c != ' '; }) == 0) {
-				chain_name = "X";
+				chain_name = "A";
 			}
 			stream
 				<< std::fixed
@@ -95,7 +106,8 @@ namespace jian {
 			model_num++;
 			atom_num = 1;
 			residue_name = "X";
-			chain_name = "X";
+			auto it = std::next(std::find(chain_names.begin(), chain_names.end(), chain_name));
+			chain_name = (it == chain_names.end() ? chain_names[0] : (*it));
 		}
 
 		void write(const Molecule &mol) {
@@ -139,27 +151,32 @@ namespace jian {
 
 	};
 
-	bool diff_model(const molstream &parser) {
+	const std::vector<std::string> Line::chain_names = {
+		"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
+		"O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
+	};
+
+	bool diff_model(const MolParser &parser) {
 		auto && line = parser._next_line;
 		auto && old_line = parser._curr_line;
 		return line->model_num != old_line->model_num;
 	}
 
-	bool diff_chain(const molstream &parser) {
+	bool diff_chain(const MolParser &parser) {
 		auto && line = parser._next_line;
 		auto && old_line = parser._curr_line;
 		return line->chain_name != old_line->chain_name ||
 			diff_model(parser);
 	}
 
-	bool diff_residue(const molstream &parser) {
+	bool diff_residue(const MolParser &parser) {
 		auto && line = parser._next_line;
 		auto && old_line = parser._curr_line;
 		return line->res_num != old_line->res_num || line->res_name != old_line->res_name || line->res_flag != old_line->res_flag ||
 			diff_chain(parser);
 	}
 
-	bool diff_atom(const molstream &parser) {
+	bool diff_atom(const MolParser &parser) {
 		auto && line = parser._next_line;
 		auto && old_line = parser._curr_line;
 		return line->atom_num != old_line->atom_num || line->atom_name != old_line->atom_name ||
@@ -167,7 +184,7 @@ namespace jian {
 	}
 
 	void chain_read_model(Chain &s, std::string f, std::string type) {
-		molstream *parser = molstream::make(jian::file::type(f), f, type);
+		MolParser *parser = MolParser::make(jian::file::type(f), f, type);
 		do {
 			(*parser) >> s;
 		} while (!parser->eof() && !diff_model(*parser));
@@ -188,7 +205,7 @@ namespace jian {
 		output.close();
 	}
 
-	molstream &operator >> (molstream &parser, Atom &atom) {
+	MolParser &operator >> (MolParser &parser, Atom &atom) {
 		MolParsedLine *line = parser.parse_line();
 		if (line != NULL) {
 			atom.init(line->atom_name, line->x, line->y, line->z, line->atom_num);
@@ -196,8 +213,8 @@ namespace jian {
 		return parser;
 	}
 
-	molstream &operator >> (molstream &parser, Residue &residue) {
-		//    std::cout << "molstream >> residue" << std::endl;
+	MolParser &operator >> (MolParser &parser, Residue &residue) {
+		//    std::cout << "MolParser >> residue" << std::endl;
 		residue.name = parser._next_line->res_name;
 		residue.num = parser._next_line->res_num;
 		for (int i = 0; !parser.eof(); i++) {
@@ -213,8 +230,8 @@ namespace jian {
 		return parser;
 	}
 
-	molstream &operator >> (molstream &parser, Chain &chain) {
-		//    std::cout << "molstream >> chain" << std::endl;
+	MolParser &operator >> (MolParser &parser, Chain &chain) {
+		//    std::cout << "MolParser >> chain" << std::endl;
 		chain.name = parser._next_line->chain_name;
 		chain.model_name = parser.file_name;
 		for (int i = 0; !parser.eof(); i++) {
@@ -232,8 +249,8 @@ namespace jian {
 		return parser;
 	}
 
-	molstream &operator >> (molstream &parser, Model &model) {
-		//    std::cout << "molstream >> model" << std::endl;
+	MolParser &operator >> (MolParser &parser, Model &model) {
+		//    std::cout << "MolParser >> model" << std::endl;
 		model.num = parser._next_line->model_num;
 		model.name = parser.file_name;
 		for (int i = 0; !parser.eof(); i++) {
@@ -249,7 +266,7 @@ namespace jian {
 		return parser;
 	}
 
-	molstream &operator >> (molstream &parser, Molecule &mol) {
+	MolParser &operator >> (MolParser &parser, Molecule &mol) {
 		mol.name = parser.file_name;
 		for (int i = 0; !parser.eof(); i++) {
 			Model model;

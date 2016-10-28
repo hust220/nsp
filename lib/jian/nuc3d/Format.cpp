@@ -56,14 +56,20 @@ Residue Format::operator ()(const Residue &res) {
     Residue new_res;
     new_res.name = res.name;
     std::vector<std::string> v{"P", "O1P", "O2P"};
-    if (std::all_of(v.begin(), v.end(), [&](std::string s){return std::any_of(res.begin(), res.end(), [&](const Atom &atom){return atom.name == s;});})) {
+    if (std::all_of(v.begin(), v.end(), [&](std::string s){
+		return std::any_of(res.begin(), res.end(), [&](const Atom &atom){
+			return atom.name == s;
+		});
+	})) {
         new_res.push_back(atom(res, "P"));
         new_res.push_back(atom(res, "O1P"));
         new_res.push_back(atom(res, "O2P"));
     }
     for (auto &&name_pair: _atom_rank[res.name]) {
         if (std::count(v.begin(), v.end(), name_pair.first)) continue;
-        if (std::none_of(res.begin(), res.end(), [&](const Atom &atom){return atom.name == name_pair.first;})) {
+        if (std::none_of(res.begin(), res.end(), [&](const Atom &atom){
+			return atom.name == name_pair.first;
+		})) {
             return Residue();
         } else {
             new_res.push_back(atom(res, name_pair.first));

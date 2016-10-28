@@ -4,7 +4,7 @@
 #include <regex>
 #include <algorithm>
 #include "../utils/file.hpp"
-#include "molstream.hpp"
+#include "MolParser.hpp"
 #include "Residue.hpp"
 #include "names.hpp"
 

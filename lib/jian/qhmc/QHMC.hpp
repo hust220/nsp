@@ -446,7 +446,7 @@ public:
         };
 
         std::string ss = mc_t::_par->get("ss");
-        tokenize_v_t v;
+        tokenize_v v;
         jian::tokenize(ss, v, ": ");
         std::cout << "v.size() " << v.size() << ' ' << ss << std::endl;
         if (v.size() == 1) {

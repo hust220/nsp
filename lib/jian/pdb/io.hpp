@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Molecule.hpp"
-#include "molstream.hpp"
+#include "MolParser.hpp"
 #include "../utils/file.hpp"
 
 namespace jian {
@@ -17,7 +17,7 @@ void mol_write(const T & t, std::string file_name) {
 
 template<typename T>
 void mol_read(T &t, std::string file_name, std::string mol_type = "") {
-    molstream *parser = molstream::make(file::type(file_name), file_name, mol_type);
+    MolParser *parser = MolParser::make(file::type(file_name), file_name, mol_type);
     (*parser) >> t;
     delete parser;
 }
@@ -29,11 +29,11 @@ T mol_read_to(std::string f, std::string type = "") {
     return t;
 }
 
-molstream &operator >>(molstream &input, Atom &atom);
-molstream &operator >>(molstream &input, Residue &residue);
-molstream &operator >>(molstream &input, Chain &chain);
-molstream &operator >>(molstream &input, Model &model);
-molstream &operator >>(molstream &input, Molecule &mol);
+MolParser &operator >>(MolParser &input, Atom &atom);
+MolParser &operator >>(MolParser &input, Residue &residue);
+MolParser &operator >>(MolParser &input, Chain &chain);
+MolParser &operator >>(MolParser &input, Model &model);
+MolParser &operator >>(MolParser &input, Molecule &mol);
 
 std::ostream &operator <<(std::ostream &output, const Atom &atom);
 std::ostream &operator <<(std::ostream &output, const Residue &residue);

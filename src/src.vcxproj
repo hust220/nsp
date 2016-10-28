@@ -190,8 +190,7 @@
     <ClCompile Include="..\lib\jian\pdb\Atom.cpp" />
     <ClCompile Include="..\lib\jian\pdb\CifFileParser.cpp" />
     <ClCompile Include="..\lib\jian\pdb\io.cpp" />
-    <ClCompile Include="..\lib\jian\pdb\Model.cpp" />
-    <ClCompile Include="..\lib\jian\pdb\molstream.cpp" />
+    <ClCompile Include="..\lib\jian\pdb\MolParser.cpp" />
     <ClCompile Include="..\lib\jian\pdb\names.cpp" />
     <ClCompile Include="..\lib\jian\pdb\PdbFileParser.cpp" />
     <ClCompile Include="..\lib\jian\pdb\Residue.cpp" />
@@ -382,7 +381,7 @@
     <ClInclude Include="..\lib\jian\pdb\Model.hpp" />
     <ClInclude Include="..\lib\jian\pdb\Molecule.hpp" />
     <ClInclude Include="..\lib\jian\pdb\molmanip.hpp" />
-    <ClInclude Include="..\lib\jian\pdb\molstream.hpp" />
+    <ClInclude Include="..\lib\jian\pdb\MolParser.hpp" />
     <ClInclude Include="..\lib\jian\pdb\names.hpp" />
     <ClInclude Include="..\lib\jian\pdb\PdbFileParser.hpp" />
     <ClInclude Include="..\lib\jian\pdb\Residue.hpp" />

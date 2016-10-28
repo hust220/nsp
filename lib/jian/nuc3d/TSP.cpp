@@ -13,8 +13,8 @@ void TSP::init(const Par &pars) {
     _par = new Par(pars);
     _lib = Env::lib();
     m_cmd = (*_par)[1];
-    pars.set(_seq, "seq", "sequence");
-    jian::to_upper(_seq);
+	LOG << "# Reading sequence" << std::endl;
+	read_seq();
     LOG << "# Reading secondary structure" << std::endl;
     read_ss();
     pars.set(_lib, "lib", "library_path");
@@ -77,6 +77,38 @@ void TSP::display_end_information() {
               << "Finish Time: " << std::asctime(std::localtime(&(_end_time))) << '\n'
               << "Time elapsed: " << _end_time - _start_time << "s\n"
               << "=========================================================\n\n";
+}
+
+void TSP::read_seq() {
+	std::string seq;
+	jian::tokenize_v v;
+	jian::tokenize_v w;
+
+	_seq = "";
+	_par->set(seq, "seq", "sequence");
+	tokenize(seq, v, "&");
+	if (v.size() > 0) {
+		for (auto && s : v) {
+			tokenize(s, w, ":");
+			if (w.size() == 1) {
+				_seq += w[0];
+				m_chain_lens.push_back(w[0].size());
+				m_chain_names.push_back("A");
+			}
+			else if (w.size() == 2) {
+				_seq += w[1];
+				m_chain_lens.push_back(w[1].size());
+				m_chain_names.push_back(w[0]);
+			}
+			else {
+				throw "Illegal sequence!";
+			}
+		}
+		jian::to_upper(_seq);
+	}
+	else {
+		throw "Illegal sequence!";
+	}
 }
 
 void TSP::read_ss() {

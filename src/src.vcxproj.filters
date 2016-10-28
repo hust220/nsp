@@ -217,12 +217,6 @@
     <ClCompile Include="..\lib\jian\pdb\io.cpp">
       <Filter>jian\pdb</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\jian\pdb\Model.cpp">
-      <Filter>jian\pdb</Filter>
-    </ClCompile>
-    <ClCompile Include="..\lib\jian\pdb\molstream.cpp">
-      <Filter>jian\pdb</Filter>
-    </ClCompile>
     <ClCompile Include="..\lib\jian\pdb\names.cpp">
       <Filter>jian\pdb</Filter>
     </ClCompile>
@@ -433,6 +427,9 @@
     <ClCompile Include="m_format.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\lib\jian\pdb\MolParser.cpp">
+      <Filter>jian\pdb</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="nsp.hpp">
@@ -535,9 +532,6 @@
       <Filter>jian\pdb</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jian\pdb\molmanip.hpp">
-      <Filter>jian\pdb</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\pdb\molstream.hpp">
       <Filter>jian\pdb</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jian\pdb\names.hpp">
@@ -941,6 +935,9 @@
     </ClInclude>
     <ClInclude Include="..\lib\jian\nuc3d\Constraints.hpp">
       <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\pdb\MolParser.hpp">
+      <Filter>jian\pdb</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

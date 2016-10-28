@@ -9,7 +9,7 @@ namespace jian {
 
 class Chain : public std::deque<Residue> {
 public:
-    std::string name = "X";
+    std::string name = "A";
     std::string type = "unknown";
     std::string model_name = "unknown";
 

@@ -3,7 +3,6 @@
 #include <string>
 #include <array>
 #include <map>
-#include "molstream.hpp"
 #include "../matrix.hpp"
 
 namespace jian {
