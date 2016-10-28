@@ -5,7 +5,7 @@
 #include <string>
 #include "../nuc2d/loop.hpp"
 #include "../nuc2d/SSTree.hpp"
-#include "../nuc3d/Ass.hpp"
+#include "../nuc3d/Assemble.hpp"
 #include "../nuc2d/NucSS.hpp"
 #include "../nuc3d/BuildLoopDG.hpp"
 #include "../dhmc/DHMC.hpp"
@@ -13,7 +13,7 @@
 namespace jian {
 namespace lrsp {
 
-class TSP {
+class LRTSP {
 public:
     using pts_t = std::list<loop *>;
     using record_t = nuc3d::record_t;
@@ -38,7 +38,7 @@ public:
     std::string _traj;
     int _max_len = 400;
 
-    TSP(const Par &par) {
+    LRTSP(const Par &par) {
         par.set(_name, "name", "job");
         par.set(_seq, "seq");
         par.set(_ss, "ss");
@@ -51,7 +51,7 @@ public:
         par.set(_traj, "traj");
     }
 
-    ~TSP() {
+    ~LRTSP() {
         for (auto && chain : _gc_chain) {
             delete chain;
         }

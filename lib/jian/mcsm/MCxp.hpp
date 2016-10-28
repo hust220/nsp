@@ -32,9 +32,7 @@ public:
     int m_box = 3;
     double m_box_size = 6;
     std::deque<Atom> _moved_atoms;
-    Chain _pred_chain;
     std::string m_traj;
-    std::string m_out_pdb;
     int mc_num_writing = 1;
     std::vector<int> m_continuous_pts;
     std::vector<int> m_ang_pts;
@@ -228,27 +226,6 @@ public:
             m_item_space[i] = &n;
             n.push_back(i);
         }
-    }
-
-    void run_job() {
-        LOG << "# Displaying starting information..." << std::endl;
-        display_start_information();
-
-        run();
-
-        LOG << "# Writing final model..." << std::endl;
-        write_final_model();
-
-        LOG << "# Displaying ending information..." << std::endl;
-        display_end_information();
-    }
-
-    void write_final_model() {
-        std::ostringstream stream;
-        stream << _name << ".mc.pdb";
-        m_out_pdb = stream.str();
-        _par->set(m_out_pdb, "out", "out_pdb");
-        mol_write(_pred_chain, m_out_pdb);
     }
 
     void run() {

@@ -8,6 +8,7 @@
 #include "../utils/log.hpp"
 #include "../utils/Par.hpp"
 #include "../dca.hpp"
+#include "../pdb.hpp"
 
 namespace jian {
 
@@ -24,6 +25,8 @@ public:
 	std::string _file_contacts;
     Constraints _constraints;
     std::deque<std::string> _disused_pdbs;
+	std::string m_out_pdb;
+	Chain _pred_chain;
     std::time_t _start_time, _end_time;
     int _hinge = 2;
     int _num = 1;
@@ -48,9 +51,12 @@ public:
     void init(const Par &pars);
     void set_constraints();
 	void set_disused_pdbs();
+	void predict();
+	void write_final_model();
     void display_start_information();
     void display_end_information();
 	void read_seq();
+	virtual void run();
     virtual void read_ss();
 
 };

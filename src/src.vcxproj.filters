@@ -88,9 +88,6 @@
     <ClCompile Include="anal_mol.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="assemble.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="build_loop.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -101,9 +98,6 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="contacts.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="dhmc.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="dist_frequencies.cpp">
@@ -154,9 +148,6 @@
     <ClCompile Include="parse_helix.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="qhmc.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="rebuild_chain.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -179,9 +170,6 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="sub.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="thmc.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="tri2d.cpp">
@@ -240,9 +228,6 @@
     </ClCompile>
     <ClCompile Include="..\lib\jian\nuc2d\ss_pred.cpp">
       <Filter>jian\nuc2d</Filter>
-    </ClCompile>
-    <ClCompile Include="..\lib\jian\nuc3d\Ass.cpp">
-      <Filter>jian\nuc3d</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\jian\nuc3d\BuildHelix.cpp">
       <Filter>jian\nuc3d</Filter>
@@ -430,6 +415,21 @@
     <ClCompile Include="..\lib\jian\pdb\MolParser.cpp">
       <Filter>jian\pdb</Filter>
     </ClCompile>
+    <ClCompile Include="..\lib\jian\nuc3d\Assemble.cpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClCompile>
+    <ClCompile Include="m_dhmc.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_thmc.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_qhmc.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_assemble.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="nsp.hpp">
@@ -592,9 +592,6 @@
       <Filter>jian\nuc2d</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jian\nuc3d\AddPhos.hpp">
-      <Filter>jian\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\nuc3d\Ass.hpp">
       <Filter>jian\nuc3d</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jian\nuc3d\BasicPredict3D.hpp">
@@ -816,9 +813,6 @@
     <ClInclude Include="..\lib\jian\lrsp\ss_hp_pred.hpp">
       <Filter>jian\lrsp</Filter>
     </ClInclude>
-    <ClInclude Include="..\lib\jian\lrsp\TSP.hpp">
-      <Filter>jian\lrsp</Filter>
-    </ClInclude>
     <ClInclude Include="..\lib\jian\mpl\algorithm.h">
       <Filter>jian\mpl</Filter>
     </ClInclude>
@@ -938,6 +932,12 @@
     </ClInclude>
     <ClInclude Include="..\lib\jian\pdb\MolParser.hpp">
       <Filter>jian\pdb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\Assemble.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\lrsp\LRTSP.hpp">
+      <Filter>jian\lrsp</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

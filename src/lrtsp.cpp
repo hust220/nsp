@@ -1,10 +1,10 @@
 #include "nsp.hpp"
-#include <jian/lrsp/TSP.hpp>
+#include <jian/lrsp/LRTSP.hpp>
 
 namespace jian {
 
 REGISTER_NSP_COMPONENT(lrtsp) {
-    lrsp::TSP tsp(par);
+    lrsp::LRTSP tsp(par);
     tsp.pred();
 }
 

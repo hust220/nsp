@@ -58,6 +58,31 @@ void TSP::set_constraints() {
 	_constraints.read_distances(_file_distances);
 }
 
+void TSP::predict() {
+	LOG << "# Displaying starting information..." << std::endl;
+	display_start_information();
+
+	run();
+
+	LOG << "# Writing final model..." << std::endl;
+	write_final_model();
+
+	LOG << "# Displaying ending information..." << std::endl;
+	display_end_information();
+}
+
+void TSP::run() {
+}
+
+void TSP::write_final_model() {
+	std::ostringstream stream;
+	stream << _name << ".pred.pdb";
+	m_out_pdb = stream.str();
+	_par->set(m_out_pdb, "out", "out_pdb");
+	mol_write(_pred_chain, m_out_pdb);
+}
+
+
 void TSP::display_start_information() {
     _start_time = std::time(nullptr);
     LOG << "=========================================================\n"

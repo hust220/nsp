@@ -172,7 +172,7 @@
     <ClCompile Include="..\lib\jian\nuc2d\NucSS.cpp" />
     <ClCompile Include="..\lib\jian\nuc2d\SSTree.cpp" />
     <ClCompile Include="..\lib\jian\nuc2d\ss_pred.cpp" />
-    <ClCompile Include="..\lib\jian\nuc3d\Ass.cpp" />
+    <ClCompile Include="..\lib\jian\nuc3d\Assemble.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\BuildHelix.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\BuildLoopDG.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\C2A.cpp" />
@@ -223,7 +223,7 @@
     <ClCompile Include="aa2psb.cpp" />
     <ClCompile Include="align.cpp" />
     <ClCompile Include="anal_mol.cpp" />
-    <ClCompile Include="assemble.cpp" />
+    <ClCompile Include="m_assemble.cpp" />
     <ClCompile Include="build_loop.cpp" />
     <ClCompile Include="build_loop_dg.cpp" />
     <ClCompile Include="m_chan.cpp" />
@@ -231,7 +231,7 @@
     <ClCompile Include="m_cluster.cpp" />
     <ClCompile Include="contacts.cpp" />
     <ClCompile Include="m_dca.cpp" />
-    <ClCompile Include="dhmc.cpp" />
+    <ClCompile Include="m_dhmc.cpp" />
     <ClCompile Include="dist_frequencies.cpp" />
     <ClCompile Include="dist_weighted_frequencies.cpp" />
     <ClCompile Include="dist_weights.cpp" />
@@ -250,7 +250,7 @@
     <ClCompile Include="m_new_score.cpp" />
     <ClCompile Include="nsp.cpp" />
     <ClCompile Include="parse_helix.cpp" />
-    <ClCompile Include="qhmc.cpp" />
+    <ClCompile Include="m_qhmc.cpp" />
     <ClCompile Include="rebuild_chain.cpp" />
     <ClCompile Include="rmsd.cpp" />
     <ClCompile Include="m_format.cpp" />
@@ -263,7 +263,7 @@
     <ClCompile Include="ssp_fe.cpp" />
     <ClCompile Include="ss_tree.cpp" />
     <ClCompile Include="sub.cpp" />
-    <ClCompile Include="thmc.cpp" />
+    <ClCompile Include="m_thmc.cpp" />
     <ClCompile Include="m_transform.cpp" />
     <ClCompile Include="tri2d.cpp" />
     <ClCompile Include="view_mol_constraints.cpp" />
@@ -306,7 +306,7 @@
     <ClInclude Include="..\lib\jian\lrsp\ss_complete.hpp" />
     <ClInclude Include="..\lib\jian\lrsp\ss_del_sm_hp.hpp" />
     <ClInclude Include="..\lib\jian\lrsp\ss_hp_pred.hpp" />
-    <ClInclude Include="..\lib\jian\lrsp\TSP.hpp" />
+    <ClInclude Include="..\lib\jian\lrsp\LRTSP.hpp" />
     <ClInclude Include="..\lib\jian\matrix.hpp" />
     <ClInclude Include="..\lib\jian\matrix\traits.hpp" />
     <ClInclude Include="..\lib\jian\matrix\util.hpp" />
@@ -343,7 +343,7 @@
     <ClInclude Include="..\lib\jian\nuc2d\Tree.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\AddPhos.hpp" />
-    <ClInclude Include="..\lib\jian\nuc3d\Ass.hpp" />
+    <ClInclude Include="..\lib\jian\nuc3d\Assemble.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\BasicPredict3D.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\BuildHelix.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\BuildLoop.hpp" />

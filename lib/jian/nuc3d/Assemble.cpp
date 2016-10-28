@@ -2,7 +2,7 @@
 #include "../utils/Env.hpp"
 #include "../utils/file.hpp"
 #include "../jian.hpp"
-#include "Ass.hpp"
+#include "Assemble.hpp"
 
 namespace jian {
 namespace nuc3d {
@@ -151,13 +151,6 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
         int n;
 
         predict_one();
-        LOG << "# Writing assembly structure." << std::endl;
-        if (_par->has("out")) {
-            mol_write(_pred_chain, _par->get("out"));
-        } else {
-            stream << _name << ".assemble.pdb";
-            mol_write(_pred_chain, stream.str());
-        }
         if (m_sample) {
             n = 1;
             LOG << "# Writing sampling structure " << n << std::endl;
