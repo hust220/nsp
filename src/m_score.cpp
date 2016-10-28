@@ -4,9 +4,17 @@
 #include <jian/scoring/ScoreAa.hpp>
 #include <jian/scoring/ScorePsb.hpp>
 #include <jian/utils/file.hpp>
+#include <jian/nuc3d/Format.hpp>
 
 namespace jian {
 	namespace {
+		Format formater;
+
+		void read_chain(Chain &chain, std::string filename) {
+			chain_read_model(chain, filename);
+			chain = formater(chain);
+		}
+
 		void sum_counts(std::string filename, int rows, int cols) {
 			Veci v;
 			int i, j, d;
@@ -32,7 +40,7 @@ namespace jian {
 			Chain chain;
 			int i, j, l;
 
-			chain_read_model(chain, filename);
+			read_chain(chain, filename);
 			l = chain.size();
 			for (i = 0; i < l; i++) {
 				for (j = 0; j < l; j++) {
@@ -46,7 +54,7 @@ namespace jian {
 
 		void score_s(ScoreBase * scoring, std::string filename) {
 			Chain chain;
-			chain_read_model(chain, filename);
+			read_chain(chain, filename);
 			scoring->run(chain);
 			std::cout <<
 				"Score of " << filename << ": " <<
@@ -66,7 +74,7 @@ namespace jian {
 			Chain chain;
 
 			std::cout << "Train " << filename << " ..." << std::endl;
-			chain_read_model(chain, filename);
+			read_chain(chain, filename);
 			scoring->train(chain);
 		}
 

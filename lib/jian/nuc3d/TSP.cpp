@@ -90,7 +90,7 @@ void TSP::read_seq() {
 	if (v.size() > 0) {
 		for (auto && s : v) {
 			tokenize(s, w, ":");
-			if (w.size() == 1) {
+			if (w.size() == 1 && s.back() != ':') {
 				_seq += w[0];
 				m_chain_lens.push_back(w[0].size());
 				m_chain_names.push_back("A");
