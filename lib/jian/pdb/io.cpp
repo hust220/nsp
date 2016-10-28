@@ -95,6 +95,8 @@ namespace jian {
 			}
 			write_chain_end();
 			residue_num = 1;
+			auto it = std::find(chain_names.begin(), chain_names.end(), chain_name);
+			chain_name = ((it == chain_names.end() || std::next(it) == chain_names.end()) ? chain_names[0] : (*std::next(it)));
 		}
 
 		void write(const Model &model) {
@@ -106,8 +108,6 @@ namespace jian {
 			model_num++;
 			atom_num = 1;
 			residue_name = "X";
-			auto it = std::next(std::find(chain_names.begin(), chain_names.end(), chain_name));
-			chain_name = (it == chain_names.end() ? chain_names[0] : (*it));
 		}
 
 		void write(const Molecule &mol) {
