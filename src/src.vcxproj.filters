@@ -169,9 +169,6 @@
     <ClCompile Include="ssp_fe.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="sub.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="tri2d.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -428,6 +425,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="m_assemble.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_sub.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

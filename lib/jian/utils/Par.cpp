@@ -111,10 +111,6 @@ bool Par::count(const std::string &s) const {
     return _pars.find(s) != _pars.end();
 }
 
-bool Par::has(const std::string &s) const {
-    return _pars.find(s) != _pars.end();
-}
-
 std::ostream &operator <<(std::ostream &out, const Par &par) {
     for (auto && i : par._pars) {
         out << i.first;

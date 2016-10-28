@@ -31,30 +31,41 @@ public:
     void read(std::string par_file);
     friend std::ostream &operator <<(std::ostream &out, const Par &par);
 
-    bool has(const std::string &s) const;
+	template<typename K>
+	bool has(K &&k) const {
+		return _pars.find(k) != _pars.end();
+	}
 
-    template<typename T>
-    void set(T &&v) const {}
+	template<typename K, typename U, typename... V>
+	bool has(K &&k, U &&u, V && ...rest) const {
+		return has(k) || has(u, rest...);
+	}
 
-    template<typename T, typename K, typename... V>
-    void set(T &&v, K &&s, V && ...pars) const {
-        if (_pars.count(s)) {
-            v = parse<std::decay_t<T>>(_pars.at(s)[0]);
-        } else set(v, pars...);
-    }
+	template<typename T>
+	void set(T &&v) const {}
 
-    pars_t getall() const {
-        throw "jian::Par::get error! Didn't found parameters for keys!";
-    }
+	template<typename T, typename K, typename... V>
+	void set(T &&v, K &&s, V && ...rest) const {
+		if (_pars.find(s) != _pars.end()) {
+			v = parse<std::decay_t<T>>(_pars.at(s)[0]);
+		}
+		else set(v, rest...);
+	}
 
-    template<typename K, typename... V>
-    pars_t getall(K &&s, V && ...pars) const {
-        if (_pars.count(s)) {
-            return _pars.at(s);
-        } else {
-            return getall(pars...);
-        }
-    }
+	template<typename T>
+	void setv(T &&v) const {}
+
+	template<typename T, typename K, typename... V>
+	void setv(T &&t, K &&k, V && ...rest) const {
+		if (_pars.find(k) != _pars.end()) {
+			auto && l = _pars.at(k);
+			t.resize(l.size());
+			std::copy(l.begin(), l.end(), t.begin());
+		}
+		else {
+			setv(t, rest...);
+		}
+	}
 
     std::string get() const {
         throw "jian::Par::get error! Didn't found parameters for keys!";
@@ -69,20 +80,19 @@ public:
         }
     }
 
- //   template<typename T, std::enable_if_t<std::is_integral<T>::value, int> = 42>
- //   T parse(const std::string &s) const {
- //       return std::stoi(s);
- //   }
+	pars_t getv() const {
+		throw "jian::Par::getv error! Didn't found parameters for keys!";
+	}
 
- //   template<typename T, std::enable_if_t<std::is_floating_point<T>::value, int> = 42>
- //   T parse(const std::string &s) const {
- //       return std::stod(s);
- //   }
-
-	//template<typename T, std::enable_if_t<std::is_same<std::decay_t<T>, std::string>::value, int> = 42>
-	//T parse(const std::string &s) const {
-	//	return s;
-	//}
+	template<typename K, typename... V>
+	pars_t getv(K &&s, V && ...pars) const {
+		if (_pars.count(s)) {
+			return _pars.at(s);
+		}
+		else {
+			return getv(pars...);
+		}
+	}
 
 	template<typename T>
 	T parse(const std::string &s) const {

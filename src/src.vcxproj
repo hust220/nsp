@@ -262,7 +262,7 @@
     <ClCompile Include="ssp_dca.cpp" />
     <ClCompile Include="ssp_fe.cpp" />
     <ClCompile Include="ss_tree.cpp" />
-    <ClCompile Include="sub.cpp" />
+    <ClCompile Include="m_sub.cpp" />
     <ClCompile Include="m_thmc.cpp" />
     <ClCompile Include="m_transform.cpp" />
     <ClCompile Include="tri2d.cpp" />
