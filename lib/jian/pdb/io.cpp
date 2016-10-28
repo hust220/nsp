@@ -257,7 +257,9 @@ namespace jian {
 			if (i == 0 || !diff_model(parser)) {
 				Chain chain;
 				parser >> chain;
-				model.push_back(chain);
+				if (!chain.empty()) {
+					model.push_back(chain);
+				}
 			}
 			else {
 				break;

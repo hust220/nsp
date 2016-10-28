@@ -23,6 +23,10 @@ namespace jian {
 			FCLOSE(ofile);
 		}
 
+		REGISTER_NSP_COMPONENT(format) {
+			m_format(par, "");
+		}
+
 		REGISTER_NSP_COMPONENT(rna) {
 			m_format(par, "RNA");
 		}

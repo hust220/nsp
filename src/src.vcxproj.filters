@@ -403,9 +403,6 @@
     <ClCompile Include="..\lib\jian\nuc3d\Constraints.cpp">
       <Filter>jian\nuc3d</Filter>
     </ClCompile>
-    <ClCompile Include="m_chan.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="m_format.cpp">
       <Filter>src</Filter>
     </ClCompile>
