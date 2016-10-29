@@ -39,6 +39,7 @@ public:
     std::vector<int> m_dih_pts;
     std::vector<int> m_brk_pts;
     std::string m_par_file;
+	MolWriter m_writer;
 
     #define JN_MCXP_PARS1 heat_steps, cool_steps, cycle_steps, write_steps, heat_rate, dec_rate, init_tempr
     #define JN_MCXP_PARS2 bond_length_weight, bond_angle_weight, bond_angle_std, bond_dihedral_weight, bond_dihedral_std, \
@@ -137,8 +138,15 @@ public:
 
     void write_traj() {
         if (!(m_traj.empty())) {
-            if (mc_num_writing == 1) file::clean(m_traj);
-            append_chain_to_file(_pred_chain, m_traj, mc_num_writing);
+			if (mc_num_writing == 1) {
+				file::clean(m_traj);
+			}
+			std::ofstream output(m_traj.c_str(), std::ios::app);
+			m_writer.bind_stream(output);
+			m_writer.write_model([&]() {
+				this->m_writer.write(this->_pred_chain);
+			});
+			output.close();
         }
     }
 

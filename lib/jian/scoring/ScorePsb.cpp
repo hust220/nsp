@@ -185,7 +185,7 @@ namespace jian {
 		}
 		if (temp1 != NULL) delete temp1;
 		if (temp2 != NULL) delete temp2;
-		return (e == 0 ? 0 : e - 5);
+		return (e > 0 ? 0 : e);
 	}
 
 	double Score<CGpsb>::en_pairing(const Residue &r1, const Residue &r2) {
@@ -225,7 +225,7 @@ namespace jian {
 		}
 		if (temp1 != NULL) delete temp1;
 		if (temp2 != NULL) delete temp2;
-		return (e == 0 ? 0 : e - 5);
+		return (e > 0 ? 0 : e);
 	}
 
 	void Score<CGpsb>::print_counts(std::ostream & stream, const Mati & c) const {

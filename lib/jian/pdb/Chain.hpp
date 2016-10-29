@@ -20,7 +20,9 @@ public:
 
 	template<typename CG_T>
 	Chain & cg() {
-		*this = CG_T::chain(*this);
+		for (auto && res : *this) {
+			res.cg<CG_T>();
+		}
 		m_cg = CG_T::m_cg;
 		return *this;
 	}

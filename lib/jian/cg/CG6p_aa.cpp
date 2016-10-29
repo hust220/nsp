@@ -1,7 +1,7 @@
 #include <memory>
 #include <deque>
 #include <vector>
-#include "CGpsb.hpp"
+#include "CG6p.hpp"
 #include "../pp.hpp"
 #include "../pdb.hpp"
 #include "../geom.hpp"
@@ -65,8 +65,8 @@ namespace jian {
 				}
 				/*
 				EACH((j, n), _frags,
-					auto r = geom::suppos(*j, c);
-					scores.push_back(r.rmsd);
+				auto r = geom::suppos(*j, c);
+				scores.push_back(r.rmsd);
 				);
 				*/
 				auto min = std::min_element(scores.begin(), scores.end());
@@ -85,7 +85,7 @@ namespace jian {
 			std::deque<int> dq;
 			Chain full_chain;
 			chain_read_model(full_chain, pdb);
-			Chain chain = CGpsb::chain(full_chain);
+			Chain chain = CG6p::chain(full_chain);
 			std::ofstream ofile(_path + "inf.txt");
 			for (int n = 0; n < chain.size(); n++) {
 				dq.push_back(n);
@@ -116,11 +116,11 @@ namespace jian {
 
 	thread_local static PSB2AA psb;
 
-	Chain CGpsb::aa(const Mat &c, int beg, int end) {
+	Chain CG6p::aa(const Mat &c, int beg, int end) {
 		return psb.run(c, std::vector<int>{beg, end});
 	}
 
-	void CGpsb::extract_frags(const std::string &pdb) {
+	void CG6p::extract_frags(const std::string &pdb) {
 		psb.extract_frags(pdb);
 	}
 

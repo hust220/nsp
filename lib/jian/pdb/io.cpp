@@ -10,151 +10,138 @@
 
 
 namespace jian {
-
-	struct Line {
-		const static std::vector<std::string> chain_names;
-		int atom_num, residue_num, model_num;
-		std::string atom_name, residue_name, chain_name, atom_name_label;
-		double x, y, z, a, b;
-		std::ostream stream;
-
-		Line() : stream(std::cout.rdbuf()) {
-			init();
-		}
-
-		Line(std::ostream &out) : stream(out.rdbuf()) {
-			init();
-		}
-
-		void init() {
-			atom_num = 1; residue_num = 1; model_num = 1;
-			atom_name = "X"; residue_name = "X"; chain_name = chain_names[0]; atom_name_label = "X";
-			x = 0; y = 0; z = 0; a = 1; b = 0;
-		}
-
-		void bind_stream(std::ostream &s) {
-			stream.rdbuf(s.rdbuf());
-		}
-
-		void write() {
-			std::replace(atom_name.begin(), atom_name.end(), '*', '\'');
-			if (atom_name == "O1P") atom_name = "OP1";
-			if (atom_name == "O2P") atom_name = "OP2";
-			if (std::count_if(chain_name.begin(), chain_name.end(), [](auto && c) {return c != ' '; }) == 0) {
-				chain_name = "A";
-			}
-			stream
-				<< std::fixed
-				<< "ATOM"
-				<< std::setw(7) << atom_num
-				<< "  "
-				<< std::left
-				<< std::setw(4) << atom_name
-				<< std::right
-				<< std::setw(3) << residue_name
-				<< std::setw(2) << chain_name
-				<< std::setw(4) << residue_num
-				<< std::setprecision(3)
-				<< std::setw(12) << x
-				<< std::setw(8) << y
-				<< std::setw(8) << z
-				<< std::setprecision(2)
-				<< std::setw(6) << a
-				<< std::setw(6) << b
-				<< std::setw(12) << atom_name_label
-				<< "  "
-				<< std::endl;
-		}
-
-		void read(const Atom &atom) {
-			atom_name = atom.name;
-			x = atom[0];
-			y = atom[1];
-			z = atom[2];
-			atom_name_label = atom.name.substr(0, 1);
-		}
-
-		void write(const Atom &atom) {
-			read(atom);
-			write();
-			atom_num++;
-		}
-
-		void write(const Residue &residue) {
-			residue_name = residue.name;
-			for (auto && atom : residue) {
-				write(atom);
-			}
-			residue_num++;
-		}
-
-		void write(const Chain &chain) {
-			chain_name = chain.name;
-			for (auto &&residue : chain) {
-				write(residue);
-			}
-			write_chain_end();
-			residue_num = 1;
-			auto it = std::find(chain_names.begin(), chain_names.end(), chain_name);
-			chain_name = ((it == chain_names.end() || std::next(it) == chain_names.end()) ? chain_names[0] : (*std::next(it)));
-		}
-
-		void write(const Model &model) {
-			write_model_begin();
-			for (auto && chain : model) {
-				write(chain);
-			}
-			write_model_end();
-			model_num++;
-			atom_num = 1;
-			residue_name = "X";
-		}
-
-		void write(const Molecule &mol) {
-			for (auto && model : mol) {
-				write(model);
-			}
-			write_file_end();
-		}
-
-		void write_model_begin() {
-			stream
-				<< std::left
-				<< std::setw(13) << "MODEL"
-				<< model_num
-				<< std::right
-				<< std::endl;
-		}
-
-		void write_model_end() {
-			stream << "ENDMDL" << std::endl;
-		}
-
-		void write_file_end() {
-			stream << "END" << std::endl;
-		}
-
-		void write_chain_end() {
-			stream
-				<< "TER "
-				<< std::setw(7) << atom_num
-				<< "  "
-				<< std::left
-				<< std::setw(4) << " "
-				<< std::right
-				<< std::setw(3) << residue_name
-				<< std::setw(2) << chain_name
-				<< std::setw(4) << residue_num - 1
-				<< std::endl;
-			atom_num++;
-		}
-
-	};
-
-	const std::vector<std::string> Line::chain_names = {
+	const std::vector<std::string> MolWriter::chain_names = {
 		"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
 		"O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
 	};
+
+	MolWriter::MolWriter() : stream(std::cout.rdbuf()) {
+		init();
+	}
+
+	MolWriter::MolWriter(std::ostream &out) : stream(out.rdbuf()) {
+		init();
+	}
+
+	void MolWriter::init() {
+		atom_num = 1; residue_num = 1; model_num = 1;
+		atom_name = "X"; residue_name = "X"; chain_name = chain_names[0]; atom_name_label = "X";
+		x = 0; y = 0; z = 0; a = 1; b = 0;
+	}
+
+	void MolWriter::bind_stream(std::ostream &s) {
+		stream.rdbuf(s.rdbuf());
+	}
+
+	void MolWriter::write() {
+		std::replace(atom_name.begin(), atom_name.end(), '*', '\'');
+		if (atom_name == "O1P") atom_name = "OP1";
+		if (atom_name == "O2P") atom_name = "OP2";
+		if (std::count_if(chain_name.begin(), chain_name.end(), [](auto && c) {return c != ' '; }) == 0) {
+			chain_name = "A";
+		}
+		stream
+			<< std::fixed
+			<< "ATOM"
+			<< std::setw(7) << atom_num
+			<< "  "
+			<< std::left
+			<< std::setw(4) << atom_name
+			<< std::right
+			<< std::setw(3) << residue_name
+			<< std::setw(2) << chain_name
+			<< std::setw(4) << residue_num
+			<< std::setprecision(3)
+			<< std::setw(12) << x
+			<< std::setw(8) << y
+			<< std::setw(8) << z
+			<< std::setprecision(2)
+			<< std::setw(6) << a
+			<< std::setw(6) << b
+			<< std::setw(12) << atom_name_label
+			<< "  "
+			<< std::endl;
+	}
+
+	void MolWriter::read(const Atom &atom) {
+		atom_name = atom.name;
+		x = atom[0];
+		y = atom[1];
+		z = atom[2];
+		atom_name_label = atom.name.substr(0, 1);
+	}
+
+	void MolWriter::write(const Atom &atom) {
+		read(atom);
+		write();
+		atom_num++;
+	}
+
+	void MolWriter::write(const Residue &residue) {
+		residue_name = residue.name;
+		for (auto && atom : residue) {
+			write(atom);
+		}
+		residue_num++;
+	}
+
+	void MolWriter::write(const Chain &chain) {
+		chain_name = chain.name;
+		for (auto &&residue : chain) {
+			write(residue);
+		}
+		write_chain_end();
+		residue_num = 1;
+		auto it = std::find(chain_names.begin(), chain_names.end(), chain_name);
+		chain_name = ((it == chain_names.end() || std::next(it) == chain_names.end()) ? chain_names[0] : (*std::next(it)));
+	}
+
+	void MolWriter::write(const Model &model) {
+		write_model([&]() {
+			for (auto && chain : model) {
+				this->write(chain);
+			}
+		});
+	}
+
+	void MolWriter::write(const Molecule &mol) {
+		for (auto && model : mol) {
+			write(model);
+		}
+		write_file_end();
+	}
+
+	void MolWriter::write_model_begin() {
+		stream
+			<< std::left
+			<< std::setw(13) << "MODEL"
+			<< model_num
+			<< std::right
+			<< std::endl;
+	}
+
+	void MolWriter::write_model_end() {
+		stream << "ENDMDL" << std::endl;
+	}
+
+	void MolWriter::write_file_end() {
+		stream << "END" << std::endl;
+	}
+
+	void MolWriter::write_chain_end() {
+		stream
+			<< "TER "
+			<< std::setw(7) << atom_num
+			<< "  "
+			<< std::left
+			<< std::setw(4) << " "
+			<< std::right
+			<< std::setw(3) << residue_name
+			<< std::setw(2) << chain_name
+			<< std::setw(4) << residue_num - 1
+			<< std::endl;
+		atom_num++;
+	}
 
 	bool diff_model(const MolParser &parser) {
 		auto && line = parser._next_line;
@@ -197,13 +184,17 @@ namespace jian {
 		return chain;
 	}
 
-	void append_chain_to_file(const Chain &chain, const std::string &file_name, int n) {
-		std::ofstream output(file_name.c_str(), std::ios::app);
-		output << "MODEL " << n << std::endl;
-		output << chain;
-		output << "ENDMDL" << std::endl;
-		output.close();
-	}
+	//void append_chain_to_file(const Chain &chain, const std::string &file_name, int n) {
+	//	std::ofstream output(file_name.c_str(), std::ios::app);
+	//	MolWriter l(output);
+	//	l.write_model_begin();
+	//	l.write(chain);
+	//	l.write_model_end();
+	//	output << "MODEL " << n << std::endl;
+	//	output << chain;
+	//	output << "ENDMDL" << std::endl;
+	//	output.close();
+	//}
 
 	MolParser &operator >> (MolParser &parser, Atom &atom) {
 		MolParsedLine *line = parser.parse_line();
@@ -280,19 +271,19 @@ namespace jian {
 
 
 	std::ostream &operator <<(std::ostream &output, const Molecule &mol) {
-		Line(output).write(mol);
+		MolWriter(output).write(mol);
 		return output;
 	}
 
 	std::ostream &operator <<(std::ostream &output, const Model &model) {
-		Line l(output);
+		MolWriter l(output);
 		l.write(model);
 		l.write_file_end();
 		return output;
 	}
 
 	std::ostream &operator <<(std::ostream &output, const Chain &chain) {
-		Line l(output);
+		MolWriter l(output);
 		l.write_model_begin();
 		l.write(chain);
 		l.write_model_end();
@@ -301,12 +292,12 @@ namespace jian {
 	}
 
 	std::ostream &operator <<(std::ostream &output, const Residue &residue) {
-		Line(output).write(residue);
+		MolWriter(output).write(residue);
 		return output;
 	}
 
 	std::ostream &operator <<(std::ostream &output, const Atom &atom) {
-		Line(output).write(atom);
+		MolWriter(output).write(atom);
 		return output;
 	}
 

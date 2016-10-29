@@ -319,7 +319,7 @@ public:
         if (n == 1) {
             file::clean(name);
         }
-        append_chain_to_file(_pred_chain, name, n);
+        //append_chain_to_file(_pred_chain, name, n);
         en_t e;
         mc_total_energy(e);
         #define MC1p_print(a) << e.a << PP_STRING3((a)) << ' '

@@ -205,13 +205,20 @@ namespace jian {
 					for (i = 0; i < 3; i++) {
 						for (j = 0; j < 3; j++) {
 							d = geom::distance(r1[i], r2[j]);
-							if (i == 0 || j == 0) {
-								if (d < 4) {
-									e += square(d - 4);
+							if (i == 0 && j == 0) {
+								if (d < 5) {
+									e += square(d - 5);
 								}
 							}
-							else if ((i == 1 || j == 1) && d < 4) {
-								e += square(d - 4);
+							else if (i == 1 && j == 1) {
+								if (d < 5) {
+									e += square(d - 5);
+								}
+							}
+							else if ((i == 0 && j == 2) || (i == 2 && j == 0)) {
+								if (d < 6.5) {
+									e += square(d - 6.5);
+								}
 							}
 							else if (d < 3.5) {
 								e += square(d - 3.5);

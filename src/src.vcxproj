@@ -150,6 +150,8 @@
   <ItemGroup>
     <ClCompile Include="..\lib\jian\cg\CG1p.cpp" />
     <ClCompile Include="..\lib\jian\cg\CG1p_aa.cpp" />
+    <ClCompile Include="..\lib\jian\cg\CG6p.cpp" />
+    <ClCompile Include="..\lib\jian\cg\CG6p_aa.cpp" />
     <ClCompile Include="..\lib\jian\cg\CGpsb.cpp" />
     <ClCompile Include="..\lib\jian\cg\CGpsb_aa.cpp" />
     <ClCompile Include="..\lib\jian\dca\Dca.cpp" />
@@ -218,15 +220,14 @@
     <ClCompile Include="..\lib\jian\utils\Par.cpp" />
     <ClCompile Include="..\lib\jian\utils\rand.cpp" />
     <ClCompile Include="..\lib\jian\utils\string.cpp" />
-    <ClCompile Include="3drna.cpp" />
-    <ClCompile Include="aa.cpp" />
+    <ClCompile Include="m_3drna.cpp" />
     <ClCompile Include="aa2psb.cpp" />
     <ClCompile Include="align.cpp" />
     <ClCompile Include="anal_mol.cpp" />
     <ClCompile Include="m_assemble.cpp" />
     <ClCompile Include="build_loop.cpp" />
     <ClCompile Include="build_loop_dg.cpp" />
-    <ClCompile Include="check.cpp" />
+    <ClCompile Include="m_check.cpp" />
     <ClCompile Include="m_cluster.cpp" />
     <ClCompile Include="contacts.cpp" />
     <ClCompile Include="m_dca.cpp" />
@@ -269,7 +270,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\lib\jian\cg.hpp" />
+    <ClInclude Include="..\lib\jian\cg\CG.hpp" />
     <ClInclude Include="..\lib\jian\cg\CG1p.hpp" />
+    <ClInclude Include="..\lib\jian\cg\CG6p.hpp" />
     <ClInclude Include="..\lib\jian\cg\CGpsb.hpp" />
     <ClInclude Include="..\lib\jian\dca.hpp" />
     <ClInclude Include="..\lib\jian\dca\Dca.hpp" />

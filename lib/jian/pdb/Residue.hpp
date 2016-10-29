@@ -12,6 +12,7 @@ public:
 	enum cg_code {
 		CG_AA,
 		CG_1P,
+		CG_6P,
 		CG_PSB
 	};
 

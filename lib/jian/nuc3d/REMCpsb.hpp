@@ -267,7 +267,7 @@ public:
         if (n == 1) {
             file::clean(name);
         }
-        append_chain_to_file(_pred_chain, name, n);
+        //append_chain_to_file(_pred_chain, name, n);
         en_t e;
         mc_total_energy(e);
         LOG << _mc_step + 1 << ": " <<  e.sum() << "(total) " << e.crash << "(crash) " << e.len << "(bond) " << e.ang << "(ang) " << e.dih << "(dih) " << e.cons << "(c) "<< e.stacking << "(stacking) "  << e.pairing << "(pairing) " << _mc_tempr << "(tempr) " << _mc_local_succ_rate << "(rate)" << std::endl;

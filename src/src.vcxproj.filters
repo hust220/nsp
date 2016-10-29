@@ -73,12 +73,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="3drna.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="aa.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="aa2psb.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -92,9 +86,6 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="build_loop_dg.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="check.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="contacts.cpp">
@@ -426,6 +417,18 @@
     </ClCompile>
     <ClCompile Include="m_sub.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_3drna.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_check.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\cg\CG6p.cpp">
+      <Filter>jian\cg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\cg\CG6p_aa.cpp">
+      <Filter>jian\cg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -935,6 +938,12 @@
     </ClInclude>
     <ClInclude Include="..\lib\jian\lrsp\LRTSP.hpp">
       <Filter>jian\lrsp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\cg\CG.hpp">
+      <Filter>jian\cg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\cg\CG6p.hpp">
+      <Filter>jian\cg</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

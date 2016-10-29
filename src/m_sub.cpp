@@ -1,6 +1,7 @@
 #include "nsp.hpp"
 #include <jian/pdb.hpp>
 #include <jian/geom.hpp>
+#include <jian/cg.hpp>
 
 namespace jian {
 	namespace {
@@ -49,7 +50,8 @@ namespace jian {
 			if (!par.has("c", "chains") && par.has("n", "num")) {
 				nums = par.getv("n", "num");
 				set_nums(ls, nums);
-				stream << sub(mol, ls) << std::endl;
+				mol = sub(mol, ls);
+				//stream << sub(mol, ls) << std::endl;
 			}
 			else if (par.has("c", "chains")) {
 				par.setv(chains, "c", "chains");
@@ -78,11 +80,23 @@ namespace jian {
 						i++;
 					}
 				}
-				stream << mol_new << std::endl;
+				mol = mol_new;
+				//stream << mol_new << std::endl;
 			}
-			else {
-				throw "Parameters error!";
+			if (par.has("cg")) {
+				std::string cg = par.get("cg");
+				if (cg == "6p") {
+					mol.cg<CG6p>();
+				}
+				else if (cg == "psb") {
+					mol.cg<CGpsb>();
+				}
+				else if (cg == "1p") {
+					mol.cg<CG1p>();
+				}
 			}
+			stream << mol << std::endl;
+
 		}
 	}
 } // namespace jian
