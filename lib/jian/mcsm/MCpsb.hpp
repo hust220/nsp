@@ -14,8 +14,6 @@
 #define MCPSB_ENERGY_CRASH(name, cond1, cond2) \
     void mc_##name##_energy_crash(en_t &e) { \
         int a, b, c, i, j, k, n; \
-        double d; \
-        Mat arr = Mat::Zero(3, 3); \
         for (n = 0; n < _seq.size(); n++) { \
             cond1 { \
                 for (i = -m_box; i <= m_box; i++) { \
@@ -29,21 +27,7 @@
                             for (auto && t : s) { \
                                 cond2 { \
                                     auto p = std::minmax(n, t); \
-                                    for (int i = 0; i < 3; i++) { \
-                                        for (int j = 0; j < 3; j++) { \
-                                            d = geom::distance(_pred_chain[p.first][i], _pred_chain[p.second][j]); \
-                                            arr(i, j) = d; \
-                                            if (i == 0 || j == 0) { \
-                                                if (d < 7) { \
-                                                    e.crash += _mc_crash_weight * square(d - 7); \
-                                                } \
-                                            } else if ((i == 1 || j == 1) && d < 5) { \
-                                                e.crash += _mc_crash_weight * square(d - 5); \
-                                            } else if (d < 3.5) { \
-                                                e.crash += _mc_crash_weight * square(d - 3.5); \
-                                            } \
-                                        } \
-                                    } \
+									e.crash += _mc_crash_weight * en_crash(_pred_chain[p.first], _pred_chain[p.second]); \
 									e.pairing += _mc_pairing_weight * m_scorer.en_pairing(_pred_chain[p.first], _pred_chain[p.second]);\
 								} \
 							} \
@@ -57,20 +41,11 @@
 #define MCPSB_ENERGY_BOND(name, cond) \
     void mc_##name##_energy_bond(en_t &e) { \
         double d; \
-        Mat arr = Mat::Zero(3, 3); \
         for (auto && n : m_continuous_pts) { \
              cond { \
                 d = geom::distance(_pred_chain[n][0], _pred_chain[n+1][0]); \
                 e.len += _mc_bond_length_weight * square(d - 6.1); \
-                for (int i = 0; i < 3; i++) {  \
-                    for (int j = 0; j < 3; j++) {  \
-                        d = geom::distance(_pred_chain[n][i], _pred_chain[n+1][j]);  \
-                        arr(i, j) = d;  \
-                        if (d < 3.5) {  \
-                            e.crash += _mc_crash_weight * square(d - 3.5);  \
-                        }  \
-                    }  \
-                }  \
+				e.crash += _mc_crash_weight * en_crash(_pred_chain[n], _pred_chain[n+1]);\
 				e.pairing += _mc_pairing_weight * m_scorer.en_pairing(_pred_chain[n], _pred_chain[n+1]);\
              } \
         } \
@@ -221,6 +196,30 @@ namespace jian {
 
 				MCPSB_ENERGY_CONSTRAINTS(partial, if (is_selected(c.key[0]) ^ is_selected(c.key[1])));
 				MCPSB_ENERGY_CONSTRAINTS(total, );
+
+				double en_crash(const Residue &r1, const Residue &r2) {
+					int i, j;
+					double d, e;
+
+					e = 0;
+					for (i = 0; i < 3; i++) {
+						for (j = 0; j < 3; j++) {
+							d = geom::distance(r1[i], r2[j]);
+							if (i == 0 || j == 0) {
+								if (d < 4) {
+									e += square(d - 4);
+								}
+							}
+							else if ((i == 1 || j == 1) && d < 4) {
+								e += square(d - 4);
+							}
+							else if (d < 3.5) {
+								e += square(d - 3.5);
+							}
+						}
+					}
+					return e;
+				}
 
 				virtual double dist_two_res(const Residue &r1, const Residue &r2) const {
 					return geom::distance(r1[0], r2[0]);

@@ -185,7 +185,7 @@ namespace jian {
 		}
 		if (temp1 != NULL) delete temp1;
 		if (temp2 != NULL) delete temp2;
-		return e;
+		return (e == 0 ? 0 : e - 5);
 	}
 
 	double Score<CGpsb>::en_pairing(const Residue &r1, const Residue &r2) {
@@ -214,7 +214,7 @@ namespace jian {
 		e = 0;
 		for (i = 0; i < 3; i++) {
 			for (j = 0; j < 3; j++) {
-				d = geom::distance(r1[i], r2[j]);
+				d = geom::distance(p1->at(i), p2->at(j));
 				if (d < m_cutoff) {
 					a = t1 * 3 + i;
 					b = t2 * 3 + j;
@@ -225,7 +225,7 @@ namespace jian {
 		}
 		if (temp1 != NULL) delete temp1;
 		if (temp2 != NULL) delete temp2;
-		return e;
+		return (e == 0 ? 0 : e - 5);
 	}
 
 	void Score<CGpsb>::print_counts(std::ostream & stream, const Mati & c) const {

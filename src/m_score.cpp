@@ -84,19 +84,63 @@ namespace jian {
 			);
 		}
 
+		double en_crash(const Residue &r1, const Residue &r2) {
+			int i, j;
+			double d, e;
+
+			e = 0;
+			for (i = 0; i < 3; i++) {
+				for (j = 0; j < 3; j++) {
+					d = geom::distance(r1[i], r2[j]);
+					if (i == 0 || j == 0) {
+						if (d < 5) {
+							e += square(d - 4);
+						}
+					}
+					else if ((i == 1 || j == 1) && d < 5) {
+						e += square(d - 5);
+					}
+					else if (d < 3.5) {
+						e += square(d - 3.5);
+					}
+				}
+			}
+			return e;
+		}
+
 		REGISTER_NSP_COMPONENT(score) {
 			//std::ofstream stream;
 			std::ofstream ofile;
-			std::ostream &stream = std::cout;
+			std::ostream stream(std::cout.rdbuf());
 			std::string method;
-			std::streambuf *buf = stream.rdbuf();
+			//std::streambuf *buf = stream.rdbuf();
 
-			if (par.has("out") && par["out"].size() > 0) {
-				FOPEN(ofile, par.get("out"));
+			if (par.has("out", "o") && par.get("out", "o").size() > 0) {
+				FOPEN(ofile, par.get("out", "o"));
 				stream.rdbuf(ofile.rdbuf());
 			}
 
-			if (par.has("sum_counts")) {
+			if (par.has("crash")) {
+				double e, d;
+				Chain chain;
+				int i, j, l;
+
+				read_chain(chain, par.get("s"));
+				chain.cg<CGpsb>();
+				l = chain.size();
+				e = 0;
+				for (i = 0; i < l; i++) {
+					for (j = 0; j < l; j++) {
+						d = (i == j ? 0 : en_crash(chain[i], chain[j]));
+						e += d;
+						stream << d << "\t";
+					}
+					stream << std::endl;
+				}
+				std::cout << e << std::endl;
+
+			}
+			else if (par.has("sum_counts")) {
 				Par::pars_t & pars = par["sum_counts"];
 				std::string filename = pars[0];
 				int rows = std::stoi(pars[1]);
@@ -141,7 +185,7 @@ namespace jian {
 				delete scoring;
 			}
 			FCLOSE(ofile);
-			stream.rdbuf(buf);
+			//stream.rdbuf(buf);
 		}
 	}
 } // namespace jian
