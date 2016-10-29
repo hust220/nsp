@@ -6,7 +6,7 @@
 #include "CG6p.hpp"
 
 namespace jian {
-	const int CG6p::size_res = 5;
+	const int CG6p::size_res = 6;
 
 	const Residue::cg_code CG6p::m_cg = Residue::CG_6P;
 

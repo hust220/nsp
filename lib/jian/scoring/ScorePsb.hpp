@@ -24,6 +24,7 @@ public:
     double m_cutoff;
     double m_bin;
     int m_bins;
+	int m_num_types;
     std::vector<int> m_indices;
     const Chain *m_chain;
 

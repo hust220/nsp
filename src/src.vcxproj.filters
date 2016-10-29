@@ -430,6 +430,9 @@
     <ClCompile Include="..\lib\jian\cg\CG6p_aa.cpp">
       <Filter>jian\cg</Filter>
     </ClCompile>
+    <ClCompile Include="..\lib\jian\scoring\Score6p.cpp">
+      <Filter>jian\scoring</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="nsp.hpp">
@@ -944,6 +947,9 @@
     </ClInclude>
     <ClInclude Include="..\lib\jian\cg\CG6p.hpp">
       <Filter>jian\cg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\scoring\Score6p.hpp">
+      <Filter>jian\scoring</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
