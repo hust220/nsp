@@ -20,8 +20,8 @@ namespace jian {
 		l = chain.size();
 		m_score = 0;
 		for (i = 0; i < l; i++) {
-			m_score += en_stacking(chain[i], chain[j]);
-			for (j = i + 2; j < l; j++) {
+			//m_score += en_stacking(chain[i], chain[j]);
+			for (j = i + 1; j < l; j++) {
 				m_score += en_pairing(chain[i], chain[j]);
 			}
 		}
