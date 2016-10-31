@@ -1,25 +1,33 @@
-#include "Score6p.hpp"
+#include "Score.hpp"
+#include "../utils/Par.hpp"
 
 namespace jian {
 
-	REG_SCORER("6p", Score<CG6p>);
+	namespace cg1p { REG_SCORER("1p", Score); }
+	namespace cgpsb { REG_SCORER("psb", Score); }
+	namespace cg6p { REG_SCORER("6p", Score); }
 
-	void Score<CG6p>::init() {
+	Score::Score(std::string cg) {
+		m_cg = CG::fac_t::create(cg);
+	}
+
+	void Score::init() {
 		m_bin = 0.3;
 		m_cutoff = 20;
 		m_bins = int(std::ceil(m_cutoff / m_bin));
-		m_res_size = cg_t::size_res;
-		m_num_types = cg_t::size_res * 4;
+		m_res_size = m_cg->res_size();
+		m_num_types = m_res_size * 4;
 		m_rows = m_num_types * m_num_types;
 		read_counts();
+		read_pars();
 		set_freqs();
 	}
 
-	void Score<CG6p>::run(const Chain & c) {
+	void Score::run(const Chain & c) {
 		int i, j, l;
 		Chain chain;
 
-		chain = CG6p::chain(c);
+		chain = m_cg->to_cg(c);
 		l = chain.size();
 		m_score = 0;
 		for (i = 0; i < l; i++) {
@@ -29,12 +37,11 @@ namespace jian {
 		}
 	}
 
-	void Score<CG6p>::train(const Chain &c) {
+	void Score::train(const Chain &c) {
 		int i, j, len;
 		Chain chain;
 
-		chain = c;
-		chain.cg<cg_t>();
+		chain = m_cg->to_cg(c);
 		m_chain = &chain;
 		set_indices();
 		len = chain.size();
@@ -46,7 +53,7 @@ namespace jian {
 		}
 	}
 
-	void Score<CG6p>::set_indices() {
+	void Score::set_indices() {
 		int i, len;
 
 		len = m_chain->size();
@@ -56,7 +63,7 @@ namespace jian {
 		}
 	}
 
-	void Score<CG6p>::update_counts_stacking(int n1, int n2) {
+	void Score::update_counts_stacking(int n1, int n2) {
 		int i, j;
 		double d;
 		int n, a, b;
@@ -76,7 +83,7 @@ namespace jian {
 		}
 	}
 
-	void Score<CG6p>::update_counts_pairing(int n1, int n2) {
+	void Score::update_counts_pairing(int n1, int n2) {
 		int i, j;
 		double d;
 		int n, a = m_indices[n1], b = m_indices[n2];
@@ -93,7 +100,7 @@ namespace jian {
 		}
 	}
 
-	void Score<CG6p>::read_counts(Mati & m, std::string path, int cutoff) {
+	void Score::read_counts(Mati & m, std::string path, int cutoff) {
 		std::ifstream ifile;
 		int i, j;
 
@@ -108,12 +115,19 @@ namespace jian {
 		FCLOSE(ifile);
 	}
 
-	void Score<CG6p>::read_counts() {
-		read_counts(m_counts_stacking, Env::lib() + "/RNA/pars/scoring/score_6p/stacking.counts", 0);
-		read_counts(m_counts_pairing, Env::lib() + "/RNA/pars/scoring/score_6p/pairing.counts", 0);
+	void Score::read_counts() {
+		read_counts(m_counts_stacking, Env::lib() + "/RNA/pars/scoring/score_" + m_cg->m_cg + "/stacking.counts", 0);
+		read_counts(m_counts_pairing, Env::lib() + "/RNA/pars/scoring/score_" + m_cg->m_cg + "/pairing.counts", 0);
 	}
 
-	void Score<CG6p>::set_freqs(Mat & m, const Mati & c) {
+	void Score::read_pars() {
+		Par par(Env::lib() + "/RNA/pars/scoring/score_" + m_cg->m_cg + "/pars");
+		par.set(m_bond_len_std, "bond_len_std");
+		par.set(m_bond_angle_std, "bond_angle_std");
+		par.set(m_bond_dihedral_std, "bond_dihedral_std");
+	}
+
+	void Score::set_freqs(Mat & m, const Mati & c) {
 		Vec v;
 		int i, j, sum;
 
@@ -138,7 +152,7 @@ namespace jian {
 		}
 	}
 
-	void Score<CG6p>::set_freqs() {
+	void Score::set_freqs() {
 		int i, j;
 
 		for (i = 0; i < m_rows; i++) for (j = 0; j < m_bins; j++) m_counts_pairing(i, j) += m_counts_stacking(i, j);
@@ -149,23 +163,21 @@ namespace jian {
 
 	}
 
-	double Score<CG6p>::en_stacking(const Residue &r1, const Residue &r2) {
+	double Score::en_stacking(const Residue &r1, const Residue &r2) {
 		double e, d, f;
 		int a, b, t1, t2;
 		const Residue *p1, *p2;
 		Residue *temp1, *temp2;
 
-		if (r1.is_cg<CG6p>() && r2.is_cg<CG6p>()) {
+		if (m_cg->is_cg(r1) && m_cg->is_cg(r2)) {
 			temp1 = NULL;
 			temp2 = NULL;
 			p1 = &r1;
 			p2 = &r2;
 		}
 		else {
-			temp1 = new Residue(r1);
-			temp2 = new Residue(r2);
-			temp1->cg<CG6p>();
-			temp2->cg<CG6p>();
+			temp1 = new Residue(m_cg->to_cg(r1));
+			temp2 = new Residue(m_cg->to_cg(r2));
 			p1 = temp1;
 			p2 = temp2;
 		}
@@ -194,23 +206,21 @@ namespace jian {
 		return (e > 0 ? 0 : e);
 	}
 
-	double Score<CG6p>::en_pairing(const Residue &r1, const Residue &r2) {
+	double Score::en_pairing(const Residue &r1, const Residue &r2) {
 		double e, d, f;
 		int i, j, a, b, t1, t2;
 		const Residue *p1, *p2;
 		Residue *temp1, *temp2;
 
-		if (r1.is_cg<CG6p>() && r2.is_cg<CG6p>()) {
+		if (m_cg->is_cg(r1) && m_cg->is_cg(r2)) {
 			temp1 = NULL;
 			temp2 = NULL;
 			p1 = &r1;
 			p2 = &r2;
 		}
 		else {
-			temp1 = new Residue(r1);
-			temp2 = new Residue(r2);
-			temp1->cg<CG6p>();
-			temp2->cg<CG6p>();
+			temp1 = new Residue(m_cg->to_cg(r1));
+			temp2 = new Residue(m_cg->to_cg(r2));
 			p1 = temp1;
 			p2 = temp2;
 		}
@@ -234,29 +244,115 @@ namespace jian {
 		return (e > 0 ? 0 : e);
 	}
 
-	void Score<CG6p>::print_counts(std::ostream & stream, const Mati & c) const {
+	void Score::print_counts(std::ostream & stream, const Mati & c) const {
 		stream << c << std::endl;
 	}
 
-	void Score<CG6p>::print_counts(std::ostream & stream) const {
+	void Score::print_counts(std::ostream & stream) const {
 		stream << "Stacking counts: " << std::endl;
 		print_counts(stream, m_counts_stacking);
 		stream << "Pairing counts: " << std::endl;
 		print_counts(stream, m_counts_pairing);
 	}
 
-	void Score<CG6p>::print_freqs(std::ostream & stream, const Mat & f) const {
+	void Score::print_freqs(std::ostream & stream, const Mat & f) const {
 		stream << f << std::endl;
 	}
 
-	void Score<CG6p>::print_freqs(std::ostream & stream) const {
+	void Score::print_freqs(std::ostream & stream) const {
 		stream << "Stacking freqs: " << std::endl;
 		print_freqs(stream, m_freqs_stacking);
 		stream << "Pairing freqs: " << std::endl;
 		print_freqs(stream, m_freqs_pairing);
 	}
 
+	double Score::en_len(const Residue &r1, const Residue &r2) {
+		double d;
 
+		if (m_cg->m_cg == "psb") {
+			d = geom::distance(r1[0], r2[0]);
+			return square(d - m_bond_len_std);
+		}
+		else {
+			d = geom::distance(r1[2], r2[0]);
+			return square(d - 3.1);
+		}
+	}
+
+	double Score::en_ang(const Residue &r1, const Residue &r2, const Residue &r3) {
+		double d;
+
+		d = geom::angle(r1[0], r2[0], r3[0]);
+		return square(d - m_bond_angle_std);
+	}
+
+	double Score::en_dih(const Residue &r1, const Residue &r2, const Residue &r3, const Residue &r4) {
+		double d;
+
+		d = geom::dihedral(r1[0], r2[0], r3[0], r4[0]);
+		d = d - m_bond_dihedral_std;
+		d = 3.3 - 4 * std::cos(d) + std::cos(2 * d) - 0.44 * std::cos(3 * d);
+		return d;
+	}
+
+	double Score::en_crash_6p(const Residue &r1, const Residue &r2) {
+		int i, j;
+		double d, e;
+
+		e = 0;
+		for (i = 0; i < m_res_size; i++) {
+			for (j = 0; j < m_res_size; j++) {
+				d = geom::distance(r1[i], r2[j]);
+				if (d < 3.5) {
+					e += square(d - 3.5);
+				}
+			}
+		}
+		return e;
+	}
+
+	double Score::en_crash_psb(const Residue &r1, const Residue &r2) {
+		int i, j;
+		double d, e;
+
+		e = 0;
+		for (i = 0; i < m_res_size; i++) {
+			for (j = 0; j < m_res_size; j++) {
+				d = geom::distance(r1[i], r2[j]);
+				if (i == 0 && j == 0) {
+					if (d < 5) {
+						e += square(d - 5);
+					}
+				}
+				else if (i == 1 && j == 1) {
+					if (d < 5) {
+						e += square(d - 5);
+					}
+				}
+				else if ((i == 0 && j == 2) || (i == 2 && j == 0)) {
+					if (d < 6.5) {
+						e += square(d - 6.5);
+					}
+				}
+				else if (d < 3.5) {
+					e += square(d - 3.5);
+				}
+			}
+		}
+		return e;
+	}
+
+	double Score::en_crash(const Residue &r1, const Residue &r2) {
+		if (m_cg->m_cg == "psb") {
+			return en_crash_psb(r1, r2);
+		}
+		else if (m_cg->m_cg == "6p") {
+			return en_crash_6p(r1, r2);
+		}
+		else {
+			throw "jian::Score::en_crash error!";
+		}
+	}
 
 } // namespace jian
 

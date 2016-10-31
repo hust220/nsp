@@ -30,8 +30,12 @@ std::pair<int, int> loop_head_tail(loop *l) {
                 }
             );
             return {left, right};
-        }
-    } else {
+		}
+		else {
+			throw "loop_head tail error";
+		}
+
+    }	else {
         throw "loop_head_tail error!";
     }
 }

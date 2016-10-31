@@ -17,6 +17,7 @@ void TSP::init(const Par &pars) {
 	read_seq();
     LOG << "# Reading secondary structure" << std::endl;
     read_ss();
+	read_cg();
     pars.set(_lib, "lib", "library_path");
     pars.set(_name, "job_name", "job", "name");
     pars.set(_num, "n", "num", "number");
@@ -40,6 +41,7 @@ void TSP::init(const Par &pars) {
 
 TSP::~TSP() {
     delete _par;
+	delete m_cg;
 }
 
 void TSP::set_disused_pdbs() {
@@ -134,6 +136,12 @@ void TSP::read_seq() {
 	else {
 		throw "Illegal sequence!";
 	}
+}
+
+void TSP::read_cg() {
+	m_cg_type = "aa";
+	_par->set(m_cg_type, "cg");
+	m_cg = CG::fac_t::create(m_cg_type);
 }
 
 void TSP::read_ss() {

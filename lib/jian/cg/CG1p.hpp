@@ -6,14 +6,11 @@
 
 namespace jian {
 
-	class CG1p : public CG<CG1p> {
+	class CG1p : public CG {
 	public:
-		static const Residue::cg_code m_cg = Residue::CG_1P;
-		static const int size_res = 1;
-
-		static Residue res(const Residue &r);
-		//static Chain chain(const Chain &chain);
-		static Chain aa(const Mat &c, int beg, int end);
+		CG1p();
+		virtual Residue to_cg(const Residue &r) const;
+		virtual int res_size() const;
 	};
 
 } // namespace jian

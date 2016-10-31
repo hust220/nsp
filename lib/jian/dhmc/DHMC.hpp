@@ -22,10 +22,8 @@ namespace nuc3d {
 
 using fixed_ranges_t = std::list<std::array<int, 2>>;
 
-template<typename CG_T>
-class DHMC : public mc::MCen<CG_T> {
+class DHMC : public mc::MCSM {
 public:    
-    using mc_t = mc::MCen<CG_T>;
     using range_t = std::array<int, 4>;
 
     std::deque<std::shared_ptr<SSTree>> m_trees;
@@ -74,7 +72,7 @@ public:
     DHMC() = default;
 
     void init(const Par &par) {
-        mc_t::init(par);
+        mc::MCSM::init(par);
 
         LOG << "# Set 2D trees" << std::endl;
         set_trees();
@@ -106,7 +104,7 @@ public:
     }
 
     void set_range_bases() {
-        m_range_bases.resize(mc_t::_seq.size());
+        m_range_bases.resize(_seq.size());
         for (auto && r : m_ranges) {
             for (int i = r->at(0); i <= r->at(1); i++) m_range_bases[i] = r;
             for (int i = r->at(2); i <= r->at(3); i++) m_range_bases[i] = r;
@@ -115,21 +113,21 @@ public:
 
     void remove_useless_constraints() {
         Constraints cs;
-		for (auto && c : mc_t::_constraints.contacts) {
+		for (auto && c : _constraints.contacts) {
 			if (m_range_bases[c.key[0]] != m_range_bases[c.key[1]]) {
 				cs.contacts.push_back(c);
 			}
 		}
-		for (auto && c : mc_t::_constraints.distances) {
+		for (auto && c : _constraints.distances) {
 			if (m_range_bases[c.key[0]] != m_range_bases[c.key[1]]) {
 				cs.distances.push_back(c);
 			}
 		}
-		mc_t::_constraints = cs;
+		_constraints = cs;
     }
 
     void print_constraints() {
-        for (auto && c : mc_t::_constraints.distances) {
+        for (auto && c : _constraints.distances) {
             LOG << c.key[0] << ' ' << c.key[1] << std::endl;
         }
     }
@@ -145,13 +143,13 @@ public:
 
     void set_trees() {
         m_trees.push_back(std::make_shared<SSTree>());
-        m_trees.back()->make_b(mc_t::_seq, mc_t::_ss, 2);
+        m_trees.back()->make_b(_seq, _ss, 2);
         auto & keys = NucSS::instance().paired_keys;
         for (auto it = keys.begin()+1; it != keys.end(); it++) {
-            auto ss = partial_ss(mc_t::_ss, *it);
+            auto ss = partial_ss(_ss, *it);
             if (std::any_of(ss.begin(), ss.end(), [](auto &&c){return c != '.' && c != '&';})) {
                 m_trees.push_back(std::make_shared<SSTree>());
-                m_trees.back()->make_b(mc_t::_seq, ss, 1);
+                m_trees.back()->make_b(_seq, ss, 1);
             } else {
                 break;
             }
@@ -159,15 +157,15 @@ public:
     }
 
     void translate_pseudo_knots_helix(Model & m, const std::list<int> & nums) {
-        int n = mc_t::cg_t::size_res * nums.size() / 2;
+        int n = m_cg->res_size() * nums.size() / 2;
         Mat x(n, 3), y(n, 3);
         int i = 0;
         int l = 0;
         for (auto && j : nums) {
             if (i < nums.size() / 2) {
-                auto && res1 = mc_t::cg_t::res(m[0][i]);
-                auto && res2 = mc_t::cg_t::res(mc_t::_pred_chain[j]);
-                for (int k = 0; k < mc_t::cg_t::size_res; k++) {
+				Residue && res1 = m_cg->to_cg(m[0][i]);
+				Residue && res2 = m_cg->to_cg(_pred_chain[j]);
+                for (int k = 0; k < m_cg->res_size(); k++) {
                     for (int t = 0; t < 3; t++) {
                         x(l, t) = res1[k][t];
                         y(l, t) = res2[k][t];
@@ -196,7 +194,7 @@ public:
 
         int i = 0;
         for (auto && n : nums) {
-            mc_t::_pred_chain[n] = std::move(m[0][i]);
+            _pred_chain[n] = std::move(m[0][i]);
             i++;
         }
     }
@@ -222,14 +220,14 @@ public:
     }
 
     void transform_saved_helix(Chain *h, const std::list<int> & nums) {
-        int n = mc_t::cg_t::size_res * nums.size();
+        int n = m_cg->res_size() * nums.size();
         Mat x(n, 3), y(n, 3);
         int i = 0;
         int l = 0;
         for (auto && j : nums) {
-            auto && res1 = mc_t::cg_t::res(h->at(i));
-            auto && res2 = mc_t::cg_t::res(mc_t::_pred_chain[j]);
-            for (int k = 0; k < mc_t::cg_t::size_res; k++) {
+			Residue && res1 = m_cg->to_cg(h->at(i));
+			Residue && res2 = m_cg->to_cg(_pred_chain[j]);
+            for (int k = 0; k < m_cg->res_size(); k++) {
                 for (int t = 0; t < 3; t++) {
                     x(l, t) = res1[k][t];
                     y(l, t) = res2[k][t];
@@ -256,7 +254,7 @@ public:
 
         int i = 0;
         for (auto && n : nums) {
-            mc_t::_pred_chain[n] = std::move(saved->at(i));
+            _pred_chain[n] = std::move(saved->at(i));
             i++;
         }
     }
@@ -278,13 +276,13 @@ public:
     }
 
     void set_ranges() {
-        std::vector<int> v(mc_t::_seq.size(), 0);
+        std::vector<int> v(_seq.size(), 0);
 
         auto is_hp = [&](loop *l) {
             if (l->has_loop() && l->has_helix() && l->num_sons() == 0) {
                 int flag = 0, n = 0;
                 LOOP_EACH(l,
-                    char &c = mc_t::_ss[RES->num - 1];
+                    char &c = _ss[RES->num - 1];
                     if (c != '.'  && c != '(' && c != ')') {
                         flag = 1;
                         break;
@@ -306,7 +304,7 @@ public:
             if (l->has_loop() && l->has_helix() && l->num_sons() == 1) {
                 int flag = 0, n = 0;
                 LOOP_EACH(l,
-                    char &c = mc_t::_ss[RES->num - 1];
+                    char &c = _ss[RES->num - 1];
                     if (c != '.'  && c != '(' && c != ')') {
                         flag = 1;
                         break;
@@ -332,9 +330,9 @@ public:
 
         auto set_res_module_types_ss = [&](loop *l, bool is_first){
             LOOP_TRAVERSE(l,
-                if (!mc_t::_sample_hp && is_first && is_hp(L)) {
+                if (!_sample_hp && is_first && is_hp(L)) {
                     update_range(make_hp_range(L));
-                } else if (!mc_t::_sample_il && is_first && is_il(L)) {
+                } else if (!_sample_il && is_first && is_il(L)) {
                     update_range(make_il_range(L));
                 } else if (L->has_helix()) {
                     update_range(make_helix_range(L->s));
@@ -346,7 +344,7 @@ public:
             set_res_module_types_ss((*it)->head(), it == m_trees.begin());
         }
 
-        for (int i = 0; i < mc_t::_seq.size(); i++) {
+        for (int i = 0; i < _seq.size(); i++) {
             if (v[i] == 0) {
                 m_ranges.push_back(make_range(i, i, i, i));
             }
@@ -428,7 +426,7 @@ public:
         Chain *c = new Chain;
 
         for (auto && n : nums) {
-            c->push_back(mc_t::_pred_chain[n]);
+            c->push_back(_pred_chain[n]);
         }
 
         m_saved_helices[h] = c;
@@ -462,8 +460,8 @@ public:
     virtual Vec rotating_center() const {
         int beg = m_moved_residues[0];
         int end = m_moved_residues[3];
-        auto &r1 = mc_t::_pred_chain[beg];
-        auto &r2 = mc_t::_pred_chain[end];
+        auto &r1 = _pred_chain[beg];
+        auto &r2 = _pred_chain[end];
         Vec origin = Vec::Zero(3);
         int n_atom = 0;
         for (auto && atom : r1) {
@@ -490,7 +488,7 @@ void chain_refine(Chain &chain, loop *l, const fixed_ranges_t &fixed_ranges = {}
     par._pars["traj"].push_front(traj);
     par._pars["seq"].push_front(seq);
     par._pars["ss"].push_front(ss);
-    DHMC<T> mc;
+    DHMC mc;
     mc.init(par);
     mc._pred_chain = chain;
     mc.m_fixed_ranges = fixed_ranges;

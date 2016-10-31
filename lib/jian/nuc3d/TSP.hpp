@@ -9,6 +9,7 @@
 #include "../utils/Par.hpp"
 #include "../dca.hpp"
 #include "../pdb.hpp"
+#include "../cg.hpp"
 
 namespace jian {
 
@@ -23,6 +24,8 @@ public:
     std::string _file_distances;
 	std::string _file_dca;
 	std::string _file_contacts;
+	std::string m_cg_type;
+	CG *m_cg;
     Constraints _constraints;
     std::deque<std::string> _disused_pdbs;
 	std::string m_out_pdb;
@@ -56,6 +59,7 @@ public:
     void display_start_information();
     void display_end_information();
 	void read_seq();
+	void read_cg();
 	virtual void run();
     virtual void read_ss();
 

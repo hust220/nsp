@@ -15,7 +15,6 @@ namespace jian {
 		JN_MAP(SET_MEM_EN, MEM_EN);
 	}
 
-
 	void EnPsb::read_stacking_pairing_parameters() {
 		int i, j;
 		std::string file_name;

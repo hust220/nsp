@@ -73,9 +73,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="aa2psb.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="align.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -98,12 +95,6 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="dist_weights.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="en_psb.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="extract_frags.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="get_all_residues.cpp">
@@ -226,9 +217,6 @@
     <ClCompile Include="..\lib\jian\nuc3d\C2A.cpp">
       <Filter>jian\nuc3d</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\jian\nuc3d\CG2AA.cpp">
-      <Filter>jian\nuc3d</Filter>
-    </ClCompile>
     <ClCompile Include="..\lib\jian\nuc3d\Convert.cpp">
       <Filter>jian\nuc3d</Filter>
     </ClCompile>
@@ -304,13 +292,7 @@
     <ClCompile Include="..\lib\jian\cg\CG1p.cpp">
       <Filter>jian\cg</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\jian\cg\CG1p_aa.cpp">
-      <Filter>jian\cg</Filter>
-    </ClCompile>
     <ClCompile Include="..\lib\jian\cg\CGpsb.cpp">
-      <Filter>jian\cg</Filter>
-    </ClCompile>
-    <ClCompile Include="..\lib\jian\cg\CGpsb_aa.cpp">
       <Filter>jian\cg</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\jian\dca\Dca.cpp">
@@ -352,9 +334,6 @@
     <ClCompile Include="..\lib\jian\scoring\new_score.cpp">
       <Filter>jian\scoring</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\jian\scoring\score_3p.cpp">
-      <Filter>jian\scoring</Filter>
-    </ClCompile>
     <ClCompile Include="m_dca.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -367,22 +346,10 @@
     <ClCompile Include="m_transform.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="m_score_3p.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="m_new_score.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\jian\mcsm\EnPsb.cpp">
-      <Filter>jian\mcsm</Filter>
-    </ClCompile>
-    <ClCompile Include="m_en_psb.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\lib\jian\scoring\ScoreAa.cpp">
-      <Filter>jian\scoring</Filter>
-    </ClCompile>
-    <ClCompile Include="..\lib\jian\scoring\ScorePsb.cpp">
       <Filter>jian\scoring</Filter>
     </ClCompile>
     <ClCompile Include="m_score.cpp">
@@ -403,15 +370,6 @@
     <ClCompile Include="..\lib\jian\nuc3d\Assemble.cpp">
       <Filter>jian\nuc3d</Filter>
     </ClCompile>
-    <ClCompile Include="m_dhmc.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="m_thmc.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="m_qhmc.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="m_assemble.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -427,11 +385,23 @@
     <ClCompile Include="..\lib\jian\cg\CG6p.cpp">
       <Filter>jian\cg</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\jian\cg\CG6p_aa.cpp">
+    <ClCompile Include="..\lib\jian\cg\CG.cpp">
       <Filter>jian\cg</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\jian\scoring\Score6p.cpp">
+    <ClCompile Include="..\lib\jian\scoring\Score.cpp">
       <Filter>jian\scoring</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\cg\CGaa.cpp">
+      <Filter>jian\cg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\mcsm\MCBase.cpp">
+      <Filter>jian\mcsm</Filter>
+    </ClCompile>
+    <ClCompile Include="m_opt.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\mcsm\MCSM.cpp">
+      <Filter>jian\mcsm</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -503,18 +473,6 @@
     </ClInclude>
     <ClInclude Include="..\lib\jian\utils\tree.h">
       <Filter>jian\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\mcsm\MC1p.hpp">
-      <Filter>jian\mcsm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\mcsm\MCen.hpp">
-      <Filter>jian\mcsm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\mcsm\MCpsb.hpp">
-      <Filter>jian\mcsm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\mcsm\MCxp.hpp">
-      <Filter>jian\mcsm</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jian\pdb\Atom.hpp">
       <Filter>jian\pdb</Filter>
@@ -616,9 +574,6 @@
       <Filter>jian\nuc3d</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jian\nuc3d\C2A.hpp">
-      <Filter>jian\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\nuc3d\CG2AA.hpp">
       <Filter>jian\nuc3d</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jian\nuc3d\Connect.hpp">
@@ -843,23 +798,8 @@
     <ClInclude Include="..\lib\jian\scoring\new_score.hpp">
       <Filter>jian\scoring</Filter>
     </ClInclude>
-    <ClInclude Include="..\lib\jian\scoring\Score.hpp">
-      <Filter>jian\scoring</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\scoring\ScorePsb.hpp">
-      <Filter>jian\scoring</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\scoring\score_3p.hpp">
-      <Filter>jian\scoring</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\scoring\Train.h">
-      <Filter>jian\scoring</Filter>
-    </ClInclude>
     <ClInclude Include="..\lib\jian\script\Script.hpp">
       <Filter>jian\script</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\mcsm\EnPsb.hpp">
-      <Filter>jian\mcsm</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jian\cg.hpp">
       <Filter>jian</Filter>
@@ -948,8 +888,20 @@
     <ClInclude Include="..\lib\jian\cg\CG6p.hpp">
       <Filter>jian\cg</Filter>
     </ClInclude>
-    <ClInclude Include="..\lib\jian\scoring\Score6p.hpp">
+    <ClInclude Include="..\lib\jian\scoring\ScoreBase.hpp">
       <Filter>jian\scoring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\scoring\Score.hpp">
+      <Filter>jian\scoring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\cg\CGaa.hpp">
+      <Filter>jian\cg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\mcsm\MCbase.hpp">
+      <Filter>jian\mcsm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\mcsm\MCSM.hpp">
+      <Filter>jian\mcsm</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

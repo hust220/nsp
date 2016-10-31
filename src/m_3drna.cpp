@@ -18,7 +18,7 @@ void jian_3drna_refine(const Par &par, const Chain &chain, int i) {
         log_file(stream.str());
 
 
-        nuc3d::DHMC<CGpsb> mc;
+        nuc3d::DHMC mc;
         mc.init(par);
         mc._pred_chain = chain;
 
@@ -47,7 +47,7 @@ void jian_3drna_tripred(const Par &par, int i) {
     stream << name << ".3drna." << i+1 << ".log";
     log_file(stream.str());
 
-    nuc3d::triple::THMC<nuc3d::mc::MCpsb> tri;
+    nuc3d::triple::THMC tri;
     tri.init(par);
     seed(int(tri._seed + i));
 

@@ -148,12 +148,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\lib\jian\cg\CG.cpp" />
     <ClCompile Include="..\lib\jian\cg\CG1p.cpp" />
-    <ClCompile Include="..\lib\jian\cg\CG1p_aa.cpp" />
     <ClCompile Include="..\lib\jian\cg\CG6p.cpp" />
-    <ClCompile Include="..\lib\jian\cg\CG6p_aa.cpp" />
+    <ClCompile Include="..\lib\jian\cg\CGaa.cpp" />
     <ClCompile Include="..\lib\jian\cg\CGpsb.cpp" />
-    <ClCompile Include="..\lib\jian\cg\CGpsb_aa.cpp" />
     <ClCompile Include="..\lib\jian\dca\Dca.cpp" />
     <ClCompile Include="..\lib\jian\dca\Mat3.cpp" />
     <ClCompile Include="..\lib\jian\dca\Mat4.cpp" />
@@ -169,7 +168,8 @@
     <ClCompile Include="..\lib\jian\lrsp\ss_complete.cpp" />
     <ClCompile Include="..\lib\jian\lrsp\ss_del_sm_hp.cpp" />
     <ClCompile Include="..\lib\jian\lrsp\ss_hp_pred.cpp" />
-    <ClCompile Include="..\lib\jian\mcsm\EnPsb.cpp" />
+    <ClCompile Include="..\lib\jian\mcsm\MCBase.cpp" />
+    <ClCompile Include="..\lib\jian\mcsm\MCSM.cpp" />
     <ClCompile Include="..\lib\jian\mc\MC.cpp" />
     <ClCompile Include="..\lib\jian\nuc2d\NucSS.cpp" />
     <ClCompile Include="..\lib\jian\nuc2d\SSTree.cpp" />
@@ -178,7 +178,6 @@
     <ClCompile Include="..\lib\jian\nuc3d\BuildHelix.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\BuildLoopDG.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\C2A.cpp" />
-    <ClCompile Include="..\lib\jian\nuc3d\CG2AA.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\Constraints.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\Convert.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\Format.cpp" />
@@ -206,9 +205,7 @@
     <ClCompile Include="..\lib\jian\scoring\DihAnal.cpp" />
     <ClCompile Include="..\lib\jian\scoring\DistAnal.cpp" />
     <ClCompile Include="..\lib\jian\scoring\new_score.cpp" />
-    <ClCompile Include="..\lib\jian\scoring\Score6p.cpp" />
-    <ClCompile Include="..\lib\jian\scoring\ScorePsb.cpp" />
-    <ClCompile Include="..\lib\jian\scoring\score_3p.cpp" />
+    <ClCompile Include="..\lib\jian\scoring\Score.cpp" />
     <ClCompile Include="..\lib\jian\scoring\ScoreAa.cpp" />
     <ClCompile Include="..\lib\jian\thmc\THeadHairpin.cpp" />
     <ClCompile Include="..\lib\jian\thmc\THelix.cpp" />
@@ -222,7 +219,6 @@
     <ClCompile Include="..\lib\jian\utils\rand.cpp" />
     <ClCompile Include="..\lib\jian\utils\string.cpp" />
     <ClCompile Include="m_3drna.cpp" />
-    <ClCompile Include="aa2psb.cpp" />
     <ClCompile Include="align.cpp" />
     <ClCompile Include="anal_mol.cpp" />
     <ClCompile Include="m_assemble.cpp" />
@@ -232,12 +228,9 @@
     <ClCompile Include="m_cluster.cpp" />
     <ClCompile Include="contacts.cpp" />
     <ClCompile Include="m_dca.cpp" />
-    <ClCompile Include="m_dhmc.cpp" />
     <ClCompile Include="dist_frequencies.cpp" />
     <ClCompile Include="dist_weighted_frequencies.cpp" />
     <ClCompile Include="dist_weights.cpp" />
-    <ClCompile Include="en_psb.cpp" />
-    <ClCompile Include="extract_frags.cpp" />
     <ClCompile Include="get_all_residues.cpp" />
     <ClCompile Include="helix_par.cpp" />
     <ClCompile Include="joint.cpp" />
@@ -247,16 +240,13 @@
     <ClCompile Include="mcc.cpp" />
     <ClCompile Include="md.cpp" />
     <ClCompile Include="min_dist.cpp" />
-    <ClCompile Include="m_en_psb.cpp" />
     <ClCompile Include="m_new_score.cpp" />
     <ClCompile Include="nsp.cpp" />
     <ClCompile Include="parse_helix.cpp" />
-    <ClCompile Include="m_qhmc.cpp" />
     <ClCompile Include="rebuild_chain.cpp" />
     <ClCompile Include="rmsd.cpp" />
     <ClCompile Include="m_format.cpp" />
     <ClCompile Include="m_score.cpp" />
-    <ClCompile Include="m_score_3p.cpp" />
     <ClCompile Include="seq.cpp" />
     <ClCompile Include="m_split.cpp" />
     <ClCompile Include="ssa.cpp" />
@@ -264,7 +254,7 @@
     <ClCompile Include="ssp_fe.cpp" />
     <ClCompile Include="ss_tree.cpp" />
     <ClCompile Include="m_sub.cpp" />
-    <ClCompile Include="m_thmc.cpp" />
+    <ClCompile Include="m_opt.cpp" />
     <ClCompile Include="m_transform.cpp" />
     <ClCompile Include="tri2d.cpp" />
     <ClCompile Include="view_mol_constraints.cpp" />
@@ -274,6 +264,7 @@
     <ClInclude Include="..\lib\jian\cg\CG.hpp" />
     <ClInclude Include="..\lib\jian\cg\CG1p.hpp" />
     <ClInclude Include="..\lib\jian\cg\CG6p.hpp" />
+    <ClInclude Include="..\lib\jian\cg\CGaa.hpp" />
     <ClInclude Include="..\lib\jian\cg\CGpsb.hpp" />
     <ClInclude Include="..\lib\jian\dca.hpp" />
     <ClInclude Include="..\lib\jian\dca\Dca.hpp" />
@@ -315,11 +306,8 @@
     <ClInclude Include="..\lib\jian\matrix\util.hpp" />
     <ClInclude Include="..\lib\jian\mc.hpp" />
     <ClInclude Include="..\lib\jian\mcsm.hpp" />
-    <ClInclude Include="..\lib\jian\mcsm\EnPsb.hpp" />
-    <ClInclude Include="..\lib\jian\mcsm\MC1p.hpp" />
-    <ClInclude Include="..\lib\jian\mcsm\MCen.hpp" />
-    <ClInclude Include="..\lib\jian\mcsm\MCpsb.hpp" />
-    <ClInclude Include="..\lib\jian\mcsm\MCxp.hpp" />
+    <ClInclude Include="..\lib\jian\mcsm\MCSM.hpp" />
+    <ClInclude Include="..\lib\jian\mcsm\MCbase.hpp" />
     <ClInclude Include="..\lib\jian\mc\MC.hpp" />
     <ClInclude Include="..\lib\jian\mc\REMC.hpp" />
     <ClInclude Include="..\lib\jian\md.hpp" />
@@ -354,7 +342,6 @@
     <ClInclude Include="..\lib\jian\nuc3d\BuildNuc.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\BuildStrand.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\C2A.hpp" />
-    <ClInclude Include="..\lib\jian\nuc3d\CG2AA.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\Connect.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\Constraints.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\Convert.hpp" />
@@ -400,15 +387,12 @@
     <ClInclude Include="..\lib\jian\qhmc\TailHairpin.hpp" />
     <ClInclude Include="..\lib\jian\scoring.hpp" />
     <ClInclude Include="..\lib\jian\scoring\AssessPSB.h" />
-    <ClInclude Include="..\lib\jian\scoring\Score6p.hpp" />
+    <ClInclude Include="..\lib\jian\scoring\Score.hpp" />
     <ClInclude Include="..\lib\jian\scoring\DihAnal.hpp" />
     <ClInclude Include="..\lib\jian\scoring\DistAnal.hpp" />
     <ClInclude Include="..\lib\jian\scoring\new_score.hpp" />
-    <ClInclude Include="..\lib\jian\scoring\Score.hpp" />
-    <ClInclude Include="..\lib\jian\scoring\ScorePsb.hpp" />
-    <ClInclude Include="..\lib\jian\scoring\score_3p.hpp" />
+    <ClInclude Include="..\lib\jian\scoring\ScoreBase.hpp" />
     <ClInclude Include="..\lib\jian\scoring\ScoreAa.hpp" />
-    <ClInclude Include="..\lib\jian\scoring\Train.h" />
     <ClInclude Include="..\lib\jian\script.hpp" />
     <ClInclude Include="..\lib\jian\script\Script.hpp" />
     <ClInclude Include="..\lib\jian\thmc.hpp" />

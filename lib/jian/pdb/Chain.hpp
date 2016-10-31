@@ -12,23 +12,7 @@ public:
     std::string name = "A";
     std::string type = "unknown";
     std::string model_name = "unknown";
-
-	template<typename CG_T>
-	bool is_cg() const {
-		return m_cg == CG_T::m_cg;
-	}
-
-	template<typename CG_T>
-	Chain & cg() {
-		for (auto && res : *this) {
-			res.cg<CG_T>();
-		}
-		m_cg = CG_T::m_cg;
-		return *this;
-	}
-
-private:
-	Residue::cg_code m_cg = Residue::CG_AA;
+	std::string m_cg = "aa";
 };
 
 } // namespace jian

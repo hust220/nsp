@@ -29,7 +29,7 @@ public:
         }
     };
 
-    static T *create(const std::string &s, Args && ...args) {
+    static T *create(const std::string &s, Args ...args) {
         if (instance().s_methods.find(s) != instance().s_methods.end()) {
             return instance().s_methods[s](args...);
         } else {

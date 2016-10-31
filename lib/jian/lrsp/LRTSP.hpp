@@ -119,7 +119,7 @@ public:
             std::ostringstream stream;
             stream << _out << '.' << threads.size() + 1 << ".log";
             threads.push_back(std::thread(chain_refine, chain, l, stream.str()));
-//            nuc3d::chain_refine<nuc3d::mc::MCpsb>(*chain, l);
+//            nuc3d::chain_refine<nuc3d::mc::MCSM>(*chain, l);
         }
         _loop_templates[l] = chain;
         LOGI << l << ' ' << chain->size() << std::endl;

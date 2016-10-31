@@ -1,16 +1,13 @@
 #pragma once
 
-#include "Score.hpp"
+#include <string>
 #include "DistAnal.hpp"
 #include "DihAnal.hpp"
-#include "../cg.hpp"
+#include "ScoreBase.hpp"
 
 namespace jian {
 
-	struct AA {};
-
-	template<>
-	class Score<AA> : public ScoreBase {
+	class ScoreAa : public ScoreBase {
 	public:
 		DistAnal * m_dist_anal = NULL;
 		DihAnal  * m_dih_anal = NULL;
@@ -29,7 +26,9 @@ namespace jian {
 		double m_weight_dist;
 		double m_weight_dih;
 
-		~Score();
+		ScoreAa(std::string cg);
+
+		~ScoreAa();
 
 		virtual void init();
 
@@ -45,9 +44,15 @@ namespace jian {
 
 		virtual double en_pairing(const Residue &r1, const Residue &r2);
 
-	};
+		virtual double en_len(const Residue &r1, const Residue &r2);
 
-	using ScoreAa = Score<AA>;
+		virtual double en_ang(const Residue &r1, const Residue &r2, const Residue &r3);
+
+		virtual double en_dih(const Residue &r1, const Residue &r2, const Residue &r3, const Residue &r4);
+
+		virtual double en_crash(const Residue &r1, const Residue &r2);
+
+	};
 
 } // namespace jian
 

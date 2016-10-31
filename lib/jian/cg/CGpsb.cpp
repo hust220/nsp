@@ -6,15 +6,25 @@
 #include "CGpsb.hpp"
 
 namespace jian {
+	REG_CG("psb", CGpsb);
 
-	Residue CGpsb::res(const Residue &r) {
+	CGpsb::CGpsb() {
+		m_cg = "psb";
+	}
+
+	int CGpsb::res_size() const {
+		return 3;
+	}
+
+	Residue CGpsb::to_cg(const Residue &r) const {
 		static std::vector<std::string> v{ "N1", "C2", "N3", "C4", "C5", "C6" };
-		if (r.is_cg<CGpsb>()) {
+		if (is_cg(r)) {
 			return r;
 		}
 		else {
 			Residue res;
 			res.name = r.name;
+			res.m_cg = m_cg;
 			std::array<double, 3> arr{ 0, 0, 0 };
 			Atom atm;
 			for (auto && atom : r) {
@@ -40,16 +50,5 @@ namespace jian {
 			return res;
 		}
 	}
-
-	//Chain CGpsb::chain(const Chain &chain) {
-	//    Chain c;
-	//    c.name = chain.name;
-	//    c.model_name = chain.model_name;
-	//    for (auto && r : chain) {
-	//		Residue res = r;
-	//        c.push_back(res.cg<CGpsb>());
-	//    }
-	//    return c;
-	//}
 
 } // namespace jian

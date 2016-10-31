@@ -6,9 +6,11 @@
 
 namespace jian {
 
-	REG_SCORER("aa", Score<AA>);
+	REG_SCORER("aa", ScoreAa);
 
-	void Score<AA>::init() {
+	ScoreAa::ScoreAa(std::string cg) {}
+
+	void ScoreAa::init() {
 		std::string lib = Env::lib() + "/RNA/pars/scoring";
 
 		m_bin_dist = 0.3;
@@ -33,36 +35,52 @@ namespace jian {
 		m_dih_anal->read_parm(m_par_dih);
 	}
 
-	Score<AA>::~Score() {
+	ScoreAa::~ScoreAa() {
 		if (m_dist_anal != NULL) delete m_dist_anal;
 		if (m_dih_anal != NULL) delete m_dih_anal;
 	}
 
-	void Score<AA>::run(const Chain &chain) {
+	void ScoreAa::run(const Chain &chain) {
 		m_score_dist = m_dist_anal->run(chain).score;
 		m_score_dih = m_dih_anal->run(chain).score;
 		m_score = m_constant + m_score_dist * m_weight_dist + m_score_dih * m_weight_dih;
 	}
 
-	void Score<AA>::train(const Chain &c) {
+	void ScoreAa::train(const Chain &c) {
 		m_dist_anal->train(c);
 	}
 
-	void Score<AA>::print_counts(std::ostream & stream) const {
+	void ScoreAa::print_counts(std::ostream & stream) const {
 		m_dist_anal->print_counts(stream);
 	}
 
-	void Score<AA>::print_freqs(std::ostream & stream) const {
+	void ScoreAa::print_freqs(std::ostream & stream) const {
 		m_dist_anal->print_freqs(stream);
 	}
 
-	double Score<AA>::en_stacking(const Residue &r1, const Residue &r2) {
+	double ScoreAa::en_stacking(const Residue &r1, const Residue &r2) {
 		return m_dist_anal->en_stacking(r1, r2);
 	}
 
-	double Score<AA>::en_pairing(const Residue &r1, const Residue &r2) {
+	double ScoreAa::en_pairing(const Residue &r1, const Residue &r2) {
 		return m_dist_anal->en_pairing(r1, r2);
 
+	}
+
+	double ScoreAa::en_len(const Residue &r1, const Residue &r2) {
+		return 0;
+	}
+
+	double ScoreAa::en_ang(const Residue &r1, const Residue &r2, const Residue &r3) {
+		return 0;
+	}
+
+	double ScoreAa::en_dih(const Residue &r1, const Residue &r2, const Residue &r3, const Residue &r4) {
+		return 0;
+	}
+
+	double ScoreAa::en_crash(const Residue &r1, const Residue &r2) {
+		return 0;
 	}
 
 

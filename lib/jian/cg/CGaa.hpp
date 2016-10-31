@@ -6,11 +6,11 @@
 
 namespace jian {
 
-	class CGpsb : public CG {
+	class CGaa : public CG {
 	public:
 		static const std::vector<std::string> m_basic_atoms;
 
-		CGpsb();
+		CGaa();
 		virtual Residue to_cg(const Residue &r) const;
 		virtual int res_size() const;
 	};

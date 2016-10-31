@@ -13,7 +13,7 @@ namespace jian {
 	Residue::Residue() {
 		num = -1;
 		name = "X";
-		m_cg = CG_AA;
+		m_cg = "aa";
 	}
 
 	bool res_is_type(const Residue &res, std::string type = "") {

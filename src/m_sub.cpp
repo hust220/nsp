@@ -85,15 +85,9 @@ namespace jian {
 			}
 			if (par.has("cg")) {
 				std::string cg = par.get("cg");
-				if (cg == "6p") {
-					mol.cg<CG6p>();
-				}
-				else if (cg == "psb") {
-					mol.cg<CGpsb>();
-				}
-				else if (cg == "1p") {
-					mol.cg<CG1p>();
-				}
+				CG *m_cg = CG::fac_t::create(cg);
+				mol = m_cg->to_cg(mol);
+				delete m_cg;
 			}
 			stream << mol << std::endl;
 

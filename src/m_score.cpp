@@ -2,7 +2,7 @@
 #include <jian/geom.hpp>
 #include <jian/pdb.hpp>
 #include <jian/scoring/ScoreAa.hpp>
-#include <jian/scoring/ScorePsb.hpp>
+#include <jian/scoring/Score.hpp>
 #include <jian/utils/file.hpp>
 #include <jian/nuc3d/Format.hpp>
 
@@ -113,6 +113,7 @@ namespace jian {
 			std::ofstream ofile;
 			std::ostream stream(std::cout.rdbuf());
 			std::string method;
+			CG *m_cg;
 			//std::streambuf *buf = stream.rdbuf();
 
 			if (par.has("out", "o") && par.get("out", "o").size() > 0) {
@@ -120,13 +121,18 @@ namespace jian {
 				stream.rdbuf(ofile.rdbuf());
 			}
 
+			method = "aa";
+			par.set(method, "cg");
+
+			m_cg = CG::fac_t::create(method);
+
 			if (par.has("crash")) {
 				double e, d;
 				Chain chain;
 				int i, j, l;
 
 				read_chain(chain, par.get("s"));
-				chain.cg<CGpsb>();
+				chain = m_cg->to_cg(chain);
 				l = chain.size();
 				e = 0;
 				for (i = 0; i < l; i++) {
@@ -148,10 +154,7 @@ namespace jian {
 				sum_counts(filename, rows, cols);
 			}
 			else {
-				method = "aa";
-				par.set(method, "method", "m");
-
-				ScoreBase *scoring = FacScorer::create(method);
+				ScoreBase *scoring = FacScorer::create(method, method);
 				scoring->init();
 
 				if (par.has("print_freqs")) {
@@ -185,7 +188,7 @@ namespace jian {
 				delete scoring;
 			}
 			FCLOSE(ofile);
-			//stream.rdbuf(buf);
+			delete m_cg;
 		}
 	}
 } // namespace jian

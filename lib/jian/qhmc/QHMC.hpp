@@ -19,11 +19,8 @@ namespace qhmc {
 
 using fac_t = Factory<Module::cons_t>;
 
-template<typename CG_T>
-class QHMC : public nuc3d::mc::MCen<CG_T> {
+class QHMC : public nuc3d::mc::MCSM {
 public:
-    using mc_t = nuc3d::mc::MCen<CG_T>;
-
     using res_t = struct {char seq; char ss; int num;};
     using res_list_t = std::deque<res_t>;
     using indices_t = std::deque<int>;
@@ -42,7 +39,7 @@ public:
     QHMC() = default;
 
     void init(const Par &par) {
-        mc_t::init(par);
+		nuc3d::mc::MCSM::init(par);
     }
 
     ~QHMC() {
@@ -68,7 +65,7 @@ public:
     }
 
     void set_modules() {
-        int len = mc_t::_seq.size();
+        int len = _seq.size();
         m_modules.push_back(fac_t::create("head_hairpin", m_tree.front().front(), m_tree.back().back(), len));
         int i = 0;
         for (; i + 1 < m_tree.size(); i++) {
@@ -80,9 +77,9 @@ public:
     }
 
     void set_res_list(res_list_t &res_list) {
-        int len = mc_t::_seq.size();
+        int len = _seq.size();
         for (int i = 0; i < len; i++) {
-            res_list.push_back({mc_t::_seq[i], mc_t::_ss[i], i});
+            res_list.push_back({_seq[i], _ss[i], i});
         }
     }
 
@@ -103,7 +100,7 @@ public:
         //mol_write(c, "bb.pdb");
         LOG << "## Shrink to fit" << std::endl;
         shrink_to_fit(c);
-        //mol_write(mc_t::_pred_chain, "cc.pdb");
+        //mol_write(_pred_chain, "cc.pdb");
     }
 
     Chain build_helix(int len) {
@@ -128,13 +125,13 @@ public:
         std::string file_name = Env::lib() + "/RNA/pars/nuc3d/quadruple/quadruple-helix-" + JN_STR(n) + ".pdb";
         Chain chain;
         chain_read_model(chain, file_name);
-        //return mc_t::cg_t::chain(chain);
+        //return cg_t::chain(chain);
         return chain;
     }
 
     void set_coords_residue(Mat &c1, int m, const Residue &r) {
-        static int l = mc_t::cg_t::size_res;
-        Residue res = mc_t::cg_t::res(r);
+        static int l = m_cg->res_size();
+        Residue res = m_cg->to_cg(r);
         for (int i = 0; i < l; i++) {
             for (int j = 0; j < 3; j++) {
                 c1(m * l + i, j) = res[i][j];
@@ -143,7 +140,7 @@ public:
     }
 
     Chain connect_quadruple_helix(Chain &c1, Chain &c2) {
-        int l = mc_t::cg_t::size_res;
+        int l = m_cg->res_size();
         int len1 = c1.size()/4, len2 = c2.size()/4;
         int len = len1 + len2 - 1;
         Mat m1(4*l, 3), m2(4*l, 3);
@@ -176,7 +173,7 @@ public:
         int len = c.size()/4;
         LOG << "len: " << len << std::endl;
         int n = 0;
-        mc_t::_pred_chain.resize(mc_t::_seq.size());
+        _pred_chain.resize(_seq.size());
         for (i = 0; i < m_modules.size(); i++) {
             Mati &m = m_modules[i]->d_indices;
             l = m.rows();
@@ -188,7 +185,7 @@ public:
                         //a = (k % 2 == 0 ? n+j+k*len : len-1-n-j+k*len);
                         b = std::distance(m_arrangement.begin(), std::find(m_arrangement.begin(), m_arrangement.end(), k));
                         a = b*len+n+j;
-                        mc_t::_pred_chain[m(j, k)] = c[a];
+                        _pred_chain[m(j, k)] = c[a];
                     }
                 }
             }
@@ -198,7 +195,7 @@ public:
 
     void tuples_from_ss(Tuples &tuples) {
         std::deque<int> dq;
-        auto & ss = mc_t::_ss;
+        auto & ss = _ss;
         int i, j, n, l, size;
 
         // Set dq
@@ -275,7 +272,7 @@ public:
     // mc-related functions
 
     void set_unrelated_residues() {
-        int len = mc_t::_seq.size();
+        int len = _seq.size();
         related_residues_t &r = m_related_residues;
         m_unrelated_residues.resize(len);
         for (int i = 0; i < len; i++) {
@@ -289,7 +286,7 @@ public:
     }
 
     void print_related_residues(const related_residues_t &r) {
-        int len = mc_t::_seq.size();
+        int len = _seq.size();
         for (int i = 0; i < len; i++) {
             LOG << i << ' ';
             for (auto && j : *(r[i])) {
@@ -300,7 +297,7 @@ public:
     }
 
     void set_related_residues() {
-        m_related_residues.resize(mc_t::_seq.size());
+        m_related_residues.resize(_seq.size());
         for (auto && module : m_modules) {
             if (module->type() != "helix") {
                 for (auto && frag : module->d_frags) {
@@ -354,7 +351,7 @@ public:
     }
 
     virtual void mc_select() {
-        int len = mc_t::_seq.size();
+        int len = _seq.size();
         m_selected_index = int(rand() * len);
     }
 
@@ -368,7 +365,7 @@ public:
         Vec vec = Vec::Zero(3);
         indices_t &v = *(m_related_residues[m_selected_index]);
         double n = 0;
-        for (auto && atom : mc_t::_pred_chain[v[int(rand()*v.size())]]) {
+        for (auto && atom : _pred_chain[v[int(rand()*v.size())]]) {
             for (int j = 0; j < 3; j++) {
                 vec[j] += atom[j];
             }
@@ -387,7 +384,7 @@ public:
             if (indices->size() > 1) {
                 Chain c;
                 for (auto && i : *indices) {
-                    c.push_back(mc_t::_pred_chain[i]);
+                    c.push_back(_pred_chain[i]);
                 }
                 m_fixed_ranges[indices] = c;
             }
@@ -396,7 +393,7 @@ public:
 
     void restore_helix(indices_t * indices) {
         int l = indices->size();
-        int s = mc_t::cg_t::size_res;
+        int s = m_cg->res_size();
         Mat m1(l*s, 3), m2(l*s, 3);
         int n;
         Chain & c = m_fixed_ranges[indices];
@@ -405,7 +402,7 @@ public:
         n = 0;
         for (auto && i : *indices) {
             set_coords_residue(m1, n, c[n]);
-            set_coords_residue(m2, n, mc_t::_pred_chain[i]);
+            set_coords_residue(m2, n, _pred_chain[i]);
             n++;
         }
 
@@ -417,7 +414,7 @@ public:
         // Set _pred_chain
         n = 0;
         for (auto && i : *indices) {
-            mc_t::_pred_chain[i] = c[n];
+            _pred_chain[i] = c[n];
             n++;
         }
     }
@@ -445,18 +442,18 @@ public:
             if (!std::regex_match(s, std::regex("^[Gg.-]+$"))) die();
         };
 
-        std::string ss = mc_t::_par->get("ss");
+        std::string ss = _par->get("ss");
         tokenize_v v;
         jian::tokenize(ss, v, ": ");
         std::cout << "v.size() " << v.size() << ' ' << ss << std::endl;
         if (v.size() == 1) {
             check_ss(v[0]);
-            mc_t::_ss = v[0];
+            _ss = v[0];
         } else if (v.size() == 2) {
             check_arrangement(v[0]);
             for (int i = 0; i < 4; i++) m_arrangement[i] = std::stoi(v[0].substr(i, 1))-1;
             check_ss(v[1]);
-            mc_t::_ss = v[1];
+            _ss = v[1];
         } else {
             die();
         }

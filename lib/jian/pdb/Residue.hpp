@@ -9,15 +9,9 @@ namespace jian {
 
 class Residue : public std::deque<Atom> {
 public:
-	enum cg_code {
-		CG_AA,
-		CG_1P,
-		CG_6P,
-		CG_PSB
-	};
-
     int num;
     std::string name;
+	std::string m_cg;
 
 	Residue();
     static auto get_sort_keys();
@@ -28,19 +22,6 @@ public:
     Atom &operator [](const std::string &s);
     const Atom &operator [](const std::string &s) const;
 
-	template<typename CG_T>
-	bool is_cg() const {
-		return m_cg == CG_T::m_cg;
-	}
-
-	template<typename CG_T>
-	Residue & cg() {
-		*this = CG_T::res(*this);
-		m_cg = CG_T::m_cg;
-		return *this;
-	}
-
-	cg_code m_cg;
 };
 
 bool res_is_type(const Residue &res, std::string type);

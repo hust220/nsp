@@ -40,7 +40,7 @@ Cluster::result_t Cluster::operator ()(const Eigen::MatrixXd &mat) {
         for (auto &&cluster: _clusters) {
             std::vector<double> costs(cluster.size());
             std::transform(cluster.begin(), cluster.end(), costs.begin(), [&](int i){
-                return std::accumulate(cluster.begin(), cluster.end(), 0, [&](int sum, int j){
+                return std::accumulate(cluster.begin(), cluster.end(), 0.0, [&](double sum, int j)->double{
                     return sum + mat(i, j);
                 });
             });

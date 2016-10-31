@@ -2,11 +2,20 @@
 
 namespace jian {
 
-	//Residue::cg_code CG1p::m_cg = Residue::CG_1P;
+	REG_CG("1p", CG1p);
 
-	Residue CG1p::res(const Residue &r) {
+	CG1p::CG1p() {
+		m_cg = "1p";
+	}
+
+	int CG1p::res_size() const {
+		return 1;
+	}
+
+	Residue CG1p::to_cg(const Residue &r) const {
 		Residue res;
 		res.name = r.name;
+		res.m_cg = m_cg;
 		for (auto && atom : r) {
 			if (atom.name == "C4*") {
 				res.push_back(atom);
@@ -14,16 +23,5 @@ namespace jian {
 		}
 		return res;
 	}
-
-	//Chain CG1p::chain(const Chain &chain) {
-	//    Chain c;
-	//    c.name = chain.name;
-	//    c.model_name = chain.model_name;
-	//    for (auto && r : chain) {
-	//		Residue res = r;
-	//        c.push_back(res.cg<CG1p>());
-	//    }
-	//    return c;
-	//}
 
 } // namespace jian

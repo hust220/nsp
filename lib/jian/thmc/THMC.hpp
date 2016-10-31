@@ -25,11 +25,8 @@ namespace triple {
 
 using fac_t = Factory<TModule::cons_t>;
 
-template<typename MC_T>
-class THMC : public MC_T {
+class THMC : public mc::MCSM{
 public:
-    using mc_t = MC_T;
-
     using Res = struct {char seq; char ss; int num;};
     using indices_t = std::deque<int>;
     using related_residues_t = std::vector<std::shared_ptr<indices_t>>;
@@ -43,7 +40,7 @@ public:
     THMC() = default;
 
     void init(const Par &par) {
-        mc_t::init(par);
+        mc::MCSM::init(par);
     }
 
     ~THMC() {
@@ -53,7 +50,7 @@ public:
     }
 
     void set_unrelated_residues() {
-        int len = mc_t::_seq.size();
+        int len = _seq.size();
         related_residues_t &r = d_mc_related_residues;
         d_mc_unrelated_residues.resize(len);
         for (int i = 0; i < len; i++) {
@@ -67,7 +64,7 @@ public:
     }
 
     void print_related_residues(const related_residues_t &r) {
-        int len = mc_t::_seq.size();
+        int len = _seq.size();
         for (int i = 0; i < len; i++) {
             LOG << i << ' ';
             for (auto && j : *(r[i])) {
@@ -91,7 +88,7 @@ public:
     }
 
     void set_modules() {
-        int len = mc_t::_seq.size();
+        int len = _seq.size();
         d_modules.push_back(fac_t::create("head_hairpin", _tree.front().front(), Tuple{0, len, 0}));
         int i = 0;
         for (; i + 1 < _tree.size(); i++) {
@@ -103,10 +100,10 @@ public:
     }
 
     void ss_to_tree() {
-        int len = mc_t::_seq.size();
+        int len = _seq.size();
         std::deque<Res> res_list;
         for (int i = 0; i < len; i++) {
-            res_list.push_back({mc_t::_seq[i], mc_t::_ss[i], i});
+            res_list.push_back({_seq[i], _ss[i], i});
         }
         Tuples &&tuples = get_tuples(res_list);
         print_helix(tuples);
@@ -150,12 +147,12 @@ public:
         std::string file_name = Env::lib() + "/RNA/pars/nuc3d/triple/triple-helix-" + JN_STR(n) + ".pdb";
         Chain chain;
         chain_read_model(chain, file_name);
-        return mc_t::cg_t::chain(chain);
+        return m_cg->to_cg(chain);
     }
 
     void set_coords_residue(Mat &c1, int m, const Residue &r) {
-        int l = mc_t::cg_t::size_res;
-        for (int i = 0; i < mc_t::cg_t::size_res; i++) {
+        int l = m_cg->res_size();
+        for (int i = 0; i < m_cg->res_size(); i++) {
             for (int j = 0; j < 3; j++) {
                 c1(m * l + i, j) = r[i][j];
             }
@@ -163,7 +160,7 @@ public:
     }
 
     Chain connect_triple_helix(Chain &c1, Chain &c2) {
-        int l = mc_t::cg_t::size_res;
+        int l = m_cg->res_size();
         int len1 = c1.size() / 3, len2 = c2.size() / 3;
         int len = len1 + len2 - 1;
         Mat m1(3*l, 3), m2(3*l, 3);
@@ -188,7 +185,7 @@ public:
     }
 
     void shrink_to_fit(const Chain &c) {
-        mc_t::_pred_chain.resize(mc_t::_seq.size());
+        _pred_chain.resize(_seq.size());
         int len = c.size() / 3;
         int n = 0;
         for (int i = 0; i < d_modules.size(); i++) {
@@ -198,15 +195,15 @@ public:
             for (int j = 0; j < l; j++) {
                 if (m(j, 0) != -1) {
                     LOG << m(j, 0)<<' '<<n + j << std::endl;
-                    mc_t::_pred_chain[m(j, 0)] = c[n + j];
+                    _pred_chain[m(j, 0)] = c[n + j];
                 }
                 if (m(j, 1) != -1) {
                     LOG << m(j, 1)<<' '<<2 * len - 1 - n - j << std::endl;
-                    mc_t::_pred_chain[m(j, 1)] = c[2 * len - 1 - n - j];
+                    _pred_chain[m(j, 1)] = c[2 * len - 1 - n - j];
                 }
                 if (m(j, 2) != -1) {
                     LOG << m(j, 2)<<' '<<2 * len + n + j << std::endl;
-                    mc_t::_pred_chain[m(j, 2)] = c[2 * len + n + j];
+                    _pred_chain[m(j, 2)] = c[2 * len + n + j];
                 }
             }
             n += l;
@@ -283,7 +280,7 @@ public:
     // mc-related functions
 
     void mc_init() {
-        d_mc_related_residues.resize(mc_t::_seq.size());
+        d_mc_related_residues.resize(_seq.size());
         for (auto && module : d_modules) {
             if (module->type() != "helix") {
                 for (auto && frag : module->d_frags) {
@@ -330,7 +327,7 @@ public:
     }
 
     virtual void mc_select() {
-        int len = mc_t::_seq.size();
+        int len = _seq.size();
         d_mc_selected_index = int(rand() * len);
     }
 
@@ -345,7 +342,7 @@ public:
         indices_t &v = *(d_mc_related_residues[d_mc_selected_index]);
         double n = 0;
 //        for (int i = 0; i < v.size(); i++) {
-            for (auto && atom : mc_t::_pred_chain[v[int(rand()*v.size())]]) {
+            for (auto && atom : _pred_chain[v[int(rand()*v.size())]]) {
                 for (int j = 0; j < 3; j++) {
                     vec[j] += atom[j];
                 }
