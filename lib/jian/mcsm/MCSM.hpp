@@ -1,6 +1,6 @@
 #pragma once
 
-#include "MCBase.hpp"
+#include "McsmBase.hpp"
 #include "../cg.hpp"
 #include "../scoring/Score.hpp"
 

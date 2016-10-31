@@ -168,7 +168,7 @@
     <ClCompile Include="..\lib\jian\lrsp\ss_complete.cpp" />
     <ClCompile Include="..\lib\jian\lrsp\ss_del_sm_hp.cpp" />
     <ClCompile Include="..\lib\jian\lrsp\ss_hp_pred.cpp" />
-    <ClCompile Include="..\lib\jian\mcsm\MCBase.cpp" />
+    <ClCompile Include="..\lib\jian\mcsm\McsmBase.cpp" />
     <ClCompile Include="..\lib\jian\mcsm\MCSM.cpp" />
     <ClCompile Include="..\lib\jian\mc\MC.cpp" />
     <ClCompile Include="..\lib\jian\nuc2d\NucSS.cpp" />
@@ -307,7 +307,7 @@
     <ClInclude Include="..\lib\jian\mc.hpp" />
     <ClInclude Include="..\lib\jian\mcsm.hpp" />
     <ClInclude Include="..\lib\jian\mcsm\MCSM.hpp" />
-    <ClInclude Include="..\lib\jian\mcsm\MCbase.hpp" />
+    <ClInclude Include="..\lib\jian\mcsm\McsmBase.hpp" />
     <ClInclude Include="..\lib\jian\mc\MC.hpp" />
     <ClInclude Include="..\lib\jian\mc\REMC.hpp" />
     <ClInclude Include="..\lib\jian\md.hpp" />

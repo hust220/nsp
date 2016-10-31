@@ -394,13 +394,13 @@
     <ClCompile Include="..\lib\jian\cg\CGaa.cpp">
       <Filter>jian\cg</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\jian\mcsm\MCBase.cpp">
-      <Filter>jian\mcsm</Filter>
-    </ClCompile>
     <ClCompile Include="m_opt.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\jian\mcsm\MCSM.cpp">
+      <Filter>jian\mcsm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\mcsm\McsmBase.cpp">
       <Filter>jian\mcsm</Filter>
     </ClCompile>
   </ItemGroup>
@@ -897,10 +897,10 @@
     <ClInclude Include="..\lib\jian\cg\CGaa.hpp">
       <Filter>jian\cg</Filter>
     </ClInclude>
-    <ClInclude Include="..\lib\jian\mcsm\MCbase.hpp">
+    <ClInclude Include="..\lib\jian\mcsm\MCSM.hpp">
       <Filter>jian\mcsm</Filter>
     </ClInclude>
-    <ClInclude Include="..\lib\jian\mcsm\MCSM.hpp">
+    <ClInclude Include="..\lib\jian\mcsm\McsmBase.hpp">
       <Filter>jian\mcsm</Filter>
     </ClInclude>
   </ItemGroup>
