@@ -184,18 +184,6 @@ namespace jian {
 		return chain;
 	}
 
-	//void append_chain_to_file(const Chain &chain, const std::string &file_name, int n) {
-	//	std::ofstream output(file_name.c_str(), std::ios::app);
-	//	MolWriter l(output);
-	//	l.write_model_begin();
-	//	l.write(chain);
-	//	l.write_model_end();
-	//	output << "MODEL " << n << std::endl;
-	//	output << chain;
-	//	output << "ENDMDL" << std::endl;
-	//	output.close();
-	//}
-
 	MolParser &operator >> (MolParser &parser, Atom &atom) {
 		MolParsedLine *line = parser.parse_line();
 		if (line != NULL) {
@@ -205,7 +193,7 @@ namespace jian {
 	}
 
 	MolParser &operator >> (MolParser &parser, Residue &residue) {
-		//    std::cout << "MolParser >> residue" << std::endl;
+		if (parser.eof()) return parser;
 		residue.name = parser._next_line->res_name;
 		residue.num = parser._next_line->res_num;
 		for (int i = 0; !parser.eof(); i++) {
@@ -222,9 +210,9 @@ namespace jian {
 	}
 
 	MolParser &operator >> (MolParser &parser, Chain &chain) {
-		//    std::cout << "MolParser >> chain" << std::endl;
-		chain.name = parser._next_line->chain_name;
 		chain.model_name = parser.file_name;
+		if (parser.eof()) return parser;
+		chain.name = parser._next_line->chain_name;
 		for (int i = 0; !parser.eof(); i++) {
 			if (i == 0 || !diff_chain(parser)) {
 				Residue residue;
@@ -241,9 +229,9 @@ namespace jian {
 	}
 
 	MolParser &operator >> (MolParser &parser, Model &model) {
-		//    std::cout << "MolParser >> model" << std::endl;
-		model.num = parser._next_line->model_num;
 		model.name = parser.file_name;
+		if (parser.eof()) return parser;
+		model.num = parser._next_line->model_num;
 		for (int i = 0; !parser.eof(); i++) {
 			if (i == 0 || !diff_model(parser)) {
 				Chain chain;
@@ -261,6 +249,7 @@ namespace jian {
 
 	MolParser &operator >> (MolParser &parser, Molecule &mol) {
 		mol.name = parser.file_name;
+		if (parser.eof()) return parser;
 		for (int i = 0; !parser.eof(); i++) {
 			Model model;
 			parser >> model;
