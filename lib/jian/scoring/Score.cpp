@@ -115,8 +115,14 @@ namespace jian {
 	void Score::read_pars() {
 		Par par(Env::lib() + "/RNA/pars/scoring/score_" + m_cg->m_cg + "/pars");
 		par.set(m_bond_len_std, "bond_len_std");
-		par.set(m_bond_angle_std, "bond_angle_std");
+		if (par.has("bond_angle_std")) {
+			for (auto && i : par.getv("bond_angle_std")) {
+				m_bond_angle_std.push_back(JN_DBL(i));
+			}
+		}
 		par.set(m_bond_dihedral_std, "bond_dihedral_std");
+		par.set(m_cutoff_stacking, "cutoff_stacking");
+		par.set(m_cutoff_pairing, "cutoff_pairing");
 	}
 
 	void Score::set_freqs(Mat & m, const Mati & c) {
@@ -145,9 +151,9 @@ namespace jian {
 	}
 
 	void Score::set_freqs() {
-		int i, j;
+		//int i, j;
 
-		for (i = 0; i < m_rows; i++) for (j = 0; j < m_bins; j++) m_counts_pairing(i, j) += m_counts_stacking(i, j);
+		//for (i = 0; i < m_rows; i++) for (j = 0; j < m_bins; j++) m_counts_pairing(i, j) += m_counts_stacking(i, j);
 		set_freqs(m_freqs_stacking, m_counts_stacking);
 		set_freqs(m_freqs_pairing, m_counts_pairing);
 		m_counts_stacking = Mati::Zero(m_rows, m_bins);
@@ -161,6 +167,10 @@ namespace jian {
 
 	double Score::en_pairing(const Residue &r1, const Residue &r2) {
 		return this->en_bp(r1, r2).m_en_pairing;
+	}
+
+	bool Score::in_base(int n) {
+		return true;
 	}
 
 	ScoreBase &Score::en_bp(const Residue &r1, const Residue &r2) {
@@ -187,7 +197,9 @@ namespace jian {
 		m_en_stacking = 0;
 		m_en_pairing = 0;
 		for (i = 0; i < m_res_size; i++) {
+			if (!in_base(i)) continue;
 			for (j = 0; j < m_res_size; j++) {
+				if (!in_base(j)) continue;
 				d = geom::distance(p1->at(i), p2->at(j));
 				if (d < m_cutoff) {
 					a = t1 * m_res_size + i;
@@ -201,8 +213,8 @@ namespace jian {
 		}
 		if (temp1 != NULL) delete temp1;
 		if (temp2 != NULL) delete temp2;
-		m_en_stacking = (m_en_stacking > 0 ? 0 : m_en_stacking);
-		m_en_pairing = (m_en_pairing > 0 ? 0 : m_en_pairing);
+		m_en_stacking = (m_en_stacking > m_cutoff_stacking ? 0 : m_en_stacking);
+		m_en_pairing = (m_en_pairing > m_cutoff_pairing ? 0 : m_en_pairing);
 		return *this;
 	}
 
@@ -239,7 +251,7 @@ namespace jian {
 		double d;
 
 		d = geom::angle(r1[0], r2[0], r3[0]);
-		return square(d - m_bond_angle_std);
+		return square(d - m_bond_angle_std[0]);
 	}
 
 	double Score::en_dih(const Residue &r1, const Residue &r2, const Residue &r3, const Residue &r4) {

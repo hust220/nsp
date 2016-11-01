@@ -15,5 +15,6 @@ namespace jian {
 
 		virtual double en_crash(const Residue &r1, const Residue &r2);
 
+		virtual bool in_base(int);
 	};
 }

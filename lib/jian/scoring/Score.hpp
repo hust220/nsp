@@ -18,8 +18,10 @@ namespace jian {
 		Mati m_counts_stacking;
 		Mati m_counts_pairing;
 		double m_bond_len_std;
-		double m_bond_angle_std;
+		std::vector<double> m_bond_angle_std;
 		double m_bond_dihedral_std;
+		double m_cutoff_stacking;
+		double m_cutoff_pairing;
 		std::map<std::string, int> m_map{ { "A", 0 },{ "U", 1 },{ "G", 2 },{ "C", 3 } };
 		double m_cutoff;
 		double m_bin;
@@ -43,6 +45,8 @@ namespace jian {
 		virtual double en_stacking(const Residue &r1, const Residue &r2);
 
 		virtual double en_pairing(const Residue &r1, const Residue &r2);
+
+		virtual bool in_base(int);
 
 		virtual ScoreBase &en_bp(const Residue &r1, const Residue &r2);
 

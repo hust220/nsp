@@ -11,14 +11,19 @@ namespace jian {
 		double d;
 
 		d = geom::distance(r1[2], r2[0]);
-		return square(d - 3.1);
+		return square(d - m_bond_len_std);
 	}
 
 	inline double Score6p::en_ang(const Residue &r1, const Residue &r2, const Residue &r3) {
-		double d;
+		double d, e;
+		int i;
 
-		d = geom::angle(r1[1], r2[1], r3[1]);
-		return square(d - m_bond_angle_std);
+		e = 0;
+		for (i = 0; i < 3; i++) {
+			d = geom::angle(r1[i], r2[i], r3[i]);
+			e += square(d - m_bond_angle_std[i]);
+		}
+		return e;
 	}
 
 	inline double Score6p::en_dih(const Residue &r1, const Residue &r2, const Residue &r3, const Residue &r4) {
@@ -39,6 +44,10 @@ namespace jian {
 			}
 		}
 		return e;
+	}
+
+	bool Score6p::in_base(int n) {
+		return n > 2;
 	}
 
 } // namespace jian

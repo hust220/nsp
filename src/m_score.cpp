@@ -45,8 +45,11 @@ namespace jian {
 			for (i = 0; i < l; i++) {
 				for (j = 0; j < l; j++) {
 					if (i == j) std::cout << 0 << "\t";
-					//else if (std::abs(i - j) == 1) std::cout << scoring->en_stacking(chain[i], chain[j]) << "\t";
-					else std::cout << scoring->en_pairing(chain[i], chain[j]) << "\t";
+					else {
+						scoring->en_bp(chain[i], chain[j]);
+						if (std::abs(i - j) == 1) std::cout << scoring->m_en_stacking << "\t";
+						else std::cout << scoring->m_en_pairing << "\t";
+					}
 				}
 				std::cout << std::endl;
 			}
