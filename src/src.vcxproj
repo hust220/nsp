@@ -350,9 +350,6 @@
     <ClInclude Include="..\lib\jian\nuc3d\HelixPar.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\TSP.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\JointHelix.hpp" />
-    <ClInclude Include="..\lib\jian\nuc3d\LM.hpp" />
-    <ClInclude Include="..\lib\jian\nuc3d\LM2.hpp" />
-    <ClInclude Include="..\lib\jian\nuc3d\LoopModelling2.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\MC1p.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\MC3p.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\ParseHelix.hpp" />

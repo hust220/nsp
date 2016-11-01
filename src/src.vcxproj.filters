@@ -594,15 +594,6 @@
     <ClInclude Include="..\lib\jian\nuc3d\JointHelix.hpp">
       <Filter>jian\nuc3d</Filter>
     </ClInclude>
-    <ClInclude Include="..\lib\jian\nuc3d\LM.hpp">
-      <Filter>jian\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\nuc3d\LM2.hpp">
-      <Filter>jian\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\nuc3d\LoopModelling2.hpp">
-      <Filter>jian\nuc3d</Filter>
-    </ClInclude>
     <ClInclude Include="..\lib\jian\nuc3d\MC1p.hpp">
       <Filter>jian\nuc3d</Filter>
     </ClInclude>
