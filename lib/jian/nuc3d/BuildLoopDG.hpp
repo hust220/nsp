@@ -4,7 +4,6 @@
 #include "../pdb.hpp"
 #include "../nuc2d.hpp"
 #include "../dg.hpp"
-#include "C2A.hpp"
 #include "HelixPar.hpp"
 
 namespace jian {

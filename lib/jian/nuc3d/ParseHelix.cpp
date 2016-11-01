@@ -55,12 +55,17 @@ public:
     }
 
     Result parse(const Model &helix) {
+        Vec origin, x, y, z;
+		int len;
+
         auto mat = get_mat_helix(helix); 
-        int len = mat.rows();
-        auto sp = geom::suppos(make_standard_helix(len/2-1), mat);
-        Vec origin, x, y, z; origin << 0, 0, 0; x << 1, 0, 0; y << 0, 1, 0; z << 0, 0, 1;
-        geom::apply_suppos(origin, sp);
-        geom::apply_suppos(x, sp); geom::apply_suppos(y, sp); geom::apply_suppos(z, sp);
+        len = mat.rows();
+		geom::Superposition sp(make_standard_helix(len / 2 - 1), mat);
+		origin << 0, 0, 0; x << 1, 0, 0; y << 0, 1, 0; z << 0, 0, 1;
+		sp.apply(origin);
+		sp.apply(x);
+		sp.apply(y);
+		sp.apply(z);
         val_t theta = geom::angle(std::vector<val_t>{0, 0, 1}, Vec::Zero(), z);
         val_t phi = geom::angle(std::vector<val_t>{1, 0, 0}, Vec::Zero(), std::vector<val_t>{z[0], z[1], 0});
         return Result{origin, x-origin, y-origin, z-origin, theta, phi};

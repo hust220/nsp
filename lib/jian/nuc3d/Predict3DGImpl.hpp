@@ -1,10 +1,11 @@
 #pragma once
 
+#include <memory>
+#include "../cg.hpp"
 #include "TSP.hpp"
 #include "../pdb.hpp"
 #include "../nuc2d.hpp"
 #include "../dg.hpp"
-#include "C2A.hpp"
 #include "HelixPar.hpp"
 #include "../utils/Debug.hpp"
 #include "../utils/rand.hpp"
@@ -104,7 +105,9 @@ public:
     }
 
     Model to_all_atom(const Eigen::MatrixXd &c) {
-        Chain chain; EACH(i, _frags, EACH(j, c2a(c, i[0], i[1]), chain.push_back(j)));
+        Chain chain;
+		std::shared_ptr<CG> cg(CG::fac_t::create("1p"));
+		EACH(i, _frags, EACH(j, cg->to_aa(c, i[0], i[1]), chain.push_back(j)));
         Model m; m.push_back(chain); 
         return m;
     }

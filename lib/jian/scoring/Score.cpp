@@ -3,14 +3,6 @@
 
 namespace jian {
 
-	namespace cg1p { REG_SCORER("1p", Score); }
-	namespace cgpsb { REG_SCORER("psb", Score); }
-	namespace cg6p { REG_SCORER("6p", Score); }
-
-	Score::Score(std::string cg) {
-		m_cg = CG::fac_t::create(cg);
-	}
-
 	void Score::init() {
 		m_bin = 0.3;
 		m_cutoff = 20;
@@ -164,50 +156,15 @@ namespace jian {
 	}
 
 	double Score::en_stacking(const Residue &r1, const Residue &r2) {
-		double e, d, f;
-		int a, b, t1, t2;
-		const Residue *p1, *p2;
-		Residue *temp1, *temp2;
-
-		if (m_cg->is_cg(r1) && m_cg->is_cg(r2)) {
-			temp1 = NULL;
-			temp2 = NULL;
-			p1 = &r1;
-			p2 = &r2;
-		}
-		else {
-			temp1 = new Residue(m_cg->to_cg(r1));
-			temp2 = new Residue(m_cg->to_cg(r2));
-			p1 = temp1;
-			p2 = temp2;
-		}
-
-		e = 0;
-		t1 = m_map[p1->name];
-		t2 = m_map[p1->name];
-		for (int i = 0; i < m_res_size; i++) {
-			for (int j = 0; j < m_res_size; j++) {
-				d = geom::distance(p1->at(i), p2->at(j));
-				if (d < 20) {
-					a = t1 * m_res_size + i;
-					b = t2 * m_res_size + j;
-					f = m_freqs_stacking(a * m_num_types + b, int(d / m_bin));
-					if (f != 0) {
-						e += -std::log(f);
-					}
-					else {
-						e += 0;
-					}
-				}
-			}
-		}
-		if (temp1 != NULL) delete temp1;
-		if (temp2 != NULL) delete temp2;
-		return (e > 0 ? 0 : e);
+		return this->en_bp(r1, r2).m_en_stacking;
 	}
 
 	double Score::en_pairing(const Residue &r1, const Residue &r2) {
-		double e, d, f;
+		return this->en_bp(r1, r2).m_en_pairing;
+	}
+
+	ScoreBase &Score::en_bp(const Residue &r1, const Residue &r2) {
+		double d, f;
 		int i, j, a, b, t1, t2;
 		const Residue *p1, *p2;
 		Residue *temp1, *temp2;
@@ -227,21 +184,26 @@ namespace jian {
 
 		t1 = m_map[r1.name];
 		t2 = m_map[r2.name];
-		e = 0;
+		m_en_stacking = 0;
+		m_en_pairing = 0;
 		for (i = 0; i < m_res_size; i++) {
 			for (j = 0; j < m_res_size; j++) {
 				d = geom::distance(p1->at(i), p2->at(j));
 				if (d < m_cutoff) {
 					a = t1 * m_res_size + i;
 					b = t2 * m_res_size + j;
+					f = m_freqs_stacking(a * m_num_types + b, int(d / m_bin));
+					m_en_stacking += (f == 0 ? 0 : -std::log(f));
 					f = m_freqs_pairing(a * m_num_types + b, int(d / m_bin));
-					e += (f == 0 ? 0 : -std::log(f));
+					m_en_pairing += (f == 0 ? 0 : -std::log(f));
 				}
 			}
 		}
 		if (temp1 != NULL) delete temp1;
 		if (temp2 != NULL) delete temp2;
-		return (e > 0 ? 0 : e);
+		m_en_stacking = (m_en_stacking > 0 ? 0 : m_en_stacking);
+		m_en_pairing = (m_en_pairing > 0 ? 0 : m_en_pairing);
+		return *this;
 	}
 
 	void Score::print_counts(std::ostream & stream, const Mati & c) const {
@@ -269,14 +231,8 @@ namespace jian {
 	double Score::en_len(const Residue &r1, const Residue &r2) {
 		double d;
 
-		if (m_cg->m_cg == "psb") {
-			d = geom::distance(r1[0], r2[0]);
-			return square(d - m_bond_len_std);
-		}
-		else {
-			d = geom::distance(r1[2], r2[0]);
-			return square(d - 3.1);
-		}
+		d = geom::distance(r1[0], r2[0]);
+		return square(d - m_bond_len_std);
 	}
 
 	double Score::en_ang(const Residue &r1, const Residue &r2, const Residue &r3) {
@@ -295,23 +251,7 @@ namespace jian {
 		return d;
 	}
 
-	double Score::en_crash_6p(const Residue &r1, const Residue &r2) {
-		int i, j;
-		double d, e;
-
-		e = 0;
-		for (i = 0; i < m_res_size; i++) {
-			for (j = 0; j < m_res_size; j++) {
-				d = geom::distance(r1[i], r2[j]);
-				if (d < 3.5) {
-					e += square(d - 3.5);
-				}
-			}
-		}
-		return e;
-	}
-
-	double Score::en_crash_psb(const Residue &r1, const Residue &r2) {
+	double Score::en_crash(const Residue &r1, const Residue &r2) {
 		int i, j;
 		double d, e;
 
@@ -340,18 +280,6 @@ namespace jian {
 			}
 		}
 		return e;
-	}
-
-	double Score::en_crash(const Residue &r1, const Residue &r2) {
-		if (m_cg->m_cg == "psb") {
-			return en_crash_psb(r1, r2);
-		}
-		else if (m_cg->m_cg == "6p") {
-			return en_crash_6p(r1, r2);
-		}
-		else {
-			throw "jian::Score::en_crash error!";
-		}
 	}
 
 } // namespace jian

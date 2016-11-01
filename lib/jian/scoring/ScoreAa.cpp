@@ -8,7 +8,9 @@ namespace jian {
 
 	REG_SCORER("aa", ScoreAa);
 
-	ScoreAa::ScoreAa(std::string cg) {}
+	ScoreAa::ScoreAa() {
+		m_cg = CG::fac_t::create("aa");
+	}
 
 	void ScoreAa::init() {
 		std::string lib = Env::lib() + "/RNA/pars/scoring";
@@ -65,6 +67,12 @@ namespace jian {
 	double ScoreAa::en_pairing(const Residue &r1, const Residue &r2) {
 		return m_dist_anal->en_pairing(r1, r2);
 
+	}
+
+	ScoreBase &ScoreAa::en_bp(const Residue &r1, const Residue &r2) {
+		m_en_stacking = m_dist_anal->en_stacking(r1, r2);
+		m_en_pairing = m_dist_anal->en_pairing(r1, r2);
+		return *this;
 	}
 
 	double ScoreAa::en_len(const Residue &r1, const Residue &r2) {

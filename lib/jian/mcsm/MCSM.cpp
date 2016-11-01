@@ -19,7 +19,9 @@
                                 cond2 { \
                                     auto p = std::minmax(n, t); \
 									e.crash += _mc_crash_weight * m_scorer->en_crash(_pred_chain[p.first], _pred_chain[p.second]); \
-									e.pairing += _mc_pairing_weight * m_scorer->en_pairing(_pred_chain[p.first], _pred_chain[p.second]);\
+									m_scorer->en_bp(_pred_chain[p.first], _pred_chain[p.second]);\
+									e.pairing += _mc_pairing_weight * m_scorer->m_en_pairing;\
+									e.stacking += _mc_stacking_weight * m_scorer->m_en_stacking;\
 								} \
 							} \
 						} \
@@ -31,28 +33,22 @@
 
 #define MCPSB_ENERGY_BOND(name, cond) \
     void MCSM::mc_##name##_energy_bond(en_t &e) { \
-        /*double d;*/ \
         for (auto && n : m_continuous_pts) { \
              cond { \
-                /*d = geom::distance(_pred_chain[n][0], _pred_chain[n+1][0]);*/ \
-                /*e.len += _mc_bond_length_weight * square(d - 6.1);*/ \
 				e.len += _mc_bond_length_weight * m_scorer->en_len(_pred_chain[n], _pred_chain[n+1]);\
 				e.crash += _mc_crash_weight * m_scorer->en_crash(_pred_chain[n], _pred_chain[n+1]);\
-				e.pairing += _mc_pairing_weight * m_scorer->en_pairing(_pred_chain[n], _pred_chain[n+1]);\
+				m_scorer->en_bp(_pred_chain[n], _pred_chain[n+1]);\
+				e.pairing += _mc_pairing_weight * m_scorer->m_en_pairing;\
+				e.stacking += _mc_stacking_weight * m_scorer->m_en_stacking;\
              } \
         } \
     }
 
 #define MCPSB_ENERGY_ANGLE(name, cond) \
     void MCSM::mc_##name##_energy_angle(en_t &e) { \
-        /*double d;*/ \
         int len = _seq.size(); \
         for (auto && i : m_ang_pts) { \
              cond { \
-                /*d = geom::angle(_pred_chain[i][0],  \
-                                _pred_chain[i+1][0],  \
-                                _pred_chain[i+2][0]); \
-                e.ang += _mc_bond_angle_weight * square(d - _mc_bond_angle_std);*/ \
 				e.ang += _mc_bond_angle_weight * m_scorer->en_ang(_pred_chain[i], _pred_chain[i+1], _pred_chain[i+2]);\
             } \
         } \
@@ -60,17 +56,9 @@
 
 #define MCPSB_ENERGY_DIHEDRAL(name, cond) \
     void MCSM::mc_##name##_energy_dihedral(en_t &e) { \
-        /*double d;*/ \
         int len = _seq.size(); \
         for (auto && i : m_dih_pts) { \
             cond { \
-                /*d = geom::dihedral(_pred_chain[i][0],  \
-                                   _pred_chain[i+1][0],  \
-                                   _pred_chain[i+2][0],  \
-                                   _pred_chain[i+3][0]); \
-                d = d - _mc_bond_dihedral_std; \
-                d = 3.3 - 4 * std::cos(d) + std::cos(2 * d) - 0.44 * std::cos(3 * d); \
-                e.dih += _mc_bond_dihedral_weight * d;*/ \
 				e.dih += _mc_bond_angle_weight * m_scorer->en_dih(_pred_chain[i], _pred_chain[i+1], _pred_chain[i+2], _pred_chain[i+3]);\
             } \
         } \
@@ -108,7 +96,7 @@ namespace jian {
 				MCBase::init(par);
 
 				LOG << "# Initializing scorer..." << std::endl;
-				m_scorer = ScoreBase::fac_t::create(m_cg_type, m_cg_type);
+				m_scorer = ScoreBase::fac_t::create(m_cg_type);
 				m_scorer->init();
 
 				LOG << "# Seting indices..." << std::endl;
@@ -126,14 +114,13 @@ namespace jian {
 
 			void MCSM::print_pairing() {
 				Mat arr(3, 3);
-				double d;
 				int i, j;
 
 				for (i = 0; i < _seq.size(); i++) {
 					for (j = i + 1; j < _seq.size(); j++) {
-						d = m_scorer->en_pairing(_pred_chain[i], _pred_chain[j]);
-						if (d != 0) {
-							LOG << i + 1 << ' ' << j + 1 << ' ' << d << std::endl;
+						m_scorer->en_bp(_pred_chain[i], _pred_chain[j]);
+						if (m_scorer->m_en_pairing != 0 || m_scorer->m_en_stacking != 0) {
+							LOG << i + 1 << ' ' << j + 1 << ' ' << m_scorer->m_en_stacking << ' ' << m_scorer->m_en_pairing << std::endl;
 						}
 					}
 				}

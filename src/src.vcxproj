@@ -177,7 +177,6 @@
     <ClCompile Include="..\lib\jian\nuc3d\Assemble.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\BuildHelix.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\BuildLoopDG.cpp" />
-    <ClCompile Include="..\lib\jian\nuc3d\C2A.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\Constraints.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\Convert.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\Format.cpp" />
@@ -206,7 +205,10 @@
     <ClCompile Include="..\lib\jian\scoring\DistAnal.cpp" />
     <ClCompile Include="..\lib\jian\scoring\new_score.cpp" />
     <ClCompile Include="..\lib\jian\scoring\Score.cpp" />
+    <ClCompile Include="..\lib\jian\scoring\Score1p.cpp" />
+    <ClCompile Include="..\lib\jian\scoring\Score6p.cpp" />
     <ClCompile Include="..\lib\jian\scoring\ScoreAa.cpp" />
+    <ClCompile Include="..\lib\jian\scoring\ScorePsb.cpp" />
     <ClCompile Include="..\lib\jian\thmc\THeadHairpin.cpp" />
     <ClCompile Include="..\lib\jian\thmc\THelix.cpp" />
     <ClCompile Include="..\lib\jian\thmc\TLoop.cpp" />
@@ -220,7 +222,7 @@
     <ClCompile Include="..\lib\jian\utils\string.cpp" />
     <ClCompile Include="m_3drna.cpp" />
     <ClCompile Include="align.cpp" />
-    <ClCompile Include="anal_mol.cpp" />
+    <ClCompile Include="m_anal.cpp" />
     <ClCompile Include="m_assemble.cpp" />
     <ClCompile Include="build_loop.cpp" />
     <ClCompile Include="build_loop_dg.cpp" />
@@ -341,7 +343,6 @@
     <ClInclude Include="..\lib\jian\nuc3d\BuildLoopDG.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\BuildNuc.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\BuildStrand.hpp" />
-    <ClInclude Include="..\lib\jian\nuc3d\C2A.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\Connect.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\Constraints.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\Convert.hpp" />
@@ -391,8 +392,11 @@
     <ClInclude Include="..\lib\jian\scoring\DihAnal.hpp" />
     <ClInclude Include="..\lib\jian\scoring\DistAnal.hpp" />
     <ClInclude Include="..\lib\jian\scoring\new_score.hpp" />
+    <ClInclude Include="..\lib\jian\scoring\Score1p.hpp" />
+    <ClInclude Include="..\lib\jian\scoring\Score6p.hpp" />
     <ClInclude Include="..\lib\jian\scoring\ScoreBase.hpp" />
     <ClInclude Include="..\lib\jian\scoring\ScoreAa.hpp" />
+    <ClInclude Include="..\lib\jian\scoring\ScorePsb.hpp" />
     <ClInclude Include="..\lib\jian\script.hpp" />
     <ClInclude Include="..\lib\jian\script\Script.hpp" />
     <ClInclude Include="..\lib\jian\thmc.hpp" />

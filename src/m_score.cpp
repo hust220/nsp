@@ -154,7 +154,7 @@ namespace jian {
 				sum_counts(filename, rows, cols);
 			}
 			else {
-				ScoreBase *scoring = FacScorer::create(method, method);
+				ScoreBase *scoring = ScoreBase::fac_t::create(method);
 				scoring->init();
 
 				if (par.has("print_freqs")) {

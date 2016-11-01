@@ -30,8 +30,6 @@ namespace jian {
 		std::vector<int> m_indices;
 		const Chain *m_chain;
 
-		Score(std::string);
-
 		virtual void init();
 
 		virtual void run(const Chain & chain);
@@ -46,15 +44,13 @@ namespace jian {
 
 		virtual double en_pairing(const Residue &r1, const Residue &r2);
 
+		virtual ScoreBase &en_bp(const Residue &r1, const Residue &r2);
+
 		virtual double en_len(const Residue &r1, const Residue &r2);
 
 		virtual double en_ang(const Residue &r1, const Residue &r2, const Residue &r3);
 
 		virtual double en_dih(const Residue &r1, const Residue &r2, const Residue &r3, const Residue &r4);
-
-		virtual double en_crash_psb(const Residue &r1, const Residue &r2);
-
-		virtual double en_crash_6p(const Residue &r1, const Residue &r2);
 
 		virtual double en_crash(const Residue &r1, const Residue &r2);
 

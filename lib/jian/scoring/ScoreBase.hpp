@@ -9,10 +9,12 @@ namespace jian {
 
 	class ScoreBase {
 	public:
-		using Constructor = ScoreBase*(std::string);
+		using Constructor = ScoreBase*(void);
 		using fac_t = Factory<ScoreBase::Constructor>;
 
 		double m_score;
+		double m_en_pairing;
+		double m_en_stacking;
 		CG *m_cg = NULL;
 
 		~ScoreBase() {
@@ -33,6 +35,8 @@ namespace jian {
 
 		virtual double en_pairing(const Residue &r1, const Residue &r2) = 0;
 
+		virtual ScoreBase &en_bp(const Residue &r1, const Residue &r2) = 0;
+
 		virtual double en_len(const Residue &r1, const Residue &r2) = 0;
 
 		virtual double en_ang(const Residue &r1, const Residue &r2, const Residue &r3) = 0;
@@ -42,8 +46,6 @@ namespace jian {
 		virtual double en_crash(const Residue &r1, const Residue &r2) = 0;
 
 	};
-
-	using FacScorer = Factory<ScoreBase::Constructor>;
 
 }
 

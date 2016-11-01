@@ -407,9 +407,8 @@ public:
         }
 
         // Superposition
-        auto sp = geom::suppos(m1, m2);
-        INIT_SUPPOS(sp);
-		for (auto && res : c) for (auto && atom : res) { APPLY_SUPPOS(atom, sp); }
+		geom::Superposition sp(m1, m2);
+		for (auto && res : c) for (auto && atom : res) { sp.apply(atom); }
 
         // Set _pred_chain
         n = 0;

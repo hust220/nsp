@@ -234,11 +234,10 @@ public:
         if (m != NULL) {
             int len = chain->size();
             Mat *mat = chain_mat(*chain, {0, 1, len-2, len-1});
-            auto t = geom::suppos(*mat, *m);
-            INIT_SUPPOS(t);
+			geom::Superposition sp(*mat, *m);
             for (auto && res : *chain) {
                 for (auto && atom : res) {
-                    APPLY_SUPPOS(atom, t);
+					sp.apply(atom);
                 }
             }
             delete m;

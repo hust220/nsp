@@ -26,7 +26,7 @@ namespace jian {
 		double m_weight_dist;
 		double m_weight_dih;
 
-		ScoreAa(std::string cg);
+		ScoreAa();
 
 		~ScoreAa();
 
@@ -43,6 +43,8 @@ namespace jian {
 		virtual double en_stacking(const Residue &r1, const Residue &r2);
 
 		virtual double en_pairing(const Residue &r1, const Residue &r2);
+
+		virtual ScoreBase &en_bp(const Residue &r1, const Residue &r2);
 
 		virtual double en_len(const Residue &r1, const Residue &r2);
 

@@ -1,11 +1,12 @@
 #pragma once
 
+#include <memory>
+#include <set>
 #include "../utils/Debug.hpp"
 #include "../pdb.hpp"
 #include "../dg/DG.hpp"
 #include "../geom.hpp"
-#include "C2A.hpp"
-#include <set>
+#include "../cg.hpp"
 
 namespace jian {
 
@@ -29,7 +30,8 @@ public:
         auto bound = make_bound(n, a, b);
         auto scaffold = dg(bound);
         superpose_scaffold(scaffold, a, b);
-        auto residues = c2a(scaffold, 0, int(scaffold.rows())-1);
+		std::shared_ptr<CG> cg(CG::fac_t::create("1p"));
+        auto residues = cg->to_aa(scaffold, 0, int(scaffold.rows())-1);
         auto new_residues = slice(residues, a.rows(), a.rows() + n);
         return new_residues;
     }

@@ -164,6 +164,7 @@ public:
         int len1 = c1.size() / 3, len2 = c2.size() / 3;
         int len = len1 + len2 - 1;
         Mat m1(3*l, 3), m2(3*l, 3);
+
         set_coords_residue(m1, 0, c1[len1 - 1]);
         set_coords_residue(m1, 1, c1[len1]);
         set_coords_residue(m1, 2, c1[3 * len1 - 1]);
@@ -171,10 +172,10 @@ public:
         set_coords_residue(m2, 1, c2[2 * len2 - 1]);
         set_coords_residue(m2, 2, c2[2 * len2]);
         LOG << "## Supperposition." << std::endl;
-        auto sp = geom::suppos(m1, m2);
-        INIT_SUPPOS(sp);
-//        APPLY_SUPPOS(c1, sp);
-		for (auto && res : c1) for (auto && atom : res) { APPLY_SUPPOS(atom, sp); }
+		geom::Superposition sp(m1, m2);
+		for (auto && res : c1) for (auto && atom : res) {
+			sp.apply(atom);
+		}
         LOG << "## Set coordinates." << std::endl;
         Chain c;
         for (int i = 0; i < len1; i++)         c.push_back(c1[i]);

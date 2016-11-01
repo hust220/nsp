@@ -1,4 +1,6 @@
+#include <memory>
 #include "BuildLoopDG.hpp"
+#include "../cg.hpp"
 
 namespace jian {
 
@@ -30,7 +32,8 @@ void BuildLoopDG::init(const std::string &seq, const std::string &ss, const std:
 Chain BuildLoopDG::operator ()() {
     Debug::print("## Build Loop By DG\n");
     auto &&c = dg(_dist_bound);
-    return c2a(c, 0, c.rows() - 1);
+	std::shared_ptr<CG> cg(CG::fac_t::create("1p"));
+    return cg->to_aa(c, 0, c.rows() - 1);
 }
 
 void BuildLoopDG::set_bound_loop(Eigen::MatrixXd &b, DihBound &d, loop *l) {
@@ -60,11 +63,6 @@ void BuildLoopDG::set_bound_helix(Eigen::MatrixXd &b, DihBound &d, const helix &
 		b(s1[j], s2[i]) = b(s2[i], s1[j]) = helix_par.dist_d(j - i);
 	}
 	for (int i = 0; i < len; i++) b(s1[i], s2[i]) = b(s2[i], s1[i]) = helix_par.dist_bp;
-    /*FOR((i, len), FOR((j, i+1, len), b(s1[i], s1[j]) = b(s1[j], s1[i]) = helix_par.dist_a(j-i);
-                                     b(s2[i], s2[j]) = b(s2[j], s2[i]) = helix_par.dist_b(j-i);
-                                     b(s1[i], s2[j]) = b(s2[j], s1[i]) = helix_par.dist_c(j-i);
-                                     b(s1[j], s2[i]) = b(s2[i], s1[j]) = helix_par.dist_d(j-i)));
-    FOR((i, len), b(s1[i], s2[i]) = b(s2[i], s1[i]) = helix_par.dist_bp);*/
 }
 
 } // namespace jian

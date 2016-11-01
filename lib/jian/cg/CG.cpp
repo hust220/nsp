@@ -73,14 +73,16 @@ namespace jian {
 			extract_frags(m_path);
 		}
 
-		Chain get_residues(int i, const Mat &c) {
-			Chain &residues = m_chains[i];
-			auto s = geom::suppos(*(m_frags[i]), c);
-			INIT_SUPPOS(s);
-			for (auto && res : residues) for (auto && atom : res) {
-				APPLY_SUPPOS(atom, s);
+		Chain get_chain(int i, const Mat &c) {
+			geom::Superposition sp;
+			Chain chain;
+			
+			chain = m_chains[i];
+			sp.init(*(m_frags[i]), c);
+			for (auto && res : chain) for (auto && atom : res) {
+				sp.apply(atom);
 			}
-			return residues;
+			return chain;
 		}
 
 		template<typename Coord, typename Frag>
@@ -106,7 +108,7 @@ namespace jian {
 				}
 				auto min = std::min_element(scores.begin(), scores.end());
 				index = std::distance(scores.begin(), min);
-				residues = get_residues(index, c);
+				residues = get_chain(index, c);
 				if (i == 0) {
 					for (j = 0; j < m_frag_size - 1; j++) {
 						chain.push_back(residues[j]);

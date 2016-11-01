@@ -76,9 +76,6 @@
     <ClCompile Include="align.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="anal_mol.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="build_loop.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -212,9 +209,6 @@
       <Filter>jian\nuc3d</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\jian\nuc3d\BuildLoopDG.cpp">
-      <Filter>jian\nuc3d</Filter>
-    </ClCompile>
-    <ClCompile Include="..\lib\jian\nuc3d\C2A.cpp">
       <Filter>jian\nuc3d</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\jian\nuc3d\Convert.cpp">
@@ -403,6 +397,18 @@
     <ClCompile Include="..\lib\jian\mcsm\McsmBase.cpp">
       <Filter>jian\mcsm</Filter>
     </ClCompile>
+    <ClCompile Include="m_anal.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\scoring\Score6p.cpp">
+      <Filter>jian\scoring</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\scoring\Score1p.cpp">
+      <Filter>jian\scoring</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\scoring\ScorePsb.cpp">
+      <Filter>jian\scoring</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="nsp.hpp">
@@ -571,9 +577,6 @@
       <Filter>jian\nuc3d</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jian\nuc3d\BuildStrand.hpp">
-      <Filter>jian\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\nuc3d\C2A.hpp">
       <Filter>jian\nuc3d</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jian\nuc3d\Connect.hpp">
@@ -902,6 +905,15 @@
     </ClInclude>
     <ClInclude Include="..\lib\jian\mcsm\McsmBase.hpp">
       <Filter>jian\mcsm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\scoring\Score6p.hpp">
+      <Filter>jian\scoring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\scoring\Score1p.hpp">
+      <Filter>jian\scoring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\scoring\ScorePsb.hpp">
+      <Filter>jian\scoring</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
