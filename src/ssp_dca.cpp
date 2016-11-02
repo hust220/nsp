@@ -33,9 +33,9 @@ REGISTER_NSP_COMPONENT(ssp_dca) {
     ss = dca::pairs_to_ss(pairs, seq.size());
     LOGI << ss << std::endl;
 
-    LOGI << "Removing small hairpins: " << std::endl;
-    ss = lrsp::ss_del_sm_hp(ss);
-    LOGI << ss << std::endl;
+    //LOGI << "Removing small hairpins: " << std::endl;
+    //ss = lrsp::ss_del_sm_hp(ss);
+    //LOGI << ss << std::endl;
 
     LOGI << "SS Prediction: " << std::endl;
     ss = lrsp::ss_hp_pred(seq, ss);
