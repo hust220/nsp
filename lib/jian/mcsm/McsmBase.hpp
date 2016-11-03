@@ -64,7 +64,9 @@ namespace jian {
 
 				void write_traj();
 
-				void mc_sample();
+				virtual void mc_sample();
+
+				void mc_sample_res();
 
 				void mc_back();
 

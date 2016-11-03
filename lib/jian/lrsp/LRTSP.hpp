@@ -85,7 +85,7 @@ public:
         }
     }
 
-    void set_fixed_ranges(loop *l, nuc3d::fixed_ranges_t &fixed_ranges) {
+    void set_fixed_ranges(loop *l, fixed_ranges_t &fixed_ranges) {
         if (l != NULL) {
             if (l->has_loop()) {
                 auto p = loop_head_tail(l);
@@ -100,9 +100,9 @@ public:
         }
     }
 
-    static void chain_refine(Chain *chain, loop *l, std::string log) {
+    static void lrtsp_chain_refine(Chain *chain, loop *l, std::string log) {
         log_file(log);
-        nuc3d::chain_refine<CGpsb>(*chain, l, {});
+        chain_refine<CGpsb>(*chain, l, {});
     }
 
     void set_templates_all(loop *l) {
@@ -118,7 +118,7 @@ public:
         if (b_NR) {
             std::ostringstream stream;
             stream << _out << '.' << threads.size() + 1 << ".log";
-            threads.push_back(std::thread(chain_refine, chain, l, stream.str()));
+            threads.push_back(std::thread(lrtsp_chain_refine, chain, l, stream.str()));
 //            nuc3d::chain_refine<nuc3d::mc::MCSM>(*chain, l);
         }
         _loop_templates[l] = chain;
@@ -409,9 +409,9 @@ public:
         assemble_templates(*chain, l);
         if (b_NR) {
             LOGI << "# refining..." << std::endl;
-            nuc3d::fixed_ranges_t fixed_ranges;
+            fixed_ranges_t fixed_ranges;
             set_fixed_ranges(l, fixed_ranges);
-            nuc3d::chain_refine<CGpsb>(*chain, l, fixed_ranges, _traj);
+            chain_refine<CGpsb>(*chain, l, fixed_ranges, _traj);
         }
         mol_write(*chain, _out);
         LOGI << "# free ss tree..." << std::endl;

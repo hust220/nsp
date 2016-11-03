@@ -61,8 +61,8 @@ namespace jian {
 
 				virtual void finish_run();
 
-				virtual void mc_select() = 0;
 				virtual bool is_selected(const int &i) const = 0;
+
 				virtual Vec rotating_center() const = 0;
 
 			};

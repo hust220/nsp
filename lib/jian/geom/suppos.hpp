@@ -38,13 +38,29 @@ namespace jian {
 
 			Superposition(const Mat &m, const Mat &n);
 
-			Superposition &init(const Mat &m, const Mat &n);
+			void init(const Mat &m, const Mat &n);
 
 			template<typename T>
 			void apply(T &&t) {
 				translate(t, c1);
 				rotate(t, rot);
 				translate(t, c2);
+			}
+
+			template<typename Mat>
+			void apply_m(Mat &&m) {
+				int i, j;
+				for (i = 0; i < m.rows(); i++) {
+					for (j = 0; j < 3; j++) {
+						m(i, j) += c1[j];
+					}
+				}
+				m = m * rot;
+				for (i = 0; i < m.rows(); i++) {
+					for (j = 0; j < 3; j++) {
+						m(i, j) += c2[j];
+					}
+				}
 			}
 		};
 

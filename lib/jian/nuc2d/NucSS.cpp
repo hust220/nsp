@@ -75,17 +75,33 @@ namespace jian {
 		return nuc_ss;
 	}
 
+	bool NucSS::is_char_ss(char c) {
+		return
+			std::find_if( instance().paired_keys.begin(), instance().paired_keys.end(), [&](const std::pair<char, char> &pair) {
+				return pair.first == c || pair.second == c;
+			}) != instance().paired_keys.end() ||
+			std::find(instance().unpaired_keys.begin(), instance().unpaired_keys.end(), c) != instance().unpaired_keys.end() ||
+			std::find(instance().break_keys.begin(), instance().break_keys.end(), c) != instance().break_keys.end();
+	}
+
+
 	bool NucSS::check_ss(const std::string &ss) {
+		std::string info_errors;
+		return check_ss(ss, info_errors);
+	}
+
+	bool NucSS::check_ss(const std::string &ss, std::string &info_errors) {
 		std::lock_guard<std::mutex> gd(nass_detail::mt);
+		std::ostringstream stream;
 
 		for (auto &&s : ss) {
-			if (!std::count_if(instance().paired_keys.begin(), instance().paired_keys.end(), [&](const std::pair<char, char> &pair) {
-				return pair.first == s || pair.second == s;
-			}) && !std::count(instance().unpaired_keys.begin(), instance().unpaired_keys.end(), s)
-				&& !std::count(instance().break_keys.begin(), instance().break_keys.end(), s)) {
+			if (!is_char_ss(s)) {
+				stream << "Illegal character in secondary structure: '" << s << "'.\n";
+				info_errors = stream.str();
 				return false;
 			}
 		}
+
 		std::map<char, int> map;
 		for (auto &&s : ss) {
 			if (nass_detail::pos_keys.count(s)) {
@@ -105,7 +121,13 @@ namespace jian {
 			}
 		}
 
-		for (auto &&pair : map) if (pair.second != 0) return false;
+		for (auto &&pair : map) {
+			if (pair.second != 0) {
+				info_errors = 
+					"The number of left parenthesis (or squares) should equal to the number of right parenthesis (or squares)!\n";
+				return false;
+			}
+		}
 
 		return true;
 	}

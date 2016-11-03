@@ -6,7 +6,7 @@
 namespace jian {
 
 	REGISTER_NSP_COMPONENT(dhmc) {
-		nuc3d::DHMC dhmc;
+		DHMC dhmc;
 		dhmc.init(par);
 		dhmc.predict();
 	}

@@ -153,6 +153,7 @@
     <ClCompile Include="..\lib\jian\cg\CG6p.cpp" />
     <ClCompile Include="..\lib\jian\cg\CGaa.cpp" />
     <ClCompile Include="..\lib\jian\cg\CGpsb.cpp" />
+    <ClCompile Include="..\lib\jian\cg\Frags.cpp" />
     <ClCompile Include="..\lib\jian\dca\Dca.cpp" />
     <ClCompile Include="..\lib\jian\dca\Mat3.cpp" />
     <ClCompile Include="..\lib\jian\dca\Mat4.cpp" />
@@ -164,6 +165,7 @@
     <ClCompile Include="..\lib\jian\dg\DihBound.cpp" />
     <ClCompile Include="..\lib\jian\dg\Gradient.cpp" />
     <ClCompile Include="..\lib\jian\dg\smooth.cpp" />
+    <ClCompile Include="..\lib\jian\dhmc\DHMC.cpp" />
     <ClCompile Include="..\lib\jian\geom\suppos.cpp" />
     <ClCompile Include="..\lib\jian\lrsp\ss_complete.cpp" />
     <ClCompile Include="..\lib\jian\lrsp\ss_del_sm_hp.cpp" />
@@ -268,6 +270,7 @@
     <ClInclude Include="..\lib\jian\cg\CG6p.hpp" />
     <ClInclude Include="..\lib\jian\cg\CGaa.hpp" />
     <ClInclude Include="..\lib\jian\cg\CGpsb.hpp" />
+    <ClInclude Include="..\lib\jian\cg\Frags.hpp" />
     <ClInclude Include="..\lib\jian\dca.hpp" />
     <ClInclude Include="..\lib\jian\dca\Dca.hpp" />
     <ClInclude Include="..\lib\jian\dca\Mat3.hpp" />

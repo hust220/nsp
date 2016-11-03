@@ -17,7 +17,9 @@ public:
 
     NucSS();
     static NucSS &instance();
-    static bool check_ss(const std::string &ss);
+	static bool is_char_ss(char c);
+	static bool check_ss(const std::string &ss, std::string &info_errors);
+	static bool check_ss(const std::string &ss);
     static int len_ss(const std::string &ss);
     static std::string pure_ss(const std::string &ss);
     static std::string lower_ss(const std::string &ss, int n = 2);

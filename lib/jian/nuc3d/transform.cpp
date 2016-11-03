@@ -39,9 +39,13 @@ Model to_dna(const Model &model, const std::string &seq) {
 Model transform(const Model &m, const std::string &seq, const std::string &type) {
     if (type == "RNA") {
         return to_rna(m, seq);
-    } else if (type == "DNA") {
+    }
+	else if (type == "DNA") {
         return to_dna(m, seq);
     }
+	else {
+		throw "jian::transform error!";
+	}
 }
 
 } // namespace jian

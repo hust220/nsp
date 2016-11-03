@@ -7,7 +7,7 @@ namespace jian {
 			init(m, n);
 		}
 
-		Superposition &Superposition::init(const Mat &m, const Mat &n) {
+		void Superposition::init(const Mat &m, const Mat &n) {
 			int i, j, len;
 			Mat x, y, g, u, v, I, d;
 			std::ostringstream stream;
@@ -36,11 +36,11 @@ namespace jian {
 			rot = u * I * v.transpose();
 
 			d = x * rot - y;
-			rmsd = 0; for (int i = 0; i < len; i++) for (int j = 0; j < 3; j++) rmsd += d(i, j) * d(i, j);
+			rmsd = 0;
+			for (int i = 0; i < len; i++) for (int j = 0; j < 3; j++) rmsd += d(i, j) * d(i, j);
 			rmsd = std::sqrt(rmsd / len);
 
 			c1 = -c1;
-			return *this;
 		}
 
 		Superposition suppos(const Mat &m, const Mat &n) {

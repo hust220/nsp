@@ -18,7 +18,7 @@ namespace jian {
 				log_file(stream.str());
 
 
-				nuc3d::DHMC mc;
+				DHMC mc;
 				mc.init(par);
 				mc._pred_chain = chain;
 

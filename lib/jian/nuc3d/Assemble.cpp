@@ -116,7 +116,9 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
         par.set(m_sample_mode, "sample_mode");
 
         LOG << "# Check input" << std::endl;
-        if (!NucSS::check_ss(_ss)) throw "The secondary structure includes illegal characters!";
+		std::string info_errors;
+		auto b = NucSS::check_ss(_ss, info_errors);
+        if (!b) throw info_errors;
 
         LOG << "# Construct 2D Structure Tree" << std::endl;
         _ss_tree.make(_seq, _ss, _hinge);

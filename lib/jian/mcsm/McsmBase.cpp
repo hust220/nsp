@@ -64,14 +64,6 @@ namespace jian {
 					n += m_chain_lens[i];
 					m_brk_pts.push_back(n - 1);
 				}
-				//for (auto && c : _ss) {
-				//	if (c != '&') {
-				//		i++;
-				//	}
-				//	else {
-				//		m_brk_pts.push_back(i - 1);
-				//	}
-				//}
 				for (int i = 0; i < _seq.size() - 1; i++) {
 					if (std::find(m_brk_pts.begin(), m_brk_pts.end(), i) == m_brk_pts.end()) {
 						m_continuous_pts.push_back(i);
@@ -113,6 +105,10 @@ namespace jian {
 			}
 
 			void MCBase::mc_sample() {
+				mc_sample_res();
+			}
+
+			void MCBase::mc_sample_res() {
 				backup();
 				if (rand() < 0.5) {
 					// translate
