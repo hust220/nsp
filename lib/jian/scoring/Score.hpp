@@ -15,8 +15,12 @@ namespace jian {
 	public:
 		Mat m_freqs_stacking;
 		Mat m_freqs_pairing;
+		Mat m_freqs_wc;
+		Mat m_freqs_nwc;
 		Mati m_counts_stacking;
 		Mati m_counts_pairing;
+		Mati m_counts_wc;
+		Mati m_counts_nwc;
 		double m_bond_len_std;
 		std::vector<double> m_bond_angle_std;
 		double m_bond_dihedral_std;

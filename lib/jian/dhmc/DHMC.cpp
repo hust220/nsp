@@ -167,18 +167,26 @@ namespace jian {
 		set_trees();
 
 		LOG << "# Set fragments" << std::endl;
-		m_frag_size = 3;
-		par.set(m_frag_size, "frag_size");
-		m_frags = &(Frags::instance(m_cg->m_cg, m_frag_size));
+		m_sample_frag = par.has("frag");
+		if (m_sample_frag) {
+			m_frag_size = 3;
+			par.set(m_frag_size, "frag_size");
+			m_frags = &(Frags::instance(m_cg->m_cg, m_frag_size));
+		}
+		else {
+			m_frag_size = 1;
+		}
 
 		LOG << "# Set moving elements" << std::endl;
 		set_mvels();
 
-		LOG << "# Set range of bases" << std::endl;
+		LOG << "# Set moving elements of each base" << std::endl;
 		set_base_mvels();
 
-		LOG << "# Print ranges" << std::endl;
+		LOG << "# Print moving elements" << std::endl;
 		print_mvels();
+
+		//throw "debugging...";
 
 		LOG << "# Remove useless constraints" << std::endl;
 		remove_useless_constraints();
@@ -406,12 +414,12 @@ namespace jian {
 
 	void DHMC::set_mvels() {
 		int i;
-		std::vector<int> v(_seq.size(), 0);
+		m_is_free.resize(_seq.size(), true);
 
-		auto add_el = [&](MvEl *el) {
+		auto add_el = [this](MvEl *el) {
 			for (auto && frag : el->range) {
-				for (i = frag[0]; i <= frag[1]; i++) {
-					v[i] = 1;
+				for (int i = frag[0]; i <= frag[1]; i++) {
+					this->m_is_free[i] = false;
 				}
 			}
 			m_mvels.push_back(el);
@@ -433,16 +441,26 @@ namespace jian {
 
 		for (auto it = m_trees.begin(); it != m_trees.end(); it++) {
 			set_res_module_types_ss((*it)->head(), it == m_trees.begin());
-			std::cout << "m_mvels.size(): " << m_mvels.size() << std::endl;
+			//std::cout << "m_mvels.size(): " << m_mvels.size() << std::endl;
 		}
 
 		std::vector<int> w(m_frag_size);
 		for (i = 0; i + m_frag_size - 1 < _seq.size(); i++) {
 			std::iota(w.begin(), w.end(), i);
-			if (std::find(w.begin(), w.end(), 0) != w.end()) {
+			if (std::any_of(w.begin(), w.end(), [this](int i) {
+				return this->m_is_free[i];
+			})) {
 				m_mvels.push_back(new MvEl(i, i + m_frag_size - 1, MvEl::MVEL_FG));
 			}
 		}
+
+		//LOG << "information of free:" << std::endl;
+		//for (i = 0; i < _seq.size(); i++) {
+		//	LOG << i << ' ' << m_is_free[i] << std::endl;
+		//}
+		//LOG << "before merge: " << std::endl;
+		//print_mvels();
+		//LOG << "after merge: " << std::endl;
 
 		MvEl::merge(m_mvels);
 	}
@@ -450,20 +468,23 @@ namespace jian {
 	// MC related methods
 
 	void DHMC::mc_sample() {
-		if (m_selected_mvel->type != MvEl::MVEL_FG) {
-			LOG << "sample res" << std::endl;
-			mc_sample_res();
+		if (m_selected_mvel->type == MvEl::MVEL_FG && m_sample_frag) {
+			//LOG << "sample frag" << std::endl;
+			mc_sample_frag();
 		}
 		else {
-			LOG << "sample frag" << std::endl;
-			mc_sample_frag();
+			//LOG << "sample res" << std::endl;
+			mc_sample_res();
 		}
 	}
 
 	void DHMC::mc_sample_frag() {
-		int i, j, k;
-		Mat m1, m2;
-		Mat *m;
+		int i, j, k, id;
+		Mat m, m1, m2;
+		Mat *mat;
+
+		if (m_selected_mvel->type != MvEl::MVEL_FG)
+			throw "jian::DHMC::mc_sample_frag error!";
 
 		backup();
 
@@ -474,23 +495,48 @@ namespace jian {
 		}
 
 		auto &ids = m_frags->m_ids[stream.str()];
-		m = m_frags->m_mats[ids[int(ids.size() * rand())]];
+		id = ids[int(ids.size() * rand())];
+		mat = m_frags->m_mats[id];
+		//Chain *c1 = m_frags->m_chains_aa[id];
+		//Chain *c2 = m_frags->m_chains_cg[id];
+		//static int n = 0;
+		//if (n < 10) {
+		//	mol_write(*c1, "aa.frag.aa." + JN_STR(n + 1) + ".pdb");
+		//	mol_write(*c2, "aa.frag.cg." + JN_STR(n + 1) + ".pdb");
+		//	std::ostringstream str;
+		//	str << "aa.mat." << n + 1 << ".txt";
+		//	std::ofstream ofile(str.str().c_str());
+		//	ofile << *m << std::endl;
+		//	ofile.close();
+		//}
+		//n++;
 
-		m1 = *m;
-		m2.resize(m->rows(), m->cols());
-		for (i = 0; i < m_frag_size; i++) {
-			for (j = 0; j < m_cg->res_size(); j++) {
-				for (k = 0; k < 3; k++) {
-					m2(i * m_cg->res_size() + j, 3) = _pred_chain[f[0] + i][j][k];
-				}
+		m = *mat;
+		m1.resize(2 * m_cg->res_size(), 3);
+		m2.resize(2 * m_cg->res_size(), 3);
+		//Chain c;
+			//c.push_back(_pred_chain[f[0] + i]);
+		for (j = 0; j < m_cg->res_size(); j++) {
+			for (k = 0; k < 3; k++) {
+				m1(j, k) = m(j, k);
+				m1(m_cg->res_size() + j, k) = m((m_frag_size - 1) * m_cg->res_size() + j, k);
+				m2(j, k) = _pred_chain[f[0]][j][k];
+				m2(m_cg->res_size() + j, k) = _pred_chain[f[0] + (m_frag_size - 1)][j][k];
 			}
 		}
+		//static int n = 0;
+		//if (n < 10) mol_write(c, "aa.frag." + JN_STR(n + 1) + ".pdb");
+		//n++;
 		geom::Superposition sp(m1, m2);
-		sp.apply_m(m1);
+		//std::cout << "before sp: " << sp.rmsd << std::endl;
+		sp.apply_m(m);
+		//std::cout << "after sp: " << geom::rmsd(m1, m2) << std::endl;
 		for (i = 0; i < m_frag_size; i++) {
-			for (j = 0; j < m_cg->res_size(); j++) {
-				for (k = 0; k < 3; k++) {
-					_pred_chain[f[0] + i][j][k] = m1(i * m_cg->res_size() + j, 3);
+			if (m_is_free[f[0] + i]) {
+				for (j = 0; j < m_cg->res_size(); j++) {
+					for (k = 0; k < 3; k++) {
+						_pred_chain[f[0] + i][j][k] = m(i * m_cg->res_size() + j, k);
+					}
 				}
 				space_update_item(f[0] + i);
 			}

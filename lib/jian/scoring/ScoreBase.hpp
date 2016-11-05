@@ -15,6 +15,8 @@ namespace jian {
 		double m_score;
 		double m_en_pairing;
 		double m_en_stacking;
+		double m_en_wc;
+		double m_en_nwc;
 		CG *m_cg = NULL;
 
 		~ScoreBase() {

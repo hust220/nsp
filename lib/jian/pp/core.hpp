@@ -29,8 +29,8 @@
 #define PP_VARIADIC_ELEM_5(e1, e2, e3, e4, e5, e6, ...) e6
 #define PP_VARIADIC_ELEM(i, ...) BOOST_PP_CAT(PP_VARIADIC_ELEM_, i)(__VA_ARGS__, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 #define PP_TUPLE_ELEM(i, n) PP_VARIADIC_ELEM(i, PP_VARIADIC(n))
-#define PP_VARIADIC_SIZE_HELPER(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, size, ...) size
-#define PP_VARIADIC_SIZE(...) PP_CALL(PP_VARIADIC_SIZE_HELPER, (__VA_ARGS__, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1))
+#define PP_VARIADIC_SIZE_HELPER(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, size, ...) size
+#define PP_VARIADIC_SIZE(...) PP_CALL(PP_VARIADIC_SIZE_HELPER, (__VA_ARGS__, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1))
 #define PP_TUPLE_SIZE(i) PP_VARIADIC_SIZE i
 
 // IF

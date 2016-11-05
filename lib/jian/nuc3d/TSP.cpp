@@ -41,7 +41,6 @@ void TSP::init(const Par &pars) {
 
 TSP::~TSP() {
     delete _par;
-	delete m_cg;
 }
 
 void TSP::set_disused_pdbs() {
@@ -139,9 +138,9 @@ void TSP::read_seq() {
 }
 
 void TSP::read_cg() {
-	m_cg_type = "aa";
+	m_cg_type = "6p";
 	_par->set(m_cg_type, "cg");
-	m_cg = CG::fac_t::create(m_cg_type);
+	m_cg.reset(CG::fac_t::create(m_cg_type));
 }
 
 void TSP::read_ss() {

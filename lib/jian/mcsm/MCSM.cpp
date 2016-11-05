@@ -20,7 +20,9 @@
                                     auto p = std::minmax(n, t); \
 									e.crash += _mc_crash_weight * m_scorer->en_crash(_pred_chain[p.first], _pred_chain[p.second]); \
 									m_scorer->en_bp(_pred_chain[p.first], _pred_chain[p.second]);\
-									e.pairing += _mc_pairing_weight * m_scorer->m_en_pairing;\
+									/*e.pairing += _mc_pairing_weight * m_scorer->m_en_pairing;*/\
+									e.wc += _mc_wc_weight * m_scorer->m_en_wc;\
+									e.nwc += _mc_nwc_weight * m_scorer->m_en_nwc;\
 									e.stacking += _mc_stacking_weight * m_scorer->m_en_stacking;\
 								} \
 							} \
@@ -119,7 +121,11 @@ namespace jian {
 					for (j = i + 1; j < _seq.size(); j++) {
 						m_scorer->en_bp(_pred_chain[i], _pred_chain[j]);
 						if (m_scorer->m_en_pairing != 0 || m_scorer->m_en_stacking != 0) {
-							LOG << i + 1 << ' ' << j + 1 << ' ' << m_scorer->m_en_stacking << ' ' << m_scorer->m_en_pairing << std::endl;
+							LOG 
+								<< i + 1 << ' ' << j + 1 << ' ' 
+								<< m_scorer->m_en_stacking << ' ' 
+								<< m_scorer->m_en_wc << ' ' 
+								<< m_scorer->m_en_nwc << std::endl;
 						}
 					}
 				}
@@ -146,7 +152,7 @@ namespace jian {
 			MCPSB_ENERGY_CRASH(partial, if (is_selected(n)), if (!(is_selected(t)) && (t - n != 1 && n - t != 1)));
 			MCPSB_ENERGY_CRASH(total, , if (t - n > 1));
 
-			MCPSB_ENERGY_BOND(partial, if (is_selected(n) ^ is_selected(n + 1)));
+			MCPSB_ENERGY_BOND(partial, if (is_selected(n) || is_selected(n + 1)));
 			MCPSB_ENERGY_BOND(total, );
 
 			MCPSB_ENERGY_ANGLE(partial, if ((is_selected(i) + is_selected(i + 1) + is_selected(i + 2)) % 3 != 0));

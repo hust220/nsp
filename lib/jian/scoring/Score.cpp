@@ -1,5 +1,6 @@
-#include "Score.hpp"
+#include "ParBp.hpp"
 #include "../utils/Par.hpp"
+#include "Score.hpp"
 
 namespace jian {
 
@@ -64,12 +65,15 @@ namespace jian {
 		b = m_indices[n2];
 		const Residue &r1 = m_chain->at(n1);
 		const Residue &r2 = m_chain->at(n2);
-		for (i = 0; i < m_res_size; i++) {
-			for (j = 0; j < m_res_size; j++) {
-				d = geom::distance(r1[i], r2[j]);
-				if (d < 20) {
-					n = (a * m_res_size + i) * m_num_types + (b * m_res_size + j);
-					m_counts_stacking(n, int(d / m_bin))++;
+		ParBp parbp(r1, r2);
+		if (parbp.is_stacked()) {
+			for (i = 0; i < m_res_size; i++) {
+				for (j = 0; j < m_res_size; j++) {
+					d = geom::distance(r1[i], r2[j]);
+					if (d < 20) {
+						n = (a * m_res_size + i) * m_num_types + (b * m_res_size + j);
+						m_counts_stacking(n, int(d / m_bin))++;
+					}
 				}
 			}
 		}
@@ -81,12 +85,21 @@ namespace jian {
 		int n, a = m_indices[n1], b = m_indices[n2];
 		const Residue &r1 = m_chain->at(n1);
 		const Residue &r2 = m_chain->at(n2);
+		ParBp parbp(r1, r2);
+		bool is_wc = parbp.is_wc();
+		bool is_nwc = parbp.is_nwc();
 		for (i = 0; i < m_res_size; i++) {
 			for (j = 0; j < m_res_size; j++) {
 				d = geom::distance(r1[i], r2[j]);
 				if (d < 20) {
 					n = (a * m_res_size + i) * m_num_types + (b * m_res_size + j);
 					m_counts_pairing(n, int(d / m_bin))++;
+					if (is_wc) {
+						m_counts_wc(n, int(d / m_bin))++;
+					}
+					if (is_nwc) {
+						m_counts_nwc(n, int(d / m_bin))++;
+					}
 				}
 			}
 		}
@@ -110,6 +123,8 @@ namespace jian {
 	void Score::read_counts() {
 		read_counts(m_counts_stacking, Env::lib() + "/RNA/pars/scoring/score_" + m_cg->m_cg + "/stacking.counts", 0);
 		read_counts(m_counts_pairing, Env::lib() + "/RNA/pars/scoring/score_" + m_cg->m_cg + "/pairing.counts", 0);
+		read_counts(m_counts_wc, Env::lib() + "/RNA/pars/scoring/score_" + m_cg->m_cg + "/wc.counts", 0);
+		read_counts(m_counts_nwc, Env::lib() + "/RNA/pars/scoring/score_" + m_cg->m_cg + "/nwc.counts", 0);
 	}
 
 	void Score::read_pars() {
@@ -133,7 +148,7 @@ namespace jian {
 		for (i = 0; i < m_rows; i++) {
 			sum = c.row(i).sum();
 			for (j = 0; j < m_bins; j++) {
-				m(i, j) = (sum == 0 ? 0 : (double(c(i, j)) / sum));
+				m(i, j) = (sum < m_bins * 3 ? 0 : (double(c(i, j)) / sum));
 			}
 		}
 
@@ -145,7 +160,7 @@ namespace jian {
 
 		for (i = 0; i < m_rows; i++) {
 			for (j = 0; j < m_bins; j++) {
-				m(i, j) = (v[j] > 0.0003 ? (m(i, j) / v[j]) : 0);
+				m(i, j) = (v[j] > 0.0003? (m(i, j) / v[j]) : 0);
 			}
 		}
 	}
@@ -156,8 +171,12 @@ namespace jian {
 		//for (i = 0; i < m_rows; i++) for (j = 0; j < m_bins; j++) m_counts_pairing(i, j) += m_counts_stacking(i, j);
 		set_freqs(m_freqs_stacking, m_counts_stacking);
 		set_freqs(m_freqs_pairing, m_counts_pairing);
+		set_freqs(m_freqs_wc, m_counts_wc);
+		set_freqs(m_freqs_nwc, m_counts_nwc);
 		m_counts_stacking = Mati::Zero(m_rows, m_bins);
 		m_counts_pairing = Mati::Zero(m_rows, m_bins);
+		m_counts_wc = Mati::Zero(m_rows, m_bins);
+		m_counts_nwc = Mati::Zero(m_rows, m_bins);
 
 	}
 
@@ -196,6 +215,9 @@ namespace jian {
 		t2 = m_map[r2.name];
 		m_en_stacking = 0;
 		m_en_pairing = 0;
+		m_en_wc = 0;
+		m_en_nwc = 0;
+		ParBp parbp(r1, r2);
 		for (i = 0; i < m_res_size; i++) {
 			if (!in_base(i)) continue;
 			for (j = 0; j < m_res_size; j++) {
@@ -204,10 +226,20 @@ namespace jian {
 				if (d < m_cutoff) {
 					a = t1 * m_res_size + i;
 					b = t2 * m_res_size + j;
-					f = m_freqs_stacking(a * m_num_types + b, int(d / m_bin));
-					m_en_stacking += (f == 0 ? 0 : -std::log(f));
-					f = m_freqs_pairing(a * m_num_types + b, int(d / m_bin));
-					m_en_pairing += (f == 0 ? 0 : -std::log(f));
+					if (parbp.is_stacked()) {
+						f = m_freqs_stacking(a * m_num_types + b, int(d / m_bin));
+						m_en_stacking += (f == 0 ? 0 : -std::log(f));
+					}
+					if (parbp.is_wc()) {
+						f = m_freqs_wc(a * m_num_types + b, int(d / m_bin));
+						m_en_wc += (f == 0 ? 0 : -std::log(f));
+					}
+					if (parbp.is_nwc()) {
+						f = m_freqs_nwc(a * m_num_types + b, int(d / m_bin));
+						m_en_nwc += (f == 0 ? 0 : -std::log(f));
+					}
+					//f = m_freqs_pairing(a * m_num_types + b, int(d / m_bin));
+					//m_en_pairing += (f == 0 ? 0 : -std::log(f));
 				}
 			}
 		}
@@ -227,6 +259,10 @@ namespace jian {
 		print_counts(stream, m_counts_stacking);
 		stream << "Pairing counts: " << std::endl;
 		print_counts(stream, m_counts_pairing);
+		stream << "WC counts: " << std::endl;
+		print_counts(stream, m_counts_wc);
+		stream << "nWC counts: " << std::endl;
+		print_counts(stream, m_counts_nwc);
 	}
 
 	void Score::print_freqs(std::ostream & stream, const Mat & f) const {

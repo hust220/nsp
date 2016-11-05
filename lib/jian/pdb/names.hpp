@@ -10,6 +10,8 @@ namespace jian {
 		using names_t = std::vector<std::string>;
 		using map_names_t = std::map<std::string, names_t>;
 
+		int res_type(const std::string &res_name);
+
 		class Names {
 		public:
 			static const Names & instance(std::string mol_type);

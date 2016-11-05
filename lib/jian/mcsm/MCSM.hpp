@@ -4,7 +4,7 @@
 #include "../cg.hpp"
 #include "../scoring/Score.hpp"
 
-#define MEM_EN_MCPSB len, ang, dih, crash, cons, vdw, stacking, pairing
+#define MEM_EN_MCPSB len, ang, dih, crash, cons, vdw, stacking, pairing, wc, nwc
 #define DEF_MEM_EN_MCPSB(a) double a = 0;
 #define SUM_MEM_EN_MCPSB(a) + a
 #define PRINT_MEM_EN_MCPSB(a) << a << PP_STRING3((a)) << ' '

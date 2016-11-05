@@ -415,6 +415,10 @@
     <ClCompile Include="..\lib\jian\dhmc\DHMC.cpp">
       <Filter>jian\dhmc</Filter>
     </ClCompile>
+    <ClCompile Include="m_aa.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\scoring\ParBp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="nsp.hpp">
@@ -914,6 +918,9 @@
     </ClInclude>
     <ClInclude Include="..\lib\jian\cg\Frags.hpp">
       <Filter>jian\cg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\scoring\ParBp.hpp">
+      <Filter>jian\scoring</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

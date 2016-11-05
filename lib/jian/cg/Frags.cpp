@@ -58,7 +58,7 @@ namespace jian {
 		chain_read_model(full_chain, pdb);
 		chain = m_cg->to_cg(full_chain);
 		for (n = 0; n < chain.size(); n++) {
-			if (dq.size() >= 1 && geom::distance(chain[dq.back()][0], chain[n][0]) > 10) {
+			if (dq.size() >= 1 && geom::distance(chain[dq.back()][2], chain[n][0]) > 4) {
 				dq.clear();
 			}
 			dq.push_back(n);
@@ -68,19 +68,19 @@ namespace jian {
 				m_mats.push_back(p_mat);
 				p_chain_aa = new Chain;
 				m_chains_aa.push_back(p_chain_aa);
+				p_chain_cg = new Chain;
+				m_chains_cg.push_back(p_chain_cg);
 				for (i = 0; i < m_frag_size; i++) {
 					stream << full_chain[dq[i]].name;
 					p_chain_aa->push_back(full_chain[dq[i]]);
+					p_chain_cg->push_back(chain[dq[i]]);
 					for (j = 0; j < m_res_size; j++) {
 						for (k = 0; k < 3; k++) {
 							(*p_mat)(i*m_res_size + j, k) = chain[dq[i]][j][k];
 						}
 					}
 				}
-				p_chain_cg = new Chain;
-				m_chains_cg.push_back(p_chain_cg);
-				*p_chain_cg = m_cg->to_cg(*p_chain_aa);
-				m_mats.push_back(p_mat);
+				//*p_chain_cg = m_cg->to_cg(*p_chain_aa);
 				m_ids[stream.str()].push_back(m_chains_aa.size() - 1);
 				dq.pop_front();
 			}

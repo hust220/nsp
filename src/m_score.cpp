@@ -36,19 +36,23 @@ namespace jian {
 			std::cout << std::endl;
 		}
 
-		void score_res(ScoreBase * scoring, std::string filename) {
+		void score_res(ScoreBase * scoring, std::string filename, std::string score_type = "pairing") {
 			Chain chain;
 			int i, j, l;
 
-			read_chain(chain, filename);
+			chain_read_model(chain, filename);
 			l = chain.size();
+			//std::cout << l << std::endl;
 			for (i = 0; i < l; i++) {
 				for (j = 0; j < l; j++) {
 					if (i == j) std::cout << 0 << "\t";
 					else {
 						scoring->en_bp(chain[i], chain[j]);
-						if (std::abs(i - j) == 1) std::cout << scoring->m_en_stacking << "\t";
-						else std::cout << scoring->m_en_pairing << "\t";
+						if (score_type == "pairing") std::cout << scoring->m_en_pairing << "\t";
+						if (score_type == "stacking") std::cout << scoring->m_en_stacking << "\t";
+						else if (score_type == "wc") std::cout << scoring->m_en_wc << "\t";
+						else if (score_type == "nwc") std::cout << scoring->m_en_nwc << "\t";
+						else throw "error!";
 					}
 				}
 				std::cout << std::endl;
@@ -57,7 +61,7 @@ namespace jian {
 
 		void score_s(ScoreBase * scoring, std::string filename) {
 			Chain chain;
-			read_chain(chain, filename);
+			chain_read_model(chain, filename);
 			scoring->run(chain);
 			std::cout <<
 				"Score of " << filename << ": " <<
@@ -77,7 +81,7 @@ namespace jian {
 			Chain chain;
 
 			std::cout << "Train " << filename << " ..." << std::endl;
-			read_chain(chain, filename);
+			chain_read_model(chain, filename);
 			scoring->train(chain);
 		}
 
@@ -116,6 +120,10 @@ namespace jian {
 			std::ofstream ofile;
 			std::ostream stream(std::cout.rdbuf());
 			std::string method;
+			std::string score_type = "pairing";
+
+			par.set(score_type, "score_type");
+
 			CG *m_cg;
 			//std::streambuf *buf = stream.rdbuf();
 
@@ -134,7 +142,7 @@ namespace jian {
 				Chain chain;
 				int i, j, l;
 
-				read_chain(chain, par.get("s"));
+				chain_read_model(chain, par.get("s"));
 				chain = m_cg->to_cg(chain);
 				l = chain.size();
 				e = 0;
@@ -178,7 +186,7 @@ namespace jian {
 				else {
 					if (par.has("s")) {
 						if (par.has("res")) {
-							score_res(scoring, par.get("s"));
+							score_res(scoring, par.get("s"), score_type);
 						}
 						else {
 							score_s(scoring, par.get("s"));

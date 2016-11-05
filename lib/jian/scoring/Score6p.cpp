@@ -38,8 +38,8 @@ namespace jian {
 		for (i = 0; i < m_res_size; i++) {
 			for (j = 0; j < m_res_size; j++) {
 				d = geom::distance(r1[i], r2[j]);
-				if (d < 3.5) {
-					e += square(d - 3.5);
+				if (d < 3) {
+					e += square(d - 3);
 				}
 			}
 		}

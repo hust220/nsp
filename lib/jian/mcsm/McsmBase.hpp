@@ -14,9 +14,12 @@
 #include "../geom.hpp"
 #include "../cg.hpp"
 
-#define JN_MCXP_PARS1 heat_steps, cool_steps, cycle_steps, write_steps, heat_rate, dec_rate, init_tempr
-#define JN_MCXP_PARS2 bond_length_weight, bond_angle_weight, bond_angle_std, bond_dihedral_weight, bond_dihedral_std, \
-                        constraints_weight, crash_weight, pairing_weight, stacking_weight, vdw_weight, max_shift
+#define JN_MCXP_PARS1 \
+	heat_steps, cool_steps, cycle_steps, write_steps, heat_rate, dec_rate, init_tempr, queue
+#define JN_MCXP_PARS2 \
+	bond_length_weight, bond_angle_weight, bond_angle_std, bond_dihedral_weight, bond_dihedral_std, \
+    pairing_weight, wc_weight, nwc_weight, stacking_weight,  constraints_weight, crash_weight, \
+    vdw_weight, max_shift
 #define JN_MCXP_DEF_PAR(a) double PP_CAT3(_mc_, a);
 
 namespace jian {

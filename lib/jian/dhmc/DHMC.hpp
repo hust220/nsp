@@ -83,6 +83,8 @@ namespace jian {
 		fixed_mvels_t m_fixed_mvels;
 		int m_frag_size;
 		Frags *m_frags;
+		bool m_sample_frag;
+		std::vector<bool> m_is_free;
 
 		template<typename T>
 		std::string partial_ss(std::string ss, T &&pair) {

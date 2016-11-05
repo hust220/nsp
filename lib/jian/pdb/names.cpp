@@ -8,6 +8,20 @@ namespace jian {
 	namespace pdb {
 		using map_Names = std::map<std::string, Names>;
 
+		int res_type(const std::string &res_name) {
+			for (auto && mol_type : { "RNA", "DNA", "protein" }) {
+				const Names &names = Names::instance(mol_type);
+				auto it = std::find_if(names.res.begin(), names.res.end(), [&res_name, &names](const std::string &s) {
+					const names_t &v = names.alias.at(s);
+					return s == res_name || std::find(v.begin(), v.end(), res_name) != v.end();
+				});
+				if (it != names.res.end()) {
+					return std::distance(names.res.begin(), it);
+				}
+			}
+			throw std::string("unknown residue: ") + res_name;
+		}
+
 		namespace names_detail {
 			void print_names(const Names & names) {
 				for (auto && i : names.alias) {

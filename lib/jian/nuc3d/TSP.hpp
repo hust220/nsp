@@ -3,6 +3,7 @@
 #include <string>
 #include <ctime>
 #include <fstream>
+#include <memory>
 #include "Constraints.hpp"
 #include "../nuc2d/SSTree.hpp"
 #include "../utils/log.hpp"
@@ -25,7 +26,7 @@ public:
 	std::string _file_dca;
 	std::string _file_contacts;
 	std::string m_cg_type;
-	CG *m_cg;
+	std::shared_ptr<CG> m_cg;
     Constraints _constraints;
     std::deque<std::string> _disused_pdbs;
 	std::string m_out_pdb;

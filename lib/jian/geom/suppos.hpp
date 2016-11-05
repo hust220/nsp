@@ -48,7 +48,7 @@ namespace jian {
 			}
 
 			template<typename Mat>
-			void apply_m(Mat &&m) {
+			void apply_m(Mat &m) {
 				int i, j;
 				for (i = 0; i < m.rows(); i++) {
 					for (j = 0; j < 3; j++) {

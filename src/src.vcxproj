@@ -206,6 +206,7 @@
     <ClCompile Include="..\lib\jian\scoring\DihAnal.cpp" />
     <ClCompile Include="..\lib\jian\scoring\DistAnal.cpp" />
     <ClCompile Include="..\lib\jian\scoring\new_score.cpp" />
+    <ClCompile Include="..\lib\jian\scoring\ParBp.cpp" />
     <ClCompile Include="..\lib\jian\scoring\Score.cpp" />
     <ClCompile Include="..\lib\jian\scoring\Score1p.cpp" />
     <ClCompile Include="..\lib\jian\scoring\Score6p.cpp" />
@@ -224,6 +225,7 @@
     <ClCompile Include="..\lib\jian\utils\string.cpp" />
     <ClCompile Include="m_3drna.cpp" />
     <ClCompile Include="align.cpp" />
+    <ClCompile Include="m_aa.cpp" />
     <ClCompile Include="m_anal.cpp" />
     <ClCompile Include="m_assemble.cpp" />
     <ClCompile Include="build_loop.cpp" />
@@ -388,6 +390,7 @@
     <ClInclude Include="..\lib\jian\qhmc\TailHairpin.hpp" />
     <ClInclude Include="..\lib\jian\scoring.hpp" />
     <ClInclude Include="..\lib\jian\scoring\AssessPSB.h" />
+    <ClInclude Include="..\lib\jian\scoring\ParBp.hpp" />
     <ClInclude Include="..\lib\jian\scoring\Score.hpp" />
     <ClInclude Include="..\lib\jian\scoring\DihAnal.hpp" />
     <ClInclude Include="..\lib\jian\scoring\DistAnal.hpp" />

@@ -27,6 +27,9 @@ namespace jian {
 
 				LOG << "# Check constraints" << std::endl;
 				validate_constraints();
+
+				//_mc_queue = "heat:30000:20+cool:1000000";
+				//par.set(_mc_queue, "mc_queue");
 			}
 
 			void MCBase::validate_constraints() {
@@ -118,8 +121,8 @@ namespace jian {
 						if (is_selected(i)) {
 							for (auto && atom : _pred_chain[i]) {
 								atom[index] += dist;
-								space_update_item(i);
 							}
+							space_update_item(i);
 						}
 					}
 				}
@@ -225,8 +228,7 @@ namespace jian {
 				init_space();
 
 				LOG << "# MC..." << std::endl;
-				mc_heat();
-				mc_cool();
+				mc_run();
 
 				LOG << "# Print Constraints and Distances..." << std::endl;
 				print_final_constraints();
