@@ -6,23 +6,23 @@
 
 namespace jian {
 
-struct file {
-    static std::string name(const std::string & file_path);
+	struct file {
+		static std::string name(const std::string & file_path);
 
-    static std::string type(const std::string & file_path);
+		static std::string type(const std::string & file_path);
 
-    static void clean(const std::string & file_name);
+		static void clean(const std::string & file_name);
 
-	template<typename T>
-	static void open(T & stream, const char * file_name) {
-		stream.open(file_name);
-	}
+		template<typename T>
+		static void open(T & stream, const char * file_name) {
+			stream.open(file_name);
+		}
 
-	template<typename T>
-	static void open(T & stream, const std::string & file_name) {
-		stream.open(file_name.c_str());
-	}
-};
+		template<typename T>
+		static void open(T & stream, const std::string & file_name) {
+			stream.open(file_name.c_str());
+		}
+	};
 
 #define FOPEN(f, s) \
 	jian::file::open(f, s); \
@@ -34,31 +34,20 @@ struct file {
 
 #define FCLOSE(f) (f).close()
 
-#define EACH_LINE(f, c) do {\
-    int N = 0;\
-	std::ifstream ifile; \
-	FOPEN(ifile, f); \
-    std::string L;\
-    while (std::getline(ifile, L)) {\
-        c;\
-        N++;\
-    }\
-    FCLOSE(ifile);\
-} while(0)
+#define BEGIN_READ_FILE(f, t) do {\
+	int N = 0;\
+	std::ifstream ifile;\
+	FOPEN(ifile, f);\
+	std::string L;\
+	tokenize_v F;\
+	while (std::getline(ifile, L)) {\
+		::jian::tokenize(L, F, t); \
+		do
 
-#define EACH_SPLIT_LINE(f, t, c) do {\
-    int N = 0;\
-	std::ifstream ifile; \
-	FOPEN(ifile, f); \
-    std::string L;\
-    std::vector<std::string> F;\
-    while (std::getline(ifile, L)) {\
-        ::jian::tokenize(L, F, t);\
-        c;\
-        N++;\
-    }\
-    FCLOSE(ifile);\
-} while(0)
+
+#define END_READ_FILE while(0);N++;}FCLOSE(ifile);}while(0)
+
+
 
 } // namespace jian
 

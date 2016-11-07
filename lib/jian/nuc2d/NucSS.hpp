@@ -9,14 +9,15 @@
 
 namespace jian {
 
-class NucSS {
+class NASS {
 public:
     std::vector<std::pair<char, char>> paired_keys;
     std::vector<char> unpaired_keys;
     std::vector<char> break_keys;
 
-    NucSS();
-    static NucSS &instance();
+    NASS();
+	static std::vector<int> get_bps(const std::string &ss);
+    static NASS &instance();
 	static bool is_char_ss(char c);
 	static bool check_ss(const std::string &ss, std::string &info_errors);
 	static bool check_ss(const std::string &ss);

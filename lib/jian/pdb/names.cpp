@@ -45,7 +45,7 @@ namespace jian {
 				int i;
 				jian::tokenize_v v;
 
-				EACH_SPLIT_LINE(filename, "#: []", 
+				BEGIN_READ_FILE(filename, "#: []") {
 					if (F.size() > 0) {
 						//std::cout << F[0] << std::endl;
 						if (F[0] == "mol_type") {
@@ -80,7 +80,7 @@ namespace jian {
 					else {
 						// pass
 					}
-				);
+				} END_READ_FILE;
 				//for (auto && names : map_names) {
 				//	print_names(names.second);
 				//}

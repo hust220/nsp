@@ -6,6 +6,8 @@
 
 namespace jian {
 
+	std::ostream jnout(std::cout.rdbuf());
+
 namespace log_detail {
 
 std::mutex mt;

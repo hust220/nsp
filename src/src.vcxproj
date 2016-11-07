@@ -155,9 +155,9 @@
     <ClCompile Include="..\lib\jian\cg\CGpsb.cpp" />
     <ClCompile Include="..\lib\jian\cg\Frags.cpp" />
     <ClCompile Include="..\lib\jian\dca\Dca.cpp" />
-    <ClCompile Include="..\lib\jian\dca\Mat3.cpp" />
-    <ClCompile Include="..\lib\jian\dca\Mat4.cpp" />
-    <ClCompile Include="..\lib\jian\dca\Mat5.cpp" />
+    <ClCompile Include="..\lib\jian\matrix\Mat3.cpp" />
+    <ClCompile Include="..\lib\jian\matrix\Mat4.cpp" />
+    <ClCompile Include="..\lib\jian\matrix\Mat5.cpp" />
     <ClCompile Include="..\lib\jian\dca\MfDca.cpp" />
     <ClCompile Include="..\lib\jian\dca\MpDca.cpp" />
     <ClCompile Include="..\lib\jian\dca\ss_pairs.cpp" />
@@ -275,9 +275,9 @@
     <ClInclude Include="..\lib\jian\cg\Frags.hpp" />
     <ClInclude Include="..\lib\jian\dca.hpp" />
     <ClInclude Include="..\lib\jian\dca\Dca.hpp" />
-    <ClInclude Include="..\lib\jian\dca\Mat3.hpp" />
-    <ClInclude Include="..\lib\jian\dca\Mat4.hpp" />
-    <ClInclude Include="..\lib\jian\dca\Mat5.hpp" />
+    <ClInclude Include="..\lib\jian\matrix\Mat3.hpp" />
+    <ClInclude Include="..\lib\jian\matrix\Mat4.hpp" />
+    <ClInclude Include="..\lib\jian\matrix\Mat5.hpp" />
     <ClInclude Include="..\lib\jian\dca\MfDca.hpp" />
     <ClInclude Include="..\lib\jian\dca\MpDca.hpp" />
     <ClInclude Include="..\lib\jian\dca\ss_pairs.hpp" />

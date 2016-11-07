@@ -25,7 +25,7 @@ public:
     std::string type = "RNA";
 
     Model operator ()(const std::string &seq, const std::string &ss) {
-        return make_junction(ss_to_hinges(NucSS::hinge_ss(ss)));
+        return make_junction(ss_to_hinges(NASS::hinge_ss(ss)));
     }
 
     Hinges ss_to_hinges(const std::string &ss) {

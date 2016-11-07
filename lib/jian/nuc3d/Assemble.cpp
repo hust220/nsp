@@ -19,8 +19,8 @@ void find_loop_records(loop *l, records_t &records, std::string name,
 
     std::string seq = l->seq(),
                 ss = l->ss(),
-                p_ss = NucSS::pure_ss(ss),
-                lower_ss = NucSS::lower_ss(p_ss, 1);
+                p_ss = NASS::pure_ss(ss),
+                lower_ss = NASS::lower_ss(p_ss, 1);
 
     int num_sons = l->num_sons();
 
@@ -39,7 +39,7 @@ void find_loop_records(loop *l, records_t &records, std::string name,
         } else if ((!used_pdbs.empty()) &&
                    std::find(used_pdbs.begin(), used_pdbs.end(), templ_rec._src) == used_pdbs.end()) {
             continue;
-        } else if (NucSS::pure_ss(NucSS::lower_ss(templ_rec._ss, 1)) == lower_ss) {
+        } else if (NASS::pure_ss(NASS::lower_ss(templ_rec._ss, 1)) == lower_ss) {
             templ_rec._score = (templ_rec._ss == ss ? 5 : 0);
             if (templ_rec._src == jian::upper(name)) {
                 templ_rec._score += 5;
@@ -117,7 +117,7 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
 
         LOG << "# Check input" << std::endl;
 		std::string info_errors;
-		auto b = NucSS::check_ss(_ss, info_errors);
+		auto b = NASS::check_ss(_ss, info_errors);
         if (!b) throw info_errors;
 
         LOG << "# Construct 2D Structure Tree" << std::endl;
@@ -244,7 +244,7 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
         LOOP_TRAVERSE(_ss_tree.head(),
             if (L->has_loop()) {
                 if (_records[L].first.empty()) {
-                    build_loop_dg.init(L->seq(), NucSS::lower_ss(L->ss())); 
+                    build_loop_dg.init(L->seq(), NASS::lower_ss(L->ss())); 
                     _templates[L].first = build_loop_dg();
                     m_selected_record[L].first = TemplRec{};
                 } else {
@@ -288,7 +288,7 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
 
     void Assemble::sample_loop_template(loop *l) {
         if (_records[l].first.empty()) {
-            build_loop_dg.init(l->seq(), NucSS::lower_ss(l->ss())); 
+            build_loop_dg.init(l->seq(), NASS::lower_ss(l->ss())); 
             _templates[l].first = build_loop_dg();
             m_selected_record[l].first = TemplRec{};
         } else {
@@ -458,7 +458,7 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
     void Assemble::find_loop_records(loop *l) {
         if (l->empty()) return;
 
-        std::string seq = l->seq(), ss = l->ss(), p_ss = NucSS::pure_ss(ss), lower_ss = NucSS::lower_ss(p_ss, 1), family = _family;
+        std::string seq = l->seq(), ss = l->ss(), p_ss = NASS::pure_ss(ss), lower_ss = NASS::lower_ss(p_ss, 1), family = _family;
         int num_sons = l->num_sons();
 
         std::string info_file = _lib + "/RNA/records/" + (l->is_open() ? "open_" : "") + "loop";
@@ -471,7 +471,7 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
         while (std::getline(ifile, line) && set_loop_rec(templ_rec, line)) {
             if (std::find(_disused_pdbs.begin(), _disused_pdbs.end(), templ_rec._src) != _disused_pdbs.end()) {
                 continue;
-            } else if (NucSS::pure_ss(NucSS::lower_ss(templ_rec._ss, 1)) == lower_ss) {
+            } else if (NASS::pure_ss(NASS::lower_ss(templ_rec._ss, 1)) == lower_ss) {
                 templ_rec._score = (templ_rec._ss == ss ? 5 : 0);
                 if (templ_rec._src == _name) {
                     templ_rec._score += 5;

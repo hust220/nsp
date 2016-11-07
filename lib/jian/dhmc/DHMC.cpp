@@ -163,6 +163,13 @@ namespace jian {
 	void DHMC::init(const Par &par) {
 		nuc3d::mc::MCSM::init(par);
 
+		LOG << "# Set bps" << std::endl;
+		set_bps();
+
+		//_ss.resize(_seq.size(), '.');
+		_ss.resize(_seq.size());
+		std::fill(_ss.begin(), _ss.end(), '.');
+
 		LOG << "# Set 2D trees" << std::endl;
 		set_trees();
 
@@ -246,7 +253,7 @@ namespace jian {
 	void DHMC::set_trees() {
 		m_trees.push_back(std::make_shared<SSTree>());
 		m_trees.back()->make_b(_seq, _ss, 2);
-		auto & keys = NucSS::instance().paired_keys;
+		auto & keys = NASS::instance().paired_keys;
 		for (auto it = keys.begin() + 1; it != keys.end(); it++) {
 			auto ss = partial_ss(_ss, *it);
 			if (std::any_of(ss.begin(), ss.end(), [](auto &&c) {return c != '.' && c != '&'; })) {
@@ -257,6 +264,10 @@ namespace jian {
 				break;
 			}
 		}
+	}
+
+	void DHMC::set_bps() {
+		m_bps = NASS::get_bps(_ss);
 	}
 
 	void DHMC::translate_pseudo_knots_helix(Model & m, const std::list<int> & nums) {

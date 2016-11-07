@@ -44,8 +44,8 @@ public:
     std::list<SST> get_constraint_trees(const SST &sst, const std::string seq, const std::string ss) {
         std::list<SST> list;
         BuildSST build_sst;
-        for (int i = 1; i < NucSS::instance().paired_keys.size(); i++) {
-            char left = NucSS::instance().paired_keys[i].first, right = NucSS::instance().paired_keys[i].second;
+        for (int i = 1; i < NASS::instance().paired_keys.size(); i++) {
+            char left = NASS::instance().paired_keys[i].first, right = NASS::instance().paired_keys[i].second;
             if (!std::count_if(ss.begin(), ss.end(), [&](const char &c){return c == left || c == right;})) break;
             build_sst.set_primary_keys(left, right);
             list.push_back(build_sst(seq, ss));

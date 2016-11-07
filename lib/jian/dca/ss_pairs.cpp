@@ -31,43 +31,46 @@ pairs_t pairs_from_file(const std::string &file_name, int size) {
 
 tuples_t tuples_from_file(const std::string &file_name, int size) {
     tuples_t tuples;
-    EACH_SPLIT_LINE(file_name.c_str(), " ",
-//        if (N >= size) return pairs;
-        if (F.size() >= 2) {
-            int a = std::stoi(F[0])-1;
-            int b = std::stoi(F[1])-1;
-            double c = std::stod(F[2]);
-            if (a >= 0 && b - a - 1 >= 4) {
-                auto p = std::minmax(a, b);
-                if (c < tuples.back().c) {
-                    if (tuples.size() >= size) {
-                    } else {
-                        tuples.push_back({p.first, p.second, c});
-                    }
-                } else if (c > tuples.front().c) {
-                    tuples.push_front({p.first, p.second, c});
-                } else {
-                    auto it_p = tuples.begin();
-                    for (auto it = std::next(it_p); it != tuples.end(); it=std::next(it)) {
-                        if (c > it->c && c < it_p->c) {
-                            tuples.insert(it, {p.first, p.second, c});
-                            break;
-                        }
-                        it_p = it;
-                    }
-                }
-                if (tuples.size() > size) {
-                    tuples.pop_back();
-                }
-            }
-        }
-    );
+	BEGIN_READ_FILE(file_name, " ") {
+		//        if (N >= size) return pairs;
+		if (F.size() >= 2) {
+			int a = std::stoi(F[0]) - 1;
+			int b = std::stoi(F[1]) - 1;
+			double c = std::stod(F[2]);
+			if (a >= 0 && b - a - 1 >= 4) {
+				auto p = std::minmax(a, b);
+				if (c < tuples.back().c) {
+					if (tuples.size() >= size) {
+					}
+					else {
+						tuples.push_back({ p.first, p.second, c });
+					}
+				}
+				else if (c > tuples.front().c) {
+					tuples.push_front({ p.first, p.second, c });
+				}
+				else {
+					auto it_p = tuples.begin();
+					for (auto it = std::next(it_p); it != tuples.end(); it = std::next(it)) {
+						if (c > it->c && c < it_p->c) {
+							tuples.insert(it, { p.first, p.second, c });
+							break;
+						}
+						it_p = it;
+					}
+				}
+				if (tuples.size() > size) {
+					tuples.pop_back();
+				}
+			}
+		}
+	} END_READ_FILE;
     return tuples;
 }
 
 pairs_t pairs_from_ss(const ss_t &ss) {
     pairs_t pairs;
-    auto & keys = NucSS::instance().paired_keys;
+    auto & keys = NASS::instance().paired_keys;
     std::vector<std::deque<int>> v(keys.size());
     int i = 0;
     for (auto && c : ss) {

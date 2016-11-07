@@ -20,11 +20,11 @@ public:
     }
 
     void set_primary_keys(char left, char right) {
-        for (auto &&pair: NucSS::instance().paired_keys) {
+        for (auto &&pair: NASS::instance().paired_keys) {
             _type_id[pair.first] = 1;
             _type_id[pair.second] = 1;
         }
-        for (auto &&ch: NucSS::instance().unpaired_keys) _type_id[ch] = 1;
+        for (auto &&ch: NASS::instance().unpaired_keys) _type_id[ch] = 1;
         _left = left; _right = right;
         _type_id[left] = 0; _type_id[right] = 2;
     }

@@ -36,13 +36,13 @@ REGISTER_NSP_COMPONENT(view_constraints) {
         }}
     };
     auto &method = methods[par["method"][0]];
-    EACH_SPLIT_LINE(par["c"][0].c_str(), " ",
+	BEGIN_READ_FILE(par["c"][0], " ") {
         if (F.size() >= 2) {
             i = JN_INT(F[0]) - 1;
             j = JN_INT(F[1]) - 1;
             std::cout << i + 1 << ' ' << j + 1 << ' ' << method(chain[i], chain[j]) << std::endl;
         }
-    );
+	} END_READ_FILE;
 }
 
 } // namespace jian

@@ -159,7 +159,7 @@ public:
             }
         };
 
-        auto & keys = NucSS::instance().paired_keys;
+        auto & keys = NASS::instance().paired_keys;
         for (auto it = keys.begin()+1; it != keys.end(); it++) {
             auto ss = partial_ss(_ss, *it);
             if (std::any_of(ss.begin(), ss.end(), [](auto &&c){return c != '.';})) {
@@ -240,7 +240,7 @@ public:
             );
         };
 
-        auto & keys = NucSS::instance().paired_keys;
+        auto & keys = NASS::instance().paired_keys;
         for (auto it = keys.begin(); it != keys.end(); it++) {
             auto ss = partial_ss(_ss, *it);
             if (std::any_of(ss.begin(), ss.end(), [](auto &&c){return c != '.';})) {

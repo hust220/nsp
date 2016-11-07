@@ -1,9 +1,6 @@
 #pragma once
 
 #include "Dca.hpp"
-#include "Mat3.hpp"
-#include "Mat4.hpp"
-#include "Mat5.hpp"
 
 namespace jian {
 namespace dca {

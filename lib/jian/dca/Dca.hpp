@@ -11,7 +11,6 @@
 #include <jian/utils/file.hpp>
 #include <jian/utils/log.hpp>
 #include <jian/matrix.hpp>
-#include "Mat4.hpp"
 #include "../utils/Factory.hpp"
 
 namespace jian {

@@ -250,7 +250,7 @@ void SSTree::make(const std::string &seq, const std::string &ss, int hinge) {
     LOG << "## Make secondary structure tree with no broken tag" << std::endl;
     LOG << seq << std::endl;
     LOG << ss << std::endl;
-    if (NucSS::seq_match_ss(seq, ss)) {
+    if (NASS::seq_match_ss(seq, ss)) {
         std::string ss_nbt;
         std::copy_if(ss.begin(), ss.end(), std::back_inserter(ss_nbt), [](auto &&c){return c!='&';});
         _impl->head = sstree_detail::set_tree(ss_nbt, hinge);
@@ -268,7 +268,7 @@ void SSTree::make_b(const std::string &seq, const std::string &ss, int hinge) {
     LOG << "## Make secondary structure tree with broken tag" << std::endl;
     LOG << seq << std::endl;
     LOG << ss << std::endl;
-    if (NucSS::seq_match_ss(seq, ss)) {
+    if (NASS::seq_match_ss(seq, ss)) {
         _impl->head = sstree_detail::set_tree(ss, hinge);
         sstree_detail::read_seq(_impl->head, seq, ss);
     } else {

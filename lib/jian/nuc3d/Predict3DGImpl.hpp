@@ -36,7 +36,7 @@ public:
         int len = _seq.size();
         init_bound(len);
         set_bound_constraints();
-        for (auto && pair : NucSS::instance().paired_keys) {
+        for (auto && pair : NASS::instance().paired_keys) {
             auto ss = _ss;
             for (auto && c : ss) {
                 if (c == pair.first) {
@@ -85,15 +85,15 @@ public:
     }
 
     void set_bound_constraints() {
-        EACH_SPLIT_LINE(_file_distances.c_str(), " ",
-            if (F.size() == 3) {
-                int i = JN_INT(F[0]) - 1;
-                int j = JN_INT(F[1]) - 1;
-                double d = JN_DBL(F[2]);
-                _dist_bound(i, j) = std::min(_max_dist, d + 8);
-                _dist_bound(j, i) = std::max(_min_dist, d - 8);
-            }
-        );
+		BEGIN_READ_FILE(_file_distances, " ") {
+			if (F.size() == 3) {
+				int i = JN_INT(F[0]) - 1;
+				int j = JN_INT(F[1]) - 1;
+				double d = JN_DBL(F[2]);
+				_dist_bound(i, j) = std::min(_max_dist, d + 8);
+				_dist_bound(j, i) = std::max(_min_dist, d - 8);
+			}
+		} END_READ_FILE;
     }
 
     Model predict() {

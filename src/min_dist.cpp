@@ -28,11 +28,11 @@ REGISTER_NSP_COMPONENT(min_dist) {
         }
         std::cout << min_distance(chain[ls[0]], chain[ls[1]]) << std::endl;
     } else if (par.has("list")) {
-        EACH_SPLIT_LINE(par["list"][0].c_str(), " ",
-            int a = std::stoi(F[0]) - 1;
-            int b = std::stoi(F[1]) - 1;
-            std::cout << a + 1 << ' ' << b + 1 << ' ' << min_distance(chain[a], chain[b]) << std::endl;
-        );
+		BEGIN_READ_FILE(par["list"][0], " ") {
+			int a = std::stoi(F[0]) - 1;
+			int b = std::stoi(F[1]) - 1;
+			std::cout << a + 1 << ' ' << b + 1 << ' ' << min_distance(chain[a], chain[b]) << std::endl;
+		} END_READ_FILE;
     }
 }
 

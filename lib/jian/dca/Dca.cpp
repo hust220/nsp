@@ -7,14 +7,15 @@ Dca::~Dca() {}
 
 void Dca::fastaread(std::string fastafile, Dca::seqs_t &seqs) {
     std::string tmp;
-    EACH_LINE(fastafile.c_str(),
-        if (L[0] == '>') {
-            seqs.push_back(tmp);
-            tmp = "";
-        } else {
-            tmp += jian::trim_copy(L);
-        }
-    );
+	BEGIN_READ_FILE(fastafile, " ") {
+		if (L[0] == '>') {
+			seqs.push_back(tmp);
+			tmp = "";
+		}
+		else {
+			tmp += jian::trim_copy(L);
+		}
+	} END_READ_FILE;
     seqs.push_back(tmp);
     seqs.pop_front();
 }

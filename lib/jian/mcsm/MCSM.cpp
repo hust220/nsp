@@ -21,7 +21,7 @@
 									e.crash += _mc_crash_weight * m_scorer->en_crash(_pred_chain[p.first], _pred_chain[p.second]); \
 									m_scorer->en_bp(_pred_chain[p.first], _pred_chain[p.second]);\
 									/*e.pairing += _mc_pairing_weight * m_scorer->m_en_pairing;*/\
-									e.wc += _mc_wc_weight * m_scorer->m_en_wc;\
+									e.wc += _mc_wc_weight * m_scorer->m_en_wc * (m_bps[p.first] == p.second ? 10 : 1);\
 									e.nwc += _mc_nwc_weight * m_scorer->m_en_nwc;\
 									e.stacking += _mc_stacking_weight * m_scorer->m_en_stacking;\
 								} \

@@ -128,7 +128,7 @@ public:
     void set_trees() {
         m_trees.push_back(std::make_shared<SSTree>());
         m_trees.back()->make(_seq, _ss, 2);
-        auto & keys = NucSS::instance().paired_keys;
+        auto & keys = NASS::instance().paired_keys;
         for (auto it = keys.begin()+1; it != keys.end(); it++) {
             auto ss = partial_ss(_ss, *it);
             if (std::any_of(ss.begin(), ss.end(), [](auto &&c){return c != '.';})) {

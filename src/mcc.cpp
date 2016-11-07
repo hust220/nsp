@@ -27,7 +27,7 @@ pairs_t get_common_pairs(const pairs_t &pairs1, const pairs_t &pairs2) {
 
 /*
 pairs_t get_pairs(const ss_t &ss) {
-    auto & v = NucSS::instance().paired_keys;
+    auto & v = NASS::instance().paired_keys;
     std::vector<std::vector<int>> st(v.size());
     pairs_t pairs;
     int i = 0;

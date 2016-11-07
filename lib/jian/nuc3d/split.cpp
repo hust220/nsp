@@ -42,7 +42,7 @@ public:
         _hinge = 2;
         par.set(_hinge, "hinge");
 
-        NucSS::check_ss(_ss);
+        NASS::check_ss(_ss);
     }
 
     void run() {

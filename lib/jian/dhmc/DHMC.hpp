@@ -89,15 +89,7 @@ namespace jian {
 		template<typename T>
 		std::string partial_ss(std::string ss, T &&pair) {
 			for (auto && c : ss) {
-				if (c == pair.first) {
-					c = '(';
-				}
-				else if (c == pair.second) {
-					c = ')';
-				}
-				else if (c != '&') {
-					c = '.';
-				}
+				c = (c == pair.first ? '(' : (c == pair.second ? ')' : (c == '&' ? '.' : c)));
 			}
 			return ss;
 		}
@@ -121,6 +113,8 @@ namespace jian {
 		void print_mvels();
 
 		void set_trees();
+
+		void set_bps();
 
 		void translate_pseudo_knots_helix(Model & m, const std::list<int> & nums);
 

@@ -9,49 +9,66 @@ namespace jian {
 		anal(res1, res2);
 	}
 
-	void ParBp::set_origin(Vec &origin, const Residue &r) {
-		origin = Vec::Zero(3);
+	inline void ParBp::set_origin(vec_t &origin, const Residue &r) {
+		origin = vec_t::Zero();
 		for (int i = 3; i < 6; i++) {
 			for (int j = 0; j < 3; j++) {
 				origin[j] += r[i][j];
 			}
 		}
 		origin /= 3.0;
-		//std::cout << "origin: " << origin << std::endl;
 	}
 
-	void ParBp::vec_cross(Vec &v, const Vec &a, const Vec &b) {
+	inline void ParBp::set_bb(vec_t &bb, const Residue &r) {
+		int i;
+
+		for (i = 0; i < 3; i++) {
+			bb[i] = r[1][i];
+		}
+	}
+
+	inline void ParBp::vec_cross(vec_t &v, const vec_t &a, const vec_t &b) {
 		v[0] = a[1] * b[2] - a[2] * b[1];
 		v[1] = a[2] * b[0] - a[0] * b[2];
 		v[2] = a[0] * b[1] - a[1] * b[0];
 	}
 
-	void ParBp::set_norm(Vec &norm, const Vec &origin, const Residue &r) {
-		Vec a(3), b(3);
-		for (int i = 0; i < 3; i++) {
-			a[i] = r[3][i] - origin[i];
-			b[i] = r[4][i] - origin[i];
-		}
-		vec_cross(norm, a, b);
-		norm.normalize();
-	}
-
-	void ParBp::set_axis_x(Vec &x, const Vec &origin, const Residue &r) {
+	inline void ParBp::set_axis_z(vec_t &z, const vec_t &o, const Residue &r) {
+		vec_t a(3), b(3);
 		int i, j, t;
 
 		t = pdb::res_type(r.name);
 		j = ((t == 0 || t == 2) ? 4 : 5);
 		for (i = 0; i < 3; i++) {
-			x[i] = r[j][i] - origin[i];
+			a[i] = r[3][i] - o[i];
+			b[i] = r[j][i] - o[i];
 		}
+		vec_cross(z, a, b);
+		z.normalize();
+	}
+
+	inline void ParBp::set_axis_x(vec_t &x, const vec_t &o, const Residue &r) {
+		int i, j, t;
+
+		t = pdb::res_type(r.name);
+		j = ((t == 0 || t == 2) ? 4 : 5);
+		for (i = 0; i < 3; i++) {
+			x[i] = r[j][i] - o[i];
+		}
+		x.normalize();
+	}
+
+	inline void ParBp::set_axis_y(vec_t &y, const vec_t &z, const vec_t &x) {
+		vec_cross(y, z, x);
+		y.normalize();
 	}
 
 	bool ParBp::is_paired() const {
-		return d < 8 && std::fabs(z) < 2;
+		return d < 8 && std::fabs(o21_[2]) < 2 && std::fabs(o12_[2]) < 2;
 	}
 
 	bool ParBp::is_stacked() const {
-		return d < 3 && std::fabs(z) < 4 && std::fabs(theta) > 0.90;
+		return d < 4 && std::fabs(o21_[2]) < 4 && std::fabs(o21_[2]) < 4 && std::fabs(theta) > 0.90;
 	}
 
 	bool ParBp::is_wc() const {
@@ -63,27 +80,40 @@ namespace jian {
 	}
 
 	ParBp &ParBp::anal(const Residue &res1, const Residue &res2) {
-		Vec origin1, origin2, norm1(3), norm2(3), x1(3), y1(3);
+		int i;
 		Residue r1 = m_cg->to_cg(res1);
 		Residue r2 = m_cg->to_cg(res2);
 		double origin2_x, origin2_y;
 
-		set_origin(origin1, r1);
-		set_origin(origin2, r2);
-		set_norm(norm1, origin1, r1);
-		set_norm(norm2, origin2, r2);
+		set_origin(o1, r1);
+		set_origin(o2, r2);
+		set_bb(bb1, r1);
+		set_bb(bb2, r2);
 
-		set_axis_x(x1, origin1, r1);
-		vec_cross(y1, norm1, x1);
-		origin2 -= origin1;
-		//d = origin2.norm();
-		origin2_x = origin2.dot(x1) / x1.norm();
-		origin2_y = origin2.dot(y1) / y1.norm();
-		d = std::sqrt(origin2_x*origin2_x+ origin2_y*origin2_y);
-		z = origin2.dot(norm1);
-		alpha = atan(origin2_y / origin2_x) / 3.1415927 * 180;
-		//theta = acos(norm1.dot(norm2)) / 3.1415927 * 180;
-		theta = norm1.dot(norm2);
+		set_axis_z(ax1[2], o1, r1);
+		set_axis_x(ax1[0], o1, r1);
+		set_axis_y(ax1[1], ax1[2], ax1[0]);
+
+		set_axis_z(ax2[2], o2, r2);
+		set_axis_x(ax2[0], o2, r2);
+		set_axis_y(ax2[1], ax2[2], ax2[0]);
+
+		o12 = o1 - o2;
+		o21 = o2 - o1;
+		bb12 = bb1 - o2;
+		bb21 = bb2 - o1;
+
+		d = o21.norm();
+
+		for (i = 0; i < 3; i++) {
+			o12_[i] = o12.dot(ax2[i]);
+			o21_[i] = o21.dot(ax1[i]);
+			bb12_[i] = bb12.dot(ax2[i]);
+			bb21_[i] = bb21.dot(ax1[i]);
+		}
+
+		alpha = atan(o21_[1] / o21_[0]) / 3.1415927 * 180;
+		theta = ax1[2].dot(ax2[2]);
 		return *this;
 	}
 

@@ -23,6 +23,7 @@ namespace jian {
 
 				std::vector<int> m_indices;
 				ScoreBase *m_scorer;
+				std::vector<int> m_bps;
 
 				MCSM() = default;
 

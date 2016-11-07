@@ -292,15 +292,6 @@
     <ClCompile Include="..\lib\jian\dca\Dca.cpp">
       <Filter>jian\dca</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\jian\dca\Mat3.cpp">
-      <Filter>jian\dca</Filter>
-    </ClCompile>
-    <ClCompile Include="..\lib\jian\dca\Mat4.cpp">
-      <Filter>jian\dca</Filter>
-    </ClCompile>
-    <ClCompile Include="..\lib\jian\dca\Mat5.cpp">
-      <Filter>jian\dca</Filter>
-    </ClCompile>
     <ClCompile Include="..\lib\jian\dca\MfDca.cpp">
       <Filter>jian\dca</Filter>
     </ClCompile>
@@ -419,6 +410,15 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\jian\scoring\ParBp.cpp" />
+    <ClCompile Include="..\lib\jian\matrix\Mat3.cpp">
+      <Filter>jian\matrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\matrix\Mat4.cpp">
+      <Filter>jian\matrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\matrix\Mat5.cpp">
+      <Filter>jian\matrix</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="nsp.hpp">
@@ -748,15 +748,6 @@
     <ClInclude Include="..\lib\jian\dca\Dca.hpp">
       <Filter>jian\dca</Filter>
     </ClInclude>
-    <ClInclude Include="..\lib\jian\dca\Mat3.hpp">
-      <Filter>jian\dca</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\dca\Mat4.hpp">
-      <Filter>jian\dca</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\dca\Mat5.hpp">
-      <Filter>jian\dca</Filter>
-    </ClInclude>
     <ClInclude Include="..\lib\jian\dca\MfDca.hpp">
       <Filter>jian\dca</Filter>
     </ClInclude>
@@ -921,6 +912,15 @@
     </ClInclude>
     <ClInclude Include="..\lib\jian\scoring\ParBp.hpp">
       <Filter>jian\scoring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\matrix\Mat3.hpp">
+      <Filter>jian\matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\matrix\Mat4.hpp">
+      <Filter>jian\matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\matrix\Mat5.hpp">
+      <Filter>jian\matrix</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

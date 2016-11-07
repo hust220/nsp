@@ -54,8 +54,8 @@ public:
         for (auto && bp : bps) {
             auto level = bp_level(ss, bp);
             if (level >= 0) {
-                ss[bp.first] = NucSS::instance().paired_keys[level].first;
-                ss[bp.second] = NucSS::instance().paired_keys[level].second;
+                ss[bp.first] = NASS::instance().paired_keys[level].first;
+                ss[bp.second] = NASS::instance().paired_keys[level].second;
             }
         }
         return ss;
@@ -64,11 +64,11 @@ public:
     int bp_level(const std::string &ss, const BP &bp) {
         int left = bp.first, right = bp.second;
         if (ss[left] != '.' or ss[right] != '.') return -1;
-        for (int i = 0; i < NucSS::instance().paired_keys.size(); i++) {
+        for (int i = 0; i < NASS::instance().paired_keys.size(); i++) {
             int score = 0, flag = 1;
             for (int j = left + 1; j < right; j++) {
-                if (ss[j] == NucSS::instance().paired_keys[i].first) score++;
-                else if (ss[j] == NucSS::instance().paired_keys[i].second) score--;
+                if (ss[j] == NASS::instance().paired_keys[i].first) score++;
+                else if (ss[j] == NASS::instance().paired_keys[i].second) score--;
                 if (score < 0) break;
             }
             if (score != 0) flag = 0;

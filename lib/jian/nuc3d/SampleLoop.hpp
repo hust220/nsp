@@ -55,7 +55,7 @@ public:
 
     SampleLoop(loop *l, const Model &model) {
         _seq = l->seq(); 
-        _ss = NucSS::lower_ss(l->ss());
+        _ss = NASS::lower_ss(l->ss());
         _model = model;
         _num_helices = l->num_branches();
         set_refs();

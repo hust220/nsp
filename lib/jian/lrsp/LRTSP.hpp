@@ -157,7 +157,7 @@ public:
     void set_loop_templates(loop *l, bool &b_NR) {
         if (_loop_records[l].empty()) {
             b_NR = true;
-            _loop_templates[l] = build_chain_dg(l->seq(), NucSS::lower_ss(l->ss()));
+            _loop_templates[l] = build_chain_dg(l->seq(), NASS::lower_ss(l->ss()));
         } else {
             _loop_templates[l] = make_chain();
             nuc3d::chain_read_record(*(_loop_templates[l]), _loop_records[l][0]);
@@ -176,7 +176,7 @@ public:
     void set_loop_templates_mc(loop *l, bool &b_NR) {
         if (_loop_records[l].empty()) {
             b_NR = true;
-            _loop_templates_mc[l] = build_chain_dg(l->seq(), NucSS::lower_ss(l->ss()));
+            _loop_templates_mc[l] = build_chain_dg(l->seq(), NASS::lower_ss(l->ss()));
         } else {
             _loop_templates_mc[l] = make_chain();
             nuc3d::chain_read_record(*(_loop_templates_mc[l]), _loop_records[l][0]);

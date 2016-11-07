@@ -72,9 +72,9 @@ namespace jian {
 		}
 
 		void score_l(ScoreBase * scoring, std::string filename) {
-			EACH_SPLIT_LINE(filename, " ",
+			BEGIN_READ_FILE(filename, " ") {
 				score_s(scoring, F[0]);
-			);
+			} END_READ_FILE;
 		}
 
 		void train_s(ScoreBase * scoring, std::string filename) {
@@ -86,9 +86,9 @@ namespace jian {
 		}
 
 		void train_l(ScoreBase * scoring, std::string filename) {
-			EACH_SPLIT_LINE(filename, " ",
+			BEGIN_READ_FILE(filename, " ") {
 				train_s(scoring, F[0]);
-			);
+			} END_READ_FILE;
 		}
 
 		double en_crash(const Residue &r1, const Residue &r2) {

@@ -99,12 +99,12 @@ REGISTER_NSP_COMPONENT(cluster) {
         std::deque<Eigen::MatrixXd *> mats; 
         std::deque<std::string> names;
         std::cout << "Reading molecules..." << std::endl;
-        EACH_SPLIT_LINE(par["list"][0].c_str(), " ",
-            std::cout << "read " << F[0] << std::endl;
-            auto && model = mol_read_to<Model>(F[0]);
-            mats.push_back(method(model));
-            names.push_back(model.name);
-        );
+		BEGIN_READ_FILE(par["list"][0], " ") {
+			std::cout << "read " << F[0] << std::endl;
+			auto && model = mol_read_to<Model>(F[0]);
+			mats.push_back(method(model));
+			names.push_back(model.name);
+		} END_READ_FILE;
         std::cout << "Clustering..." << std::endl;
         cluster(mats.begin(), mats.end(), dist);
         for (auto && i : mats) delete i;

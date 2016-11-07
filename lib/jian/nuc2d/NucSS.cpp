@@ -1,3 +1,5 @@
+#include <numeric>
+#include <deque>
 #include <vector>
 #include <utility>
 #include <map>
@@ -15,7 +17,7 @@ namespace jian {
 
 		std::map<char, char> get_map_keys() {
 			std::map<char, char> map_keys;
-			for (auto &&pair : NucSS::instance().paired_keys) {
+			for (auto &&pair : NASS::instance().paired_keys) {
 				map_keys[pair.first] = pair.second;
 				map_keys[pair.second] = pair.first;
 			}
@@ -25,7 +27,7 @@ namespace jian {
 		std::map<char, int> get_pos_keys() {
 			std::map<char, int> pos_keys;
 			int index = 1;
-			for (auto &&pair : NucSS::instance().paired_keys) {
+			for (auto &&pair : NASS::instance().paired_keys) {
 				pos_keys[pair.first] = index;
 				pos_keys[pair.second] = -index;
 				index++;
@@ -41,9 +43,9 @@ namespace jian {
 
 	} // namespace nass_detail
 
-	NucSS::NucSS() {
+	NASS::NASS() {
 		std::string name = Env::lib() + "/RNA/pars/nuc2d/dbn.symbols";
-		EACH_SPLIT_LINE(name.c_str(), " ",
+		BEGIN_READ_FILE(name, " ") {
 			if (F.size() > 1) {
 				if (F[1] == "paired_keys") {
 					std::getline(ifile, L);
@@ -67,15 +69,52 @@ namespace jian {
 					}
 				}
 			}
-		);
+		} END_READ_FILE;
 	}
 
-	NucSS &NucSS::instance() {
-		static NucSS nuc_ss;
+	std::vector<int> NASS::get_bps(const std::string &ss) {
+		NASS &nass = NASS::instance();
+		std::deque<std::deque<int>> dq;
+		std::vector<int> bps;
+		int i, j, k;
+
+		dq.resize(nass.paired_keys.size());
+		bps.resize(std::accumulate(ss.begin(), ss.end(), 0, [&nass](size_t n, char c)->size_t {
+			return n + (std::find(nass.break_keys.begin(), nass.break_keys.end(), c)!= nass.break_keys.end() ? 0 : 1);
+		}), -1);
+		i = 0;
+		for (auto && c : ss) {
+			if (std::find(nass.break_keys.begin(), nass.break_keys.end(), c)!= nass.break_keys.end()) {
+				continue;
+			}
+			auto it1 = std::find_if(nass.paired_keys.begin(), nass.paired_keys.end(), [c](auto && p){
+				return p.first == c;
+			});
+			auto it2 = std::find_if(nass.paired_keys.begin(), nass.paired_keys.end(), [c](auto && p) {
+				return p.second == c;
+			});
+			if (it1 != nass.paired_keys.end()) {
+				j = std::distance(nass.paired_keys.begin(), it1);
+				dq[j].push_back(i);
+			}
+			else if (it2 != nass.paired_keys.end()) {
+				j = std::distance(nass.paired_keys.begin(), it2);
+				k = dq[j].back();
+				bps[k] = i;
+				bps[i] = k;
+				dq[j].pop_back();
+			}
+			i++;
+		}
+		return bps;
+	}
+
+	NASS &NASS::instance() {
+		static NASS nuc_ss;
 		return nuc_ss;
 	}
 
-	bool NucSS::is_char_ss(char c) {
+	bool NASS::is_char_ss(char c) {
 		return
 			std::find_if( instance().paired_keys.begin(), instance().paired_keys.end(), [&](const std::pair<char, char> &pair) {
 				return pair.first == c || pair.second == c;
@@ -85,12 +124,12 @@ namespace jian {
 	}
 
 
-	bool NucSS::check_ss(const std::string &ss) {
+	bool NASS::check_ss(const std::string &ss) {
 		std::string info_errors;
 		return check_ss(ss, info_errors);
 	}
 
-	bool NucSS::check_ss(const std::string &ss, std::string &info_errors) {
+	bool NASS::check_ss(const std::string &ss, std::string &info_errors) {
 		std::lock_guard<std::mutex> gd(nass_detail::mt);
 		std::ostringstream stream;
 
@@ -132,7 +171,7 @@ namespace jian {
 		return true;
 	}
 
-	int NucSS::len_ss(const std::string &ss) {
+	int NASS::len_ss(const std::string &ss) {
 		std::lock_guard<std::mutex> gd(nass_detail::mt);
 
 		return std::count_if(ss.begin(), ss.end(), [&](const char &c) {
@@ -142,7 +181,7 @@ namespace jian {
 		});
 	}
 
-	std::string NucSS::pure_ss(const std::string &ss) {
+	std::string NASS::pure_ss(const std::string &ss) {
 		std::lock_guard<std::mutex> gd(nass_detail::mt);
 
 		std::string p_ss;
@@ -150,7 +189,7 @@ namespace jian {
 		return p_ss;
 	}
 
-	std::string NucSS::lower_ss(const std::string &ss, int n) {
+	std::string NASS::lower_ss(const std::string &ss, int n) {
 		std::lock_guard<std::mutex> gd(nass_detail::mt);
 
 		std::string l_ss;
@@ -165,11 +204,11 @@ namespace jian {
 		return l_ss;
 	}
 
-	std::string NucSS::hinge_ss(const std::string &ss) {
+	std::string NASS::hinge_ss(const std::string &ss) {
 		std::string h_ss; EACH(i, ss, if (i == '(' || i == ')') h_ss += i); return h_ss;
 	}
 
-	bool NucSS::seq_match_ss(const std::string &seq, const std::string &ss) {
+	bool NASS::seq_match_ss(const std::string &seq, const std::string &ss) {
 		return std::count_if(seq.begin(), seq.end(), [](auto && c) {return c != '&'; }) ==
 			std::count_if(ss.begin(), ss.end(), [](auto && c) {return c != '&'; });
 	}

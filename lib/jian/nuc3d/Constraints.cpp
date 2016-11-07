@@ -80,19 +80,19 @@ namespace jian {
 
 	void Constraints::read_contacts(const std::string &f) {
 		if (!f.empty()) {
-			EACH_SPLIT_LINE(f, " ",
+			BEGIN_READ_FILE(f, " ") {
 				if (F.size() == 3) add_contact(JN_INT(F[0]) - 1, JN_INT(F[1]) - 1, JN_DBL(F[2]));
 				else if (F.size() == 2) add_contact(JN_INT(F[0]) - 1, JN_INT(F[1]) - 1, 1.0);
-			);
+			} END_READ_FILE;
 		}
 	}
 
 	void Constraints::read_distances(const std::string &f) {
 		if (!f.empty()) {
-			EACH_SPLIT_LINE(f, " ",
+			BEGIN_READ_FILE(f, " ") {
 				if (F.size() == 3) add_distance(JN_INT(F[0]) - 1, JN_INT(F[1]) - 1, JN_DBL(F[2]));
 				else if (F.size() == 2) add_distance(JN_INT(F[0]) - 1, JN_INT(F[1]) - 1, 10.0);
-				);
+			} END_READ_FILE;
 		}
 	}
 
