@@ -166,9 +166,10 @@ namespace jian {
 		LOG << "# Set bps" << std::endl;
 		set_bps();
 
-		//_ss.resize(_seq.size(), '.');
+		//_ss.resize(_seq.size());
+		//std::fill(_ss.begin(), _ss.end(), '.');
 		_ss.resize(_seq.size());
-		std::fill(_ss.begin(), _ss.end(), '.');
+		for (auto && c : _ss) c = '.';
 
 		LOG << "# Set 2D trees" << std::endl;
 		set_trees();

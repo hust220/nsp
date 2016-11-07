@@ -5,6 +5,7 @@
 namespace jian {
 
 	void Score::init() {
+		parbp.reset(new ParBp);
 		m_bin = 0.3;
 		m_cutoff = 20;
 		m_bins = int(std::ceil(m_cutoff / m_bin));
@@ -30,14 +31,48 @@ namespace jian {
 		}
 	}
 
+	void Score::counts_bp_add(int i, int j, double l1, double l2) {
+		int a, b;
+
+		if (std::fabs(l1) < 10 && std::fabs(l2) < 10) {
+			l1 += 10;
+			l2 += 10;
+			a = int(l1 / 0.5);
+			b = int(l2 / 0.5);
+			m_counts_bp[i][j](a, b)++;
+		}
+	}
+
 	void Score::train(const Chain &c) {
 		int i, j, len;
 		Chain chain;
+		std::vector<int> t;
 
 		chain = m_cg->to_cg(c);
 		m_chain = &chain;
 		set_indices();
 		len = chain.size();
+
+		t.resize(len);
+		for (i = 0; i < len; i++) {
+			t[i] = pdb::res_type(chain[i].name);
+			if (t[i] > 3 || t[i] < 0) throw " error !";
+		}
+		for (i = 0; i < 4; i++) {
+			for (j = 0; j < 4; j++) {
+				m_counts_bp[i][j] = Mat::Zero(40, 40);
+			}
+		}
+		for (i = 0; i < len; i++) {
+			for (j = i + 1; j < len; j++) {
+				parbp->anal(chain[i], chain[j]);
+				if (parbp->is_paired()) {
+					counts_bp_add(t[i], t[j], parbp->o21_[0], parbp->o21_[1]);
+					counts_bp_add(t[j], t[i], parbp->o12_[0], parbp->o12_[1]);
+				}
+			}
+		}
+
 		for (i = 0; i < len - 1; i++) {
 			update_counts_stacking(i, i + 1);
 			for (j = i + 2; j < len; j++) {
@@ -230,14 +265,14 @@ namespace jian {
 						f = m_freqs_stacking(a * m_num_types + b, int(d / m_bin));
 						m_en_stacking += (f == 0 ? 0 : -std::log(f));
 					}
-					if (parbp.is_wc()) {
+					//if (parbp.is_wc()) {
 						f = m_freqs_wc(a * m_num_types + b, int(d / m_bin));
 						m_en_wc += (f == 0 ? 0 : -std::log(f));
-					}
-					if (parbp.is_nwc()) {
+					//}
+					//if (parbp.is_nwc()) {
 						f = m_freqs_nwc(a * m_num_types + b, int(d / m_bin));
 						m_en_nwc += (f == 0 ? 0 : -std::log(f));
-					}
+					//}
 					//f = m_freqs_pairing(a * m_num_types + b, int(d / m_bin));
 					//m_en_pairing += (f == 0 ? 0 : -std::log(f));
 				}
@@ -255,6 +290,13 @@ namespace jian {
 	}
 
 	void Score::print_counts(std::ostream & stream) const {
+		int i, j;
+		for (i = 0; i < 4; i++) {
+			for (j = 0; j < 4; j++) {
+				stream << i << ' ' << j << std::endl;
+				stream << m_counts_bp[i][j] << std::endl;
+			}
+		}
 		stream << "Stacking counts: " << std::endl;
 		print_counts(stream, m_counts_stacking);
 		stream << "Pairing counts: " << std::endl;

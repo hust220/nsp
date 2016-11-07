@@ -8,11 +8,13 @@
 #include "../cg/CG6p.hpp"
 #include "../pdb.hpp"
 #include "ScoreBase.hpp"
+#include "ParBp.hpp"
 
 namespace jian {
 
 	class Score : public ScoreBase {
 	public:
+		std::shared_ptr<ParBp> parbp;
 		Mat m_freqs_stacking;
 		Mat m_freqs_pairing;
 		Mat m_freqs_wc;
@@ -21,6 +23,7 @@ namespace jian {
 		Mati m_counts_pairing;
 		Mati m_counts_wc;
 		Mati m_counts_nwc;
+		std::array<std::array<Mat, 4>, 4> m_counts_bp;
 		double m_bond_len_std;
 		std::vector<double> m_bond_angle_std;
 		double m_bond_dihedral_std;
@@ -67,6 +70,8 @@ namespace jian {
 		void update_counts_stacking(int n1, int n2);
 
 		void update_counts_pairing(int n1, int n2);
+
+		void counts_bp_add(int i, int j, double l1, double l2);
 
 		void read_counts(Mati & mat, std::string path, int cutoff);
 

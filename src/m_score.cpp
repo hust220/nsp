@@ -175,7 +175,7 @@ namespace jian {
 					scoring->print_counts(stream);
 				}
 				else if (par.has("train")) {
-					if (par.has("s)")) {
+					if (par.has("s")) {
 						train_s(scoring, par.get("s"));
 					}
 					else if (par.has("l")) {
