@@ -108,7 +108,7 @@ namespace jian {
 			return m;
 		}
 
-		static Matrix<3, NumType> Constant(int a, int b, int c, T v) {
+		static Matrix<3, NumType> Constant(int a, int b, int c, NumType v) {
 			Matrix<3, NumType> m(a, b, c);
 			m.each([&v](NumType &n, int a, int b, int c) {
 				n = v;
