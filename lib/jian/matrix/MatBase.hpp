@@ -6,7 +6,7 @@ namespace jian {
 	template<int N, typename T>
 	class MatBase {
 	public:
-		using val_t = T;
+		using num_t = T;
 
 		enum {
 			DIM = N
