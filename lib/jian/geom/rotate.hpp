@@ -34,14 +34,6 @@ namespace jian {
 			for (int i = 0; i < 3; i++) t[i] += origin[i];
 		}
 
-		template<typename Mat = Eigen::MatrixXd, typename T>
-		Mat rot_mat(int i, T &&v) {
-			double c = std::cos(v);
-			double s = std::sin(v);
-			assert(i >= 0 && i < 3);
-			return (i == 0 ? x_rot_mat(c, s) : (i == 1 ? y_rot_mat(c, s) : z_rot_mat(c, s)));
-		}
-
 		template<typename Mat = Eigen::MatrixXd, class C1 = val_t, class C2 = val_t>
 		Mat x_rot_mat(C1 c, C2 s) {
 			Mat rot_mat(3, 3);
@@ -70,6 +62,14 @@ namespace jian {
 				-s, c, 0,
 				0, 0, 1;
 			return rot_mat;
+		}
+
+		template<typename Mat = Eigen::MatrixXd, typename T>
+		Mat rot_mat(int i, T &&v) {
+			double c = std::cos(v);
+			double s = std::sin(v);
+			assert(i >= 0 && i < 3);
+			return (i == 0 ? x_rot_mat(c, s) : (i == 1 ? y_rot_mat(c, s) : z_rot_mat(c, s)));
 		}
 
 		// Rotate along with an axis
