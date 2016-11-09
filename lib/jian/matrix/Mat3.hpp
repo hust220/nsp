@@ -5,11 +5,11 @@
 
 namespace jian {
 
-	template<typename T>
-	class Matrix<3, T> : public MatBase<3, T> {
+	template<typename NumType>
+	class Matrix<3, NumType> : public MatBase<3, NumType> {
 	public:
 		std::array<int, 3> size;
-		num_t ***p;
+		NumType ***p;
 
 		Matrix() {
 			init();
@@ -20,13 +20,13 @@ namespace jian {
 			resize(a, b, c);
 		}
 
-		Matrix(Matrix<3, num_t> &&m) {
+		Matrix(Matrix<3, NumType> &&m) {
 			init();
 			std::swap(size, m.size);
 			std::swap(p, m.p);
 		}
 
-		Matrix<3, num_t> &operator=(Matrix<3, num_t> &&m) {
+		Matrix<3, NumType> &operator=(Matrix<3, NumType> &&m) {
 			std::swap(size, m.size);
 			std::swap(p, m.p);
 			m.init();
@@ -49,8 +49,8 @@ namespace jian {
 			}
 		}
 
-		num_t sum() const {
-			num_t n = 0;
+		NumType sum() const {
+			NumType n = 0;
 			for (int i = 0; i < size[0]; i++) {
 				for (int j = 0; j < size[1]; j++) {
 					for (int k = 0; k < size[2]; k++) {
@@ -68,11 +68,11 @@ namespace jian {
 			size[0] = a;
 			size[1] = b;
 			size[2] = c;
-			p = new num_t**[a];
+			p = new NumType**[a];
 			for (i = 0; i < a; i++) {
-				p[i] = new num_t*[b];
+				p[i] = new NumType*[b];
 				for (j = 0; j < b; j++) {
-					p[i][j] = new num_t[c];
+					p[i][j] = new NumType[c];
 				}
 			}
 		}
@@ -92,25 +92,25 @@ namespace jian {
 			}
 		}
 
-		static Matrix<3, num_t> Zero(int a, int b, int c) {
-			Matrix<3, num_t> m(a, b, c);
-			m.each([](num_t &n, int a, int b, int c) {
+		static Matrix<3, NumType> Zero(int a, int b, int c) {
+			Matrix<3, NumType> m(a, b, c);
+			m.each([](NumType &n, int a, int b, int c) {
 				n = 0;
 			});
 			return m;
 		}
 
-		static Matrix<3, num_t> Ones(int a, int b, int c) {
-			Matrix<3, num_t> m(a, b, c);
-			m.each([](num_t &n, int a, int b, int c) {
+		static Matrix<3, NumType> Ones(int a, int b, int c) {
+			Matrix<3, NumType> m(a, b, c);
+			m.each([](NumType &n, int a, int b, int c) {
 				n = 1;
 			});
 			return m;
 		}
 
-		static Matrix<3, num_t> Constant(int a, int b, int c, T v) {
-			Matrix<3, num_t> m(a, b, c);
-			m.each([&v](num_t &n, int a, int b, int c) {
+		static Matrix<3, NumType> Constant(int a, int b, int c, T v) {
+			Matrix<3, NumType> m(a, b, c);
+			m.each([&v](NumType &n, int a, int b, int c) {
 				n = v;
 			});
 			return m;
@@ -120,11 +120,11 @@ namespace jian {
 			clear();
 		}
 
-		num_t &operator()(int a, int b, int c) {
+		NumType &operator()(int a, int b, int c) {
 			return p[a][b][c];
 		}
 
-		const num_t &operator()(int a, int b, int c) const {
+		const NumType &operator()(int a, int b, int c) const {
 			return p[a][b][c];
 		}
 
@@ -132,7 +132,7 @@ namespace jian {
 			std::cout << *this;
 		}
 
-		friend std::ostream &operator <<(std::ostream &stream, const Matrix<3, num_t> &m) {
+		friend std::ostream &operator <<(std::ostream &stream, const Matrix<3, NumType> &m) {
 			for (int i = 0; i < m.size[0]; i++) {
 				for (int j = 0; j < m.size[1]; j++) {
 					for (int k = 0; k < m.size[2]; k++) {
