@@ -25,7 +25,7 @@ namespace triple {
 
 using fac_t = Factory<TModule::cons_t>;
 
-class THMC : public mc::MCSM{
+class THMC : public MCSM{
 public:
     using Res = struct {char seq; char ss; int num;};
     using indices_t = std::deque<int>;
@@ -40,7 +40,7 @@ public:
     THMC() = default;
 
     void init(const Par &par) {
-        mc::MCSM::init(par);
+        MCSM::init(par);
     }
 
     ~THMC() {

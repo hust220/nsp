@@ -19,7 +19,7 @@ namespace qhmc {
 
 using fac_t = Factory<Module::cons_t>;
 
-class QHMC : public nuc3d::mc::MCSM {
+class QHMC : public MCSM {
 public:
     using res_t = struct {char seq; char ss; int num;};
     using res_list_t = std::deque<res_t>;
@@ -39,7 +39,7 @@ public:
     QHMC() = default;
 
     void init(const Par &par) {
-		nuc3d::mc::MCSM::init(par);
+		MCSM::init(par);
     }
 
     ~QHMC() {

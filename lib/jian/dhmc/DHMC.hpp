@@ -20,70 +20,17 @@
 
 namespace jian {
 
-	// MvEl: Moving element
-	class MvEl {
-	public:
-		enum mvel_t {
-			MVEL_HL, // helix
-			MVEL_HP, // hairpin
-			MVEL_IL, // internal loop
-			MVEL_FG // fragment
-		};
-		using frag_t = std::array<int, 2>;
-		using range_t = std::vector<frag_t>;
-
-		mvel_t type;
-		range_t range;
-
-		MvEl(int a, int b, mvel_t t);
-
-		MvEl(int a, int b, int c, int d, mvel_t t);
-
-		MvEl(const helix &h);
-
-		MvEl(loop *l, mvel_t t);
-
-		int min() const;
-
-		int max() const;
-
-		bool operator ==(const MvEl &el) const;
-
-		bool operator !=(const MvEl &el) const;
-
-		MvEl *operator +(const MvEl &el) const;
-
-		friend std::ostream &operator <<(std::ostream &, const MvEl &el);
-
-		bool contains(const MvEl &el) const;
-
-		bool nips(const MvEl &el) const;
-
-		bool has(int n) const {
-			return std::find_if(range.begin(), range.end(), [&n](const frag_t &frag) {
-				return frag[0] <= n && n <= frag[1];
-			}) != range.end();
-		}
-
-		static void merge(std::deque<MvEl *> &dq);
-	};
-
-	using fixed_ranges_t = std::list<std::array<int, 2>>;
-	using fixed_mvels_t = std::list<MvEl>;
-
-	class DHMC : public nuc3d::mc::MCSM {
+	class DHMC : public MCSM {
 	public:
 		using range_t = std::array<int, 4>;
 
 		std::deque<std::shared_ptr<SSTree>> m_trees;
 		std::map<helix *, Chain *> m_saved_helices;
-		std::deque<MvEl *> m_mvels;
-		std::vector<MvEl *> m_base_mvels;
-		MvEl *m_selected_mvel;
-		fixed_mvels_t m_fixed_mvels;
 		int m_frag_size;
 		Frags *m_frags;
 		bool m_sample_frag;
+		bool m_pk_ahead;
+		bool m_sample_all_res;
 		std::vector<bool> m_is_free;
 
 		template<typename T>
@@ -99,6 +46,8 @@ namespace jian {
 		~DHMC();
 
 		void init(const Par &par);
+
+		void bps_to_constraints();
 
 		bool is_hp(loop *l);
 
@@ -118,7 +67,7 @@ namespace jian {
 
 		void translate_pseudo_knots_helix(Model & m, const std::list<int> & nums);
 
-		void set_pseudo_knots_helix(const helix & h);
+		//void set_pseudo_knots_helix(const helix & h);
 
 		void set_pseudo_knots();
 

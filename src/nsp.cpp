@@ -10,10 +10,13 @@ namespace jian {
 	void NSP::run(int argc, char **argv) {
 		Par par(argc, argv);
 		if (par.has("log_level")) {
-			set_log_level(std::stoi(par["log_level"][0]));
+			log_level(std::stoi(par["log_level"][0]));
 		}
 		if (par.has("log")) {
 			log_file(par.get("log"));
+		}
+		if (par.has("out", "o")) {
+			out_file(par.get("out", "o"));
 		}
 		auto &m = instance()._methods;
 		std::string path = Env::lib() + "/RNA/pars/src/";

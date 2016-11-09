@@ -3,180 +3,40 @@
 #include "DHMC.hpp"
 
 namespace jian {
-	MvEl::MvEl(int a, int b, MvEl::mvel_t t) : type(t) {
-		range.push_back({ a, b });
-	}
-
-	MvEl::MvEl(int a, int b, int c, int d, MvEl::mvel_t t) : type(t) {
-		range.push_back({ a, b });
-		range.push_back({ c, d });
-	}
-
-	MvEl::MvEl(const helix &h) : type(MvEl::MVEL_HL) {
-		int a, b, c, d;
-
-		a = h.head->res1.num - 1;
-		d = h.head->res2.num - 1;
-		HELIX_EACH(h,
-			if (BP->next == NULL) {
-				b = BP->res1.num - 1;
-				c = BP->res2.num - 1;
-			}
-		);
-		range.push_back({ a, b });
-		range.push_back({ c, d });
-	}
-
-	MvEl::MvEl(loop *l, MvEl::mvel_t t) : type(t) {
-		int a, b, c, d;
-
-		if (t == MVEL_HP) {
-			a = l->s.head->res1.num - 1;
-			b = l->s.head->res2.num - 1;
-			range.push_back({ a, b });
-		}
-		else if (t == MVEL_IL) {
-			a = l->s.head->res1.num - 1;
-			b = l->son->s.head->res1.num - 2;
-			c = l->son->s.head->res2.num;
-			d = l->s.head->res2.num - 1;
-			range.push_back({ a, b });
-			range.push_back({ c, d });
-		}
-		else {
-			throw "jian::MvEl error!";
-		}
-	}
-
-	bool MvEl::operator ==(const MvEl &el) const {
-		return type == el.type && range == el.range;
-	}
-
-	bool MvEl::operator !=(const MvEl &el) const {
-		return !(*this == el);
-	}
-
-	MvEl *MvEl::operator +(const MvEl &el) const {
-		if (el.range.size() == 1) {
-			return new MvEl(range[0][0], range[1][1], el.type);
-		}
-		else if (el.range.size() == 2) {
-			return new MvEl(range[0][0], el.range[0][1], el.range[1][0], range[1][1], type);
-		}
-		else {
-			throw "jian::MvEl *jian::MvEl::operator +(const jian::MvEl &el) error!";
-		}
-	}
-
-	std::ostream &operator <<(std::ostream &stream, const MvEl &el) {
-		stream << 
-			(el.type == MvEl::MVEL_HL ? "Helix" :
-			(el.type == MvEl::MVEL_HP ? "Hairpin" :
-			(el.type == MvEl::MVEL_IL ? "Internal Loop" :
-			(el.type == MvEl::MVEL_FG ? "Fragment" : "Others")))) << ' ';
-		for (auto && frag : el.range) {
-			stream << frag[0] << '-' << frag[1] << ' ';
-		}
-		return stream;
-	}
-
-	int MvEl::min() const {
-		return std::min_element(range.begin(), range.end(), [](const frag_t &f1, const frag_t &f2) {
-			return f1[0] <= f2[0];
-		})->at(0);
-	}
-
-	int MvEl::max() const {
-		return std::max_element(range.begin(), range.end(), [](const frag_t &f1, const frag_t &f2) {
-			return f1[1] <= f2[1];
-		})->at(1);
-	}
-
-	bool MvEl::contains(const MvEl &el) const {
-		return std::all_of(el.range.begin(), el.range.end(), [this](const frag_t &f1) {
-			return std::any_of(this->range.begin(), this->range.end(), [&f1](const frag_t &f) {
-				return f[0] <= f1[0] && f[1] >= f1[1];
-			});
-		});
-	}
-
-	bool MvEl::nips(const MvEl &el) const {
-		return range.size() == 2 && range[0][1] + 1 == el.min() && range[1][0] - 1 == el.max();
-	}
-
-	void MvEl::merge(std::deque<MvEl *> &dq) {
-		LOG << "# Merge ranges..." << std::endl;
-		std::deque<MvEl *> els;
-		int flag = 1;
-		std::map<MvEl *, bool> m;
-
-		while (flag != 0) {
-			flag = 0;
-			m.clear();
-			for (auto && el : dq) m[el] = true;
-
-			auto it = dq.begin();
-			for (auto it1 = it; it1 != dq.end(); it1++) {
-				if (!m[*it1]) continue;
-				for (auto it2 = it1 + 1; it2 != dq.end(); it2++) {
-					if (!m[*it2]) continue;
-					if ((*it1)->type != MVEL_FG && (*it2)->type != MVEL_FG) {
-						MvEl &el1 = *(*it1);
-						MvEl &el2 = *(*it2);
-						if (el1.contains(el2)) {
-							m[*it2] = false;
-							flag++;
-						}
-						else if (el2.contains(el1)) {
-							m[*it1] = false;
-							flag++;
-						}
-						else if (el1.nips(el2)) {
-							m[*it1] = false;
-							m[*it2] = false;
-							els.push_back(el1 + el2);
-							flag++;
-						}
-						else if (el2.nips(el1)) {
-							m[*it1] = false;
-							m[*it2] = false;
-							els.push_back(el2 + el1);
-							flag++;
-						}
-					}
-				}
-			}
-
-			for (auto && el : dq) {
-				if (m[el]) {
-					els.push_back(el);
-				}
-				else {
-					delete el;
-				}
-			}
-			dq = els;
-			els.clear();
-		}
-	}
-
 	void DHMC::init(const Par &par) {
-		nuc3d::mc::MCSM::init(par);
+		MCSM::init(par);
+
+		m_pk_ahead = par.has("pk_ahead");
+		m_sample_frag = par.has("frag");
+		m_sample_all_res = par.has("sample_all_res");
 
 		LOG << "# Set bps" << std::endl;
 		set_bps();
 
-		//_ss.resize(_seq.size());
-		//std::fill(_ss.begin(), _ss.end(), '.');
-		_ss.resize(_seq.size());
-		for (auto && c : _ss) c = '.';
+		LOG << "# Transform bps to constraints..." << std::endl;
+		bps_to_constraints();
+
+		if (m_pk_ahead) {
+			// no operation
+		}
+		else if (m_sample_all_res) {
+			for (auto && c : _ss) {
+				c = '.';
+			}
+		}
+		else {
+			for (auto && c : _ss) {
+				if (c != '.' && c != '(' && c != ')') {
+					c = '.';
+				}
+			}
+		}
 
 		LOG << "# Set 2D trees" << std::endl;
 		set_trees();
 
-		LOG << "# Set fragments" << std::endl;
-		m_sample_frag = par.has("frag");
 		if (m_sample_frag) {
+			LOG << "# Set fragments" << std::endl;
 			m_frag_size = 3;
 			par.set(m_frag_size, "frag_size");
 			m_frags = &(Frags::instance(m_cg->m_cg, m_frag_size));
@@ -271,6 +131,26 @@ namespace jian {
 		m_bps = NASS::get_bps(_ss);
 	}
 
+	void DHMC::bps_to_constraints() {
+		int i, j;
+
+		auto foo = [this](int n1, int n2) {
+			int t1 = pdb::res_type(_pred_chain[n1].name);
+			int t2 = pdb::res_type(_pred_chain[n2].name);
+			int a = ((t1 == 0 || t1 == 2) ? 5 : 4);
+			int b = ((t2 == 0 || t2 == 2) ? 5 : 4);
+			m_distance_constraints.push_back({ { n1, 3 },{ n2, 3 }, 3.9, 4.5 });
+			m_distance_constraints.push_back({ { n1, a },{ n2, b }, 3.9, 4.5 });
+		};
+
+		for (i = 0; i < _seq.size(); i++) {
+			j = m_bps[i];
+			if (i < j) {
+				foo(i, j);
+			}
+		}
+	}
+
 	void DHMC::translate_pseudo_knots_helix(Model & m, const std::list<int> & nums) {
 		int n = m_cg->res_size() * nums.size() / 2;
 		Mat x(n, 3), y(n, 3);
@@ -299,28 +179,28 @@ namespace jian {
 		}
 	}
 
-	void DHMC::set_pseudo_knots_helix(const helix & h) {
-		auto && seq = h.seq();
-		auto && m = build_helix(seq);
-		auto && nums = h.nums();
-
-		assert(nums.size() >= 2 && nums.size() % 2 == 0);
-		translate_pseudo_knots_helix(m, nums);
-
-		int i = 0;
-		for (auto && n : nums) {
-			_pred_chain[n] = std::move(m[0][i]);
-			i++;
-		}
-	}
-
 	void DHMC::set_pseudo_knots() {
 		auto it = m_trees.begin();
+
+		auto foo = [this](const helix &h) {
+			auto && seq = h.seq();
+			auto && m = build_helix(seq);
+			auto && nums = h.nums();
+
+			assert(nums.size() >= 2 && nums.size() % 2 == 0);
+			translate_pseudo_knots_helix(m, nums);
+
+			int i = 0;
+			for (auto && n : nums) {
+				_pred_chain[n] = std::move(m[0][i]);
+				i++;
+			}
+		};
 
 		// 设置第一个二级结构树中长度为1的helix
 		LOOP_TRAVERSE((*it)->head(),
 			if (L->has_helix() && L->s.len() == 1) {
-				set_pseudo_knots_helix(L->s);
+				foo(L->s);
 			}
 		);
 
@@ -328,7 +208,7 @@ namespace jian {
 		for (it = m_trees.begin() + 1; it != m_trees.end(); it++) {
 			LOOP_TRAVERSE((*it)->head(),
 				if (L->has_helix()) {
-					set_pseudo_knots_helix(L->s);
+					foo(L->s);
 				}
 			);
 		}
@@ -453,7 +333,6 @@ namespace jian {
 
 		for (auto it = m_trees.begin(); it != m_trees.end(); it++) {
 			set_res_module_types_ss((*it)->head(), it == m_trees.begin());
-			//std::cout << "m_mvels.size(): " << m_mvels.size() << std::endl;
 		}
 
 		std::vector<int> w(m_frag_size);
@@ -465,14 +344,6 @@ namespace jian {
 				m_mvels.push_back(new MvEl(i, i + m_frag_size - 1, MvEl::MVEL_FG));
 			}
 		}
-
-		//LOG << "information of free:" << std::endl;
-		//for (i = 0; i < _seq.size(); i++) {
-		//	LOG << i << ' ' << m_is_free[i] << std::endl;
-		//}
-		//LOG << "before merge: " << std::endl;
-		//print_mvels();
-		//LOG << "after merge: " << std::endl;
 
 		MvEl::merge(m_mvels);
 	}
@@ -578,8 +449,10 @@ namespace jian {
 	}
 
 	void DHMC::before_run() {
-		LOG << "# Set pseudo-knots" << std::endl;
-		set_pseudo_knots();
+		if (m_pk_ahead) {
+			LOG << "# Set pseudo-knots" << std::endl;
+			set_pseudo_knots();
+		}
 	}
 
 	void DHMC::mc_select() {

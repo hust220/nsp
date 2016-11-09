@@ -410,13 +410,13 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\jian\scoring\ParBp.cpp" />
-    <ClCompile Include="..\lib\jian\matrix\Mat3.cpp">
-      <Filter>jian\matrix</Filter>
-    </ClCompile>
     <ClCompile Include="..\lib\jian\matrix\Mat4.cpp">
       <Filter>jian\matrix</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\jian\matrix\Mat5.cpp">
+      <Filter>jian\matrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\matrix\MatBase.hpp">
       <Filter>jian\matrix</Filter>
     </ClCompile>
   </ItemGroup>

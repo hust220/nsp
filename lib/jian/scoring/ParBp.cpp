@@ -64,7 +64,9 @@ namespace jian {
 	}
 
 	bool ParBp::is_paired() const {
+		//std::cout << d << ' ' << std::fabs(o21_[2]) << ' ' << std::fabs(o12_[2]) << std::endl;
 		return d < 8 && std::fabs(o21_[2]) < 2 && std::fabs(o12_[2]) < 2;
+		//return d < 8 && std::fabs(o21_[2]) < 2 && std::fabs(o12_[2]) < 2;
 	}
 
 	bool ParBp::is_stacked() const {
@@ -83,7 +85,6 @@ namespace jian {
 		int i;
 		Residue r1 = m_cg->to_cg(res1);
 		Residue r2 = m_cg->to_cg(res2);
-		double origin2_x, origin2_y;
 
 		set_origin(o1, r1);
 		set_origin(o2, r2);

@@ -12,10 +12,9 @@ namespace jian {
 			Chain chain;
 			int l, n, i, j;
 			std::shared_ptr<CG> cg;
-			double d;
 
 			list_file = par.get("l", "list");
-			prefix = par.get("prefix");
+			//prefix = par.get("prefix");
 			cg.reset(CG::fac_t::create("6p"));
 
 			n = 0;
@@ -27,18 +26,24 @@ namespace jian {
 				for (i = 0; i < l; i++) {
 					for (j = i + 1; j < l; j++) {
 						par_bp.anal(chain[i], chain[j]);
-						int m, n;
-						for (m = 0; m < 6; m++) {
-							for (n = 0; n < 6; n++) {
-								d = geom::distance(chain[i][m], chain[j][n]);
-								if (d < 3) {
-									std::cout
-										<< d << ' ' << chain[i].name << i + 1 << ' ' << chain[j].name << j + 1 << ' '
-										<< chain[i][m].name << ' ' << m << ' ' << chain[j][n].name << ' ' << n
-										<< std::endl;
-								}
-							}
+
+						if (par_bp.is_paired()) {
+							std::cout << i << ' ' << j << "\n" << par_bp.o21_ << std::endl;
 						}
+
+						//int m, n;
+						//for (m = 0; m < 6; m++) {
+						//	for (n = 0; n < 6; n++) {
+						//		d = geom::distance(chain[i][m], chain[j][n]);
+						//		if (d < 3) {
+						//			std::cout
+						//				<< d << ' ' << chain[i].name << i + 1 << ' ' << chain[j].name << j + 1 << ' '
+						//				<< chain[i][m].name << ' ' << m << ' ' << chain[j][n].name << ' ' << n
+						//				<< std::endl;
+						//		}
+						//	}
+						//}
+
 						/*
 						Chain c;
 						c.push_back(chain[i]);

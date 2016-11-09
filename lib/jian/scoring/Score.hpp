@@ -23,7 +23,15 @@ namespace jian {
 		Mati m_counts_pairing;
 		Mati m_counts_wc;
 		Mati m_counts_nwc;
-		std::array<std::array<Mat, 4>, 4> m_counts_bp;
+		std::array<std::array<Mat3i, 4>, 4> m_counts_bp;
+		std::array<std::array<Mat3, 4>, 4> m_freqs_bp;
+		std::array<std::array<Mat3i, 4>, 4> m_counts_st53;
+		std::array<std::array<Mat3, 4>, 4> m_freqs_st53;
+		std::array<std::array<Mat3i, 4>, 4> m_counts_st35;
+		std::array<std::array<Mat3, 4>, 4> m_freqs_st35;
+		std::array<std::array<double, 4>, 4> m_weights_bp;
+		std::array<std::array<double, 4>, 4> m_weights_st53;
+		std::array<std::array<double, 4>, 4> m_weights_st35;
 		double m_bond_len_std;
 		std::vector<double> m_bond_angle_std;
 		double m_bond_dihedral_std;
@@ -57,11 +65,11 @@ namespace jian {
 
 		virtual ScoreBase &en_bp(const Residue &r1, const Residue &r2);
 
-		virtual double en_len(const Residue &r1, const Residue &r2);
+		virtual double en_len(const Chain &c, int beg);
 
-		virtual double en_ang(const Residue &r1, const Residue &r2, const Residue &r3);
+		virtual double en_ang(const Chain &c, int beg);
 
-		virtual double en_dih(const Residue &r1, const Residue &r2, const Residue &r3, const Residue &r4);
+		virtual double en_dih(const Chain &c, int beg);
 
 		virtual double en_crash(const Residue &r1, const Residue &r2);
 
@@ -71,21 +79,11 @@ namespace jian {
 
 		void update_counts_pairing(int n1, int n2);
 
-		void counts_bp_add(int i, int j, double l1, double l2);
-
-		void read_counts(Mati & mat, std::string path, int cutoff);
-
 		void read_counts();
 
 		void read_pars();
 
-		void set_freqs(Mat & m, const Mati & c);
-
 		void set_freqs();
-
-		void print_counts(std::ostream &, const Mati &) const;
-
-		void print_freqs(std::ostream &, const Mat &) const;
 
 	};
 

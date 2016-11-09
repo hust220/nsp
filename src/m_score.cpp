@@ -5,6 +5,7 @@
 #include <jian/scoring/Score.hpp>
 #include <jian/utils/file.hpp>
 #include <jian/nuc3d/Format.hpp>
+#include <jian/utils/log.hpp>
 
 namespace jian {
 	namespace {
@@ -31,9 +32,9 @@ namespace jian {
 			FCLOSE(ifile);
 
 			for (i = 0; i < cols; i++) {
-				std::cout << v[i] << ' ';
+				OUT << v[i] << ' ';
 			}
-			std::cout << std::endl;
+			OUT << std::endl;
 		}
 
 		void score_res(ScoreBase * scoring, std::string filename, std::string score_type = "pairing") {
@@ -42,20 +43,23 @@ namespace jian {
 
 			chain_read_model(chain, filename);
 			l = chain.size();
-			//std::cout << l << std::endl;
+			//OUT << l << std::endl;
 			for (i = 0; i < l; i++) {
 				for (j = 0; j < l; j++) {
-					if (i == j) std::cout << 0 << "\t";
+					if (i == j) OUT << 0 << "\t";
 					else {
 						scoring->en_bp(chain[i], chain[j]);
-						if (score_type == "pairing") std::cout << scoring->m_en_pairing << "\t";
-						if (score_type == "stacking") std::cout << scoring->m_en_stacking << "\t";
-						else if (score_type == "wc") std::cout << scoring->m_en_wc << "\t";
-						else if (score_type == "nwc") std::cout << scoring->m_en_nwc << "\t";
-						else throw "error!";
+						if (score_type == "pairing") OUT << scoring->m_en_pairing << "\t";
+						else if (score_type == "stacking") OUT << scoring->m_en_stacking << "\t";
+						else if (score_type == "wc") OUT << scoring->m_en_wc << "\t";
+						else if (score_type == "nwc") OUT << scoring->m_en_nwc << "\t";
+						else {
+							LOG << "Illegal score type: " << score_type << std::endl;
+							throw "error!";
+						}
 					}
 				}
-				std::cout << std::endl;
+				OUT << std::endl;
 			}
 		}
 
@@ -63,7 +67,7 @@ namespace jian {
 			Chain chain;
 			chain_read_model(chain, filename);
 			scoring->run(chain);
-			std::cout <<
+			OUT <<
 				"Score of " << filename << ": " <<
 				//scoring->m_score_dih << "(dih) " <<
 				//scoring->m_score_dist << "(dist) " <<
@@ -80,7 +84,7 @@ namespace jian {
 		void train_s(ScoreBase * scoring, std::string filename) {
 			Chain chain;
 
-			std::cout << "Train " << filename << " ..." << std::endl;
+			LOG << "Train " << filename << " ..." << std::endl;
 			chain_read_model(chain, filename);
 			scoring->train(chain);
 		}
@@ -117,20 +121,12 @@ namespace jian {
 
 		REGISTER_NSP_COMPONENT(score) {
 			//std::ofstream stream;
-			std::ofstream ofile;
-			std::ostream stream(std::cout.rdbuf());
 			std::string method;
 			std::string score_type = "pairing";
 
 			par.set(score_type, "score_type");
 
 			CG *m_cg;
-			//std::streambuf *buf = stream.rdbuf();
-
-			if (par.has("out", "o") && par.get("out", "o").size() > 0) {
-				FOPEN(ofile, par.get("out", "o"));
-				stream.rdbuf(ofile.rdbuf());
-			}
 
 			method = "aa";
 			par.set(method, "cg");
@@ -150,11 +146,11 @@ namespace jian {
 					for (j = 0; j < l; j++) {
 						d = (i == j ? 0 : en_crash(chain[i], chain[j]));
 						e += d;
-						stream << d << "\t";
+						OUT << d << "\t";
 					}
-					stream << std::endl;
+					OUT << std::endl;
 				}
-				std::cout << e << std::endl;
+				OUT << e << std::endl;
 
 			}
 			else if (par.has("sum_counts")) {
@@ -169,10 +165,10 @@ namespace jian {
 				scoring->init();
 
 				if (par.has("print_freqs")) {
-					scoring->print_freqs(stream);
+					scoring->print_freqs(OUT);
 				}
 				else if (par.has("print_counts")) {
-					scoring->print_counts(stream);
+					scoring->print_counts(OUT);
 				}
 				else if (par.has("train")) {
 					if (par.has("s")) {
@@ -181,7 +177,7 @@ namespace jian {
 					else if (par.has("l")) {
 						train_l(scoring, par.get("l", "list"));
 					}
-					scoring->print_counts(stream);
+					scoring->print_counts(OUT);
 				}
 				else {
 					if (par.has("s")) {
@@ -198,7 +194,6 @@ namespace jian {
 				}
 				delete scoring;
 			}
-			FCLOSE(ofile);
 			delete m_cg;
 		}
 	}

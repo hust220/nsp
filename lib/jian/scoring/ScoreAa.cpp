@@ -75,15 +75,15 @@ namespace jian {
 		return *this;
 	}
 
-	double ScoreAa::en_len(const Residue &r1, const Residue &r2) {
+	double ScoreAa::en_len(const Chain &c, int beg) {
 		return 0;
 	}
 
-	double ScoreAa::en_ang(const Residue &r1, const Residue &r2, const Residue &r3) {
+	double ScoreAa::en_ang(const Chain &c, int beg) {
 		return 0;
 	}
 
-	double ScoreAa::en_dih(const Residue &r1, const Residue &r2, const Residue &r3, const Residue &r4) {
+	double ScoreAa::en_dih(const Chain &c, int beg) {
 		return 0;
 	}
 

@@ -155,7 +155,6 @@
     <ClCompile Include="..\lib\jian\cg\CGpsb.cpp" />
     <ClCompile Include="..\lib\jian\cg\Frags.cpp" />
     <ClCompile Include="..\lib\jian\dca\Dca.cpp" />
-    <ClCompile Include="..\lib\jian\matrix\Mat3.cpp" />
     <ClCompile Include="..\lib\jian\matrix\Mat4.cpp" />
     <ClCompile Include="..\lib\jian\matrix\Mat5.cpp" />
     <ClCompile Include="..\lib\jian\dca\MfDca.cpp" />
@@ -170,6 +169,7 @@
     <ClCompile Include="..\lib\jian\lrsp\ss_complete.cpp" />
     <ClCompile Include="..\lib\jian\lrsp\ss_del_sm_hp.cpp" />
     <ClCompile Include="..\lib\jian\lrsp\ss_hp_pred.cpp" />
+    <ClCompile Include="..\lib\jian\matrix\MatBase.hpp" />
     <ClCompile Include="..\lib\jian\mcsm\McsmBase.cpp" />
     <ClCompile Include="..\lib\jian\mcsm\MCSM.cpp" />
     <ClCompile Include="..\lib\jian\mc\MC.cpp" />

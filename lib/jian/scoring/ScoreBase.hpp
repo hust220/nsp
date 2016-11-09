@@ -17,6 +17,8 @@ namespace jian {
 		double m_en_stacking;
 		double m_en_wc;
 		double m_en_nwc;
+		double m_en_vdw;
+
 		CG *m_cg = NULL;
 
 		~ScoreBase() {
@@ -39,11 +41,11 @@ namespace jian {
 
 		virtual ScoreBase &en_bp(const Residue &r1, const Residue &r2) = 0;
 
-		virtual double en_len(const Residue &r1, const Residue &r2) = 0;
+		virtual double en_len(const Chain &c, int beg) = 0;
 
-		virtual double en_ang(const Residue &r1, const Residue &r2, const Residue &r3) = 0;
+		virtual double en_ang(const Chain &c, int beg) = 0;
 
-		virtual double en_dih(const Residue &r1, const Residue &r2, const Residue &r3, const Residue &r4) = 0;
+		virtual double en_dih(const Chain &c, int beg) = 0;
 
 		virtual double en_crash(const Residue &r1, const Residue &r2) = 0;
 

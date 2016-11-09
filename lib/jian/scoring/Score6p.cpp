@@ -7,26 +7,27 @@ namespace jian {
 		m_cg = CG::fac_t::create("6p");
 	}
 
-	inline double Score6p::en_len(const Residue &r1, const Residue &r2) {
+	inline double Score6p::en_len(const Chain &c, int beg) {
 		double d;
 
-		d = geom::distance(r1[2], r2[0]);
+		d = geom::distance(c[beg][2], c[beg + 1][0]);
 		return square(d - m_bond_len_std);
 	}
 
-	inline double Score6p::en_ang(const Residue &r1, const Residue &r2, const Residue &r3) {
+	inline double Score6p::en_ang(const Chain &c, int beg) {
 		double d, e;
-		int i;
 
 		e = 0;
-		for (i = 0; i < 3; i++) {
-			d = geom::angle(r1[i], r2[i], r3[i]);
-			e += square(d - m_bond_angle_std[i]);
+		if (beg + 1 < c.size()) {
+			d = geom::angle(c[beg][0], c[beg][2], c[beg + 1][0]);
+			e += square(d - m_bond_angle_std[0]);
+			d = geom::angle(c[beg][2], c[beg + 1][0], c[beg + 1][2]);
+			e += square(d - m_bond_angle_std[1]);
 		}
 		return e;
 	}
 
-	inline double Score6p::en_dih(const Residue &r1, const Residue &r2, const Residue &r3, const Residue &r4) {
+	inline double Score6p::en_dih(const Chain &c, int beg) {
 		return 0;
 	}
 

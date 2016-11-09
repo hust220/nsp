@@ -4,71 +4,70 @@
 #include "../cg.hpp"
 #include "../scoring/Score.hpp"
 
-#define MEM_EN_MCPSB len, ang, dih, crash, cons, vdw, stacking, pairing, wc, nwc
+#define MEM_EN_MCPSB len, ang, dih, crash, cons, vdw, stacking, pairing
 #define DEF_MEM_EN_MCPSB(a) double a = 0;
 #define SUM_MEM_EN_MCPSB(a) + a
 #define PRINT_MEM_EN_MCPSB(a) << a << PP_STRING3((a)) << ' '
 
 namespace jian {
-	namespace nuc3d {
-		namespace mc {
+	class MCSM : public MCBase {
+	public:
+		struct en_t {
+			JN_MAP(DEF_MEM_EN_MCPSB, MEM_EN_MCPSB);
+			double sum() const { return 0 JN_MAP(SUM_MEM_EN_MCPSB, MEM_EN_MCPSB); }
+			void print() const { LOG << sum() << "(total) " JN_MAP(PRINT_MEM_EN_MCPSB, MEM_EN_MCPSB) << std::endl; }
+		};
 
-			class MCSM : public MCBase {
-			public:
-				struct en_t {
-					JN_MAP(DEF_MEM_EN_MCPSB, MEM_EN_MCPSB);
-					double sum() const { return 0 JN_MAP(SUM_MEM_EN_MCPSB, MEM_EN_MCPSB); }
-					void print() const { LOG << sum() << "(total) " JN_MAP(PRINT_MEM_EN_MCPSB, MEM_EN_MCPSB) << std::endl; }
-				};
+		struct atom_acc_t {
+			int n_res;
+			int n_atom;
+		};
 
-				std::vector<int> m_indices;
-				ScoreBase *m_scorer;
-				std::vector<int> m_bps;
+		struct distance_constraints_t {
+			atom_acc_t atom1, atom2;
+			double min, max;
+		};
 
-				MCSM() = default;
+		std::vector<int> m_indices;
+		ScoreBase *m_scorer;
+		std::vector<int> m_bps;
+		std::deque<distance_constraints_t> m_distance_constraints;
+		std::array<std::array<Mat, 4>, 4> m_bp_min_distances_table;
+		std::array<std::array<Mat, 4>, 4> m_bp_max_distances_table;
 
-				void init(const Par &par);
+		MCSM() = default;
 
-				void set_indices();
+		void init(const Par &par);
 
-				void print_pairing();
+		void set_indices();
 
-				virtual double mc_partial_energy();
+		void print_pairing();
 
-				void mc_total_energy(en_t &e);
+		virtual double mc_partial_energy();
 
-				void mc_partial_energy_crash(en_t &e);
-				void mc_total_energy_crash(en_t &e);
+		void mc_total_energy(en_t &e);
 
-				void mc_partial_energy_bond(en_t &e);
-				void mc_total_energy_bond(en_t &e);
+		void mc_energy_crash(en_t &e, bool is_total);
+		void mc_energy_bond(en_t &e, bool is_total);
+		void mc_energy_angle(en_t &e, bool is_total);
+		void mc_energy_dihedral(en_t &e, bool is_total);
+		void mc_energy_constraints(en_t &e, bool is_total);
 
-				void mc_partial_energy_angle(en_t &e);
-				void mc_total_energy_angle(en_t &e);
+		virtual double dist_two_res(const Residue &r1, const Residue &r2) const;
 
-				void mc_partial_energy_dihedral(en_t &e);
-				void mc_total_energy_dihedral(en_t &e);
+		double total_energy();
 
-				void mc_partial_energy_constraints(en_t &e);
-				void mc_total_energy_constraints(en_t &e);
+		virtual void write_en();
 
-				virtual double dist_two_res(const Residue &r1, const Residue &r2) const;
+		virtual std::string file_parameters() const;
 
-				double total_energy();
+		virtual void finish_run();
 
-				virtual void write_en();
+		virtual bool is_selected(const int &i) const = 0;
 
-				virtual std::string file_parameters() const;
+		virtual Vec rotating_center() const = 0;
 
-				virtual void finish_run();
+	};
 
-				virtual bool is_selected(const int &i) const = 0;
-
-				virtual Vec rotating_center() const = 0;
-
-			};
-
-		} // namespace mc
-	} // namespace nuc3d
 } // namespace jian
 
