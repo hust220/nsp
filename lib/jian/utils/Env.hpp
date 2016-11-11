@@ -23,7 +23,7 @@ namespace jian {
 			return env;
 		}
 
-		static std::string Env::lib() {
+		static std::string lib() {
 			return Env::instance().get_lib();
 		}
 
