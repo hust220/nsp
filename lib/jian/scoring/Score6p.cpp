@@ -8,27 +8,38 @@ namespace jian {
 	}
 
 	inline double Score6p::en_len(const Chain &c, int beg) {
-		double d;
+		double d, e;
 
-		d = geom::distance(c[beg][2], c[beg + 1][0]);
-		return square(d - m_bond_len_std);
+		e = 0;
+		if (beg + 1 < c.size()) {
+			d = geom::distance(c[beg][0], c[beg + 1][0]);
+			e += square(d - m_bond_len_std[0]);
+			d = geom::distance(c[beg][1], c[beg + 1][0]);
+			e += square(d - m_bond_len_std[1]);
+		}
+		return e;
 	}
 
 	inline double Score6p::en_ang(const Chain &c, int beg) {
 		double d, e;
 
 		e = 0;
-		if (beg + 1 < c.size()) {
-			d = geom::angle(c[beg][0], c[beg][2], c[beg + 1][0]);
+		if (beg + 2 < c.size()) {
+			d = geom::angle(c[beg][0], c[beg+1][0], c[beg + 2][0]);
 			e += square(d - m_bond_angle_std[0]);
-			d = geom::angle(c[beg][2], c[beg + 1][0], c[beg + 1][2]);
-			e += square(d - m_bond_angle_std[1]);
 		}
 		return e;
 	}
 
 	inline double Score6p::en_dih(const Chain &c, int beg) {
-		return 0;
+		double d, e;
+
+		e = 0;
+		if (beg + 3 < c.size()) {
+			d = geom::dihedral(c[beg][0], c[beg + 1][0], c[beg + 2][0], c[beg+3][0]);
+			e += square(d - m_bond_dihedral_std[0]);
+		}
+		return e;
 	}
 
 	inline double Score6p::en_crash(const Residue &r1, const Residue &r2) {

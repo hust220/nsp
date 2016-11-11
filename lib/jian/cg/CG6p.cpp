@@ -4,6 +4,7 @@
 #include <array>
 #include <algorithm>
 #include "CG6p.hpp"
+#include "CompleteResidue.hpp"
 
 namespace jian {
 	REG_CG("6p", CG6p);
@@ -17,29 +18,37 @@ namespace jian {
 	}
 
 	const std::vector<std::string> CG6p::m_basic_atoms{
-		"C5*", "C1*", "O3*", "C2", "C4", "C6"
+		"P", "C4*", "C1*", "C2", "C4", "C6"
 	};
 
 	Residue CG6p::to_cg(const Residue &r) const {
+		auto foo = [](const Residue &res, auto && names) {
+			Residue r;
+			r.m_cg = res.m_cg;
+			r.name = res.name;
+			for (auto && atom : res) {
+				if (std::find(names.begin(), names.end(), atom.name) != names.end()) {
+					r.push_back(atom);
+				}
+			}
+			return r;
+		};
+
+		const CompleteResidue &complete = CompleteResidue::instance();
+
 		if (is_cg(r)) {
 			return r;
 		}
 		else {
-			Residue res;
-			res.name = r.name;
-			res.m_cg = m_cg;
-			for (auto && name : m_basic_atoms) {
-				auto it = std::find_if(r.begin(), r.end(), [&name](const Atom &atom) {
-					return atom.name == name;
-				});
-				if (it == r.end()) {
-					throw "CG6p::res atom '" + name + "' not found!";
-				}
-				else {
-					res.push_back(*it);
-				}
+			if (complete.lack_atoms(r)) {
+				Residue res = r;
+				complete(res);
+				return foo(res, m_basic_atoms);
 			}
-			return res;
+			else {
+				return foo(r, m_basic_atoms);
+			}
+
 		}
 	}
 

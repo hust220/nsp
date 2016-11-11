@@ -89,9 +89,16 @@ namespace jian {
 		throw "jian::Residue::operator[] error! Not found atom!";
 	}
 
-	const Atom &Residue::operator [](const std::string &s) const {
+	const Atom &Residue::operator[](const std::string &s) const {
 		for (auto &&atom : *this) if (atom.name == s) { return atom; }
 		throw "jian::Residue::operator[] error! Not found atom!";
+	}
+
+	Residue &Residue::operator+=(const Residue &res) {
+		for (auto && atom : res) {
+			push_back(atom);
+		}
+		return *this;
 	}
 
 } // namespace jian

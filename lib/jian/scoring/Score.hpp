@@ -32,9 +32,9 @@ namespace jian {
 		std::array<std::array<double, 4>, 4> m_weights_bp;
 		std::array<std::array<double, 4>, 4> m_weights_st53;
 		std::array<std::array<double, 4>, 4> m_weights_st35;
-		double m_bond_len_std;
+		std::vector<double> m_bond_len_std;
 		std::vector<double> m_bond_angle_std;
-		double m_bond_dihedral_std;
+		std::vector<double> m_bond_dihedral_std;
 		double m_cutoff_stacking;
 		double m_cutoff_pairing;
 		std::map<std::string, int> m_map{ { "A", 0 },{ "U", 1 },{ "G", 2 },{ "C", 3 } };

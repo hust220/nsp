@@ -419,6 +419,9 @@
     <ClCompile Include="..\lib\jian\matrix\MatBase.hpp">
       <Filter>jian\matrix</Filter>
     </ClCompile>
+    <ClCompile Include="..\lib\jian\cg\CompleteResidue.cpp">
+      <Filter>jian\cg</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="nsp.hpp">
@@ -921,6 +924,9 @@
     </ClInclude>
     <ClInclude Include="..\lib\jian\matrix\Mat5.hpp">
       <Filter>jian\matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\cg\CompleteResidue.hpp">
+      <Filter>jian\cg</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

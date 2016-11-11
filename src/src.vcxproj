@@ -153,6 +153,7 @@
     <ClCompile Include="..\lib\jian\cg\CG6p.cpp" />
     <ClCompile Include="..\lib\jian\cg\CGaa.cpp" />
     <ClCompile Include="..\lib\jian\cg\CGpsb.cpp" />
+    <ClCompile Include="..\lib\jian\cg\CompleteResidue.cpp" />
     <ClCompile Include="..\lib\jian\cg\Frags.cpp" />
     <ClCompile Include="..\lib\jian\dca\Dca.cpp" />
     <ClCompile Include="..\lib\jian\matrix\Mat4.cpp" />
@@ -272,6 +273,7 @@
     <ClInclude Include="..\lib\jian\cg\CG6p.hpp" />
     <ClInclude Include="..\lib\jian\cg\CGaa.hpp" />
     <ClInclude Include="..\lib\jian\cg\CGpsb.hpp" />
+    <ClInclude Include="..\lib\jian\cg\CompleteResidue.hpp" />
     <ClInclude Include="..\lib\jian\cg\Frags.hpp" />
     <ClInclude Include="..\lib\jian\dca.hpp" />
     <ClInclude Include="..\lib\jian\dca\Dca.hpp" />

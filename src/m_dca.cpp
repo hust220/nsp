@@ -6,16 +6,20 @@ namespace dca {
 
 REGISTER_NSP_COMPONENT(dca) {
     int n = 1;
-    par.set(n, "n");
     float step = 1;
+	std::string mol_type = "RNA";
+
+    std::string out_file = par.get("o", "out");
+    std::string fa_file = par.get("i", "in");
+    std::string method = par.get("m", "method");
+
+    par.set(n, "n");
     par.set(step, "step");
-    std::string out_file = par["out"][0];
-    std::string fa_file = par["in"][0];
-    std::string method = par["method"][0];
+	par.set(mol_type, "t", "type");
 
     Dca *dca = FacDca::create(method);
     if (method == "mp") dca->set_step(step);
-    dca->run(fa_file, out_file, n-1);
+    dca->run(mol_type, fa_file, out_file, n-1);
     delete dca;
 }
 

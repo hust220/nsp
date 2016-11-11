@@ -211,13 +211,21 @@ namespace jian {
 
 	void Score::read_pars() {
 		Par par(Env::lib() + "/RNA/pars/scoring/score_" + m_cg->m_cg + "/pars");
-		par.set(m_bond_len_std, "bond_len_std");
+		if (par.has("bond_len_std")) {
+			for (auto && i : par.getv("bond_len_std")) {
+				m_bond_len_std.push_back(JN_DBL(i));
+			}
+		}
 		if (par.has("bond_angle_std")) {
 			for (auto && i : par.getv("bond_angle_std")) {
 				m_bond_angle_std.push_back(JN_DBL(i));
 			}
 		}
-		par.set(m_bond_dihedral_std, "bond_dihedral_std");
+		if (par.has("bond_dihedral_std")) {
+			for (auto && i : par.getv("bond_dihedral_std")) {
+				m_bond_dihedral_std.push_back(JN_DBL(i));
+			}
+		}
 		par.set(m_cutoff_stacking, "cutoff_stacking");
 		par.set(m_cutoff_pairing, "cutoff_pairing");
 	}
@@ -411,7 +419,7 @@ namespace jian {
 		double d;
 
 		d = geom::distance(c[beg][0], c[beg + 1][0]);
-		return square(d - m_bond_len_std);
+		return square(d - m_bond_len_std[0]);
 	}
 
 	double Score::en_ang(const Chain &c, int beg) {
@@ -425,7 +433,7 @@ namespace jian {
 		double d;
 
 		d = geom::dihedral(c[beg][0], c[beg + 1][0], c[beg + 2][0], c[beg + 3][0]);
-		d = d - m_bond_dihedral_std;
+		d = d - m_bond_dihedral_std[0];
 		d = 3.3 - 4 * std::cos(d) + std::cos(2 * d) - 0.44 * std::cos(3 * d);
 		return d;
 	}

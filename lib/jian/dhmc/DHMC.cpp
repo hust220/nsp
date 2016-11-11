@@ -464,21 +464,27 @@ namespace jian {
 	}
 
 	Vec DHMC::rotating_center() const {
-		int beg = m_selected_mvel->min();
-		int end = m_selected_mvel->max();
-		auto &r1 = _pred_chain[beg];
-		auto &r2 = _pred_chain[end];
 		Vec origin = Vec::Zero(3);
-		int n_atom = 0;
-		for (auto && atom : r1) {
-			for (int i = 0; i < 3; i++) origin[i] += atom[i];
-			n_atom++;
+
+		if (m_selected_mvel->type == MvEl::MVEL_FG) {
+			for (int i = 0; i < 3; i++) origin[i] = _pred_chain[m_selected_mvel->range[0][0]][0][i];
 		}
-		for (auto && atom : r2) {
-			for (int i = 0; i < 3; i++) origin[i] += atom[i];
-			n_atom++;
+		else {
+			int beg = m_selected_mvel->min();
+			int end = m_selected_mvel->max();
+			auto &r1 = _pred_chain[beg];
+			auto &r2 = _pred_chain[end];
+			int n_atom = 0;
+			for (auto && atom : r1) {
+				for (int i = 0; i < 3; i++) origin[i] += atom[i];
+				n_atom++;
+			}
+			for (auto && atom : r2) {
+				for (int i = 0; i < 3; i++) origin[i] += atom[i];
+				n_atom++;
+			}
+			for (int i = 0; i < 3; i++) origin[i] /= n_atom;
 		}
-		for (int i = 0; i < 3; i++) origin[i] /= n_atom;
 		return origin;
 	}
 

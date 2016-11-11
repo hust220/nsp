@@ -8,7 +8,7 @@
 
 namespace jian {
 
-class CG;
+	class CG;
 
 	class Frags {
 	public:

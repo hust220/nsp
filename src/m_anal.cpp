@@ -38,21 +38,37 @@ REGISTER_NSP_COMPONENT(anal) {
         OUT << geom::distance(chain[ls[0]-1][atom], chain[ls[1]-1][atom]) << std::endl;
 	}
 	else if (par[2] == "dist_atom") {
-		OUT << geom::distance(chain[JN_INT(par["atom1"][0]) - 1][par["atom1"][1]],
-			chain[JN_INT(par["atom2"][0]) - 1][par["atom2"][1]]) << std::endl;
+		OUT <<
+			chain[num_res[0]].name << num_res[0] + 1 << ' ' <<
+			chain[num_res[1]].name << num_res[1] + 1 << ' ' <<
+			geom::distance(
+				chain[num_res[0]][name_atom[0]],
+				chain[num_res[1]][name_atom[1]]) <<
+			std::endl;
 	}
 	else if (par[2] == "ang_atom") {
-		OUT << geom::angle(
-			chain[JN_INT(par["atom1"][0]) - 1][par["atom1"][1]],
-			chain[JN_INT(par["atom2"][0]) - 1][par["atom2"][1]],
-			chain[JN_INT(par["atom3"][0]) - 1][par["atom3"][1]]) << std::endl;
+		OUT <<
+			chain[num_res[0]].name << num_res[0] + 1 << ' ' <<
+			chain[num_res[1]].name << num_res[1] + 1 << ' ' <<
+			chain[num_res[2]].name << num_res[2] + 1 << ' ' <<
+			geom::angle(
+				chain[num_res[0]][name_atom[0]],
+				chain[num_res[1]][name_atom[1]],
+				chain[num_res[2]][name_atom[2]]) <<
+			std::endl;
 	}
 	else if (par[2] == "dih_atom") {
-		OUT << geom::dihedral(
-			chain[num_res[0]][name_atom[0]],
-			chain[num_res[1]][name_atom[1]],
-			chain[num_res[2]][name_atom[2]],
-			chain[num_res[3]][name_atom[3]]) << std::endl;
+		OUT <<
+			chain[num_res[0]].name << num_res[0] + 1 << ' ' <<
+			chain[num_res[1]].name << num_res[1] + 1 << ' ' <<
+			chain[num_res[2]].name << num_res[2] + 1 << ' ' <<
+			chain[num_res[3]].name << num_res[3] + 1 << ' ' <<
+			geom::dihedral(
+				chain[num_res[0]][name_atom[0]],
+				chain[num_res[1]][name_atom[1]],				
+				chain[num_res[2]][name_atom[2]],
+				chain[num_res[3]][name_atom[3]]) <<
+			std::endl;
 	}
 	else if (par[2] == "ang") {
         if (par.has("all")) {

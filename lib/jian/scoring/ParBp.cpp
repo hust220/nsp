@@ -23,7 +23,7 @@ namespace jian {
 		int i;
 
 		for (i = 0; i < 3; i++) {
-			bb[i] = r[1][i];
+			bb[i] = r[0][i];
 		}
 	}
 

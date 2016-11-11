@@ -10,9 +10,11 @@ namespace jian {
 		using names_t = std::vector<std::string>;
 		using map_names_t = std::map<std::string, names_t>;
 
-		int res_type(const std::string &res_name);
-
 		class Names {
+		//private:
+		//	Names();
+		//	Names(const Names &);
+		//	Names &operator =(const Names &);
 		public:
 			static const Names & instance(std::string mol_type);
 
@@ -23,6 +25,71 @@ namespace jian {
 			map_names_t atoms_base;
 			map_names_t atoms_res;
 		};
+
+		inline int res_type(const std::string &res_name) {
+			for (auto && mol_type : { "RNA", "DNA", "protein" }) {
+				const Names &names = Names::instance(mol_type);
+				auto it = std::find_if(names.res.begin(), names.res.end(), [&res_name, &names](const std::string &s) {
+					const names_t &v = names.alias.at(s);
+					return s == res_name || std::find(v.begin(), v.end(), res_name) != v.end();
+				});
+				if (it != names.res.end()) {
+					return std::distance(names.res.begin(), it);
+				}
+			}
+			throw std::string("unknown residue: ") + res_name;
+		}
+
+
+		template<typename T>
+		inline T res_type(const std::string &res_name) {
+			for (auto && mol_type : { "RNA", "DNA", "protein" }) {
+				const Names &names = Names::instance(mol_type);
+				auto it = std::find_if(names.res.begin(), names.res.end(), [&res_name, &names](const std::string &s) {
+					const names_t &v = names.alias.at(s);
+					return s == res_name || std::find(v.begin(), v.end(), res_name) != v.end();
+				});
+				if (it != names.res.end()) {
+					return *it;
+				}
+			}
+			throw std::string("unknown residue: ") + res_name;
+		}
+
+		inline int res_mol_type(const std::string &res_name) {
+			int i = 0;
+			for (auto && mol_type : { "RNA", "DNA", "protein" }) {
+				const Names &names = Names::instance(mol_type);
+				auto it = std::find_if(names.res.begin(), names.res.end(), [&res_name, &names](const std::string &s) {
+					const names_t &v = names.alias.at(s);
+					return s == res_name || std::find(v.begin(), v.end(), res_name) != v.end();
+				});
+				if (it != names.res.end()) {
+					return i;
+				}
+				i++;
+			}
+			throw std::string("unknown residue: ") + res_name;
+		}
+
+		template<typename T>
+		inline T res_mol_type(const std::string &res_name) {
+			for (auto && mol_type : { "RNA", "DNA", "protein" }) {
+				const Names &names = Names::instance(mol_type);
+				auto it = std::find_if(names.res.begin(), names.res.end(), [&res_name, &names](const std::string &s) {
+					const names_t &v = names.alias.at(s);
+					return s == res_name || std::find(v.begin(), v.end(), res_name) != v.end();
+				});
+				if (it != names.res.end()) {
+					return mol_type;
+				}
+			}
+			throw std::string("unknown residue: ") + res_name;
+		}
+
+		inline const names_t &res_included_atoms(const std::string &res_name) {
+			return Names::instance(res_mol_type<std::string>(res_name)).atoms_res.at(res_name);
+		}
 
 	}
 } // namespace jian

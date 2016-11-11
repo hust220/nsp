@@ -43,10 +43,17 @@ void Dca::trim_seqs(Dca::seqs_t &seqs, int n) {
     }
 }
 
-void Dca::init(std::string Rfamfile, int n) {
+void Dca::init(std::string mol_type, std::string Rfamfile, int n) {
     seqs_t seqs;
     char c;
 	unsigned i, j;
+
+	if (to_upper_copy(mol_type) == "RNA") {
+		m_symbols = {'A', 'U', 'C', 'G'};
+	}
+	else if (to_lower_copy(mol_type).substr(0, 3) == "pro") {
+		m_symbols = { 'A', 'R', 'D', 'C', 'Q', 'E', 'H', 'I', 'G', 'N', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V' };
+	}
 
     fastaread(Rfamfile, seqs);
     trim_seqs(seqs, n);
@@ -200,9 +207,9 @@ void Dca::calculate_DI(std::string out_file) {
     ofile.close();
 }
 
-Dca &Dca::run(std::string input, std::string out_file, int n) {
+Dca &Dca::run(std::string mol_type, std::string input, std::string out_file, int n) {
     LOGI << "Load FASTA alignment file: " << input << std::endl;
-    init(input, n);
+    init(mol_type, input, n);
     LOGI << "M = " << M << ", N = " << N << ", q = " << q << std::endl;
 
     LOGI << "Calculate fi, fij ... " << std::endl;
