@@ -17,7 +17,8 @@ public:
     std::map<std::string, pars_t> _pars;
     pars_t _orig_pars;
 
-    Par() {}
+	Par() = default;
+	Par(const Par &par) = default;
     Par(int argc, char **argv);
     Par(std::string str);
     void read(int argc, char **argv);
