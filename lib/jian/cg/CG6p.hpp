@@ -8,9 +8,10 @@ namespace jian {
 
 	class CG6p : public CG {
 	public:
-		static const std::vector<std::string> m_basic_atoms;
+		static const pdb::names_t m_basic_atoms;
 
 		CG6p();
+		//Residue get_atoms(const Residue &res, const pdb::names_t &names) const;
 		virtual Residue to_cg(const Residue &r) const;
 		virtual int res_size() const;
 	};

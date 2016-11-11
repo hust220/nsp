@@ -22,8 +22,10 @@ namespace jian {
 
 	bool CompleteResidue::lack_atoms(const Residue &res) const {
 		const pdb::names_t &names = pdb::res_included_atoms(res.name);
-		return std::any_of(res.begin(), res.end(), [&names](const Atom &atom) {
-			return std::find(names.begin(), names.end(), atom.name) == names.end();
+		return std::any_of(names.begin(), names.end(), [&res](std::string name) {
+			return std::none_of(res.begin(), res.end(), [&name](const Atom &atom) {
+				return atom.name == name;
+			});
 		});
 	}
 

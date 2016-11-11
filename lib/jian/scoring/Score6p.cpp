@@ -37,7 +37,7 @@ namespace jian {
 		e = 0;
 		if (beg + 3 < c.size()) {
 			d = geom::dihedral(c[beg][0], c[beg + 1][0], c[beg + 2][0], c[beg+3][0]);
-			e += square(d - m_bond_dihedral_std[0]);
+			e += square(std::sin(d - m_bond_dihedral_std[0]));
 		}
 		return e;
 	}
@@ -46,19 +46,17 @@ namespace jian {
 		int i, j;
 		double d, e;
 		const Residue *p1, *p2;
-		Residue *temp1, *temp2;
+		Residue temp1, temp2;
 
 		if (m_cg->is_cg(r1) && m_cg->is_cg(r2)) {
-			temp1 = NULL;
-			temp2 = NULL;
 			p1 = &r1;
 			p2 = &r2;
 		}
 		else {
-			temp1 = new Residue(m_cg->to_cg(r1));
-			temp2 = new Residue(m_cg->to_cg(r2));
-			p1 = temp1;
-			p2 = temp2;
+			temp1 = m_cg->to_cg(r1);
+			temp2 = m_cg->to_cg(r2);
+			p1 = &temp1;
+			p2 = &temp2;
 		}
 
 
@@ -71,9 +69,6 @@ namespace jian {
 				}
 			}
 		}
-
-		if (temp1 != NULL) delete temp1;
-		if (temp2 != NULL) delete temp2;
 
 		return e;
 	}

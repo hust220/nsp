@@ -12,7 +12,7 @@ namespace jian {
 void TSP::init(const Par &pars) {
     _par = new Par(pars);
     _lib = Env::lib();
-    m_cmd = (*_par)[1];
+    //m_cmd = (*_par)[1];
 	LOG << "# Reading sequence" << std::endl;
 	read_seq();
     LOG << "# Reading secondary structure" << std::endl;
@@ -35,8 +35,6 @@ void TSP::init(const Par &pars) {
     pars.set(_native, "native");
     pars.set(_source_pdb, "source_pdb");
     jian::to_upper(_source_pdb);
-    if (pars.has("sample_hp")) _sample_hp = true;
-    if (pars.has("sample_il")) _sample_il = true;
 }
 
 TSP::~TSP() {

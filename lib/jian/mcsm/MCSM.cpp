@@ -115,8 +115,7 @@ namespace jian {
 		int len = _seq.size();
 		for (auto && i : m_dih_pts) {
 			if (is_total || (is_selected(i) + is_selected(i + 1) + is_selected(i + 2) + is_selected(i + 3)) % 4 != 0) {
-				//e.dih += _mc_bond_angle_weight * m_scorer->en_dih(_pred_chain[i], _pred_chain[i + 1], _pred_chain[i + 2], _pred_chain[i + 3]);
-				e.dih += _mc_bond_angle_weight * m_scorer->en_dih(_pred_chain, i);
+				e.dih += _mc_bond_dihedral_weight * m_scorer->en_dih(_pred_chain, i);
 			}
 		}
 	}

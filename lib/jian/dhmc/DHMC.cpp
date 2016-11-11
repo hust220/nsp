@@ -9,6 +9,8 @@ namespace jian {
 		m_pk_ahead = par.has("pk_ahead");
 		m_sample_frag = par.has("frag");
 		m_sample_all_res = par.has("sample_all_res");
+		m_not_sample_hp = par.has("not_sample_hp");
+		m_not_sample_il = par.has("not_sample_il");
 
 		LOG << "# Set bps" << std::endl;
 		set_bps();
@@ -319,10 +321,10 @@ namespace jian {
 
 		auto set_res_module_types_ss = [&](loop *l, bool is_first) {
 			LOOP_TRAVERSE(l,
-				if (!_sample_hp && is_first && is_hp(L)) {
+				if (m_not_sample_hp && is_first && is_hp(L)) {
 					add_el(new MvEl(L, MvEl::MVEL_HP));
 				}
-				else if (!_sample_il && is_first && is_il(L)) {
+				else if (m_not_sample_il && is_first && is_il(L)) {
 					add_el(new MvEl(L, MvEl::MVEL_IL));
 				}
 				else if (L->has_helix()) {

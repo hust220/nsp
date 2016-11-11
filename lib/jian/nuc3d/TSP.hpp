@@ -42,13 +42,11 @@ public:
     std::string _strategy = "loose";
     std::string _source_pdb;
     double _seed = 11;
-    bool _sample_hp = false;
-    bool _sample_il = false;
     std::string m_mode = "auto";
     const Par *_par = NULL;
     std::string m_cmd;
-	std::vector<int> m_chain_lens;
-	std::vector<std::string> m_chain_names;
+	std::vector<int> m_chain_lens{};
+	std::vector<std::string> m_chain_names{};
 
     TSP() = default;
     ~TSP();
