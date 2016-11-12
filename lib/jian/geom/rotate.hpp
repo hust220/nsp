@@ -7,36 +7,34 @@
 namespace jian {
 	namespace geom {
 
-		using val_t = double;
-
 		template<typename T, typename U>
 		void translate(T &&t, const U &u) {
 			for (int i = 0; i < 3; i++) t[i] += u[i];
 		}
 
 		// Rotate fixed in the origin
-		template<typename T, typename Mat>
-		void rotate(T &&t, const Mat &mat) {
-			val_t x = t[0] * ref(mat, 0, 0) + t[1] * ref(mat, 1, 0) + t[2] * ref(mat, 2, 0);
-			val_t y = t[0] * ref(mat, 0, 1) + t[1] * ref(mat, 1, 1) + t[2] * ref(mat, 2, 1);
-			val_t z = t[0] * ref(mat, 0, 2) + t[1] * ref(mat, 1, 2) + t[2] * ref(mat, 2, 2);
+		template<typename T, typename NumType>
+		void rotate(T &&t, const MatX<NumType> &mat) {
+			NumType x = t[0] * ref(mat, 0, 0) + t[1] * ref(mat, 1, 0) + t[2] * ref(mat, 2, 0);
+			NumType y = t[0] * ref(mat, 0, 1) + t[1] * ref(mat, 1, 1) + t[2] * ref(mat, 2, 1);
+			NumType z = t[0] * ref(mat, 0, 2) + t[1] * ref(mat, 1, 2) + t[2] * ref(mat, 2, 2);
 			t[0] = x; t[1] = y; t[2] = z;
 		}
 
 		// Rotate fixed in an specified point
-		template<typename T, typename U, typename Mat>
-		void rotate(T &&t, const U &origin, const Mat &mat) {
+		template<typename T, typename U, typename NumType>
+		void rotate(T &&t, const U &origin, const MatX<NumType> &mat) {
 			for (int i = 0; i < 3; i++) t[i] -= origin[i];
-			val_t x = t[0] * ref(mat, 0, 0) + t[1] * ref(mat, 1, 0) + t[2] * ref(mat, 2, 0);
-			val_t y = t[0] * ref(mat, 0, 1) + t[1] * ref(mat, 1, 1) + t[2] * ref(mat, 2, 1);
-			val_t z = t[0] * ref(mat, 0, 2) + t[1] * ref(mat, 1, 2) + t[2] * ref(mat, 2, 2);
+			NumType x = t[0] * ref(mat, 0, 0) + t[1] * ref(mat, 1, 0) + t[2] * ref(mat, 2, 0);
+			NumType y = t[0] * ref(mat, 0, 1) + t[1] * ref(mat, 1, 1) + t[2] * ref(mat, 2, 1);
+			NumType z = t[0] * ref(mat, 0, 2) + t[1] * ref(mat, 1, 2) + t[2] * ref(mat, 2, 2);
 			t[0] = x; t[1] = y; t[2] = z;
 			for (int i = 0; i < 3; i++) t[i] += origin[i];
 		}
 
-		template<typename Mat = Eigen::MatrixXd, class C1 = val_t, class C2 = val_t>
-		Mat x_rot_mat(C1 c, C2 s) {
-			Mat rot_mat(3, 3);
+		template<typename NumType = val_t, class C1 = NumType, class C2 = NumType>
+		MatX<NumType> x_rot_mat(C1 c, C2 s) {
+			MatX<NumType> rot_mat(3, 3);
 			rot_mat <<
 				1, 0, 0,
 				0, c, s,
@@ -44,9 +42,9 @@ namespace jian {
 			return rot_mat;
 		}
 
-		template<typename Mat = Eigen::MatrixXd, class C1 = val_t, class C2 = val_t>
-		Mat y_rot_mat(C1 c, C2 s) {
-			Mat rot_mat(3, 3);
+		template<typename NumType = val_t, class C1 = NumType, class C2 = NumType>
+		MatX<NumType> y_rot_mat(C1 c, C2 s) {
+			MatX<NumType> rot_mat(3, 3);
 			rot_mat <<
 				c, 0, -s,
 				0, 1, 0,
@@ -54,9 +52,9 @@ namespace jian {
 			return rot_mat;
 		}
 
-		template<typename Mat = Eigen::MatrixXd, class C1 = val_t, class C2 = val_t>
-		Mat z_rot_mat(C1 c, C2 s) {
-			Mat rot_mat(3, 3);
+		template<typename NumType = val_t, class C1 = NumType, class C2 = NumType>
+		MatX<NumType> z_rot_mat(C1 c, C2 s) {
+			MatX<NumType> rot_mat(3, 3);
 			rot_mat <<
 				c, s, 0,
 				-s, c, 0,
@@ -64,19 +62,23 @@ namespace jian {
 			return rot_mat;
 		}
 
-		template<typename Mat = Eigen::MatrixXd, typename T>
-		Mat rot_mat(int i, T &&v) {
-			double c = std::cos(v);
-			double s = std::sin(v);
+		template<typename NumType = val_t, typename T>
+		MatX<NumType> rot_mat(int i, T &&v) {
+			NumType c = std::cos(v);
+			NumType s = std::sin(v);
 			assert(i >= 0 && i < 3);
 			return (i == 0 ? x_rot_mat(c, s) : (i == 1 ? y_rot_mat(c, s) : z_rot_mat(c, s)));
 		}
 
 		// Rotate along with an axis
+		template<typename NumType>
 		class RotateAlong {
 		public:
-			Mat m_rm;
-			Vec m_beg, m_end;
+			using mat_t = MatX<NumType>;
+			using vec_t = VecX<NumType>;
+
+			mat_t m_rm;
+			vec_t m_beg, m_end;
 
 			RotateAlong() = default;
 
@@ -87,7 +89,7 @@ namespace jian {
 
 			template<typename L>
 			void init(const L &begin, const L &end, double t) {
-				val_t r1, r2, c1, c2, s1, s2;
+				NumType r1, r2, c1, c2, s1, s2;
 				L l = end - begin;
 
 				m_beg.resize(3);
@@ -105,7 +107,7 @@ namespace jian {
 				c2 = l[2] / r2;
 				s2 = std::sqrt(l[0] * l[0] + l[1] * l[1]) / r2;
 
-				m_rm = Mat::Identity(3, 3);
+				m_rm = mat_t::Identity(3, 3);
 				if (r1 != 0) m_rm = m_rm * z_rot_mat(c1, s1);
 				if (r2 != 0) m_rm = m_rm * x_rot_mat(c2, s2);
 				m_rm = m_rm * z_rot_mat(std::cos(t), std::sin(t));

@@ -36,7 +36,7 @@ namespace jian {
 	}
 
 	Chain Frags::get_chain(int i, const Mat &c) {
-		geom::Superposition sp;
+		geom::Superposition<double> sp;
 		Chain chain;
 
 		//chain = m_chains[i];

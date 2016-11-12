@@ -60,7 +60,7 @@ public:
 
         auto mat = get_mat_helix(helix); 
         len = mat.rows();
-		geom::Superposition sp(make_standard_helix(len / 2 - 1), mat);
+		geom::Superposition<double> sp(make_standard_helix(len / 2 - 1), mat);
 		origin << 0, 0, 0; x << 1, 0, 0; y << 0, 1, 0; z << 0, 0, 1;
 		sp.apply(origin);
 		sp.apply(x);

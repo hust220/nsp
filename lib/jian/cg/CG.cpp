@@ -74,7 +74,7 @@ namespace jian {
 		}
 
 		Chain get_chain(int i, const Mat &c) {
-			geom::Superposition sp;
+			geom::Superposition<double> sp;
 			Chain chain;
 			
 			chain = m_chains[i];
@@ -103,8 +103,7 @@ namespace jian {
 				}
 				std::deque<double> scores;
 				for (auto && frag : m_frags) {
-					auto r = geom::suppos(*frag, c);
-					scores.push_back(r.rmsd);
+					scores.push_back(geom::rmsd(*frag, c));
 				}
 				auto min = std::min_element(scores.begin(), scores.end());
 				index = std::distance(scores.begin(), min);

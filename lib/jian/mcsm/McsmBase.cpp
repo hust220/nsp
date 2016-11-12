@@ -326,7 +326,7 @@ namespace jian {
 				for (int i = 0; i < _seq.size(); i++) {
 					if (is_selected(i)) {
 						auto axis = get_base_axis(_pred_chain[i]);
-						geom::RotateAlong rotate_along(axis[0], axis[1], PI * 2 * (rand() - 0.5));
+						geom::RotateAlong<double> rotate_along(axis[0], axis[1], PI * 2 * (rand() - 0.5));
 						for (int j = 3; j < 6; j++) {
 							rotate_along(_pred_chain[i][j]);
 						}

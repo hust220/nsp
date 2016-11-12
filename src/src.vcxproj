@@ -167,7 +167,6 @@
     <ClCompile Include="..\lib\jian\dg\Gradient.cpp" />
     <ClCompile Include="..\lib\jian\dg\smooth.cpp" />
     <ClCompile Include="..\lib\jian\dhmc\DHMC.cpp" />
-    <ClCompile Include="..\lib\jian\geom\suppos.cpp" />
     <ClCompile Include="..\lib\jian\lrsp\ss_complete.cpp" />
     <ClCompile Include="..\lib\jian\lrsp\ss_del_sm_hp.cpp" />
     <ClCompile Include="..\lib\jian\lrsp\ss_hp_pred.cpp" />
@@ -219,7 +218,6 @@
     <ClCompile Include="..\lib\jian\thmc\TLoop.cpp" />
     <ClCompile Include="..\lib\jian\thmc\TModule.cpp" />
     <ClCompile Include="..\lib\jian\thmc\TTailHairpin.cpp" />
-    <ClCompile Include="..\lib\jian\utils\Cluster.cpp" />
     <ClCompile Include="..\lib\jian\utils\file.cpp" />
     <ClCompile Include="..\lib\jian\utils\log.cpp" />
     <ClCompile Include="..\lib\jian\utils\Par.cpp" />
@@ -252,7 +250,7 @@
     <ClCompile Include="nsp.cpp" />
     <ClCompile Include="parse_helix.cpp" />
     <ClCompile Include="rebuild_chain.cpp" />
-    <ClCompile Include="rmsd.cpp" />
+    <ClCompile Include="m_rmsd.cpp" />
     <ClCompile Include="m_format.cpp" />
     <ClCompile Include="m_score.cpp" />
     <ClCompile Include="seq.cpp" />

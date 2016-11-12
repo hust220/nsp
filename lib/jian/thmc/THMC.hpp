@@ -172,7 +172,7 @@ public:
         set_coords_residue(m2, 1, c2[2 * len2 - 1]);
         set_coords_residue(m2, 2, c2[2 * len2]);
         LOG << "## Supperposition." << std::endl;
-		geom::Superposition sp(m1, m2);
+		geom::Superposition<double> sp(m1, m2);
 		for (auto && res : c1) for (auto && atom : res) {
 			sp.apply(atom);
 		}

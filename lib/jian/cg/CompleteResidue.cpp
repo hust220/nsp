@@ -52,7 +52,7 @@ namespace jian {
 				}
 			}
 
-			geom::Superposition sp(m1, m2);
+			geom::Superposition<double> sp(m1, m2);
 			for (auto && atom : r1) {
 				sp.apply(atom);
 			}

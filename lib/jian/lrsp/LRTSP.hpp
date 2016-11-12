@@ -234,7 +234,7 @@ public:
         if (m != NULL) {
             int len = chain->size();
             Mat *mat = chain_mat(*chain, {0, 1, len-2, len-1});
-			geom::Superposition sp(*mat, *m);
+			geom::Superposition<double> sp(*mat, *m);
             for (auto && res : *chain) {
                 for (auto && atom : res) {
 					sp.apply(atom);

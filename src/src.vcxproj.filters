@@ -130,9 +130,6 @@
     <ClCompile Include="rebuild_chain.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="rmsd.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="seq.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -153,9 +150,6 @@
     </ClCompile>
     <ClCompile Include="view_mol_constraints.cpp">
       <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\lib\jian\utils\Cluster.cpp">
-      <Filter>jian\utils</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\jian\utils\file.cpp">
       <Filter>jian\utils</Filter>
@@ -279,9 +273,6 @@
     </ClCompile>
     <ClCompile Include="..\lib\jian\mc\MC.cpp">
       <Filter>jian\mc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\lib\jian\geom\suppos.cpp">
-      <Filter>jian\geom</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\jian\cg\CG1p.cpp">
       <Filter>jian\cg</Filter>
@@ -421,6 +412,9 @@
     </ClCompile>
     <ClCompile Include="..\lib\jian\cg\CompleteResidue.cpp">
       <Filter>jian\cg</Filter>
+    </ClCompile>
+    <ClCompile Include="m_rmsd.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

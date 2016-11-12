@@ -412,7 +412,7 @@ namespace jian {
 		//static int n = 0;
 		//if (n < 10) mol_write(c, "aa.frag." + JN_STR(n + 1) + ".pdb");
 		//n++;
-		geom::Superposition sp(m1, m2);
+		geom::Superposition<double> sp(m1, m2);
 		//std::cout << "before sp: " << sp.rmsd << std::endl;
 		sp.apply_m(m);
 		//std::cout << "after sp: " << geom::rmsd(m1, m2) << std::endl;

@@ -13,6 +13,9 @@ namespace jian {
 			int l, n, i, j;
 			std::shared_ptr<CG> cg;
 
+			Mat m(10002, 10002);
+			return;
+
 			list_file = par.get("l", "list");
 			//prefix = par.get("prefix");
 			cg.reset(CG::fac_t::create("6p"));

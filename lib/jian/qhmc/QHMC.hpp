@@ -407,7 +407,7 @@ public:
         }
 
         // Superposition
-		geom::Superposition sp(m1, m2);
+		geom::Superposition<double> sp(m1, m2);
 		for (auto && res : c) for (auto && atom : res) { sp.apply(atom); }
 
         // Set _pred_chain

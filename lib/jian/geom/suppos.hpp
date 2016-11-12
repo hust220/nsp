@@ -27,18 +27,58 @@ namespace jian {
     }\
 }while(0)
 
+		template<typename NumType>
 		class Superposition {
 		public:
-			Mat rot;
-			Vec c1;
-			Vec c2;
-			val_t rmsd;
+			using mat_t = MatX<NumType>;
+			using vec_t = VecX<NumType>;
+
+			mat_t rot;
+			vec_t c1;
+			vec_t c2;
+			NumType rmsd;
 
 			Superposition() = default;
 
-			Superposition(const Mat &m, const Mat &n);
+			Superposition(const mat_t &m, const mat_t &n) {
+				init(m, n);
+			}
 
-			void init(const Mat &m, const Mat &n);
+			void init(const mat_t &m, const mat_t &n) {
+				int i, j, len;
+				mat_t x, y, g, u, v, I, d;
+				std::ostringstream stream;
+
+				if (m.rows() != n.rows() || m.cols() != 3 || n.cols() != 3) {
+					stream << "jian::geom::suppos error! (" << m.rows() << ' ' << m.cols() << ") (" << n.rows() << ' ' << n.cols() << ")\n";
+					throw stream.str();
+				}
+
+				len = m.rows();
+				x = m;
+				y = n;
+				c1 = vec_t::Zero(3);
+				c2 = vec_t::Zero(3);
+				for (i = 0; i < len; i++) for (j = 0; j < 3; j++) { c1[j] += x(i, j); c2[j] += y(i, j); }
+				for (i = 0; i < 3; i++) { c1[i] = c1[i] / len; c2[i] = c2[i] / len; }
+				for (i = 0; i < len; i++) for (j = 0; j < 3; j++) { x(i, j) -= c1[j]; y(i, j) -= c2[j]; }
+
+				g = x.transpose() * y;
+				Eigen::JacobiSVD<mat_t> svd(g, Eigen::ComputeFullU | Eigen::ComputeFullV);
+				u = svd.matrixU();
+				v = svd.matrixV();
+
+				I = mat_t::Identity(3, 3);
+				if (g.determinant() < 0) I(2, 2) = -1;
+				rot = u * I * v.transpose();
+
+				d = x * rot - y;
+				rmsd = 0;
+				for (int i = 0; i < len; i++) for (int j = 0; j < 3; j++) rmsd += d(i, j) * d(i, j);
+				rmsd = std::sqrt(rmsd / len);
+
+				c1 = -c1;
+			}
 
 			template<typename T>
 			void apply(T &&t) {
@@ -47,8 +87,8 @@ namespace jian {
 				translate(t, c2);
 			}
 
-			template<typename Mat>
-			void apply_m(Mat &m) {
+			template<typename M>
+			void apply_m(M &m) {
 				int i, j;
 				for (i = 0; i < m.rows(); i++) {
 					for (j = 0; j < 3; j++) {
@@ -64,20 +104,25 @@ namespace jian {
 			}
 		};
 
-		Superposition suppos(const Mat &m, const Mat &n);
+		template<typename NumType>
+		Superposition<NumType> suppos(const MatX<NumType> &m, const MatX<NumType> &n) {
+			Superposition<NumType> sp(m, n);
+			sp.c1 = -(sp.c1);
+			return sp;
+		}
 
-		template<typename T, typename U, typename F>
-		Superposition suppos(T &t, const U &m, const F &n) {
-			auto sp = suppos(m, n);
+		template<typename T, typename NumType>
+		Superposition<NumType> suppos(T &t, const MatX<NumType> &m, const MatX<NumType> &n) {
+			Superposition<NumType> && sp = suppos(m, n);
 			for (int i = 0; i < t.rows(); i++) for (int j = 0; j < 3; j++) t(i, j) -= sp.c1[j];
 			t = t * sp.rot;
 			for (int i = 0; i < t.rows(); i++) for (int j = 0; j < 3; j++) t(i, j) += sp.c2[j];
 			return sp;
 		}
 
-		template<typename T, typename U, typename F, typename V>
-		Superposition suppos(T &src, const U &src_indices, const F &tgt, const V &tgt_indices) {
-			Eigen::MatrixXd m(src_indices.size(), 3), n(tgt_indices.size(), 3);
+		template<typename NumType, typename U, typename F, typename V>
+		Superposition<NumType> suppos(MatX<NumType> &src, const U &src_indices, const F &tgt, const V &tgt_indices) {
+			MatX<NumType> m(src_indices.size(), 3), n(tgt_indices.size(), 3);
 			for (int i = 0; i < src_indices.size(); i++) for (int j = 0; j < 3; j++) {
 				m(i, j) = src(src_indices[i], j);
 				n(i, j) = tgt(tgt_indices[i], j);
@@ -91,13 +136,27 @@ namespace jian {
 			return sp;
 		}
 
-		val_t rmsd(const Mat &x, const Mat &y);
+		template<typename NumType1, typename NumType2>
+		NumType1 rmsd(const MatX<NumType1> &x, const MatX<NumType2> &y) {
+			return Superposition<NumType1>(x, y).rmsd;
+		}
 
-		Mat suppos_axis_polar(double theta_o, double phi_o, double theta_n, double phi_n);
+		template<typename NumType, typename A, typename B, typename C, typename D>
+		MatX<NumType> suppos_axis_polar(A theta_o, B phi_o, C theta_n, D phi_n) {
+			MatX<NumType> m = MatX<NumType>::Identity(3, 3);
+			double ang = PI / 2 - phi_o;
+			if (ang != 0) m *= z_rot_mat(std::cos(ang), std::sin(ang));
+			ang = theta_o - theta_n;
+			if (ang != 0) m *= x_rot_mat(std::cos(ang), std::sin(ang));
+			ang = phi_n - PI / 2;
+			if (ang != 0) m *= z_rot_mat(std::cos(ang), std::sin(ang));
+			return m;
+		}
 
-		template<typename Mat, typename O, typename N>
-		Mat suppos_axis_xyz(const O &o, const N &n) {
-			Mat m = Mat::Identity(3, 3);
+
+		template<typename NumType, typename O, typename N>
+		MatX<NumType> suppos_axis_xyz(const O &o, const N &n) {
+			MatX<NumType> m = MatX<NumType>::Identity(3, 3);
 			val_t r, x, y, r1, x1, y1, r2, x2, y2, c, s, c1, c2, s1, s2;
 			r = std::sqrt(o[0] * o[0] + o[1] * o[1]); x = o[0]; y = o[1];
 			if (r != 0) { c = y / r; s = x / r; if (s != 0) m *= z_rot_mat(c, s); }

@@ -13,8 +13,6 @@ namespace jian {
 
 class BuildLoop {
 public:
-    using val_t = double;
-    using Mat = Eigen::Matrix<val_t, -1, -1>;
     using Hinge = std::array<int, 4>;
     using Hinges = std::deque<Hinge>;
     using Helix = struct {val_t theta, phi;};
@@ -96,7 +94,7 @@ public:
     template<typename O, typename N>
     void adjust_helix(Model &model, const O &o, const N &n, val_t theta_o, val_t phi_o, val_t theta_n, val_t phi_n) {
         DEBUG_IN;
-        auto rot = geom::suppos_axis_polar(theta_o, phi_o, theta_n, phi_n);
+        auto rot = geom::suppos_axis_polar<val_t>(theta_o, phi_o, theta_n, phi_n);
         std::vector<val_t> v1 {-o[0], -o[1], -o[2]}, v2 {n[0], n[1], n[2]};
         Debug::print(o[0], ':', o[1], ':', o[2], ' '); Debug::print(n[0], ':', n[1], ':', n[2], '\n');
         for (auto &chain : model) for (auto &residue : chain) for (auto &atom : residue) {

@@ -23,6 +23,15 @@ using Matd = Eigen::MatrixXd;
 using Mati = Eigen::MatrixXi;
 using Mat = Matd;
 
+template<typename NumType>
+using MatX = Eigen::Matrix<NumType, -1, -1>;
+
+template<typename NumType>
+using VecX = Eigen::Matrix<NumType, -1, 1>;
+
+template<typename NumType>
+using RowVecX = Eigen::Matrix<NumType, 1, -1>;
+
 // rows
 template<typename MatType, std::enable_if_t<is_stl_mat<MatType>::value, int> = 42>
 inline int rows(MatType &&mat) {
@@ -65,13 +74,15 @@ inline T make_mat(int row, int col) {
 // mat_from_file
 template<typename T = Eigen::MatrixXd>
 inline T mat_from_file(const std::string &file) {
-    std::ifstream ifile(file.c_str());
+	std::ifstream ifile;
+	FOPEN(ifile, file);
     int rows, cols;
     ifile >> rows >> cols;
     auto mat = make_mat<T>(rows, cols);
     for (int i = 0; i < rows; i++) for (int j = 0; j < cols; j++) {
         if (ifile >> ref(mat, i, j)) continue; else throw "jian::mat_from_file failed!";
     }
+	FCLOSE(ifile);
     return mat;
 }
 
