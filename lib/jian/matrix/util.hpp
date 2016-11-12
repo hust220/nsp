@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include "traits.hpp"
+#include "../utils/file.hpp"
 
 namespace jian {
 
