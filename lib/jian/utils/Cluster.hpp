@@ -7,7 +7,7 @@
 #include <utility>
 #include <numeric>
 #include <random>
-#include "../utils/log.hpp
+#include "../utils/log.hpp"
 
 namespace jian {
 
