@@ -25,6 +25,7 @@ public:
     template<typename RandomIt, typename F>
     result_t operator ()(RandomIt first, RandomIt last, F &&dist) {
         int size = std::distance(first, last);
+		std::cout << "size: " << size << std::endl;
         Eigen::MatrixXd mat(size, size);
         int i, j;
         double distance;

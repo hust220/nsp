@@ -16,7 +16,8 @@ public:
     float m_step_size;
 
     MpDca();
-    void init_val();
+	MpDca(std::string mol_type, float pw);
+	void init_val();
     void cal_pi();
     void cal_pij();
     void solve_pi();

@@ -19,7 +19,7 @@ namespace dca {
 class Dca {
 public:
     using seqs_t = std::deque<std::string>;
-    using creator_t = Dca *();
+    using creator_t = Dca *(std::string mol_type, float pw);
 
     int N, M, q;
 	Mati align;
@@ -34,10 +34,12 @@ public:
     std::vector<char> m_symbols {'A', 'U', 'C', 'G'};
     std::map<char, int> m_map_symbols;
 
+	Dca();
+	Dca(std::string mol_type, float pw);
     ~Dca();
     void fastaread(std::string fastafile, seqs_t &seqs);
     void trim_seqs(seqs_t &seqs, int n);
-    void init(std::string mol_type, std::string Rfamfile, int n);
+    void init(std::string Rfamfile, int n);
     float seqid(int a, int b);
     void cal_seqids();
     void cal_ma();
@@ -47,7 +49,7 @@ public:
     void calculate_f();
     void calculate_P();
     void calculate_DI(std::string out_file);
-    Dca &run(std::string mol_type, std::string input, std::string out_file, int n);
+    Dca &run(std::string input, std::string out_file, int n);
     virtual void calculate_eij() = 0;
     virtual float cal_di(int i, int j) = 0;
     virtual void set_step(float) {}

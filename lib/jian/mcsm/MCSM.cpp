@@ -9,7 +9,6 @@ namespace jian {
 
 		LOG << "# Initializing scorer..." << std::endl;
 		m_scorer = ScoreBase::fac_t::create(m_cg_type);
-		LOG << m_scorer->m_en_pairing << std::endl;
 		m_scorer->init();
 
 		LOG << "# Seting indices..." << std::endl;

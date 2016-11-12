@@ -71,6 +71,22 @@ namespace jian {
 		delete parser;
 	}
 
+	template<typename F>
+	void for_each_model(std::string filename, F && f, std::string mol_type = "") {
+		int i = 0;
+		MolParser *parser = MolParser::make(jian::file::type(filename), filename, mol_type);
+		Model m;
+
+		do {
+			(*parser) >> m;
+			f(m, i);
+			i++;
+			m.clear();
+		} while (!parser->eof());
+
+		delete parser;
+	}
+
 	template<typename T>
 	T mol_read_to(std::string f, std::string type = "") {
 		T t;
