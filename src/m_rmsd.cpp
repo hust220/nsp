@@ -109,11 +109,11 @@ namespace jian {
 					Model ref;
 					mol_read(ref, m_ref);
 					for_each_model(m_tgt, [this, &ref](const Model &m, int i) {
-						OUT << m.num << ' ' << rmsd(ref, m) << std::endl;
+						JN_OUT << m.num << ' ' << rmsd(ref, m) << std::endl;
 					});
 				}
 				else {
-					OUT << rmsd(mol_read_to<Model>(m_files[0]), mol_read_to<Model>(m_files[1])) << std::endl;
+					JN_OUT << rmsd(mol_read_to<Model>(m_files[0]), mol_read_to<Model>(m_files[1])) << std::endl;
 				}
 			}
 		};

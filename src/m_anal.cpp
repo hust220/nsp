@@ -35,10 +35,10 @@ REGISTER_NSP_COMPONENT(anal) {
 	}
 
     if (par[2] == "dist") {
-        OUT << geom::distance(chain[ls[0]-1][atom], chain[ls[1]-1][atom]) << std::endl;
+        JN_OUT << geom::distance(chain[ls[0]-1][atom], chain[ls[1]-1][atom]) << std::endl;
 	}
 	else if (par[2] == "dist_atom") {
-		OUT <<
+		JN_OUT <<
 			chain[num_res[0]].name << num_res[0] + 1 << ' ' <<
 			chain[num_res[1]].name << num_res[1] + 1 << ' ' <<
 			geom::distance(
@@ -47,7 +47,7 @@ REGISTER_NSP_COMPONENT(anal) {
 			std::endl;
 	}
 	else if (par[2] == "ang_atom") {
-		OUT <<
+		JN_OUT <<
 			chain[num_res[0]].name << num_res[0] + 1 << ' ' <<
 			chain[num_res[1]].name << num_res[1] + 1 << ' ' <<
 			chain[num_res[2]].name << num_res[2] + 1 << ' ' <<
@@ -58,7 +58,7 @@ REGISTER_NSP_COMPONENT(anal) {
 			std::endl;
 	}
 	else if (par[2] == "dih_atom") {
-		OUT <<
+		JN_OUT <<
 			chain[num_res[0]].name << num_res[0] + 1 << ' ' <<
 			chain[num_res[1]].name << num_res[1] + 1 << ' ' <<
 			chain[num_res[2]].name << num_res[2] + 1 << ' ' <<
@@ -79,12 +79,12 @@ REGISTER_NSP_COMPONENT(anal) {
                 }
                 dq.push_back(chain[i]);
                 if (dq.size() == 3) {
-					OUT << geom::angle(dq[0][atom], dq[1][atom], dq[2][atom]) << std::endl;
+					JN_OUT << geom::angle(dq[0][atom], dq[1][atom], dq[2][atom]) << std::endl;
                     dq.pop_front();
                 }
             }
         } else {
-			OUT << geom::angle(chain[ls[0]-1][atom], chain[ls[1]-1][atom], chain[ls[2]-1][atom]) << std::endl;
+			JN_OUT << geom::angle(chain[ls[0]-1][atom], chain[ls[1]-1][atom], chain[ls[2]-1][atom]) << std::endl;
         }
     } else if (par[2] == "dih") {
         if (par.has("all")) {
@@ -95,16 +95,16 @@ REGISTER_NSP_COMPONENT(anal) {
                 }
                 dq.push_back(chain[i]);
                 if (dq.size() == 4) {
-					OUT << geom::dihedral(dq[0][atom], dq[1][atom], dq[2][atom], dq[3][atom]) << std::endl;
+					JN_OUT << geom::dihedral(dq[0][atom], dq[1][atom], dq[2][atom], dq[3][atom]) << std::endl;
                     dq.pop_front();
                 }
             }
         } else {
-			OUT << geom::dihedral(chain[ls[0]-1][atom], chain[ls[1]-1][atom],
+			JN_OUT << geom::dihedral(chain[ls[0]-1][atom], chain[ls[1]-1][atom],
 				                     chain[ls[2]-1][atom], chain[ls[3]-1][atom]) << std::endl;
         }
     } else if (par[2] == "chir") {
-		OUT << geom::chirality(chain[ls[0]-1][atom], chain[ls[1]-1][atom], chain[ls[2]-1][atom], chain[ls[3]-1][atom]) << std::endl;
+		JN_OUT << geom::chirality(chain[ls[0]-1][atom], chain[ls[1]-1][atom], chain[ls[2]-1][atom], chain[ls[3]-1][atom]) << std::endl;
     }
 }
 

@@ -86,13 +86,13 @@ namespace jian {
 				mol_read(m, m_ref);
 				for_each_model(m_traj, [this, &m](const Model &model, int i) {
 					if (i % m_bin == 0) {
-						OUT << i+1 << rmsd(m, model) << std::endl;
+						JN_OUT << i+1 << ' ' << rmsd(m, model) << std::endl;
 					}
 				});
 			}
 
 			void compress() {
-				MolWriter writer(OUT);
+				MolWriter writer(JN_OUT);
 				for_each_model(m_traj, [this, &writer](const Model &model, int i) {
 					if (i % m_bin == 0) {
 						LOG << "Reading: model-" << i + 1 << std::endl;

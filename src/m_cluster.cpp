@@ -40,11 +40,11 @@ namespace jian {
 			void print_clusters(T &&cluster, U &&names) {
 				int n = 0;
 				for (auto && clu : cluster.m_clusters) {
-					OUT << "Cluster " << n + 1 << " (size: " << clu.size() << "): ";
+					JN_OUT << "Cluster " << n + 1 << " (size: " << clu.size() << "): ";
 					for (auto && i : clu) {
-						OUT << names[i] << ' ';
+						JN_OUT << names[i] << ' ';
 					}
-					OUT << std::endl;
+					JN_OUT << std::endl;
 					n++;
 				}
 			}

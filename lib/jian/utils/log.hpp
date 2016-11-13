@@ -9,7 +9,7 @@
 
 #define OUTMANAGER (Logger::out())
 #define OUTSTREAM (*(OUTMANAGER.get_stream()))
-#define OUT  OUTSTREAM
+#define JN_OUT  OUTSTREAM
 
 #define LOGMANAGER (Logger::log())
 #define LOGLEVEL LOGMANAGER.get_level()

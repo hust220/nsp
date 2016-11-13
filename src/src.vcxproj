@@ -129,6 +129,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -231,6 +232,7 @@
     <ClCompile Include="build_loop.cpp" />
     <ClCompile Include="build_loop_dg.cpp" />
     <ClCompile Include="m_check.cpp" />
+    <ClCompile Include="m_client.cpp" />
     <ClCompile Include="m_cluster.cpp" />
     <ClCompile Include="contacts.cpp" />
     <ClCompile Include="m_dca.cpp" />
@@ -247,6 +249,7 @@
     <ClCompile Include="md.cpp" />
     <ClCompile Include="min_dist.cpp" />
     <ClCompile Include="m_new_score.cpp" />
+    <ClCompile Include="m_server.cpp" />
     <ClCompile Include="m_traj.cpp" />
     <ClCompile Include="nsp.cpp" />
     <ClCompile Include="parse_helix.cpp" />
@@ -404,6 +407,8 @@
     <ClInclude Include="..\lib\jian\scoring\ScorePsb.hpp" />
     <ClInclude Include="..\lib\jian\script.hpp" />
     <ClInclude Include="..\lib\jian\script\Script.hpp" />
+    <ClInclude Include="..\lib\jian\socket.hpp" />
+    <ClInclude Include="..\lib\jian\socket\Socket.hpp" />
     <ClInclude Include="..\lib\jian\thmc.hpp" />
     <ClInclude Include="..\lib\jian\thmc\THeadHairpin.hpp" />
     <ClInclude Include="..\lib\jian\thmc\THelix.hpp" />
@@ -427,6 +432,7 @@
     <ClInclude Include="..\lib\jian\utils\ls.hpp" />
     <ClInclude Include="..\lib\jian\utils\math.hpp" />
     <ClInclude Include="..\lib\jian\utils\Par.hpp" />
+    <ClInclude Include="..\lib\jian\utils\platform.hpp" />
     <ClInclude Include="..\lib\jian\utils\queue.h" />
     <ClInclude Include="..\lib\jian\utils\rand.hpp" />
     <ClInclude Include="..\lib\jian\utils\string.hpp" />

@@ -71,6 +71,9 @@
     <Filter Include="jian\script">
       <UniqueIdentifier>{f9109b47-0da2-49df-b307-31489038a7cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="jian\socket">
+      <UniqueIdentifier>{8a1eb16b-8fef-47d1-a394-4f3135aa85d4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="align.cpp">
@@ -417,6 +420,12 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="m_traj.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_server.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_client.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -924,6 +933,15 @@
     </ClInclude>
     <ClInclude Include="..\lib\jian\cg\CompleteResidue.hpp">
       <Filter>jian\cg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\socket\Socket.hpp">
+      <Filter>jian\socket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\socket.hpp">
+      <Filter>jian</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\platform.hpp">
+      <Filter>jian\utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

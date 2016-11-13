@@ -32,9 +32,9 @@ namespace jian {
 			FCLOSE(ifile);
 
 			for (i = 0; i < cols; i++) {
-				OUT << v[i] << ' ';
+				JN_OUT << v[i] << ' ';
 			}
-			OUT << std::endl;
+			JN_OUT << std::endl;
 		}
 
 		void score_res(ScoreBase * scoring, std::string filename, std::string score_type = "pairing") {
@@ -43,23 +43,23 @@ namespace jian {
 
 			chain_read_model(chain, filename);
 			l = chain.size();
-			//OUT << l << std::endl;
+			//JN_JN_OUT << l << std::endl;
 			for (i = 0; i < l; i++) {
 				for (j = 0; j < l; j++) {
-					if (i == j) OUT << 0 << "\t";
+					if (i == j) JN_OUT << 0 << "\t";
 					else {
 						scoring->en_bp(chain[i], chain[j]);
-						if (score_type == "pairing") OUT << scoring->m_en_pairing << "\t";
-						else if (score_type == "stacking") OUT << scoring->m_en_stacking << "\t";
-						else if (score_type == "wc") OUT << scoring->m_en_wc << "\t";
-						else if (score_type == "nwc") OUT << scoring->m_en_nwc << "\t";
+						if (score_type == "pairing") JN_OUT << scoring->m_en_pairing << "\t";
+						else if (score_type == "stacking") JN_OUT << scoring->m_en_stacking << "\t";
+						else if (score_type == "wc") JN_OUT << scoring->m_en_wc << "\t";
+						else if (score_type == "nwc") JN_OUT << scoring->m_en_nwc << "\t";
 						else {
 							LOG << "Illegal score type: " << score_type << std::endl;
 							throw "error!";
 						}
 					}
 				}
-				OUT << std::endl;
+				JN_OUT << std::endl;
 			}
 		}
 
@@ -67,7 +67,7 @@ namespace jian {
 			Chain chain;
 			chain_read_model(chain, filename);
 			scoring->run(chain);
-			OUT <<
+			JN_OUT <<
 				"Score of " << filename << ": " <<
 				//scoring->m_score_dih << "(dih) " <<
 				//scoring->m_score_dist << "(dist) " <<
@@ -146,11 +146,11 @@ namespace jian {
 					for (j = 0; j < l; j++) {
 						d = (i == j ? 0 : en_crash(chain[i], chain[j]));
 						e += d;
-						OUT << d << "\t";
+						JN_OUT << d << "\t";
 					}
-					OUT << std::endl;
+					JN_OUT << std::endl;
 				}
-				OUT << e << std::endl;
+				JN_OUT << e << std::endl;
 
 			}
 			else if (par.has("sum_counts")) {
@@ -165,10 +165,10 @@ namespace jian {
 				scoring->init();
 
 				if (par.has("print_freqs")) {
-					scoring->print_freqs(OUT);
+					scoring->print_freqs(JN_OUT);
 				}
 				else if (par.has("print_counts")) {
-					scoring->print_counts(OUT);
+					scoring->print_counts(JN_OUT);
 				}
 				else if (par.has("train")) {
 					if (par.has("s")) {
@@ -177,7 +177,7 @@ namespace jian {
 					else if (par.has("l")) {
 						train_l(scoring, par.get("l", "list"));
 					}
-					scoring->print_counts(OUT);
+					scoring->print_counts(JN_OUT);
 				}
 				else {
 					if (par.has("s")) {
