@@ -144,7 +144,7 @@ namespace jian {
 		std::string recv(socket_t socket) {
 			char buf[1024];
 			int ret = ::recv(socket, buf, 1024, BLOCKREADWRITE);
-			if (ret == SOCKET_ERROR || ret == 0) throw "Socket::recv failed!";
+			if (ret <= 0) throw "Socket::recv failed!";
 			return std::string(buf, ret);
 		}
 
