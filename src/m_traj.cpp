@@ -19,7 +19,7 @@ namespace jian {
 			bool m_loose;
 
 			TrajComponent(const Par &par) {
-				auto &v = par.getv("global");
+				auto v = par.getv("global");
 				assert(v.size() >= 3);
 				m_func = v[1];
 				to_lower(m_func);
