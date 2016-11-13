@@ -7,13 +7,14 @@
 #if defined(JN_OS_WIN)
 
 #include <windows.h>  
-#define CLOSE_SOCKET(x)     ::closesocket(x)
-#define ISSOCKHANDLE(x)     (x!=INVALID_SOCKET)  
-#define BLOCKREADWRITE      0  
-#define NONBLOCKREADWRITE   0  
-#define SENDNOSIGNAL        0  
-#define ETRYAGAIN(x)        (x==WSAEWOULDBLOCK||x==WSAETIMEDOUT)  
-#define gxsprintf           sprintf_s  
+#define CLOSE_SOCKET(x)        ::closesocket(x)
+#define IS_SOCKET_VALID(x)     (x!=INVALID_SOCKET)
+#define INVALIDATE_SOCKET(x)   x=INVALID_SOCKET
+#define BLOCKREADWRITE         0  
+#define NONBLOCKREADWRITE      0  
+#define SENDNOSIGNAL           0  
+#define ETRYAGAIN(x)           (x==WSAEWOULDBLOCK||x==WSAETIMEDOUT)  
+#define gxsprintf              sprintf_s  
 
 #else
 
@@ -23,13 +24,14 @@
 #include <sys/socket.h>  
 #include <netinet/in.h>  
 #include <arpa/inet.h>  
-#define CLOSE_SOCKET(x)     ::close(x)
-#define ISSOCKHANDLE(x)     (x>0)  
-#define BLOCKREADWRITE      MSG_WAITALL  
-#define NONBLOCKREADWRITE   MSG_DONTWAIT  
-#define SENDNOSIGNAL        MSG_NOSIGNAL  
-#define ETRYAGAIN(x)        (x==EAGAIN||x==EWOULDBLOCK)  
-#define gxsprintf           snprintf  
+#define CLOSE_SOCKET(x)       ::close(x)
+#define IS_SOCKET_VALID(x)    (x>0)  
+#define INVALIDATE_SOCKET(x)  x=-1
+#define BLOCKREADWRITE        MSG_WAITALL  
+#define NONBLOCKREADWRITE     MSG_DONTWAIT  
+#define SENDNOSIGNAL          MSG_NOSIGNAL  
+#define ETRYAGAIN(x)          (x==EAGAIN||x==EWOULDBLOCK)  
+#define gxsprintf             snprintf  
 
 #endif
 
@@ -79,14 +81,14 @@ namespace jian {
 			else if (tcpudp == SOCK_DGRAM) protocol = IPPROTO_UDP;
 #endif
 			s = socket(AF_INET, tcpudp, protocol);
-			if (s == INVALID_SOCKET) throw "Create socket failed !";
+			if (IS_SOCKET_VALID(s)) throw "Create socket failed !";
 			return s;
 		}
 
 		void close(socket_t &socket) {
-			if (ISSOCKHANDLE(socket)) {
+			if (IS_SOCKET_VALID(socket)) {
 				CLOSE_SOCKET(socket);
-				socket = INVALID_SOCKET;
+				INVALIDATE_SOCKET(socket);
 			}
 		}
 
@@ -140,8 +142,8 @@ namespace jian {
 		}
 
 		std::string recv(socket_t socket) {
-			char buf[MAX_PATH];
-			int ret = ::recv(socket, buf, MAX_PATH, BLOCKREADWRITE);
+			char buf[1024];
+			int ret = ::recv(socket, buf, 1024, BLOCKREADWRITE);
 			if (ret == SOCKET_ERROR || ret == 0) throw "Socket::recv failed!";
 			return std::string(buf, ret);
 		}
