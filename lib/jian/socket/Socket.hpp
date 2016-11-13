@@ -81,7 +81,7 @@ namespace jian {
 			else if (tcpudp == SOCK_DGRAM) protocol = IPPROTO_UDP;
 #endif
 			s = socket(AF_INET, tcpudp, protocol);
-			if (IS_SOCKET_VALID(s)) throw "Create socket failed !";
+			if (!IS_SOCKET_VALID(s)) throw "Create socket failed !";
 			return s;
 		}
 
