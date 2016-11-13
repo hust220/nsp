@@ -9,29 +9,29 @@ namespace jian {
 
 using val_t = double;
 
-using Vecf = Eigen::VectorXf;
-using Vecd = Eigen::VectorXd;
-using Veci = Eigen::VectorXi;
-using Vec = Vecd;
-
-using RowVecf = Eigen::RowVectorXf;
-using RowVecd = Eigen::RowVectorXd;
-using RowVeci = Eigen::RowVectorXi;
-using RowVec = RowVecd;
-
-using Matf = Eigen::MatrixXf;
-using Matd = Eigen::MatrixXd;
-using Mati = Eigen::MatrixXi;
-using Mat = Matd;
-
 template<typename NumType>
 using MatX = Eigen::Matrix<NumType, -1, -1>;
+using Mat = MatX<val_t>;
+using Matf = MatX<float>;
+using Matd = MatX<double>;
+using Mati = MatX<int>;
+using Matu = MatX<unsigned>;
 
 template<typename NumType>
 using VecX = Eigen::Matrix<NumType, -1, 1>;
+using Vec = VecX<val_t>;
+using Vecf = VecX<float>;
+using Vecd = VecX<double>;
+using Veci = VecX<int>;
+using Vecu = VecX<unsigned>;
 
 template<typename NumType>
 using RowVecX = Eigen::Matrix<NumType, 1, -1>;
+using RowVec = RowVecX<val_t>;
+using RowVecf = RowVecX<float>;
+using RowVecd = RowVecX<double>;
+using RowVeci = RowVecX<int>;
+using RowVecu = RowVecX<unsigned>;
 
 // rows
 template<typename MatType, std::enable_if_t<is_stl_mat<MatType>::value, int> = 42>

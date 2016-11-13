@@ -416,6 +416,9 @@
     <ClCompile Include="m_rmsd.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="m_traj.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="nsp.hpp">

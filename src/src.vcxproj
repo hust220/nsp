@@ -247,6 +247,7 @@
     <ClCompile Include="md.cpp" />
     <ClCompile Include="min_dist.cpp" />
     <ClCompile Include="m_new_score.cpp" />
+    <ClCompile Include="m_traj.cpp" />
     <ClCompile Include="nsp.cpp" />
     <ClCompile Include="parse_helix.cpp" />
     <ClCompile Include="rebuild_chain.cpp" />
