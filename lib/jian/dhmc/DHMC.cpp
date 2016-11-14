@@ -337,17 +337,20 @@ namespace jian {
 			set_res_module_types_ss((*it)->head(), it == m_trees.begin());
 		}
 
-		std::vector<int> w(m_frag_size);
-		for (i = 0; i + m_frag_size - 1 < _seq.size(); i++) {
-			std::iota(w.begin(), w.end(), i);
-			if (std::any_of(w.begin(), w.end(), [this](int i) {
-				return this->m_is_free[i];
-			})) {
-				m_mvels.push_back(new MvEl(i, i + m_frag_size - 1, MvEl::MVEL_FG));
+		MvEl::merge(m_mvels);
+
+		for (int frag_size : {1, 2, 3}) {
+			std::vector<int> w(frag_size);
+			for (i = 0; i + frag_size - 1 < _seq.size(); i++) {
+				std::iota(w.begin(), w.end(), i);
+				if (std::any_of(w.begin(), w.end(), [this](int i) {
+					return this->m_is_free[i];
+				})) {
+					m_mvels.push_back(new MvEl(i, i + frag_size - 1, MvEl::MVEL_FG));
+				}
 			}
 		}
 
-		MvEl::merge(m_mvels);
 	}
 
 	// MC related methods

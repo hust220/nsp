@@ -82,15 +82,17 @@ namespace jian {
 
 			RotateAlong() = default;
 
-			template<typename L>
-			RotateAlong(const L &begin, const L &end, double angle) {
+			template<typename Begin, typename End>
+			RotateAlong(const Begin &begin, const End &end, double angle) {
 				init(begin, end, angle);
 			}
 
-			template<typename L>
-			void init(const L &begin, const L &end, double t) {
+			template<typename Begin, typename End>
+			void init(const Begin &begin, const End &end, double t) {
 				NumType r1, r2, c1, c2, s1, s2;
-				L l = end - begin;
+				//L l = end - begin;
+				vec_t l(3);
+				for (int i = 0; i < 3; i++) l[i] = end[i] - begin[i];
 
 				m_beg.resize(3);
 				m_end.resize(3);

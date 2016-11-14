@@ -294,9 +294,10 @@ namespace jian {
 		};
 
 		std::vector<std::function<void()>> actions{
+			// translate
 			[this]() {
 				int index = int(rand() * 3);
-				double dist = (rand() - 0.5) * 2 * _mc_max_shift;
+				double dist = (rand() - 0.5) * 1 * _mc_max_shift;
 				for (int i = 0; i < _seq.size(); i++) {
 					if (is_selected(i)) {
 						for (auto && atom : _pred_chain[i]) {
@@ -307,9 +308,10 @@ namespace jian {
 				}
 			},
 
+			// rotate fixed in P
 			[this]() {
 				int index = int(rand() * 3);
-				double dih = (rand() - 0.5) * PI / 6;
+				double dih = (rand() - 0.5) * PI * 0.1;
 				auto &&rot = geom::rot_mat(index, dih);
 				auto &&origin = rotating_center();
 				for (int i = 0; i < _seq.size(); i++) {
@@ -322,11 +324,40 @@ namespace jian {
 				}
 			},
 
+			// rotate along P-P
+			//[this]() {
+			//	int min = m_selected_mvel->min();
+			//	int max = m_selected_mvel->max();
+			//	if (max + 1 < _seq.size()) {
+			//		geom::RotateAlong<double> rotate_along(_pred_chain[min][0], _pred_chain[max + 1][0], PI * 0.1 * (rand() - 0.5));
+			//		for (int i = min; i <= max; i++) {
+			//			for (auto && atom : _pred_chain[i]) {
+			//				rotate_along(atom);
+			//			}
+			//			space_update_item(i);
+			//		}
+			//	}
+			//	else {
+			//		int index = int(rand() * 3);
+			//		double dih = (rand() - 0.5) * PI * 0.1;
+			//		auto &&rot = geom::rot_mat(index, dih);
+			//		auto &&origin = rotating_center();
+			//		for (int i = min; i <= max; i++) {
+			//			for (auto && atom : _pred_chain[i]) {
+			//				geom::rotate(atom, origin, rot);
+			//			}
+			//			space_update_item(i);
+			//		}
+
+			//	}
+			//},
+
+			// rotate base
 			[this, &get_base_axis]() {
 				for (int i = 0; i < _seq.size(); i++) {
 					if (is_selected(i)) {
 						auto axis = get_base_axis(_pred_chain[i]);
-						geom::RotateAlong<double> rotate_along(axis[0], axis[1], PI * 2 * (rand() - 0.5));
+						geom::RotateAlong<double> rotate_along(axis[0], axis[1], PI * 0.1 * (rand() - 0.5));
 						for (int j = 3; j < 6; j++) {
 							rotate_along(_pred_chain[i][j]);
 						}
@@ -338,8 +369,24 @@ namespace jian {
 
 		backup();
 
-		int size = (m_selected_mvel->type == MvEl::MVEL_FG ? 3 : 2);
-		actions[int(size * rand())]();
+		int min = m_selected_mvel->min();
+		int max = m_selected_mvel->max();
+		//if (_mc_step < 30000) {
+			if (min == max) {
+				actions[int(3 * rand())]();
+			}
+			else {
+				actions[int(2 * rand())]();
+			}
+		//}
+		//else {
+		//	if (min == max) {
+		//		actions[2 + int(2 * rand())]();
+		//	}
+		//	else {
+		//		actions[2]();
+		//	}
+		//}
 
 	}
 
