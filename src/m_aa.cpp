@@ -21,6 +21,12 @@ namespace jian {
 				return rank;
 			}
 
+			int size() {
+				int size;
+				MPI_Comm_size(MPI_COMM_WORLD, &size);
+				return size;
+			}
+
 			void send(std::string s, int rank) {
 				MPI_Send(s.c_str(), s.size(), MPI_CHAR, rank, 0, MPI_COMM_WORLD);
 			}
@@ -48,14 +54,12 @@ namespace jian {
 			par.set(content, "content");
 
 			MPI mpi;
+			int size = mpi.size();
 			int rank = mpi.rank();
-			if (rank == 0) {
-				mpi.send(content, 1);
-				LOG << "Rank 0 send '" << content << "'" << std::endl;
-			}
-			else if (rank == 1) {
-				LOG << "Rank 1 received string " << mpi.recv(0) << " from Rank 0\n" << std::endl;
-			}
+			content += ":" + JN_STR(rank);
+			mpi.send(content, (rank + 1 == size ? 0 : rank + 1));
+			LOG << "Rank " << rank << " send '" << content << "'" << std::endl;
+			LOG << "Rank " << rank << " received string " << mpi.recv((rank == 0 ? size - 1 : rank - 1)) << std::endl;
 			return;
 
 			list_file = par.get("l", "list");
