@@ -106,9 +106,6 @@
     <ClCompile Include="joint.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="len.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="lrtsp.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -426,6 +423,12 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="m_client.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_pdb2jn.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_len.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -942,6 +945,9 @@
     </ClInclude>
     <ClInclude Include="..\lib\jian\utils\platform.hpp">
       <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\pdb\MolSerial.hpp">
+      <Filter>jian\pdb</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

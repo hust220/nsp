@@ -242,13 +242,14 @@
     <ClCompile Include="get_all_residues.cpp" />
     <ClCompile Include="helix_par.cpp" />
     <ClCompile Include="joint.cpp" />
-    <ClCompile Include="len.cpp" />
+    <ClCompile Include="m_len.cpp" />
     <ClCompile Include="lrtsp.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mcc.cpp" />
     <ClCompile Include="md.cpp" />
     <ClCompile Include="min_dist.cpp" />
     <ClCompile Include="m_new_score.cpp" />
+    <ClCompile Include="m_pdb2jn.cpp" />
     <ClCompile Include="m_server.cpp" />
     <ClCompile Include="m_traj.cpp" />
     <ClCompile Include="nsp.cpp" />
@@ -380,6 +381,7 @@
     <ClInclude Include="..\lib\jian\pdb\Molecule.hpp" />
     <ClInclude Include="..\lib\jian\pdb\molmanip.hpp" />
     <ClInclude Include="..\lib\jian\pdb\MolParser.hpp" />
+    <ClInclude Include="..\lib\jian\pdb\MolSerial.hpp" />
     <ClInclude Include="..\lib\jian\pdb\names.hpp" />
     <ClInclude Include="..\lib\jian\pdb\PdbFileParser.hpp" />
     <ClInclude Include="..\lib\jian\pdb\Residue.hpp" />

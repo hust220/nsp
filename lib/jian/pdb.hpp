@@ -9,3 +9,4 @@
 #include "pdb/io.hpp"
 #include "pdb/molmanip.hpp"
 #include "pdb/names.hpp"
+#include "pdb/MolSerial.hpp"
