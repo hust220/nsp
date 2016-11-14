@@ -16,26 +16,26 @@ add_subdirectory(include)
 add_subdirectory(lib)
 
 add_custom_target(para-debug
-    COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=mpicxx ${CMAKE_SOURCE_DIR}
-    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target all
+    COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER="$ENV{MPI_HOME}/bin/mpicxx" ${CMAKE_SOURCE_DIR}
+    #COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target all
     COMMENT "Switch CMAKE_BUILD_TYPE to para-debug"
 )
 
 add_custom_target(serial-debug
     COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Debug ${CMAKE_SOURCE_DIR}
-    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target all
+    #COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target all
     COMMENT "Switch CMAKE_BUILD_TYPE to serial-debug"
 )
 
 add_custom_target(para-release
-    COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=mpicxx ${CMAKE_SOURCE_DIR}
-    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target all
+    COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER="$ENV{MPI_HOME}/bin/mpicxx" ${CMAKE_SOURCE_DIR}
+    #COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target all
     COMMENT "Switch CMAKE_BUILD_TYPE to para-release"
 )
 
 add_custom_target(serial-release
     COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Release ${CMAKE_SOURCE_DIR}
-    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target all
+    #COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target all
     COMMENT "Switch CMAKE_BUILD_TYPE to serial-release"
 )
 

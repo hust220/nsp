@@ -30,7 +30,7 @@ namespace jian {
 				MPI_Status status;
 				//int n = MPI_Recv(hi, 1024, MPI_CHAR, rank, 0, MPI_COMM_WORLD, MPI_STATUSES_IGNORE);
 				MPI_Recv(hi, 1024, MPI_CHAR, rank, 0, MPI_COMM_WORLD, &status);
-				int n = status.internal[0];
+				int n = ((int*)&status)[0];
 				return std::string(hi, n);
 			}
 
