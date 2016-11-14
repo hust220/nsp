@@ -20,6 +20,8 @@ namespace jian {
 class NSP {
 public:
     std::map<std::string, std::function<void(Par)>> _methods;
+	int m_argc;
+	char **m_argv;
 
     static NSP &instance();
 

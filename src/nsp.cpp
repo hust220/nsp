@@ -9,6 +9,8 @@ namespace jian {
 
 	void NSP::run(int argc, char **argv) {
 		Par par(argc, argv);
+		NSP::instance().m_argc = argc;
+		NSP::instance().m_argv = argv;
 		if (par.has("log_level")) {
 			log_level(std::stoi(par["log_level"][0]));
 		}
