@@ -7,11 +7,22 @@
 #include "../utils/log.hpp"
 #include "../utils/string.hpp"
 
+#ifdef JN_PARA
+#include "../mpi.hpp"
+#endif
+
 namespace jian {
 
 void TSP::init(const Par &pars) {
+	std::ostringstream stream;
+
     _par = new Par(pars);
     _lib = Env::lib();
+	_name = pars.get("job_name", "job", "name");
+#ifdef JN_PARA
+	stream << _name << "." << g_mpi->m_rank + 1 << ".log.txt";
+	log_file(stream.str());
+#endif
     //m_cmd = (*_par)[1];
 	LOG << "# Reading sequence" << std::endl;
 	read_seq();
@@ -19,7 +30,6 @@ void TSP::init(const Par &pars) {
     read_ss();
 	read_cg();
     pars.set(_lib, "lib", "library_path");
-    pars.set(_name, "job_name", "job", "name");
     pars.set(_num, "n", "num", "number");
     pars.set(_hinge, "h", "hinge");
     pars.set(_strategy, "strategy");
@@ -75,10 +85,12 @@ void TSP::run() {
 
 void TSP::write_final_model() {
 	std::ostringstream stream;
+#ifdef JN_PARA
+	stream << _name << "." << g_mpi->m_rank + 1 << ".pred.pdb";
+#else
 	stream << _name << ".pred.pdb";
-	m_out_pdb = stream.str();
-	_par->set(m_out_pdb, "out", "out_pdb");
-	mol_write(_pred_chain, m_out_pdb);
+#endif
+	mol_write(_pred_chain, stream.str());
 }
 
 

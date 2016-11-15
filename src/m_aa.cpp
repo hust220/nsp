@@ -3,47 +3,12 @@
 #include <jian/cg.hpp>
 #include <jian/scoring/ParBp.hpp>
 #include <jian/geom.hpp>
-#include "mpi.h"
+//#include <jian/mpi.hpp>
 #include "nsp.hpp"
 
 namespace jian {
 	namespace {
 
-		class MPI {
-		public:
-			MPI() {
-				MPI_Init(&NSP::instance().m_argc, &NSP::instance().m_argv);
-			}
-
-			int rank() {
-				int rank;
-				MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-				return rank;
-			}
-
-			int size() {
-				int size;
-				MPI_Comm_size(MPI_COMM_WORLD, &size);
-				return size;
-			}
-
-			void send(std::string s, int rank) {
-				MPI_Send(s.c_str(), s.size(), MPI_CHAR, rank, 0, MPI_COMM_WORLD);
-			}
-
-			std::string recv(int rank) {
-				char hi[1024];
-				MPI_Status status;
-				//int n = MPI_Recv(hi, 1024, MPI_CHAR, rank, 0, MPI_COMM_WORLD, MPI_STATUSES_IGNORE);
-				MPI_Recv(hi, 1024, MPI_CHAR, rank, 0, MPI_COMM_WORLD, &status);
-				int n = ((int*)&status)[0];
-				return std::string(hi, n);
-			}
-
-			~MPI() {
-				MPI_Finalize();
-			}
-		};
 		REGISTER_NSP_COMPONENT(aa) {
 			std::string list_file, prefix;
 			Chain chain;
@@ -53,13 +18,13 @@ namespace jian {
 
 			par.set(content, "content");
 
-			MPI mpi;
-			int size = mpi.size();
-			int rank = mpi.rank();
-			content += ":" + JN_STR(rank);
-			mpi.send(content, (rank + 1 == size ? 0 : rank + 1));
-			LOG << "Rank " << rank << " send '" << content << "'" << std::endl;
-			LOG << "Rank " << rank << " received string " << mpi.recv((rank == 0 ? size - 1 : rank - 1)) << std::endl;
+			//MPI mpi;
+			//int size = mpi.size();
+			//int rank = mpi.rank();
+			//content += ":" + JN_STR(rank);
+			//mpi.send(content, (rank + 1 == size ? 0 : rank + 1));
+			//LOG << "Rank " << rank << " send '" << content << "'" << std::endl;
+			//LOG << "Rank " << rank << " received string " << mpi.recv((rank == 0 ? size - 1 : rank - 1)) << std::endl;
 			return;
 
 			list_file = par.get("l", "list");

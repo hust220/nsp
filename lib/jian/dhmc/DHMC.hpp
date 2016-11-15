@@ -38,7 +38,8 @@ namespace jian {
 		template<typename T>
 		std::string partial_ss(std::string ss, T &&pair) {
 			for (auto && c : ss) {
-				c = (c == pair.first ? '(' : (c == pair.second ? ')' : (c == '&' ? '.' : c)));
+				c = (c == pair.first ? '(' : (c == pair.second ? ')' : '.'));
+				//c = (c == pair.first ? '(' : (c == pair.second ? ')' : (c == '&' ? '.' : c)));
 			}
 			return ss;
 		}

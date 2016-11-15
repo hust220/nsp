@@ -343,7 +343,7 @@ namespace jian {
 			std::vector<int> w(frag_size);
 			for (i = 0; i + frag_size - 1 < _seq.size(); i++) {
 				std::iota(w.begin(), w.end(), i);
-				if (std::any_of(w.begin(), w.end(), [this](int i) {
+				if (std::all_of(w.begin(), w.end(), [this](int i) {
 					return this->m_is_free[i];
 				})) {
 					m_mvels.push_back(new MvEl(i, i + frag_size - 1, MvEl::MVEL_FG));

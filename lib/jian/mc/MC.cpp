@@ -1,4 +1,7 @@
+#include <algorithm>
+#include <numeric>
 #include "../utils/log.hpp"
+#include "../utils/Serial.hpp"
 #include "MC.hpp"
 
 namespace jian {
@@ -35,22 +38,30 @@ namespace jian {
 		_mc_tempr = _mc_init_tempr;
 		for (auto && s : v) {
 			tokenize(s, w, ":");
-			if (w.size() == 2 || w.size() == 3) {
-				if (w.size() == 3) {
-					_mc_tempr = JN_DBL(w[2]);
-				}
-				steps = JN_INT(w[1]);
+			if (w.size() >= 2) {
 				if (w[0] == "heat") {
+					steps = JN_INT(w[1]);
+					if (w.size() == 3) _mc_tempr = JN_DBL(w[2]);
 					mc_heat(steps);
 				}
 				else if (w[0] == "cool") {
+					steps = JN_INT(w[1]);
+					if (w.size() == 3) _mc_tempr = JN_DBL(w[2]);
 					mc_cool(steps);
 				}
 				else if (w[0] == "warm") {
+					steps = JN_INT(w[1]);
+					if (w.size() == 3) _mc_tempr = JN_DBL(w[2]);
 					mc_warm(steps);
 				}
+				else if (w[0] == "remc") {
+					steps = JN_INT(w[1]);
+					_mc_lowest_tempr = JN_DBL(w[2]);
+					_mc_highest_tempr = JN_DBL(w[3]);
+					mc_remc(steps);
+				}
 				else {
-					throw w[0] + ": illegal mc action!";
+					throw w[0] + ": illegal mc mode!";
 				}
 			}
 			else {
@@ -62,7 +73,7 @@ namespace jian {
 	void MC::mc_heat(int steps) {
 		LOG << __FUNCTION__ << "..." << std::endl;
 		_mc_state = MC_HEATING;
-		mc_base(steps, [&]() {
+		mc_base(steps, [this]() {
 			if (_mc_local_succ_rate < _mc_heat_rate) {
 				_mc_tempr *= 1.1;
 				return true;
@@ -82,7 +93,7 @@ namespace jian {
 		_mc_state = MC_COOLING;
 		int n_rate = 0, n_en = 0;
 		double en = 0;
-		mc_base(steps, [&]() {
+		mc_base(steps, [this, &en, &n_en, &n_rate]() {
 			_mc_tempr *= _mc_dec_rate;
 			if (std::fabs(en - _mc_en) <= 0.05) n_en++; else n_en = 0;
 			en = _mc_en;
@@ -94,9 +105,58 @@ namespace jian {
 	void MC::mc_warm(int steps) {
 		LOG << __FUNCTION__ << "..." << std::endl;
 		_mc_state = MC_WARMING;
-		mc_base(steps, [&]() {
+		mc_base(steps, [this]() {
 			return true;
 		});
+	}
+
+	void MC::mc_remc(int steps) {
+		LOG << __FUNCTION__ << "..." << std::endl;
+#ifndef JN_PARA
+		throw "REMC is only supported in the parallel version! "
+			"You may need to recompile nsp if you really want to use REMC!";
+#else
+		_mc_state = MC_REMC;
+		_mc_tempr = _mc_lowest_tempr + g_mpi->m_rank * (_mc_highest_tempr - _mc_lowest_tempr) / (g_mpi->m_size - 1.0);
+		Serial serial;
+
+		auto exchange_tempr = [](auto &&tempr, auto &&en) {
+			int l = tempr.size();
+			double d;
+
+			for (int i = 0; i < l - 1; i++) {
+				d = en[i] - en[i + 1];
+				d *= 1.0 / tempr[i] - 1.0 / tempr[i + 1];
+				d = std::exp(d);
+				if (rand() < std::min(1.0, d)) {
+					std::swap(tempr[i], tempr[i+1]);
+					i++;
+				}
+			}
+		};
+
+		mc_base(steps, [this, &serial, &exchange_tempr]() {
+			if (g_mpi->m_rank == 0) {
+				std::vector<double> tempr(g_mpi->m_size);
+				std::vector<double> en(g_mpi->m_size);
+				tempr[0] = _mc_tempr;
+				en[0] = _mc_en;
+				for (int i = 1; i < g_mpi->m_size; i++) {
+					serial.parse(g_mpi->recv(i), tempr[i], en[i]);
+				}
+				exchange_tempr(tempr, en);
+				_mc_tempr = tempr[0];
+				for (int i = 1; i < g_mpi->m_size; i++) {
+					g_mpi->send(serial.stringify(tempr[i]), i);
+				}
+			}
+			else {
+				g_mpi->send(serial.stringify(_mc_tempr, _mc_en), 0);
+				serial.parse(g_mpi->recv(0), _mc_tempr);
+			}
+			return true;
+		});
+#endif
 	}
 
 	double MC::mc_total_energy() {

@@ -6,6 +6,10 @@
 #include "../utils/Par.hpp"
 #include "../utils/Env.hpp"
 
+#ifdef JN_PARA
+#include "../mpi.hpp"
+#endif
+
 namespace jian {
 
 	class MC {
@@ -15,9 +19,13 @@ namespace jian {
 			MC_HEATING,
 			MC_COOLING,
 			MC_WARMING,
+			MC_REMC,
 			MC_DONE
 		};
+
 		double _mc_init_tempr;
+		double _mc_lowest_tempr;
+		double _mc_highest_tempr;
 		double _mc_tempr;
 		int _mc_cycle_steps;
 		int _mc_write_steps;
@@ -70,6 +78,7 @@ namespace jian {
 		virtual void mc_heat(int);
 		virtual void mc_cool(int);
 		virtual void mc_warm(int);
+		virtual void mc_remc(int);
 		virtual double mc_total_energy();
 		virtual double mc_partial_energy();
 		virtual void mc_select();

@@ -169,7 +169,13 @@ namespace jian {
 		TSP::init(par);
 
 		LOG << "# Set the file of trajectory..." << std::endl;
-		par.set(m_traj, "traj");
+		std::ostringstream stream;
+#ifdef JN_PARA
+		stream << _name << "." << g_mpi->m_rank + 1 << ".traj.pdb";
+#else
+		stream << _name << ".traj.pdb";
+#endif
+		m_traj = stream.str();
 
 		LOG << "# Set continuous points..." << std::endl;
 		set_continuous_pts();
@@ -251,17 +257,15 @@ namespace jian {
 	}
 
 	void MCBase::write_traj() {
-		if (!(m_traj.empty())) {
-			if (mc_num_writing == 1) {
-				file::clean(m_traj);
-			}
-			std::ofstream output(m_traj.c_str(), std::ios::app);
-			m_writer.bind_stream(output);
-			m_writer.write_model([&]() {
-				this->m_writer.write(this->_pred_chain);
-			});
-			output.close();
+		if (mc_num_writing == 1) {
+			file::clean(m_traj);
 		}
+		std::ofstream output(m_traj.c_str(), std::ios::app);
+		m_writer.bind_stream(output);
+		m_writer.write_model([&]() {
+			this->m_writer.write(this->_pred_chain);
+		});
+		output.close();
 	}
 
 	void MCBase::mc_sample() {

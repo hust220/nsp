@@ -5,6 +5,10 @@ project(nsp)
 #    message(FATAL_ERROR "g++ version must be greater than 4.8, but now is ${CMAKE_CXX_COMPILER_VERSION}")
 #endif()
 
+if(defined PARA)
+	ADD_DEFINITIONS(-DJN_PARA)
+endif()
+
 set(CMAKE_VERBOSE_MAKEFILE on)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread")
 
