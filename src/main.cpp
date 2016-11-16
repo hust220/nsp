@@ -5,28 +5,37 @@
 #ifdef JN_PARA
 
 #include <jian/mpi.hpp>
+#define JN_DECLARE_MPI std::shared_ptr<MPI> g_mpi
+#define JN_INIT_MPI jian::g_mpi.reset(new jian::MPI)
+
+#else
+
+#define JN_DECLARE_MPI 
+#define JN_INIT_MPI
+
+#endif
+
 namespace jian {
-	std::shared_ptr<MPI> g_mpi;
+	JN_DECLARE_MPI;
 	int g_argc;
 	char **g_argv;
 }
 
-#endif
-
 int main(int argc, char **argv) {
 	jian::g_argc = argc;
 	jian::g_argv = argv;
-#ifdef JN_PARA
-	jian::g_mpi.reset(new jian::MPI);
-#endif
+	JN_INIT_MPI;
 	try {
-        jian::NSP::run(argc, argv);
-    } catch (const jian::Error &inf) {
-        std::cout << inf.what() << std::endl;
-    } catch (const char * inf) {
-        std::cout << inf << std::endl;
-    } catch (const std::string &s) {
-        std::cout << s << std::endl;
-    }
+		jian::NSP::run(argc, argv);
+	}
+	catch (const jian::Error &inf) {
+		std::cout << inf.what() << std::endl;
+	}
+	catch (const char * inf) {
+		std::cout << inf << std::endl;
+	}
+	catch (const std::string &s) {
+		std::cout << s << std::endl;
+	}
 }
 
