@@ -16,8 +16,10 @@ namespace jian {
 int main(int argc, char **argv) {
 	jian::g_argc = argc;
 	jian::g_argv = argv;
+#ifdef JN_PARA
 	jian::g_mpi.reset(new jian::MPI);
-    try {
+#endif
+	try {
         jian::NSP::run(argc, argv);
     } catch (const jian::Error &inf) {
         std::cout << inf.what() << std::endl;
