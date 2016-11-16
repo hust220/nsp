@@ -353,8 +353,20 @@ namespace jian {
 			int min = el->min();
 			int max = el->max();
 			for (int i = 1; i <= max_extend_len; i++) {
-				if (min - i >= 0 && m_is_free[min - i])  m_mvels.push_back(new MvEl(min - i, max, MvEl::MVEL_FG));
-				if (max + i < _seq.size() && m_is_free[max + i])  m_mvels.push_back(new MvEl(min, max + i, MvEl::MVEL_FG));
+				if (min - i >= 0 && m_is_free[min - i]) {
+					m_mvels.push_back(new MvEl(min - i, max, MvEl::MVEL_FG));
+				}
+				else {
+					break;
+				}
+			}
+			for (int i = 1; i <= max_extend_len; i++) {
+				if (max + i < _seq.size() && m_is_free[max + i]) {
+					m_mvels.push_back(new MvEl(min, max + i, MvEl::MVEL_FG));
+				}
+				else {
+					break;
+				}
 			}
 		}
 
