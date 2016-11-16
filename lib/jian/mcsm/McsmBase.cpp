@@ -480,8 +480,8 @@ namespace jian {
 
 	MCBase::space_val_t &MCBase::space_val(int i) {
 		item_t &a = item(i);
-		std::cout << a << std::endl;
-		std::cout << space_index(a[0]) << ' ' << space_index(a[1]) << ' ' << space_index(a[2]) << std::endl;
+		//std::cout << a << std::endl;
+		//std::cout << space_index(a[0]) << ' ' << space_index(a[1]) << ' ' << space_index(a[2]) << std::endl;
 		return m_space[space_index(a[0])][space_index(a[1])][space_index(a[2])];
 	}
 

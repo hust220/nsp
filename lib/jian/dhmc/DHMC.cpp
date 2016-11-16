@@ -348,6 +348,16 @@ namespace jian {
 
 		MvEl::merge(m_mvels);
 
+		int max_extend_len = 5;
+		for (auto && el : m_mvels) {
+			int min = el->min();
+			int max = el->max();
+			for (int i = 1; i <= max_extend_len; i++) {
+				if (min - i >= 0 && m_is_free[min - i])  m_mvels.push_back(new MvEl(min - i, max, MvEl::MVEL_FG));
+				if (max + i < _seq.size() && m_is_free[max + i])  m_mvels.push_back(new MvEl(min, max + i, MvEl::MVEL_FG));
+			}
+		}
+
 		for (int frag_size : {1, 2, 3}) {
 			std::vector<int> w(frag_size);
 			for (i = 0; i + frag_size - 1 < _seq.size(); i++) {

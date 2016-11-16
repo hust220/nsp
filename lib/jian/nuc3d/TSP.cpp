@@ -20,9 +20,11 @@ void TSP::init(const Par &pars) {
     _lib = Env::lib();
 	_name = pars.get("job_name", "job", "name");
 #ifdef JN_PARA
-	stream << _name << "." << g_mpi->m_rank + 1 << ".log.txt";
-	log_file(stream.str());
+	stream << _name << "." << g_mpi->m_rank + 1 << ".tsp.log";
+#else
+	stream << _name << ".tsp.log";
 #endif
+	log_file(stream.str());
     //m_cmd = (*_par)[1];
 	LOG << "# Reading sequence" << std::endl;
 	read_seq();
