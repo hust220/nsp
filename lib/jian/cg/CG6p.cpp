@@ -38,10 +38,14 @@ namespace jian {
 			Residue r;
 			r.m_cg = m_cg;
 			r.name = res.name;
-			for (auto && atom : res) {
-				if (std::find(names.begin(), names.end(), atom.name) != names.end()) {
-					r.push_back(atom);
-				}
+			for (auto &&name : names) {
+				auto it = std::find_if(res.begin(), res.end(), [&name](auto &&atom) {
+					return atom.name == name;
+				});
+				std::ostringstream stream;
+				stream << "jian::CG6p::to_cg error! Atom '" << name << "' not found";
+				if (it == res.end()) throw stream.str();
+				r.push_back(*it);
 			}
 			return r;
 		};

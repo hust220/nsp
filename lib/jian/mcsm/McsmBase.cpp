@@ -168,6 +168,9 @@ namespace jian {
 	void MCBase::init(const Par &par) {
 		TSP::init(par);
 
+		m_selected_mvel = NULL;
+		m_sample_mode = SAMPLE_SSE;
+
 		LOG << "# Set the file of trajectory..." << std::endl;
 		std::ostringstream stream;
 #ifdef JN_PARA
@@ -193,6 +196,13 @@ namespace jian {
 
 		//_mc_queue = "heat:30000:20+cool:1000000";
 		//par.set(_mc_queue, "mc_queue");
+	}
+
+	void MCBase::mc_next_step() {
+		_mc_step++;
+		if (_mc_step >= 100000) {
+			m_sample_mode = SAMPLE_TREE;
+		}
 	}
 
 	void MCBase::validate_constraints() {
@@ -298,7 +308,48 @@ namespace jian {
 		};
 
 		std::vector<std::function<void()>> actions{
-			// translate
+			// rotate along P-P
+			[this]() {
+				int min = m_selected_mvel->min();
+				int max = m_selected_mvel->max();
+				if (max + 1 < _seq.size()) {
+					geom::RotateAlong<double> rotate_along(_pred_chain[min][0], _pred_chain[max+1][0], PI * 0.1 * (rand() - 0.5));
+					for (int i = min; i <= max; i++) {
+						for (auto && atom : _pred_chain[i]) {
+							rotate_along(atom);
+						}
+						space_update_item(i);
+					}
+				}
+				else {
+					int index = int(rand() * 3);
+					double dih = (rand() - 0.5) * PI * 0.1;
+					auto &&rot = geom::rot_mat(index, dih);
+					Vec origin(3);
+					for (int i = 0; i < 3; i++) origin[i] = _pred_chain[min][0][i];
+					for (int i = min; i <= max; i++) {
+						for (auto && atom : _pred_chain[i]) {
+							geom::rotate(atom, origin, rot);
+						}
+						space_update_item(i);
+					}
+				}
+			},
+
+			// rotate base
+			[this, &get_base_axis]() {
+				for (int i = 0; i < _seq.size(); i++) {
+					if (is_selected(i)) {
+						auto axis = get_base_axis(_pred_chain[i]);
+						geom::RotateAlong<double> rotate_along(axis[0], axis[1], PI * 0.1 * (rand() - 0.5));
+						for (int j = 3; j < 6; j++) {
+							rotate_along(_pred_chain[i][j]);
+						}
+						space_update_item(i);
+					}
+				}
+			},
+				// translate
 			[this]() {
 				int index = int(rand() * 3);
 				double dist = (rand() - 0.5) * 1 * _mc_max_shift;
@@ -326,77 +377,39 @@ namespace jian {
 						space_update_item(i);
 					}
 				}
-			},
-
-			// rotate along P-P
-			//[this]() {
-			//	int min = m_selected_mvel->min();
-			//	int max = m_selected_mvel->max();
-			//	if (max + 1 < _seq.size()) {
-			//		geom::RotateAlong<double> rotate_along(_pred_chain[min][0], _pred_chain[max + 1][0], PI * 0.1 * (rand() - 0.5));
-			//		for (int i = min; i <= max; i++) {
-			//			for (auto && atom : _pred_chain[i]) {
-			//				rotate_along(atom);
-			//			}
-			//			space_update_item(i);
-			//		}
-			//	}
-			//	else {
-			//		int index = int(rand() * 3);
-			//		double dih = (rand() - 0.5) * PI * 0.1;
-			//		auto &&rot = geom::rot_mat(index, dih);
-			//		auto &&origin = rotating_center();
-			//		for (int i = min; i <= max; i++) {
-			//			for (auto && atom : _pred_chain[i]) {
-			//				geom::rotate(atom, origin, rot);
-			//			}
-			//			space_update_item(i);
-			//		}
-
-			//	}
-			//},
-
-			// rotate base
-			[this, &get_base_axis]() {
-				for (int i = 0; i < _seq.size(); i++) {
-					if (is_selected(i)) {
-						auto axis = get_base_axis(_pred_chain[i]);
-						geom::RotateAlong<double> rotate_along(axis[0], axis[1], PI * 0.1 * (rand() - 0.5));
-						for (int j = 3; j < 6; j++) {
-							rotate_along(_pred_chain[i][j]);
-						}
-						space_update_item(i);
-					}
-				}
 			}
+
 		};
 
 		backup();
 
 		int min = m_selected_mvel->min();
 		int max = m_selected_mvel->max();
-		//if (_mc_step < 30000) {
+		if (m_sample_mode == SAMPLE_SSE) {
 			if (min == max) {
-				actions[int(3 * rand())]();
+				actions[2+int(2 * rand())]();
 			}
 			else {
-				actions[int(2 * rand())]();
+				actions[1+int(3 * rand())]();
 			}
-		//}
-		//else {
-		//	if (min == max) {
-		//		actions[2 + int(2 * rand())]();
-		//	}
-		//	else {
-		//		actions[2]();
-		//	}
-		//}
+		}
+		else if (m_sample_mode == SAMPLE_TREE) {
+			if (min == max) {
+				actions[(rand() < 0.5 ? 0 : 1)]();
+			}
+			else {
+				actions[0]();
+			}
+		}
+		else {
+			throw "jian::MCBase::sample_res error!";
+		}
 
 	}
 
 	void MCBase::mc_back() {
-		for (int i = 0; i < _seq.size(); i++) {
-			if (is_selected(i)) {
+		if (m_sample_mode == SAMPLE_TREE) {
+			for (int i = m_selected_mvel->min(); i <= m_selected_mvel->max(); i++) {
 				for (auto && atom : _pred_chain[i]) {
 					atom = _moved_atoms.front();
 					_moved_atoms.pop_front();
@@ -404,16 +417,43 @@ namespace jian {
 				space_update_item(i);
 			}
 		}
+		else if (m_sample_mode == SAMPLE_SSE) {
+			for (int i = 0; i < _seq.size(); i++) {
+				if (is_selected(i)) {
+					for (auto && atom : _pred_chain[i]) {
+						atom = _moved_atoms.front();
+						_moved_atoms.pop_front();
+					}
+					space_update_item(i);
+				}
+			}
+		}
+		else {
+			throw "jian::MCBase::mc_back error!";
+		}
 	}
 
 	void MCBase::backup() {
 		_moved_atoms.clear();
-		for (int i = 0; i < _seq.size(); i++) {
-			if (is_selected(i)) {
+
+		if (m_sample_mode == SAMPLE_TREE) {
+			for (int i = m_selected_mvel->min(); i <= m_selected_mvel->max(); i++) {
 				for (auto && atom : _pred_chain[i]) {
 					_moved_atoms.push_back(atom);
 				}
 			}
+		}
+		else if (m_sample_mode == SAMPLE_SSE) {
+			for (int i = 0; i < _seq.size(); i++) {
+				if (is_selected(i)) {
+					for (auto && atom : _pred_chain[i]) {
+						_moved_atoms.push_back(atom);
+					}
+				}
+			}
+		}
+		else {
+			throw "jian::MCBase::backup error!";
 		}
 	}
 

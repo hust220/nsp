@@ -25,10 +25,11 @@ namespace jian {
 		template<typename T, typename U, typename NumType>
 		void rotate(T &&t, const U &origin, const MatX<NumType> &mat) {
 			for (int i = 0; i < 3; i++) t[i] -= origin[i];
-			NumType x = t[0] * ref(mat, 0, 0) + t[1] * ref(mat, 1, 0) + t[2] * ref(mat, 2, 0);
-			NumType y = t[0] * ref(mat, 0, 1) + t[1] * ref(mat, 1, 1) + t[2] * ref(mat, 2, 1);
-			NumType z = t[0] * ref(mat, 0, 2) + t[1] * ref(mat, 1, 2) + t[2] * ref(mat, 2, 2);
-			t[0] = x; t[1] = y; t[2] = z;
+			rotate(t, mat);
+			//NumType x = t[0] * ref(mat, 0, 0) + t[1] * ref(mat, 1, 0) + t[2] * ref(mat, 2, 0);
+			//NumType y = t[0] * ref(mat, 0, 1) + t[1] * ref(mat, 1, 1) + t[2] * ref(mat, 2, 1);
+			//NumType z = t[0] * ref(mat, 0, 2) + t[1] * ref(mat, 1, 2) + t[2] * ref(mat, 2, 2);
+			//t[0] = x; t[1] = y; t[2] = z;
 			for (int i = 0; i < 3; i++) t[i] += origin[i];
 		}
 
@@ -120,13 +121,14 @@ namespace jian {
 
 			template<typename T>
 			RotateAlong &operator ()(T &&t) {
-				for (int i = 0; i < 3; i++) {
-					t[i] -= m_beg[i];
-				}
-				rotate(t, m_rm);
-				for (int i = 0; i < 3; i++) {
-					t[i] += m_beg[i];
-				}
+				rotate(t, m_beg, m_rm);
+				//for (int i = 0; i < 3; i++) {
+				//	t[i] -= m_beg[i];
+				//}
+				//rotate(t, m_rm);
+				//for (int i = 0; i < 3; i++) {
+				//	t[i] += m_beg[i];
+				//}
 				return *this;
 			}
 

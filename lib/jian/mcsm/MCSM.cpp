@@ -64,8 +64,12 @@ namespace jian {
 
 	void MCSM::mc_energy_crash(en_t &e, bool is_total) {
 		int a, b, c, i, j, k, n;
+		if (m_selected_mvel == NULL) return;
+		int min = m_selected_mvel->min();
+		int max = m_selected_mvel->max();
 		for (n = 0; n < _seq.size(); n++) {
-			if (is_total || is_selected(n)) {
+			if (is_total || (n >= min && n <= max)) {
+			//if (is_total || is_selected(n)) {
 				for (i = -m_box; i <= m_box; i++) for (j = -m_box; j <= m_box; j++) for (k = -m_box; k <= m_box; k++) {
 					item_t &it = item(n);
 					a = space_index(it[0]) + i;
@@ -90,8 +94,12 @@ namespace jian {
 	}
 
 	void MCSM::mc_energy_bond(en_t &e, bool is_total) {
+		if (m_selected_mvel == NULL) return;
+		int min = m_selected_mvel->min();
+		int max = m_selected_mvel->max();
 		for (auto && n : m_continuous_pts) {
 			if (is_total || is_selected(n) || is_selected(n + 1)) {
+			//if (is_total || n+1 == max || n == min) {
 				e.len += _mc_bond_length_weight * m_scorer->en_len(_pred_chain, n);
 				e.crash += _mc_crash_weight * m_scorer->en_crash(_pred_chain[n], _pred_chain[n + 1]);
 				m_scorer->en_bp(_pred_chain[n], _pred_chain[n + 1]);
@@ -102,6 +110,9 @@ namespace jian {
 
 	void MCSM::mc_energy_angle(en_t &e, bool is_total) {
 		int len = _seq.size();
+		if (m_selected_mvel == NULL) return;
+		int min = m_selected_mvel->min();
+		int max = m_selected_mvel->max();
 		for (auto && i : m_ang_pts) {
 			if (is_total || (is_selected(i) + is_selected(i + 1) + is_selected(i + 2)) % 3 != 0) {
 				//e.ang += _mc_bond_angle_weight * m_scorer->en_ang(_pred_chain[i], _pred_chain[i + 1], _pred_chain[i + 2]);
@@ -112,6 +123,9 @@ namespace jian {
 
 	void MCSM::mc_energy_dihedral(en_t &e, bool is_total) {
 		int len = _seq.size();
+		if (m_selected_mvel == NULL) return;
+		int min = m_selected_mvel->min();
+		int max = m_selected_mvel->max();
 		for (auto && i : m_dih_pts) {
 			if (is_total || (is_selected(i) + is_selected(i + 1) + is_selected(i + 2) + is_selected(i + 3)) % 4 != 0) {
 				e.dih += _mc_bond_dihedral_weight * m_scorer->en_dih(_pred_chain, i);

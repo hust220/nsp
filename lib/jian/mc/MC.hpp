@@ -47,7 +47,7 @@ namespace jian {
 			_mc_en = mc_total_energy();
 			_mc_step = 0;
 			mc_write();
-			for (; _mc_step < steps; _mc_step++) {
+			for (; _mc_step < steps;) {
 				mc_select();
 				auto &&en_old = mc_partial_energy();
 				mc_sample();
@@ -69,10 +69,12 @@ namespace jian {
 					local_succ_num = 0;
 					if (!ctrl_tempr()) break;
 				}
+				mc_next_step();
 			}
 			mc_write();
 		}
 
+		virtual void mc_next_step();
 		virtual void mc_write();
 		void mc_run();
 		virtual void mc_heat(int);

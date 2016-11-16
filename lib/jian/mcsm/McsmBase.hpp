@@ -89,6 +89,12 @@ namespace jian {
 		using space_t = std::map<int, std::map<int, std::map<int, space_val_t>>>;
 		using item_space_t = std::vector<space_val_t *>;
 
+		enum sample_mode_t {
+			SAMPLE_SSE,
+			SAMPLE_TREE
+		};
+
+		sample_mode_t m_sample_mode;
 		space_t m_space;
 		item_space_t m_item_space;
 		int m_box = 3;
@@ -105,7 +111,7 @@ namespace jian {
 
 		std::deque<MvEl *> m_mvels;
 		std::vector<MvEl *> m_base_mvels;
-		MvEl *m_selected_mvel;
+		MvEl *m_selected_mvel = NULL;
 		fixed_mvels_t m_fixed_mvels;
 
 		JN_MAP(JN_MCXP_DEF_PAR, JN_MCXP_PARS2);
@@ -155,6 +161,8 @@ namespace jian {
 		void print_final_constraints();
 
 		void cg_to_aa(const Mat &c);
+
+		virtual void mc_next_step();
 
 		virtual double mc_partial_energy() = 0;
 		virtual double dist_two_res(const Residue &, const Residue &) const = 0;

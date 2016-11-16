@@ -17,6 +17,10 @@ namespace jian {
 		par.set(_mc_dec_rate, "mc_dec_rate");
 	}
 
+	void MC::mc_next_step() {
+		_mc_step++;
+	}
+
 	bool MC::mc_is_heating() const {
 		return _mc_state == MC_HEATING;
 	}
