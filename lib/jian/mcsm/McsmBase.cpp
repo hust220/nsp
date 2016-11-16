@@ -113,6 +113,8 @@ namespace jian {
 		int flag = 1;
 		std::map<MvEl *, bool> m;
 
+		if (dq.empty()) return;
+
 		while (flag != 0) {
 			flag = 0;
 			m.clear();
@@ -170,6 +172,7 @@ namespace jian {
 
 		m_selected_mvel = NULL;
 		m_sample_mode = SAMPLE_SSE;
+		m_cal_en_constraints = false;
 
 		LOG << "# Set the file of trajectory..." << std::endl;
 		std::ostringstream stream;
@@ -202,6 +205,7 @@ namespace jian {
 		_mc_step++;
 		if (_mc_step >= 100000) {
 			m_sample_mode = SAMPLE_TREE;
+			m_cal_en_constraints = true;
 		}
 	}
 
@@ -476,6 +480,8 @@ namespace jian {
 
 	MCBase::space_val_t &MCBase::space_val(int i) {
 		item_t &a = item(i);
+		std::cout << a << std::endl;
+		std::cout << space_index(a[0]) << ' ' << space_index(a[1]) << ' ' << space_index(a[2]) << std::endl;
 		return m_space[space_index(a[0])][space_index(a[1])][space_index(a[2])];
 	}
 

@@ -95,6 +95,7 @@ namespace jian {
 		};
 
 		sample_mode_t m_sample_mode;
+		bool m_cal_en_constraints;
 		space_t m_space;
 		item_space_t m_item_space;
 		int m_box = 3;

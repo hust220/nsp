@@ -6,6 +6,7 @@ namespace jian {
 	void DHMC::init(const Par &par) {
 		MCSM::init(par);
 
+		m_set_mvel_pk = false;
 		m_pk_ahead = par.has("pk_ahead");
 		m_sample_frag = par.has("frag");
 		m_sample_all_res = par.has("sample_all_res");
@@ -18,21 +19,21 @@ namespace jian {
 		LOG << "# Transform bps to constraints..." << std::endl;
 		bps_to_constraints();
 
-		if (m_pk_ahead) {
-			// no operation
-		}
-		else if (m_sample_all_res) {
-			for (auto && c : _ss) {
-				c = '.';
-			}
-		}
-		else {
-			for (auto && c : _ss) {
-				if (c != '.' && c != '(' && c != ')') {
-					c = '.';
-				}
-			}
-		}
+		//if (m_pk_ahead) {
+		//	// no operation
+		//}
+		//else if (m_sample_all_res) {
+		//	for (auto && c : _ss) {
+		//		c = '.';
+		//	}
+		//}
+		//else {
+		//	for (auto && c : _ss) {
+		//		if (c != '.' && c != '(' && c != ')') {
+		//			c = '.';
+		//		}
+		//	}
+		//}
 
 		LOG << "# Set 2D trees" << std::endl;
 		set_trees();
@@ -333,8 +334,16 @@ namespace jian {
 			);
 		};
 
-		for (auto it = m_trees.begin(); it != m_trees.end(); it++) {
-			set_res_module_types_ss((*it)->head(), it == m_trees.begin());
+		if (m_sample_all_res) {
+			// pass
+		}
+		else if (m_set_mvel_pk) {
+			for (auto it = m_trees.begin(); it != m_trees.end(); it++) {
+				set_res_module_types_ss((*it)->head(), it == m_trees.begin());
+			}
+		}
+		else {
+			set_res_module_types_ss(m_trees.front()->head(), true);
 		}
 
 		MvEl::merge(m_mvels);

@@ -135,30 +135,33 @@ namespace jian {
 
 	void MCSM::mc_energy_constraints(en_t &e, bool is_total) {
 		double d, k;
-		k = _mc_constraints_weight / _constraints.contacts.size();
-		for (auto && c : _constraints.contacts) {
-			if (is_total || is_selected(c.key[0]) ^ is_selected(c.key[1])) {
-				d = geom::distance(_pred_chain[c.key[0]][0], _pred_chain[c.key[1]][0]);
-				if (d < 17) {
-					e.cons += -100.0 * k;
-				}
-				else {
-					e.cons += square(d - 17) * k;
+
+		if (m_cal_en_constraints) {
+			k = _mc_constraints_weight / _constraints.contacts.size();
+			for (auto && c : _constraints.contacts) {
+				if (is_total || is_selected(c.key[0]) ^ is_selected(c.key[1])) {
+					d = geom::distance(_pred_chain[c.key[0]][0], _pred_chain[c.key[1]][0]);
+					if (d < 17) {
+						e.cons += -100.0 * k;
+					}
+					else {
+						e.cons += square(d - 17) * k;
+					}
 				}
 			}
-		}
-		k = _mc_constraints_weight / _constraints.distances.size();
-		for (auto && c : _constraints.distances) {
-			if (is_total || is_selected(c.key[0]) ^ is_selected(c.key[1])) {
-				d = geom::distance(_pred_chain[c.key[0]][0], _pred_chain[c.key[1]][0]);
-				e.cons += square(d - c.value) * k;
+			k = _mc_constraints_weight / _constraints.distances.size();
+			for (auto && c : _constraints.distances) {
+				if (is_total || is_selected(c.key[0]) ^ is_selected(c.key[1])) {
+					d = geom::distance(_pred_chain[c.key[0]][0], _pred_chain[c.key[1]][0]);
+					e.cons += square(d - c.value) * k;
+				}
 			}
-		}
-		k = _mc_constraints_weight / m_distance_constraints.size();
-		for (auto && c : m_distance_constraints) {
-			if (is_total || is_selected(c.atom1.n_res) ^ is_selected(c.atom2.n_res)) {
-				d = geom::distance(_pred_chain[c.atom1.n_res][c.atom1.n_atom], _pred_chain[c.atom2.n_res][c.atom2.n_atom]);
-				e.cons += (d < c.min ? square(d - c.min) : (d > c.max ? square(d - c.max) : 0));
+			k = _mc_constraints_weight / m_distance_constraints.size();
+			for (auto && c : m_distance_constraints) {
+				if (is_total || is_selected(c.atom1.n_res) ^ is_selected(c.atom2.n_res)) {
+					d = geom::distance(_pred_chain[c.atom1.n_res][c.atom1.n_atom], _pred_chain[c.atom2.n_res][c.atom2.n_atom]);
+					e.cons += (d < c.min ? square(d - c.min) : (d > c.max ? square(d - c.max) : 0));
+				}
 			}
 		}
 	}
