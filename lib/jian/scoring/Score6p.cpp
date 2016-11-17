@@ -17,6 +17,10 @@ namespace jian {
 			d = geom::distance(c[beg][1], c[beg + 1][0]);
 			e += square(d - m_bond_len_std[1]);
 		}
+		//if (beg + 2 < c.size()) {
+		//	d = geom::distance(c[beg][0], c[beg + 2][0]);
+		//	e += square(d - m_bond_len_std[2]);
+		//}
 		return e;
 	}
 
@@ -39,13 +43,13 @@ namespace jian {
 			d = geom::dihedral(c[beg][0], c[beg + 1][0], c[beg + 2][0], c[beg + 3][0]);
 			e += square(std::sin(0.5*(d - m_bond_dihedral_std[0])));
 		}
-		if (beg + 2 < c.size()) {
-			d = geom::dihedral(c[beg][1], c[beg + 1][0], c[beg + 1][1], c[beg + 2][0]);
-			e += square(std::sin(0.5*(d - m_bond_dihedral_std[2])));
-		}
+		//if (beg + 2 < c.size()) {
+		//	d = geom::dihedral(c[beg][1], c[beg + 1][0], c[beg + 1][1], c[beg + 2][0]);
+		//	e += square(std::sin(0.5*(d - m_bond_dihedral_std[2])));
+		//}
 		if (beg + 1 < c.size()) {
-			d = geom::dihedral(c[beg][0], c[beg][1], c[beg + 1][0], c[beg + 1][1]);
-			e += square(std::sin(0.5*(d - m_bond_dihedral_std[1])));
+			d = geom::dihedral(c[beg][1], c[beg][0], c[beg + 1][0], c[beg + 1][1]);
+			e += 0.2 * square(std::sin(0.5*(d - m_bond_dihedral_std[3])));
 		}
 		return e;
 	}

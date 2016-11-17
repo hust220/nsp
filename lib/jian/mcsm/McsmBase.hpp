@@ -76,6 +76,16 @@ namespace jian {
 			}) != range.end();
 		}
 
+		bool minmax_has(int n) const {
+			int min = 99999;
+			int max = -1;
+			for (auto && frag : range) {
+				if (min > frag[0]) min = frag[0];
+				if (max < frag[1]) max = frag[1];
+			}
+			return min <= n && n <= max;
+		}
+
 		static void merge(std::deque<MvEl *> &dq);
 	};
 
@@ -109,6 +119,7 @@ namespace jian {
 		std::vector<int> m_brk_pts;
 		std::string m_par_file;
 		MolWriter m_writer;
+		val_t m_max_angle;
 
 		std::deque<MvEl *> m_mvels;
 		std::vector<MvEl *> m_base_mvels;

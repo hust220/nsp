@@ -173,6 +173,7 @@ namespace jian {
 		m_selected_mvel = NULL;
 		m_sample_mode = SAMPLE_SSE;
 		m_cal_en_constraints = false;
+		m_max_angle = PI * 0.3;
 
 		LOG << "# Set the file of trajectory..." << std::endl;
 		std::ostringstream stream;
@@ -316,24 +317,28 @@ namespace jian {
 			[this]() {
 				int min = m_selected_mvel->min();
 				int max = m_selected_mvel->max();
-				if (max + 1 < _seq.size()) {
-					geom::RotateAlong<double> rotate_along(_pred_chain[min][0], _pred_chain[max+1][0], PI * 0.1 * (rand() - 0.5));
+				if (min == 0 && max == _seq.size() - 1) {
+					return;
+				}
+				else if (min == 0 || max == _seq.size() - 1) {
+					int t = (min == 0 ? max : min);
+					int index = int(rand() * 3);
+					double dih = (rand() - 0.5) * m_max_angle;
+					auto &&rot = geom::rot_mat(index, dih);
+					Vec origin(3);
+					for (int i = 0; i < 3; i++) origin[i] = _pred_chain[t][0][i];
 					for (int i = min; i <= max; i++) {
 						for (auto && atom : _pred_chain[i]) {
-							rotate_along(atom);
+							geom::rotate(atom, origin, rot);
 						}
 						space_update_item(i);
 					}
 				}
 				else {
-					int index = int(rand() * 3);
-					double dih = (rand() - 0.5) * PI * 0.1;
-					auto &&rot = geom::rot_mat(index, dih);
-					Vec origin(3);
-					for (int i = 0; i < 3; i++) origin[i] = _pred_chain[min][0][i];
+					geom::RotateAlong<double> rotate_along(_pred_chain[min][0], _pred_chain[max + 1][0], m_max_angle * (rand() - 0.5));
 					for (int i = min; i <= max; i++) {
 						for (auto && atom : _pred_chain[i]) {
-							geom::rotate(atom, origin, rot);
+							rotate_along(atom);
 						}
 						space_update_item(i);
 					}
@@ -345,7 +350,7 @@ namespace jian {
 				for (int i = 0; i < _seq.size(); i++) {
 					if (is_selected(i)) {
 						auto axis = get_base_axis(_pred_chain[i]);
-						geom::RotateAlong<double> rotate_along(axis[0], axis[1], PI * 0.1 * (rand() - 0.5));
+						geom::RotateAlong<double> rotate_along(axis[0], axis[1], m_max_angle * (rand() - 0.5));
 						for (int j = 3; j < 6; j++) {
 							rotate_along(_pred_chain[i][j]);
 						}
@@ -370,7 +375,7 @@ namespace jian {
 			// rotate fixed in P
 			[this]() {
 				int index = int(rand() * 3);
-				double dih = (rand() - 0.5) * PI * 0.1;
+				double dih = (rand() - 0.5) * m_max_angle;
 				auto &&rot = geom::rot_mat(index, dih);
 				auto &&origin = rotating_center();
 				for (int i = 0; i < _seq.size(); i++) {
@@ -412,16 +417,6 @@ namespace jian {
 	}
 
 	void MCBase::mc_back() {
-		if (m_sample_mode == SAMPLE_TREE) {
-			for (int i = m_selected_mvel->min(); i <= m_selected_mvel->max(); i++) {
-				for (auto && atom : _pred_chain[i]) {
-					atom = _moved_atoms.front();
-					_moved_atoms.pop_front();
-				}
-				space_update_item(i);
-			}
-		}
-		else if (m_sample_mode == SAMPLE_SSE) {
 			for (int i = 0; i < _seq.size(); i++) {
 				if (is_selected(i)) {
 					for (auto && atom : _pred_chain[i]) {
@@ -431,23 +426,11 @@ namespace jian {
 					space_update_item(i);
 				}
 			}
-		}
-		else {
-			throw "jian::MCBase::mc_back error!";
-		}
 	}
 
 	void MCBase::backup() {
 		_moved_atoms.clear();
 
-		if (m_sample_mode == SAMPLE_TREE) {
-			for (int i = m_selected_mvel->min(); i <= m_selected_mvel->max(); i++) {
-				for (auto && atom : _pred_chain[i]) {
-					_moved_atoms.push_back(atom);
-				}
-			}
-		}
-		else if (m_sample_mode == SAMPLE_SSE) {
 			for (int i = 0; i < _seq.size(); i++) {
 				if (is_selected(i)) {
 					for (auto && atom : _pred_chain[i]) {
@@ -455,10 +438,6 @@ namespace jian {
 					}
 				}
 			}
-		}
-		else {
-			throw "jian::MCBase::backup error!";
-		}
 	}
 
 	void MCBase::init_space() {

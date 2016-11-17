@@ -308,76 +308,101 @@ namespace jian {
 	};
 
 	void DHMC::set_mvels() {
-		int i;
-		m_is_free.resize(_seq.size(), true);
+		//int i;
+		//m_is_free.resize(_seq.size(), true);
 
-		auto add_el = [this](MvEl *el) {
-			for (auto && frag : el->range) {
-				for (int i = frag[0]; i <= frag[1]; i++) {
-					this->m_is_free[i] = false;
+		//auto add_el = [this](MvEl *el) {
+		//	for (auto && frag : el->range) {
+		//		for (int i = frag[0]; i <= frag[1]; i++) {
+		//			this->m_is_free[i] = false;
+		//		}
+		//	}
+		//	m_mvels.push_back(el);
+		//};
+
+		//auto set_res_module_types_ss = [&](loop *l, bool is_first) {
+		//	LOOP_TRAVERSE(l,
+		//		if (m_not_sample_hp && is_first && is_hp(L)) {
+		//			add_el(new MvEl(L, MvEl::MVEL_HP));
+		//		}
+		//		else if (m_not_sample_il && is_first && is_il(L)) {
+		//			add_el(new MvEl(L, MvEl::MVEL_IL));
+		//		}
+		//		else if (L->has_helix()) {
+		//			add_el(new MvEl(L->s));
+		//		}
+		//	);
+		//};
+
+		//if (m_sample_all_res) {
+		//	// pass
+		//}
+		//else if (m_set_mvel_pk) {
+		//	for (auto it = m_trees.begin(); it != m_trees.end(); it++) {
+		//		set_res_module_types_ss((*it)->head(), it == m_trees.begin());
+		//	}
+		//}
+		//else {
+		//	set_res_module_types_ss(m_trees.front()->head(), true);
+		//}
+
+		//MvEl::merge(m_mvels);
+
+		//int max_extend_len = 5;
+		//for (auto && el : m_mvels) {
+		//	int min = el->min();
+		//	int max = el->max();
+		//	for (int i = 1; i <= max_extend_len; i++) {
+		//		if (min - i >= 0 && m_is_free[min - i]) {
+		//			m_mvels.push_back(new MvEl(min - i, max, MvEl::MVEL_FG));
+		//		}
+		//		else {
+		//			break;
+		//		}
+		//	}
+		//	for (int i = 1; i <= max_extend_len; i++) {
+		//		if (max + i < _seq.size() && m_is_free[max + i]) {
+		//			m_mvels.push_back(new MvEl(min, max + i, MvEl::MVEL_FG));
+		//		}
+		//		else {
+		//			break;
+		//		}
+		//	}
+		//}
+
+		//for (int frag_size = 1; frag_size <= 10; frag_size++) {
+		//	std::vector<int> w(frag_size);
+		//	for (i = 0; i + frag_size - 1 < _seq.size(); i++) {
+		//		std::iota(w.begin(), w.end(), i);
+		//		if (std::all_of(w.begin(), w.end(), [this](int i) {
+		//			return this->m_is_free[i];
+		//		})) {
+		//			m_mvels.push_back(new MvEl(i, i + frag_size - 1, MvEl::MVEL_FG));
+		//		}
+		//	}
+		//}
+
+		auto is_paired = [this](int n) {return _ss[n] == '(' || _ss[n] == ')'; };
+		auto foo = [this, &is_paired](int i, int j) {
+			if (is_paired(i) && is_paired(j) &&
+				i > 0 && j < _seq.size() - 1 && is_paired(i - 1) && is_paired(j + 1)) return false;
+			int s = 0;
+			for (int n = i; n <= j; n++) {
+				if (_ss[n] == '(') {
+					s++;
+				}
+				else if (_ss[n] == ')') {
+					s--;
+					if (s < 0) return false;
 				}
 			}
-			m_mvels.push_back(el);
+			return s == 0;
 		};
 
-		auto set_res_module_types_ss = [&](loop *l, bool is_first) {
-			LOOP_TRAVERSE(l,
-				if (m_not_sample_hp && is_first && is_hp(L)) {
-					add_el(new MvEl(L, MvEl::MVEL_HP));
-				}
-				else if (m_not_sample_il && is_first && is_il(L)) {
-					add_el(new MvEl(L, MvEl::MVEL_IL));
-				}
-				else if (L->has_helix()) {
-					add_el(new MvEl(L->s));
-				}
-			);
-		};
-
-		if (m_sample_all_res) {
-			// pass
-		}
-		else if (m_set_mvel_pk) {
-			for (auto it = m_trees.begin(); it != m_trees.end(); it++) {
-				set_res_module_types_ss((*it)->head(), it == m_trees.begin());
-			}
-		}
-		else {
-			set_res_module_types_ss(m_trees.front()->head(), true);
-		}
-
-		MvEl::merge(m_mvels);
-
-		int max_extend_len = 5;
-		for (auto && el : m_mvels) {
-			int min = el->min();
-			int max = el->max();
-			for (int i = 1; i <= max_extend_len; i++) {
-				if (min - i >= 0 && m_is_free[min - i]) {
-					m_mvels.push_back(new MvEl(min - i, max, MvEl::MVEL_FG));
-				}
-				else {
-					break;
-				}
-			}
-			for (int i = 1; i <= max_extend_len; i++) {
-				if (max + i < _seq.size() && m_is_free[max + i]) {
-					m_mvels.push_back(new MvEl(min, max + i, MvEl::MVEL_FG));
-				}
-				else {
-					break;
-				}
-			}
-		}
-
-		for (int frag_size : {1, 2, 3}) {
-			std::vector<int> w(frag_size);
-			for (i = 0; i + frag_size - 1 < _seq.size(); i++) {
-				std::iota(w.begin(), w.end(), i);
-				if (std::all_of(w.begin(), w.end(), [this](int i) {
-					return this->m_is_free[i];
-				})) {
-					m_mvels.push_back(new MvEl(i, i + frag_size - 1, MvEl::MVEL_FG));
+		for (int i = 0; i < _seq.size(); i++) {
+			for (int j = i; j < _seq.size(); j++) {
+				if (foo(i, j)) {
+					m_mvels.push_back(new MvEl(i, j, MvEl::MVEL_FG));
 				}
 			}
 		}
@@ -496,7 +521,7 @@ namespace jian {
 	}
 
 	bool DHMC::is_selected(const int &i) const {
-		return m_selected_mvel->has(i);
+		return (m_sample_mode == SAMPLE_SSE ? m_selected_mvel->has(i) : m_selected_mvel->minmax_has(i));
 	}
 
 	Vec DHMC::rotating_center() const {
