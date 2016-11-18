@@ -79,11 +79,11 @@ namespace jian {
 							auto p = std::minmax(n, t);
 							e.crash += _mc_crash_weight * m_scorer->en_crash(_pred_chain[p.first], _pred_chain[p.second]);
 							m_scorer->en_bp(_pred_chain[p.first], _pred_chain[p.second]);
-							e.pairing += _mc_pairing_weight * m_scorer->m_en_pairing * (m_bps[p.first] == p.second ? 10 : 1);
-							//e.wc += _mc_wc_weight * m_scorer->m_en_wc * (m_bps[p.first] == p.second ? 10 : 1);
-							//e.nwc += _mc_nwc_weight * m_scorer->m_en_nwc;
+							e.pairing += _mc_pairing_weight * m_scorer->m_en_pairing/* * (m_bps[p.first] == p.second ? 10 : 1)*/;
 							e.stacking += _mc_stacking_weight * m_scorer->m_en_stacking;
 							e.vdw += _mc_vdw_weight * m_scorer->m_en_vdw;
+							//e.wc += _mc_wc_weight * m_scorer->m_en_wc * (m_bps[p.first] == p.second ? 10 : 1);
+							//e.nwc += _mc_nwc_weight * m_scorer->m_en_nwc;
 						}
 					}
 				}
@@ -98,8 +98,8 @@ namespace jian {
 			//if (true) {
 				e.len += _mc_bond_length_weight * m_scorer->en_len(_pred_chain, n);
 				//e.crash += _mc_crash_weight * m_scorer->en_crash(_pred_chain[n], _pred_chain[n + 1]);
-				m_scorer->en_bp(_pred_chain[n], _pred_chain[n + 1]);
-				e.stacking += _mc_stacking_weight * m_scorer->m_en_stacking;
+				//m_scorer->en_bp(_pred_chain[n], _pred_chain[n + 1]);
+				//e.stacking += _mc_stacking_weight * m_scorer->m_en_stacking;
 			}
 		}
 	}

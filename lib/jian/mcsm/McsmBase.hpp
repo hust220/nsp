@@ -109,7 +109,7 @@ namespace jian {
 		space_t m_space;
 		item_space_t m_item_space;
 		int m_box = 3;
-		double m_box_size = 6;
+		double m_box_size = 10;
 		std::deque<Atom> _moved_atoms;
 		std::string m_traj;
 		int mc_num_writing = 1;

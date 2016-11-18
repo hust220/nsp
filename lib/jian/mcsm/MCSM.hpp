@@ -6,6 +6,7 @@
 
 #define MEM_EN_MCPSB len, ang, dih, crash, cons, vdw, stacking, pairing
 #define DEF_MEM_EN_MCPSB(a) double a = 0;
+#define INIT_MEM_EN_MCPSB(a) a = 0;
 #define SUM_MEM_EN_MCPSB(a) + a
 #define PRINT_MEM_EN_MCPSB(a) << a << PP_STRING3((a)) << ' '
 
@@ -14,6 +15,9 @@ namespace jian {
 	public:
 		struct en_t {
 			JN_MAP(DEF_MEM_EN_MCPSB, MEM_EN_MCPSB);
+			en_t() {
+				JN_MAP(INIT_MEM_EN_MCPSB, MEM_EN_MCPSB);
+			}
 			double sum() const { return 0 JN_MAP(SUM_MEM_EN_MCPSB, MEM_EN_MCPSB); }
 			void print() const { LOG << sum() << "(total) " JN_MAP(PRINT_MEM_EN_MCPSB, MEM_EN_MCPSB) << std::endl; }
 		};

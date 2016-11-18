@@ -454,7 +454,7 @@ namespace jian {
 	}
 
 	MCBase::item_t &MCBase::item(int i) {
-		return _pred_chain[i][0];
+		return _pred_chain[i][2];
 	}
 
 	MCBase::space_val_t &MCBase::space_val(int i) {
