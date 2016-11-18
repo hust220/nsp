@@ -310,6 +310,7 @@ namespace jian {
 		int t1, t2;
 		const Residue *p1, *p2;
 		Residue *temp1, *temp2;
+		double d;
 
 		auto bar = [this](auto && f, auto && w, int t1, int t2, auto && v, int l, int m, int n) -> double {
 			if (std::fabs(v[0]) < l && std::fabs(v[1]) < m && std::fabs(v[2]) < n) {
@@ -356,7 +357,8 @@ namespace jian {
 		m_en_stacking += bar(m_freqs_st53, m_weights_st53, t1, t2, parbp.o21_, 5, 5, 5);
 		m_en_stacking += bar(m_freqs_st35, m_weights_st35, t2, t1, parbp.o12_, 5, 5, 5);
 
-		m_en_vdw += square(geom::distance(p1->at(0), p2->at(0)) - 15);
+		d = geom::distance(p1->at(0), p2->at(0));
+		if (d < 20 && d > 10) m_en_vdw += -25 + square(d - 15);
 		//for (i = 0; i < m_res_size; i++) {
 		//	if (!in_base(i)) continue;
 		//	for (j = 0; j < m_res_size; j++) {
