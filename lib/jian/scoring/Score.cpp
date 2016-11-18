@@ -318,8 +318,9 @@ namespace jian {
 					return 0.0;
 				}
 				else {
-					double s = -std::log(d) * w[t1][t2] - 2;
-					return (s > 0 ? 0 : s);
+					double s = -std::log(d) /** w[t1][t2]*/;
+					return (s > 18 ? 0 : w[t1][t2] * (s - 18));
+					//return s;
 				}
 			}
 			else {
@@ -347,13 +348,13 @@ namespace jian {
 		m_en_vdw = 0;
 		m_en_wc = 0;
 		m_en_nwc = 0;
-		ParBp parbp(r1, r2);
+		ParBp parbp(*p1, *p2);
 		//m_en_pairing += foo(t1, t2, parbp.o21_) + foo(t2, t1, parbp.o12_);
-		m_en_pairing += bar(m_freqs_bp, m_weights_bp, t1, t2, parbp.o21_, 8, 8, 2);
-		m_en_pairing += bar(m_freqs_bp, m_weights_bp, t2, t1, parbp.o12_, 8, 8, 2);
+		m_en_pairing += bar(m_freqs_bp, m_weights_bp, t1, t2, parbp.o21_, 10, 10, 2);
+		m_en_pairing += bar(m_freqs_bp, m_weights_bp, t2, t1, parbp.o12_, 10, 10, 2);
 		//if (m_en_pairing > 1.5) LOG << ">" << m_en_pairing << "\n" << parbp.o21_ << "\n" << parbp.o12_ << "\n" << std::endl;
-		m_en_stacking += bar(m_freqs_st53, m_weights_st53, t1, t2, parbp.o21_, 4, 4, 4);
-		m_en_stacking += bar(m_freqs_st35, m_weights_st35, t2, t1, parbp.o12_, 4, 4, 4);
+		m_en_stacking += bar(m_freqs_st53, m_weights_st53, t1, t2, parbp.o21_, 5, 5, 5);
+		m_en_stacking += bar(m_freqs_st35, m_weights_st35, t2, t1, parbp.o12_, 5, 5, 5);
 
 		m_en_vdw += (geom::distance(p1->at(1), p2->at(1)) < 9 ? -1 : 0);
 		//for (i = 0; i < m_res_size; i++) {
@@ -411,6 +412,19 @@ namespace jian {
 	}
 
 	void Score::print_freqs(std::ostream & stream) const {
+		auto foo = [&stream](auto && m) {
+			for (int i = 0; i < 4; i++) {
+				for (int j = 0; j < 4; j++) {
+					stream << i << ' ' << j << std::endl;
+					stream << m[i][j] << std::endl;
+				}
+			}
+		};
+
+		foo(m_freqs_bp);
+		foo(m_freqs_st53);
+		foo(m_freqs_st35);
+
 		stream << "Stacking freqs:\n" << m_freqs_stacking << std::endl;
 		stream << "Pairing freqs:\n" << m_freqs_pairing << std::endl;
 	}

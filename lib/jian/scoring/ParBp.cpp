@@ -5,7 +5,8 @@ namespace jian {
 		m_cg.reset(CG::fac_t::create("6p"));
 	}
 
-	ParBp::ParBp(const Residue &res1, const Residue &res2) : ParBp() {
+	ParBp::ParBp(const Residue &res1, const Residue &res2) {
+		m_cg.reset(CG::fac_t::create("6p"));
 		anal(res1, res2);
 	}
 
