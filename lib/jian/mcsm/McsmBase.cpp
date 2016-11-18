@@ -173,7 +173,7 @@ namespace jian {
 		m_selected_mvel = NULL;
 		m_sample_mode = SAMPLE_SSE;
 		m_cal_en_constraints = false;
-		m_max_angle = PI * 0.3;
+		m_max_angle = PI * 1.5;
 		m_box = 2;
 		m_box_size = 12;
 
