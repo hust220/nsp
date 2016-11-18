@@ -108,8 +108,8 @@ namespace jian {
 		bool m_cal_en_constraints;
 		space_t m_space;
 		item_space_t m_item_space;
-		int m_box = 3;
-		double m_box_size = 10;
+		int m_box;
+		double m_box_size;
 		std::deque<Atom> _moved_atoms;
 		std::string m_traj;
 		int mc_num_writing = 1;
