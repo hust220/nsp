@@ -151,7 +151,7 @@ namespace jian {
 			for (auto && c : m_distance_constraints) {
 				if (is_total || is_selected(c.atom1.n_res) ^ is_selected(c.atom2.n_res)) {
 					d = geom::distance(_pred_chain[c.atom1.n_res][c.atom1.n_atom], _pred_chain[c.atom2.n_res][c.atom2.n_atom]);
-					e.cons += (d < c.min ? square(d - c.min) : (d > c.max ? square(d - c.max) : 0));
+					e.cons += (d < c.min ? square(d - c.min) : (d > c.max ? square(d - c.max) : 0)) * k;
 				}
 			}
 		}

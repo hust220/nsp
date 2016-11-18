@@ -349,11 +349,11 @@ namespace jian {
 		m_en_nwc = 0;
 		ParBp parbp(r1, r2);
 		//m_en_pairing += foo(t1, t2, parbp.o21_) + foo(t2, t1, parbp.o12_);
-		m_en_pairing += bar(m_freqs_bp, m_weights_bp, t1, t2, parbp.o21_, 10, 10, 2);
-		m_en_pairing += bar(m_freqs_bp, m_weights_bp, t2, t1, parbp.o12_, 10, 10, 2);
+		m_en_pairing += bar(m_freqs_bp, m_weights_bp, t1, t2, parbp.o21_, 8, 8, 2);
+		m_en_pairing += bar(m_freqs_bp, m_weights_bp, t2, t1, parbp.o12_, 8, 8, 2);
 		//if (m_en_pairing > 1.5) LOG << ">" << m_en_pairing << "\n" << parbp.o21_ << "\n" << parbp.o12_ << "\n" << std::endl;
-		m_en_stacking += bar(m_freqs_st53, m_weights_st53, t1, t2, parbp.o21_, 5, 5, 5);
-		m_en_stacking += bar(m_freqs_st35, m_weights_st35, t2, t1, parbp.o12_, 5, 5, 5);
+		m_en_stacking += bar(m_freqs_st53, m_weights_st53, t1, t2, parbp.o21_, 4, 4, 4);
+		m_en_stacking += bar(m_freqs_st35, m_weights_st35, t2, t1, parbp.o12_, 4, 4, 4);
 
 		m_en_vdw += (geom::distance(p1->at(1), p2->at(1)) < 9 ? -1 : 0);
 		//for (i = 0; i < m_res_size; i++) {

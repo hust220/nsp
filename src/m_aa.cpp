@@ -16,17 +16,6 @@ namespace jian {
 			std::shared_ptr<CG> cg;
 			std::string content = "hi";
 
-			par.set(content, "content");
-
-			//MPI mpi;
-			//int size = mpi.size();
-			//int rank = mpi.rank();
-			//content += ":" + JN_STR(rank);
-			//mpi.send(content, (rank + 1 == size ? 0 : rank + 1));
-			//LOG << "Rank " << rank << " send '" << content << "'" << std::endl;
-			//LOG << "Rank " << rank << " received string " << mpi.recv((rank == 0 ? size - 1 : rank - 1)) << std::endl;
-			return;
-
 			list_file = par.get("l", "list");
 			//prefix = par.get("prefix");
 			cg.reset(CG::fac_t::create("6p"));
@@ -42,7 +31,14 @@ namespace jian {
 						par_bp.anal(chain[i], chain[j]);
 
 						if (par_bp.is_paired()) {
-							std::cout << i << ' ' << j << "\n" << par_bp.o21_ << std::endl;
+							std::cout
+								<< i + 1 << '-' << chain[i].name << ' '
+								<< j + 1 << '-' << chain[j].name << '\n'
+								<< "theta: " << par_bp.theta << '\n'
+								<< "o21_: \n"
+								<< par_bp.o21_ << '\n'
+								<< "o12_: \n"
+								<< par_bp.o12_ << std::endl;
 						}
 
 						//int m, n;
