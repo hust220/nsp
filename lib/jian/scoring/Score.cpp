@@ -356,7 +356,7 @@ namespace jian {
 		m_en_stacking += bar(m_freqs_st53, m_weights_st53, t1, t2, parbp.o21_, 5, 5, 5);
 		m_en_stacking += bar(m_freqs_st35, m_weights_st35, t2, t1, parbp.o12_, 5, 5, 5);
 
-		m_en_vdw += (geom::distance(p1->at(1), p2->at(1)) < 9 ? -1 : 0);
+		m_en_vdw += square(geom::distance(p1->at(0), p2->at(0)) - 15);
 		//for (i = 0; i < m_res_size; i++) {
 		//	if (!in_base(i)) continue;
 		//	for (j = 0; j < m_res_size; j++) {
