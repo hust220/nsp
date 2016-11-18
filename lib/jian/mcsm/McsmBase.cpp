@@ -175,7 +175,7 @@ namespace jian {
 		m_cal_en_constraints = false;
 		m_max_angle = PI * 0.3;
 		m_box = 2;
-		m_box_size = 6;
+		m_box_size = 12;
 
 		LOG << "# Set the file of trajectory..." << std::endl;
 		std::ostringstream stream;
@@ -207,7 +207,7 @@ namespace jian {
 	void MCBase::mc_next_step() {
 		_mc_step++;
 		if (_mc_step >= 100000) {
-			m_sample_mode = SAMPLE_TREE;
+			//m_sample_mode = SAMPLE_TREE;
 			m_cal_en_constraints = true;
 		}
 	}
@@ -398,15 +398,15 @@ namespace jian {
 		int max = m_selected_mvel->max();
 		if (m_sample_mode == SAMPLE_SSE) {
 			if (min == max) {
-				actions[2+int(2 * rand())]();
+				actions[std::vector<int>{0, 1, 2}[int(rand() * 3)]]();
 			}
 			else {
-				actions[1+int(3 * rand())]();
+				actions[std::vector<int>{0, 2}[int(rand()*2)]]();
 			}
 		}
 		else if (m_sample_mode == SAMPLE_TREE) {
 			if (min == max) {
-				actions[(rand() < 0.5 ? 0 : 1)]();
+				actions[std::vector<int>{0, 1}[int(rand() * 2)]]();
 			}
 			else {
 				actions[0]();
