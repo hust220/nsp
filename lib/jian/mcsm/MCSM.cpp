@@ -75,7 +75,7 @@ namespace jian {
 					c = space_index(it[2]) + k;
 					space_val_t &s = m_space[a][b][c];
 					for (auto && t : s) {
-						if ((is_total && t - n > 1) || (!is_total && !(is_selected(t)) && (t - n != 1 && n - t != 1))) {
+						if ((is_total && t - n > 1) || (!is_total && !is_selected(t)/* && (t - n != 1 && n - t != 1)*/)) {
 							auto p = std::minmax(n, t);
 							e.crash += _mc_crash_weight * m_scorer->en_crash(_pred_chain[p.first], _pred_chain[p.second]);
 							m_scorer->en_bp(_pred_chain[p.first], _pred_chain[p.second]);
@@ -97,7 +97,7 @@ namespace jian {
 			if (is_total || (is_selected(n) + is_selected(n + 1)) % 2 != 0) {
 			//if (true) {
 				e.len += _mc_bond_length_weight * m_scorer->en_len(_pred_chain, n);
-				e.crash += _mc_crash_weight * m_scorer->en_crash(_pred_chain[n], _pred_chain[n + 1]);
+				//e.crash += _mc_crash_weight * m_scorer->en_crash(_pred_chain[n], _pred_chain[n + 1]);
 				m_scorer->en_bp(_pred_chain[n], _pred_chain[n + 1]);
 				e.stacking += _mc_stacking_weight * m_scorer->m_en_stacking;
 			}
