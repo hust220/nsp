@@ -126,6 +126,12 @@ namespace jian {
 			"You may need to recompile nsp if you really want to use REMC!";
 #else
 		_mc_state = MC_REMC;
+		if (g_mpi->m_size == 1) {
+			_mc_tempr = _mc_lowest_tempr;
+		}
+		else {
+			_mc_tempr = _mc_lowest_tempr + g_mpi->m_rank * (_mc_highest_tempr - _mc_lowest_tempr) / (g_mpi->m_size - 1);
+		}
 		Serial serial;
 
 		auto exchange_tempr = [](auto &&tempr, auto &&en) {
