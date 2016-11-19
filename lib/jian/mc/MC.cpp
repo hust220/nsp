@@ -1,3 +1,4 @@
+#include <cassert>
 #include <algorithm>
 #include <numeric>
 #include "../utils/log.hpp"
@@ -34,7 +35,7 @@ namespace jian {
 	}
 
 	void MC::mc_run() {
-		tokenize_v v, w;
+		tokenize_v v, w, u;
 		int steps;
 
 		LOG << __FUNCTION__ << "..." << std::endl;
@@ -60,8 +61,12 @@ namespace jian {
 				}
 				else if (w[0] == "remc") {
 					steps = JN_INT(w[1]);
-					_mc_lowest_tempr = JN_DBL(w[2]);
-					_mc_highest_tempr = JN_DBL(w[3]);
+					tokenize(w[2], u, "-");
+					if (u.size() != 2) {
+						throw "Illegal settings of REMC temperature!";
+					}
+					_mc_lowest_tempr = JN_DBL(u[0]);
+					_mc_highest_tempr = JN_DBL(u[1]);
 					mc_remc(steps);
 				}
 				else {
