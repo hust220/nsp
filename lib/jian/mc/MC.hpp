@@ -46,6 +46,7 @@ namespace jian {
 			int local_succ_num = 0;
 			_mc_en = mc_total_energy();
 			_mc_step = 0;
+			_mc_local_succ_rate = 0;
 			mc_write();
 			for (; _mc_step < steps;) {
 				mc_select();

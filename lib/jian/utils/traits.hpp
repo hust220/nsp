@@ -4,6 +4,9 @@
 
 namespace jian {
 
+#define JN_ENABLE(t) std::enable_if_t<t, int> = 42
+#define JN_IS_SAME(A, B) std::is_same<A, B>::value
+
 template<typename T, typename U>
 struct is_decay_same {
     enum {value = std::is_same<std::decay_t<T>, std::decay_t<U>>::value};

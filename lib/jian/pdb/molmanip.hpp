@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Molecule.hpp"
+#include "../utils/traits.hpp"
 
 namespace jian {
 
@@ -15,8 +16,6 @@ namespace jian {
 #define JN_GE_CHAIN(T)    JN_IS_CHAIN(T)    || JN_GE_MODEL(T)
 #define JN_GE_MODEL(T)    JN_IS_MODEL(T)    || JN_GE_MOLECULE(T)
 #define JN_GE_MOLECULE(T) JN_IS_MOLECULE(T)
-
-#define JN_ENABLE(t) std::enable_if_t<t, int> = 42
 
 	// seq
 	template<typename T, JN_ENABLE(JN_GE_CHAIN(T))>

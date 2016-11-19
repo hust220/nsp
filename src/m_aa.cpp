@@ -3,6 +3,7 @@
 #include <jian/cg.hpp>
 #include <jian/scoring/ParBp.hpp>
 #include <jian/geom.hpp>
+#include <jian/utils/Serial.hpp>
 //#include <jian/mpi.hpp>
 #include "nsp.hpp"
 
@@ -15,6 +16,19 @@ namespace jian {
 			int l, n, i, j;
 			std::shared_ptr<CG> cg;
 			std::string content = "hi";
+
+			Serial serial;
+			int a = 1;
+			double b = 3.5;
+			std::string c = "hi";
+			LOG << "stringify" << std::endl;
+			std::string s = serial.stringify(a, b);
+			LOG << "parse" << std::endl;
+			short e, f;
+			serial.parse(s, e, f, b, c);
+			LOG << e << ' ' << f << ' ' << c << std::endl;
+
+			return;
 
 			list_file = par.get("l", "list");
 			//prefix = par.get("prefix");

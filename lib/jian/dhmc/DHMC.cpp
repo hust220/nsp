@@ -525,7 +525,7 @@ namespace jian {
 			return false;
 		}
 		else if (m_sample_mode == SAMPLE_SSE) {
-			return  m_selected_mvel->has(i);
+			return m_selected_mvel->has(i);
 		}
 		else if (m_sample_mode == SAMPLE_TREE) {
 			return m_selected_mvel->minmax_has(i);
