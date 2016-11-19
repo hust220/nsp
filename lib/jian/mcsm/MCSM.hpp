@@ -49,7 +49,7 @@ namespace jian {
 
 		virtual double mc_partial_energy();
 
-		void mc_total_energy(en_t &e);
+		virtual double mc_total_energy();
 
 		void mc_energy_crash(en_t &e, bool is_total);
 		void mc_energy_bond(en_t &e, bool is_total);
@@ -59,7 +59,7 @@ namespace jian {
 
 		virtual double dist_two_res(const Residue &r1, const Residue &r2) const;
 
-		double total_energy();
+		void set_total_energy(en_t &e);
 
 		virtual void write_en();
 

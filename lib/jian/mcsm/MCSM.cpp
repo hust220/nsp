@@ -54,7 +54,7 @@ namespace jian {
 		return e.sum();
 	}
 
-	void MCSM::mc_total_energy(en_t &e) {
+	void MCSM::set_total_energy(en_t &e) {
 		mc_energy_crash(e, true);
 		mc_energy_bond(e, true);
 		mc_energy_angle(e, true);
@@ -62,12 +62,16 @@ namespace jian {
 		mc_energy_constraints(e, true);
 	}
 
+	double MCSM::mc_total_energy() {
+		en_t e;
+		set_total_energy(e);
+		return e.sum();
+	}
+
 	void MCSM::mc_energy_crash(en_t &e, bool is_total) {
 		int a, b, c, i, j, k, n;
-		if (m_selected_mvel == NULL) return;
 		for (n = 0; n < _seq.size(); n++) {
 			if (is_total || is_selected(n)) {
-			//if (is_total || is_selected(n)) {
 				for (i = -m_box; i <= m_box; i++) for (j = -m_box; j <= m_box; j++) for (k = -m_box; k <= m_box; k++) {
 					item_t &it = item(n);
 					a = space_index(it[0]) + i;
@@ -75,15 +79,13 @@ namespace jian {
 					c = space_index(it[2]) + k;
 					space_val_t &s = m_space[a][b][c];
 					for (auto && t : s) {
-						if ((is_total && t - n > 1) || (!is_total && !is_selected(t)/* && (t - n != 1 && n - t != 1)*/)) {
+						if ((is_total && t - n > 1) || (!is_total && !is_selected(t))) {
 							auto p = std::minmax(n, t);
 							e.crash += _mc_crash_weight * m_scorer->en_crash(_pred_chain[p.first], _pred_chain[p.second]);
 							m_scorer->en_bp(_pred_chain[p.first], _pred_chain[p.second]);
 							e.pairing += _mc_pairing_weight * m_scorer->m_en_pairing/* * (m_bps[p.first] == p.second ? 10 : 1)*/;
 							e.stacking += _mc_stacking_weight * m_scorer->m_en_stacking;
 							e.vdw += _mc_vdw_weight * m_scorer->m_en_vdw;
-							//e.wc += _mc_wc_weight * m_scorer->m_en_wc * (m_bps[p.first] == p.second ? 10 : 1);
-							//e.nwc += _mc_nwc_weight * m_scorer->m_en_nwc;
 						}
 					}
 				}
@@ -92,21 +94,15 @@ namespace jian {
 	}
 
 	void MCSM::mc_energy_bond(en_t &e, bool is_total) {
-		if (m_selected_mvel == NULL) return;
 		for (auto && n : m_continuous_pts) {
 			if (is_total || (is_selected(n) + is_selected(n + 1)) % 2 != 0) {
-			//if (true) {
 				e.len += _mc_bond_length_weight * m_scorer->en_len(_pred_chain, n);
-				//e.crash += _mc_crash_weight * m_scorer->en_crash(_pred_chain[n], _pred_chain[n + 1]);
-				//m_scorer->en_bp(_pred_chain[n], _pred_chain[n + 1]);
-				//e.stacking += _mc_stacking_weight * m_scorer->m_en_stacking;
 			}
 		}
 	}
 
 	void MCSM::mc_energy_angle(en_t &e, bool is_total) {
 		int len = _seq.size();
-		if (m_selected_mvel == NULL) return;
 		for (auto && i : m_ang_pts) {
 			if (is_total || (is_selected(i) + is_selected(i + 1) + is_selected(i + 2)) % 3 != 0) {
 				e.ang += _mc_bond_angle_weight * m_scorer->en_ang(_pred_chain, i);
@@ -116,7 +112,6 @@ namespace jian {
 
 	void MCSM::mc_energy_dihedral(en_t &e, bool is_total) {
 		int len = _seq.size();
-		if (m_selected_mvel == NULL) return;
 		for (auto && i : m_dih_pts) {
 			if (is_total || (is_selected(i) + is_selected(i + 1) + is_selected(i + 2) + is_selected(i + 3)) % 4 != 0) {
 				e.dih += _mc_bond_dihedral_weight * m_scorer->en_dih(_pred_chain, i);
@@ -161,16 +156,9 @@ namespace jian {
 		return geom::distance(r1[0], r2[0]);
 	}
 
-	double MCSM::total_energy() {
-		en_t e;
-		mc_total_energy(e);
-		e.print();
-		return 0;
-	}
-
 	void MCSM::write_en() {
 		en_t e;
-		mc_total_energy(e);
+		set_total_energy(e);
 		LOG << _mc_step + 1 << ": " << e.sum() << "(total) "
 			JN_MAP(PRINT_MEM_MCPSB, MEM_EN_MCPSB)
 			<< _mc_tempr << "(tempr) "

@@ -521,7 +521,18 @@ namespace jian {
 	}
 
 	bool DHMC::is_selected(const int &i) const {
-		return (m_sample_mode == SAMPLE_SSE ? m_selected_mvel->has(i) : m_selected_mvel->minmax_has(i));
+		if (m_selected_mvel == NULL) {
+			return false;
+		}
+		else if (m_sample_mode == SAMPLE_SSE) {
+			return  m_selected_mvel->has(i);
+		}
+		else if (m_sample_mode == SAMPLE_TREE) {
+			return m_selected_mvel->minmax_has(i);
+		}
+		else {
+			throw "jian::DHMC::is_selected error! Illegal sample mode!";
+		}
 	}
 
 	Vec DHMC::rotating_center() const {

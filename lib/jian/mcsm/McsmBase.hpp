@@ -177,19 +177,27 @@ namespace jian {
 		virtual void mc_next_step();
 
 		virtual double mc_partial_energy() = 0;
+
+		virtual double mc_total_energy() = 0;
+
 		virtual double dist_two_res(const Residue &, const Residue &) const = 0;
+
 		virtual void write_en() = 0;
 
 		virtual void before_run();
+
 		virtual void finish_run();
 
 		virtual std::string file_parameters() const;
 
 		virtual void save_fixed_ranges();
+
 		virtual void restore_fixed_ranges();
 
 		virtual void mc_select() = 0;
+
 		virtual bool is_selected(const int &i) const = 0;
+
 		virtual Vec rotating_center() const = 0;
 
 	};
