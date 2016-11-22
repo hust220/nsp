@@ -10,6 +10,38 @@
 namespace jian {
 	namespace {
 
+		REGISTER_NSP_COMPONENT(test_aa) {
+			int n, l, i, j, k;
+			Chain chain;
+			std::shared_ptr<CG> cg;
+			std::string list_file;
+
+			list_file = par.get("l", "list");
+			cg.reset(CG::fac_t::create("6p"));
+
+			n = 0;
+			ParBp par_bp;
+			BEGIN_READ_FILE(list_file, " ") {
+				chain_read_model(chain, F[0]);
+				chain = cg->to_cg(chain);
+				l = chain.size();
+				for (i = 0; i < l; i++) {
+					for (j = i + 1; j < l; j++) {
+						par_bp.anal(chain[i], chain[j]);
+						if (par_bp.is_paired()) {
+							std::cout << chain[i].name << ' ' << chain[j].name << ' ';
+							for (k = 0; k < 6; k++) {
+								std::cout
+									<< geom::distance(chain[i][k], chain[j][k]) << ' ';
+							}
+							std::cout << std::endl;
+						}
+						n++;
+					}
+				}
+			} END_READ_FILE;
+		}
+
 		REGISTER_NSP_COMPONENT(aa) {
 			std::string list_file, prefix;
 			Chain chain;

@@ -136,14 +136,20 @@ namespace jian {
 
 	void DHMC::bps_to_constraints() {
 		int i, j;
+		std::vector<val_t> dists{ 18.2, 15.2, 10.7, 4.2, 6.3, 6.4 };
 
-		auto foo = [this](int n1, int n2) {
-			int t1 = pdb::res_type(_pred_chain[n1].name);
-			int t2 = pdb::res_type(_pred_chain[n2].name);
-			int a = ((t1 == 0 || t1 == 2) ? 5 : 4);
-			int b = ((t2 == 0 || t2 == 2) ? 5 : 4);
-			m_distance_constraints.push_back({ { n1, 3 },{ n2, 3 }, 3.9, 4.5 });
-			m_distance_constraints.push_back({ { n1, a },{ n2, b }, 3.9, 4.5 });
+		auto foo = [this, &dists](int n1, int n2) {
+			//int t1 = pdb::res_type(_pred_chain[n1].name);
+			//int t2 = pdb::res_type(_pred_chain[n2].name);
+
+			for (int i = 0; i < 6; i++) {
+				m_distance_constraints.push_back({ { n1, i },{ n2, i }, dists[i], dists[i] });
+			}
+
+			//int a = ((t1 == 0 || t1 == 2) ? 5 : 4);
+			//int b = ((t2 == 0 || t2 == 2) ? 5 : 4);
+			//m_distance_constraints.push_back({ { n1, 3 },{ n2, 3 }, 3.9, 4.5 });
+			//m_distance_constraints.push_back({ { n1, a },{ n2, b }, 3.9, 4.5 });
 		};
 
 		for (i = 0; i < _seq.size(); i++) {
