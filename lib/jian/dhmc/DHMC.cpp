@@ -390,8 +390,10 @@ namespace jian {
 
 		auto is_paired = [this](int n) {return _ss[n] == '(' || _ss[n] == ')'; };
 		auto foo = [this, &is_paired](int i, int j) {
-			if (is_paired(i) && is_paired(j) &&
-				i > 0 && j < _seq.size() - 1 && is_paired(i - 1) && is_paired(j + 1)) return false;
+			//if (is_paired(i) && is_paired(j) &&
+			//	i > 0 && j < _seq.size() - 1 && is_paired(i - 1) && is_paired(j + 1)) return false;
+			if (m_bps[i] == j && 
+				i > 0 && j < _seq.size() - 1 && m_bps[i-1] == j+1) return false;
 			int s = 0;
 			for (int n = i; n <= j; n++) {
 				if (_ss[n] == '(') {
