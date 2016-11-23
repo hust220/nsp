@@ -18,18 +18,46 @@ public:
     pars_t _orig_pars;
 
 	Par() = default;
+
 	Par(const Par &par) = default;
+
     Par(int argc, char **argv);
+
     Par(std::string str);
+
+	template<typename _FirstVal, typename... _RestVals>
+	Par(const std::string &key, _FirstVal &&first_val, _RestVals &&...rest_vals) {
+		(*this)(key, first_val, rest_vals...);
+	}
+
     void read(int argc, char **argv);
+
     std::deque<std::string> &operator [](const std::string &s);
+
     const std::deque<std::string> &operator [](const std::string &s) const;
+
     std::deque<std::string> &operator [](const std::vector<std::string> &s);
+
     const std::deque<std::string> &operator [](const std::vector<std::string> &s) const;
+
     std::string &operator [](int n);
+
     const std::string &operator [](int n) const;
-    bool count(const std::string &s) const;
+
+	Par &operator ()(const std::string &key) {
+		return *this;
+	}
+
+	template<typename _FirstVal, typename... _RestVals>
+	Par &operator ()(const std::string &key, _FirstVal &&first_val, _RestVals &&...rest_vals) {
+		(*this)[key].push_back(lexical_cast<std::string>(first_val));
+		return (*this)(key, rest_vals...);
+	}
+
+	bool count(const std::string &s) const;
+
     void read(std::string par_file);
+
     friend std::ostream &operator <<(std::ostream &out, const Par &par);
 
 	template<typename K>

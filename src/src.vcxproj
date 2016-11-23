@@ -355,8 +355,10 @@
     <ClCompile Include="..\lib\jian\thmc\TLoop.cpp" />
     <ClCompile Include="..\lib\jian\thmc\TModule.cpp" />
     <ClCompile Include="..\lib\jian\thmc\TTailHairpin.cpp" />
+    <ClCompile Include="..\lib\jian\utils\DBSCAN.cpp" />
     <ClCompile Include="..\lib\jian\utils\Env.cpp" />
     <ClCompile Include="..\lib\jian\utils\file.cpp" />
+    <ClCompile Include="..\lib\jian\utils\KMeans.cpp" />
     <ClCompile Include="..\lib\jian\utils\log.cpp" />
     <ClCompile Include="..\lib\jian\utils\Par.cpp" />
     <ClCompile Include="..\lib\jian\utils\rand.cpp" />
@@ -559,6 +561,7 @@
     <ClInclude Include="..\lib\jian\utils.hpp" />
     <ClInclude Include="..\lib\jian\utils\Cluster.hpp" />
     <ClInclude Include="..\lib\jian\utils\control.hpp" />
+    <ClInclude Include="..\lib\jian\utils\DBSCAN.hpp" />
     <ClInclude Include="..\lib\jian\utils\Debug.hpp" />
     <ClInclude Include="..\lib\jian\utils\Env.hpp" />
     <ClInclude Include="..\lib\jian\utils\exception.hpp" />
@@ -566,6 +569,7 @@
     <ClInclude Include="..\lib\jian\utils\file.hpp" />
     <ClInclude Include="..\lib\jian\utils\FSM.hpp" />
     <ClInclude Include="..\lib\jian\utils\fun.hpp" />
+    <ClInclude Include="..\lib\jian\utils\KMeans.hpp" />
     <ClInclude Include="..\lib\jian\utils\lexical_cast.hpp" />
     <ClInclude Include="..\lib\jian\utils\Lib.hpp" />
     <ClInclude Include="..\lib\jian\utils\log.hpp" />

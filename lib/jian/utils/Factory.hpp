@@ -3,6 +3,7 @@
 #include <map>
 #include <functional>
 #include <string>
+#include <memory>
 
 namespace jian {
 
@@ -29,13 +30,24 @@ public:
         }
     };
 
-    static T *create(const std::string &s, Args ...args) {
-        if (instance().s_methods.find(s) != instance().s_methods.end()) {
-            return instance().s_methods[s](args...);
-        } else {
-            throw std::string("Factory::create error! Unknown method: ") + s;
-        }
-    }
+	static T *create(const std::string &s, Args ...args) {
+		if (instance().s_methods.find(s) != instance().s_methods.end()) {
+			return instance().s_methods[s](args...);
+		}
+		else {
+			throw std::string("Factory::create error! Unknown method: ") + s;
+		}
+	}
+
+	static std::shared_ptr<T> make(const std::string &s, Args ...args) {
+		if (instance().s_methods.find(s) != instance().s_methods.end()) {
+			std::shared_ptr<T> p(instance().s_methods[s](args...));
+			return p;
+		}
+		else {
+			throw std::string("Factory::create error! Unknown method: ") + s;
+		}
+	}
 
 };
 

@@ -33,15 +33,15 @@ namespace jian {
 			return sp.rmsd;
 		}
 
-		Cluster::result_t cluster_chains(const std::deque<Chain> &chains, int k) {
-			Cluster cluster(k);
-			std::deque<Eigen::MatrixXd *> mats;
+		Cluster::clusters_t cluster_chains(const std::deque<Chain> &chains, int k) {
+			auto cluster = Cluster::fac_t::make("kmeans", Par("k", k));
+			std::deque<Mat *> mats;
 			for (auto && chain : chains) {
 				mats.push_back(chain_to_matrix_aa(chain));
 			}
-			auto && result = cluster(*(Cluster::to_mat<double>(mats.begin(), mats.end(), dist)));
+			(*cluster)(mats.begin(), mats.end(), dist);
 			for (auto && i : mats) delete i;
-			return result;
+			return cluster->m_clusters;
 		}
 
 

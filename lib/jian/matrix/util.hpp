@@ -7,7 +7,13 @@
 
 namespace jian {
 
+
+#ifdef JN_PRECISION
+using num_t = JN_PRECISION;
+#else
+using num_t = double;
 using val_t = double;
+#endif
 
 template<typename NumType>
 using MatX = Eigen::Matrix<NumType, -1, -1>;

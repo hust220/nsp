@@ -437,6 +437,12 @@
     <ClCompile Include="..\lib\jian\utils\Env.cpp">
       <Filter>jian\utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\lib\jian\utils\KMeans.cpp">
+      <Filter>jian\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\utils\DBSCAN.cpp">
+      <Filter>jian\utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="nsp.hpp">
@@ -959,6 +965,12 @@
       <Filter>jian</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jian\utils\Serial.hpp">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\KMeans.hpp">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\DBSCAN.hpp">
       <Filter>jian\utils</Filter>
     </ClInclude>
   </ItemGroup>
