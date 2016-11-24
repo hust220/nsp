@@ -8,7 +8,7 @@
 #include "../nuc3d/BuildHelix.hpp"
 #include "../nuc3d/transform.hpp"
 #include "../nuc3d/TemplRec.hpp"
-#include "../nuc3d/TSP.hpp"
+#include "../nuc3d/Assemble.hpp"
 #include "../cg.hpp"
 #include "../cg/Frags.hpp"
 #include "../utils/Env.hpp"
@@ -120,6 +120,7 @@ namespace jian {
 		std::string m_par_file;
 		MolWriter m_writer;
 		val_t m_max_angle;
+		std::string m_init_sfile;
 
 		std::deque<MvEl *> m_mvels;
 		std::vector<MvEl *> m_base_mvels;

@@ -115,6 +115,10 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
         m_sample = par.has("sample");
         par.set(m_sample_mode, "sample_mode");
 
+		m_loop_building_method = "partial_dg";
+		par.set(m_loop_building_method, "loop_building", "lb");
+		to_lower(m_loop_building_method);
+
         LOG << "# Check input" << std::endl;
 		std::string info_errors;
 		auto b = NASS::check_ss(_ss, info_errors);
@@ -240,23 +244,47 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
         _pred_chain = std::move(jian::transform(m, _seq, _type)[0]);
     }
 
+	void Assemble::set_loop_template(loop *l, bool is_first) {
+		if (l != NULL && l->has_loop()) {
+			if (m_loop_building_method == "all_dg" ||
+				(m_loop_building_method == "partial_dg" && _records[l].first.empty())) {
+				build_loop_dg.init(l->seq(), NASS::lower_ss(l->ss()));
+				_templates[l].first = build_loop_dg();
+				m_selected_record[l].first = TemplRec{};
+			}
+			else if (m_loop_building_method == "all_raw" ||
+				(m_loop_building_method == "partial_raw" && _records[l].first.empty())) {
+				build_loop_raw.init(l->seq(), NASS::lower_ss(l->ss()));
+				_templates[l].first = build_loop_raw();
+				m_selected_record[l].first = TemplRec{};
+			}
+			else {
+				int n = (is_first ? 0 : int(rand() * _records[l].first.size()));
+				_templates[l].first = load_pdb(_records[l].first[n]);
+				m_selected_record[l].first = _records[l].first[n];
+			}
+		}
+	}
+
     void Assemble::select_templates() {
-        LOOP_TRAVERSE(_ss_tree.head(),
-            if (L->has_loop()) {
-                if (_records[L].first.empty()) {
-                    build_loop_dg.init(L->seq(), NASS::lower_ss(L->ss())); 
-                    _templates[L].first = build_loop_dg();
-                    m_selected_record[L].first = TemplRec{};
-                } else {
-                    _templates[L].first = load_pdb(_records[L].first[0]);    
-                    m_selected_record[L].first = _records[L].first[0];
-                }
-            }
-            if (L->has_helix()) {
-                _templates[L].second = load_pdb(_records[L].second[0]);
-                m_selected_record[L].second = _records[L].second[0];
-            }
-        );
+		BEGIN_LOOP_TRAVERSE(_ss_tree.head()) {
+			//if (L->has_loop()) {
+			//	if (_records[L].first.empty()) {
+			//		build_loop_dg.init(L->seq(), NASS::lower_ss(L->ss()));
+			//		_templates[L].first = build_loop_dg();
+			//		m_selected_record[L].first = TemplRec{};
+			//	}
+			//	else {
+			//		_templates[L].first = load_pdb(_records[L].first[0]);
+			//		m_selected_record[L].first = _records[L].first[0];
+			//	}
+			//}
+			set_loop_template(L, true);
+			if (L->has_helix()) {
+				_templates[L].second = load_pdb(_records[L].second[0]);
+				m_selected_record[L].second = _records[L].second[0];
+			}
+		} END_LOOP_TRAVERSE;
     }
 
 	void Assemble::sample_helix_template() {
@@ -287,15 +315,7 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
     }
 
     void Assemble::sample_loop_template(loop *l) {
-        if (_records[l].first.empty()) {
-            build_loop_dg.init(l->seq(), NASS::lower_ss(l->ss())); 
-            _templates[l].first = build_loop_dg();
-            m_selected_record[l].first = TemplRec{};
-        } else {
-            int n = int(rand() * _records[l].first.size());
-            _templates[l].first = load_pdb(_records[l].first[n]);    
-            m_selected_record[l].first = _records[l].first[n];
-        }
+		set_loop_template(l, false);
     }
 
     loop *Assemble::select_loop() {

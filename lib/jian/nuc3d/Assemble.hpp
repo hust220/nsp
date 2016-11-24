@@ -10,6 +10,7 @@
 #include "TemplRec.hpp"
 #include "transform.hpp"
 #include "BuildLoopDG.hpp"
+#include "BuildLoopRaw.hpp"
 #include "TSP.hpp"
 
 namespace jian {
@@ -46,8 +47,10 @@ namespace jian {
 			std::set<std::string> _suppos_atoms{ "C5*", "O3*", "C1*" };
 			bool m_sample = false;
 			std::string m_sample_mode = "sample_one";
+			std::string m_loop_building_method;
 
 			BuildLoopDG build_loop_dg;
+			BuildLoopRaw build_loop_raw;
 
 			Assemble(const Par &par);
 
@@ -68,6 +71,8 @@ namespace jian {
 			void transform();
 
 			void select_templates();
+
+			void set_loop_template(loop *l, bool is_first);
 
 			void sample_one_template();
 

@@ -11,7 +11,6 @@ class DGImpl;
 
 class DG {
 public:
-//    using Mat = Eigen::MatrixXd;
     using DihEntry = std::vector<int>;
     using DistBoundType = Mat;
     using DihBoundType = DihBound;
@@ -19,7 +18,7 @@ public:
     DG();
     ~DG();
     DG(const Mat &);
-    DG(const Mat &, const DihBound &);
+    DG(const DistBoundType &, const DihBoundType &);
     Mat operator ()();
     Mat operator ()(const Mat &);
     Mat operator ()(const Mat &, const DihBound &);

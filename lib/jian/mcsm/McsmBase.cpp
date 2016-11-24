@@ -195,7 +195,15 @@ namespace jian {
 		for (auto && i : m_dih_pts) LOG << i << ' '; LOG << std::endl;
 
 		LOG << "# Read initial structure" << std::endl;
-		if (par.has("pdb")) chain_read_model(_pred_chain, par.get("pdb"));
+		par.set(m_init_sfile, "init");
+		if (m_init_sfile.empty()) {
+			nuc3d::Assemble assemble(Par(par)("loop_building", "all_raw"));
+			assemble.predict_one();
+			_pred_chain = assemble._pred_chain;
+		}
+		else {
+			chain_read_model(_pred_chain, m_init_sfile);
+		}
 
 		LOG << "# Check constraints" << std::endl;
 		validate_constraints();

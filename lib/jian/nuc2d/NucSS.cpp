@@ -205,7 +205,14 @@ namespace jian {
 	}
 
 	std::string NASS::hinge_ss(const std::string &ss) {
-		std::string h_ss; EACH(i, ss, if (i == '(' || i == ')') h_ss += i); return h_ss;
+		std::string h_ss;
+		for (auto && i : ss) {
+			if (i == '(' || i == ')') {
+				h_ss += i;
+			}
+		}
+		//EACH(i, ss, if (i == '(' || i == ')') h_ss += i);
+		return h_ss;
 	}
 
 	bool NASS::seq_match_ss(const std::string &seq, const std::string &ss) {

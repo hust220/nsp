@@ -4,28 +4,36 @@
 #include "../pdb.hpp"
 #include "../nuc2d.hpp"
 #include "../dg.hpp"
+#include "../cg.hpp"
 #include "HelixPar.hpp"
 
 namespace jian {
 
-Chain *build_chain_dg(std::string seq, std::string ss);
+	Chain *build_chain_dg(std::string seq, std::string ss);
 
-class BuildLoopDG {
-public:
-    Eigen::MatrixXd _dist_bound;
-    DihBound _dih_bound;
+	class BuildLoopDG {
+	public:
+		Eigen::MatrixXd _dist_bound;
+		DihBound _dih_bound;
 
-    DG dg;
-	HelixPar helix_par;
+		DG m_dg;
+		HelixPar helix_par;
+		std::shared_ptr<CG> m_cg;
 
-    void init(const std::string &seq, const std::string &ss, const std::string &c = "");
+		BuildLoopDG();
 
-    Chain operator ()();
+		void init_dist_bound(Mat &b, int l);
 
-    void set_bound_loop(Eigen::MatrixXd &b, DihBound &d, loop *l);
+		BuildLoopDG &init(const std::string &seq, const std::string &ss);
 
-    void set_bound_helix(Eigen::MatrixXd &b, DihBound &d, const helix &h);
-};
+		BuildLoopDG &init(const Chain &c, const std::vector<int> &brokens);
+
+		Chain operator ()();
+
+		void set_bound_loop(Mat &b, DihBound &d, loop *l);
+
+		void set_bound_helix(Mat &b, DihBound &d, const helix &h);
+	};
 
 } // namespace jian
 

@@ -45,6 +45,7 @@ public:
     const std::string &operator [](int n) const;
 
 	Par &operator ()(const std::string &key) {
+		(*this)[key];
 		return *this;
 	}
 

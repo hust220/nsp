@@ -317,6 +317,7 @@
     <ClCompile Include="..\lib\jian\nuc3d\Assemble.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\BuildHelix.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\BuildLoopDG.cpp" />
+    <ClCompile Include="..\lib\jian\nuc3d\BuildLoopRaw.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\Constraints.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\Convert.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\Format.cpp" />
@@ -368,7 +369,7 @@
     <ClCompile Include="m_aa.cpp" />
     <ClCompile Include="m_anal.cpp" />
     <ClCompile Include="m_assemble.cpp" />
-    <ClCompile Include="build_loop.cpp" />
+    <ClCompile Include="m_build_loop.cpp" />
     <ClCompile Include="build_loop_dg.cpp" />
     <ClCompile Include="m_check.cpp" />
     <ClCompile Include="m_client.cpp" />
@@ -402,7 +403,7 @@
     <ClCompile Include="ssa.cpp" />
     <ClCompile Include="ssp_dca.cpp" />
     <ClCompile Include="ssp_fe.cpp" />
-    <ClCompile Include="ss_tree.cpp" />
+    <ClCompile Include="m_ss_tree.cpp" />
     <ClCompile Include="m_sub.cpp" />
     <ClCompile Include="m_opt.cpp" />
     <ClCompile Include="m_transform.cpp" />
@@ -490,7 +491,7 @@
     <ClInclude Include="..\lib\jian\nuc3d\Assemble.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\BasicPredict3D.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\BuildHelix.hpp" />
-    <ClInclude Include="..\lib\jian\nuc3d\BuildLoop.hpp" />
+    <ClInclude Include="..\lib\jian\nuc3d\BuildLoopRaw.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\BuildLoopDG.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\BuildNuc.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\BuildStrand.hpp" />

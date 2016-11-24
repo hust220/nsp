@@ -11,15 +11,50 @@
 #include "helix.hpp"
 #include "../pp.hpp"
 
-#define LOOP_EACH(l, c) do{\
-    int N_RES = 0;\
-    res *RES = (l)->head;\
-    for (; RES != NULL; RES = RES->next) {\
-        c;\
-        N_RES++;\
-    }\
-    N_RES;\
-}while(0)
+#define BEGIN_LOOP_EACH(l) \
+	do {\
+		int N_RES = 0;\
+		res *RES = (l)->head;\
+		for (; RES != NULL; RES = RES->next, N_RES++) 
+
+#define END_LOOP_EACH \
+	} while (0)
+
+#define LOOP_EACH(l, c) \
+	BEGIN_LOOP_EACH(l) { \
+		c; \
+	} END_LOOP_EACH
+
+#define BEGIN_LOOP_TRAVERSE(l) \
+	do {\
+		using type = std::remove_reference_t<decltype(l)>;\
+		std::list<type> ls;\
+		type L = l;\
+		JN_BREAK_INIT;\
+		while (true) {\
+			if (L == NULL) break;\
+			ls.push_back(L);\
+			do
+
+#define END_LOOP_TRAVERSE \
+			while (0);\
+			if (is_break) break;\
+			if (L->son != NULL) { L = L->son;\
+			} else if (L->brother != NULL) {\
+				L = L->brother;\
+				ls.pop_back(); \
+			} else {\
+				while (true) {\
+					ls.pop_back();\
+					if (!ls.empty()) {\
+						L = ls.back()->brother;\
+						if (L == NULL) continue;\
+						else { ls.pop_back(); break; }\
+					} else { L = NULL; break; }\
+				}\
+			}\
+		}\
+	} while(0)
 
 #define LOOP_TRAVERSE(l, c) do{\
     using type = std::remove_reference_t<decltype(l)>;\
@@ -101,7 +136,15 @@ public:
 
     void push_back(res *r) {
         if (head == NULL) head = r;
-        else LOOP_EACH(this, if (RES->next == NULL) { RES->next = r; r->prev = RES; break;});
+		else {
+			BEGIN_LOOP_EACH(this) {
+				if (RES->next == NULL) {
+					RES->next = r; 
+					r->prev = RES; 
+					break; 
+				}
+			} END_LOOP_EACH;
+		}
     }
 
     void del(res *r) {

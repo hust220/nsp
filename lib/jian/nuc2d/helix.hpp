@@ -7,14 +7,23 @@
 #include <sstream>
 #include "bp.hpp"
 
-#define HELIX_EACH(h, c) do{\
-    int N_BP = 0; TYPEOF((h).head) BP = (h).head;\
-    for (; BP != NULL; BP = BP->next) {\
-        c;\
-        N_BP++;\
-    }\
-    N_BP;\
-}while(0)
+#define JN_BREAK_INIT bool is_break = false
+#define JN_BREAK is_break = true; break
+
+#define BEGIN_HELIX_EACH(h) \
+	do { \
+		int N_BP = 0; \
+		TYPEOF((h).head) BP = (h).head; \
+		for (; BP != NULL; BP = BP->next, N_BP++)  
+
+#define END_HELIX_EACH \
+	} while(0)
+
+
+#define HELIX_EACH(h, c) \
+	BEGIN_HELIX_EACH(h) {\
+		c;\
+	} END_HELIX_EACH
 
 namespace jian {
 
