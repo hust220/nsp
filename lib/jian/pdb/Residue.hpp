@@ -9,11 +9,11 @@ namespace jian {
 
 	class Residue : public std::deque<Atom> {
 	public:
-		int num;
-		std::string name;
-		std::string m_cg;
+		int num = -1;
+		std::string name = "X";
+		std::string m_cg = "aa";
 
-		Residue();
+		JN_DEFAULT_CONSTRUCTORS(Residue);
 
 		static auto get_sort_keys();
 

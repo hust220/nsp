@@ -7,6 +7,7 @@
 #include <vector>
 #include <iostream>
 #include "string.hpp"
+#include "traits.hpp"
 
 namespace jian {
 
@@ -45,13 +46,13 @@ public:
     const std::string &operator [](int n) const;
 
 	Par &operator ()(const std::string &key) {
-		(*this)[key];
+		_pars[key];
 		return *this;
 	}
 
 	template<typename _FirstVal, typename... _RestVals>
 	Par &operator ()(const std::string &key, _FirstVal &&first_val, _RestVals &&...rest_vals) {
-		(*this)[key].push_back(lexical_cast<std::string>(first_val));
+		_pars[key].push_back(lexical_cast<std::string>(first_val));
 		return (*this)(key, rest_vals...);
 	}
 

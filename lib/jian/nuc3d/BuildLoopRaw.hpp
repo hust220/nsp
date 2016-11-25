@@ -9,44 +9,55 @@
 #include "../utils/Env.hpp"
 #include "ParseHelix.hpp"
 #include "BuildLoopDG.hpp"
+#include "transform.hpp"
 
 namespace jian {
 
 class BuildLoopRaw {
 public:
-	struct Helix {
+	struct Pos {
 		num_t theta, phi;
 	};
+	using Helix = Pos;
+    using Helices = std::vector<Helix>;
     using Hinge = std::array<int, 4>;
     using Hinges = std::deque<Hinge>;
-    using Helices = std::vector<Helix>;
+	using Frag = std::deque<int>;
+	using Frags = std::deque<Frag>;
 
     std::string _lib = Env::lib();
-    std::map<std::string, Hinges> _cache;
+	std::map<std::string, Hinges> m_cache_hinges;
+	std::map<std::string, Frags> m_cache_frags;
     std::string type = "RNA";
-	std::shared_ptr<BuildLoopDG> m_build_loop_dg;
 	std::string m_seq;
 	std::string m_ss;
 	Hinges m_hinges;
 	Helices m_helices;
-
-	BuildLoopRaw();
+	Frags m_frags;
+	std::vector<Pos> m_res_pos;
+	num_t m_radius;
 
 	BuildLoopRaw &init(const std::string &seq, const std::string &ss);
 
 	Chain operator ()();
 
-	Hinges ss_to_hinges(const std::string &ss);
+	void set_hinges();
 
-	Model make_internal_loop(const Hinges &hinges);
+	void set_frags();
+
+	bool is_open();
 
 	void print_helices(const Helices &helices);
 
-	Helices make_helices(const Hinges &hinges);
+	void print_frags();
+
+	void set_pos();
+
+	void transform(Chain &chain);
 
 	Helices make_helices_random(const Hinges &hinges);
 
-	Chain helices_to_model(const Helices &helices, const Hinges &hinges);
+	Chain make_chain();
 
 	void complete_chain(Chain &chain);
 

@@ -2,35 +2,35 @@
 
 namespace jian {
 
-	BuildLoopRaw::BuildLoopRaw() {
-		m_build_loop_dg = std::make_shared<BuildLoopDG>();
-	}
-
 	BuildLoopRaw &BuildLoopRaw::init(const std::string &seq, const std::string &ss) {
 		//Hinges &&hinges = ss_to_hinges(NASS::hinge_ss(ss));
 		m_seq = seq;
 		m_ss = ss;
-		m_hinges = ss_to_hinges(m_ss);
-		m_helices = make_helices(m_hinges);
-		//print_helices(m_helices);
+		set_hinges();
+		set_frags();
+		print_frags();
+		set_pos();
 		return *this;
 	}
 
 	Chain BuildLoopRaw::operator ()() {
-		return helices_to_model(m_helices, m_hinges);
+		return make_chain();
 	}
 
-	BuildLoopRaw::Hinges BuildLoopRaw::ss_to_hinges(const std::string &ss) {
-		if (_cache.count(ss)) return _cache[ss];
+	void BuildLoopRaw::set_hinges() {
+		if (m_cache_hinges.count(m_ss)) {
+			m_hinges = m_cache_hinges[m_ss];
+			return;
+		}
 
 		Hinges hinges;
 		std::deque<char> stack;
 		std::deque<int> stack2;
 		int i, j, l;
 
-		for (i = 0; i < ss.size(); i++) {
-			if (ss[i] == '(' || ss[i] == ')') {
-				stack.push_back(ss[i]);
+		for (i = 0; i < m_ss.size(); i++) {
+			if (m_ss[i] == '(' || m_ss[i] == ')') {
+				stack.push_back(m_ss[i]);
 				stack2.push_back(i);
 				l = stack.size();
 				if (l >= 4 && stack[l - 4] == '(' && stack[l - 3] == '(' && stack[l - 2] == ')' && stack[l - 1] == ')') {
@@ -46,14 +46,64 @@ namespace jian {
 			}
 		}
 		if (!stack.empty()) {
-			throw std::string("jian::ss_to_hinges error! ss: ") + ss;
+			throw std::string("jian::ss_to_hinges error! ss: ") + m_ss;
 		}
-		_cache[ss] = hinges;
-		return hinges;
+		m_cache_hinges[m_ss] = hinges;
+		m_hinges = hinges;
 	}
 
-	Model BuildLoopRaw::make_internal_loop(const Hinges &hinges) {
-		return Model();
+	bool BuildLoopRaw::is_open() {
+		return m_hinges.empty() || m_hinges.back()[0] != 0;
+	}
+
+	void BuildLoopRaw::set_frags() {
+		int j;
+
+		if (m_cache_frags.count(m_ss)) {
+			m_frags = m_cache_frags[m_ss];
+			return;
+		}
+
+		Frags frags;
+		Frag frag;
+		if (is_open()) {
+			for (j = 0; j < size(m_ss) && m_ss[j] != '(' && m_ss[j] != ')'; j++) frag.push_back(j);
+			frags.push_back(std::move(frag));
+			while (j < size(m_ss)) {
+				j += 4;
+				for (; j < size(m_ss) && m_ss[j] != '(' && m_ss[j] != ')'; j++) frag.push_back(j);
+				frags.push_back(std::move(frag));
+			}
+			//for (i = 0; i < size(m_hinges) - 1; i++) {
+			//	for (j = m_hinges[i][3] + 1; j < size(m_ss) && m_ss[j] != '(' && m_ss[j] != ')'; j++) {
+			//		frag.push_back(j);
+			//	}
+			//	frags.push_back(std::move(frag));
+			//}
+			//for (j = m_hinges[i][3] + 1; j < size(m_ss); j++) frag.push_back(j);
+			//frags.push_back(std::move(frag));
+		}
+		else {
+			for (j = 2; j < size(m_ss) - 2 && m_ss[j] != '(' && m_ss[j] != ')'; j++) frag.push_back(j);
+			frags.push_back(std::move(frag));
+			while (j < size(m_ss) - 2) {
+				j += 4;
+				for (; j < size(m_ss) - 2 && m_ss[j] != '(' && m_ss[j] != ')'; j++) frag.push_back(j);
+				frags.push_back(std::move(frag));
+			}
+			//for (i = 0; i + 2 < size(m_hinges); i++) {
+			//	for (j = m_hinges[i][3] + 1; j < size(m_ss) && m_ss[j] != '(' && m_ss[j] != ')'; j++) {
+			//		frag.push_back(j);
+			//	}
+			//	frags.push_back(std::move(frag));
+			//}
+			//for (j = m_hinges[i][3] + 1; j + 2 < size(m_ss); j++) frag.push_back(j);
+			//frags.push_back(std::move(frag));
+		}
+
+		m_cache_frags[m_ss] = frags;
+		m_frags = frags;
+
 	}
 
 	void BuildLoopRaw::print_helices(const Helices &helices) {
@@ -63,13 +113,52 @@ namespace jian {
 		LOG << std::endl;
 	}
 
-	BuildLoopRaw::Helices BuildLoopRaw::make_helices(const Hinges &hinges) {
-		int len = hinges.size();
-		Helices helices(len);
-		for (int i = 0; i < len; i++) {
-			helices[i] = {i*2*PI/len, 0};
+	void BuildLoopRaw::print_frags() {
+		for (auto &&frag : m_frags) {
+			LOG << "Frag: ";
+			for (auto && i : frag) LOG << i << ' ';
+			LOG << " End." << std::endl;
 		}
-		return helices;
+	}
+
+	void BuildLoopRaw::set_pos() {
+		int j, i1, i2, n;
+		num_t theta;
+
+		n = std::accumulate(m_frags.begin(), m_frags.end(), 0, [](int n, auto &&frag) {
+			return n + size(frag);
+		}) + size(m_hinges) * 2 + 1;
+		m_radius = 7.0 * n / (2.0 * PI);
+		LOG << "radius: " << m_radius << std::endl;
+		theta = 2.0 * PI / n;
+		LOG << "theta: " << theta << std::endl;
+		m_res_pos.resize(size(m_ss));
+		m_helices.resize(size(m_hinges));
+
+		i1 = 0;
+		i2 = 0;
+		j = 0;
+		while (i1 < m_frags.size() || i2 < m_hinges.size()) {
+			if (i1 < m_frags.size()) {
+				for (auto && i : m_frags[i1]) {
+					m_res_pos[i] = { theta * j, 0 };
+					j++;
+				}
+				i1++;
+			}
+			if (i2 < m_hinges.size()) {
+				m_helices[i2] = { theta * j, 0 };
+				j += 2;
+				i2++;
+			}
+		}
+
+		//int len = m_hinges.size();
+		//Helices helices(len);
+		//for (int i = 0; i < len; i++) {
+		//	helices[i] = {i*2*PI/len, 0};
+		//}
+		//m_helices = std::move(helices);
 	}
 
 	BuildLoopRaw::Helices BuildLoopRaw::make_helices_random(const Hinges &hinges) {
@@ -86,69 +175,70 @@ namespace jian {
 		return helices;
 	}
 
-	Chain BuildLoopRaw::helices_to_model(const Helices &helices, const Hinges &hinges) {
-		//Model model;
+	Chain BuildLoopRaw::make_chain() {
 		Chain chain;
-		//model.resize(1);
-		//model[0].resize(m_ss.size());
 		chain.resize(m_ss.size());
 		Model &&pairs = read_standard_pairs();
 		auto result = parse_helix(pairs);
-		num_t radius = 30;
+		int i;
 
-		for (int i = 0; i < helices.size(); i++) {
+		for (i = 0; i < m_helices.size(); i++) {
 			Model helix = pairs;
 			std::vector<num_t> origin {
-				radius*std::sin(helices[i].theta)*std::cos(helices[i].phi), 
-				radius*std::sin(helices[i].theta)*std::sin(helices[i].phi),
-				radius*std::cos(helices[i].theta)
+				m_radius*std::sin(m_helices[i].theta)*std::cos(m_helices[i].phi),
+				m_radius*std::sin(m_helices[i].theta)*std::sin(m_helices[i].phi),
+				m_radius*std::cos(m_helices[i].theta)
 			};
 			adjust_helix(
 				helix, result.origin, origin,
-				result.theta, result.phi, helices[i].theta, helices[i].phi
+				result.theta, result.phi, m_helices[i].theta, m_helices[i].phi
 			);
-			append_helix(chain, helix, hinges[i]);
+			append_helix(chain, helix, m_hinges[i]);
+		}
+
+		for (i = 0; i < chain.size(); i++) {
+			if (chain[i].empty()) {
+				chain[i].push_back(Atom("C4*", 
+					m_radius*std::sin(m_res_pos[i].theta)*std::cos(m_res_pos[i].phi),
+					m_radius*std::sin(m_res_pos[i].theta)*std::sin(m_res_pos[i].phi),
+					m_radius*std::cos(m_res_pos[i].theta)));
+			}
 		}
 
 		complete_chain(chain);
+		transform(chain);
 		return chain;
+	}
+
+	void BuildLoopRaw::transform(Chain &chain) {
+		Model m;
+		m.push_back(chain);
+		chain = std::move(jian::transform(m, m_seq, "RNA")[0]);
 	}
 
 	void BuildLoopRaw::complete_chain(Chain &chain) {
 		Mat x, y;
-		int i, j, n, l;
-		std::vector<int> brokens;
+		int i, j, l;
 
-		l = std::accumulate(chain.begin(), chain.end(), 0, [](int n, const Residue &res) {
-			return n + (res.empty() ? 0 : 1);
-		});
+		l = chain.size();
 		x.resize(l, 3);
 		y.resize(l, 3);
 
-		for (auto && hinge : m_hinges) {
-			if (hinge[0] - 1 >= 0) {
-				brokens.push_back(hinge[0] - 1);
+		for (i = 0; i < l; i++) {
+			Atom &atom = chain[i]["C4*"];
+			for (j = 0; j < 3; j++) {
+				x(i, j) = atom[j];
 			}
 		}
-		m_build_loop_dg->init(chain, brokens);
-		Chain &&c = (*m_build_loop_dg)();
-		//JN_OUT << c << std::endl;
-		i = 0;
-		n = 0;
-		for (auto && res : chain) {
-			if (!res.empty()) {
-				Atom &atom1 = c[i]["C4*"];
-				Atom &atom2 = chain[i]["C4*"];
-				for (j = 0; j < 3; j++) {
-					x(n, j) = atom1[j];
-					y(n, j) = atom2[j];
-				}
-				n++;
+		Chain c = CG::fac_t::make("1p")->to_aa(x, 0, l - 1);
+		for (i = 0; i < l; i++) {
+			Atom &atom = c[i]["C4*"];
+			for (j = 0; j < 3; j++) {
+				y(i, j) = atom[j];
 			}
-			i++;
 		}
 
-		geom::Superposition<num_t> sp(x, y);
+		geom::Superposition<num_t> sp(y, x);
 		for (auto && res : c) {
 			for (auto && atom : res) {
 				sp.apply(atom);
@@ -157,7 +247,7 @@ namespace jian {
 
 		i = 0;
 		for (auto && res : chain) {
-			if (res.empty()) {
+			if (res.size() == 1) {
 				res = c[i];
 			}
 			i++;

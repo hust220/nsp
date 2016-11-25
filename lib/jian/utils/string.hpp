@@ -4,6 +4,7 @@
 #include <vector>
 #include <utility>
 #include "lexical_cast.hpp"
+#include "traits.hpp"
 
 #define JN_INT(n) jian::lexical_cast<int>(n)
 #define JN_FLT(n) jian::lexical_cast<float>(n)
