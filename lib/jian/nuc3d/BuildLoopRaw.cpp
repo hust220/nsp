@@ -122,16 +122,16 @@ namespace jian {
 	}
 
 	void BuildLoopRaw::set_pos() {
-		int j, i1, i2, n;
-		num_t theta;
+		int i1, i2;
+		num_t phi, j, n;
 
-		n = std::accumulate(m_frags.begin(), m_frags.end(), 0, [](int n, auto &&frag) {
+		n = std::accumulate(m_frags.begin(), m_frags.end(), 0.0, [](num_t n, auto &&frag) {
 			return n + size(frag);
-		}) + size(m_hinges) * 2 + 1;
+		}) + size(m_hinges) * 5 + 1;
 		m_radius = 7.0 * n / (2.0 * PI);
 		LOG << "radius: " << m_radius << std::endl;
-		theta = 2.0 * PI / n;
-		LOG << "theta: " << theta << std::endl;
+		phi = 2.0 * PI / n;
+		LOG << "phi: " << phi << std::endl;
 		m_res_pos.resize(size(m_ss));
 		m_helices.resize(size(m_hinges));
 
@@ -141,14 +141,15 @@ namespace jian {
 		while (i1 < m_frags.size() || i2 < m_hinges.size()) {
 			if (i1 < m_frags.size()) {
 				for (auto && i : m_frags[i1]) {
-					m_res_pos[i] = { theta * j, 0 };
+					m_res_pos[i] = { PI / 2.0, phi * j };
 					j++;
 				}
 				i1++;
 			}
 			if (i2 < m_hinges.size()) {
-				m_helices[i2] = { theta * j, 0 };
 				j += 2;
+				m_helices[i2] = { PI / 2.0, phi * j };
+				j += 3;
 				i2++;
 			}
 		}
@@ -189,10 +190,18 @@ namespace jian {
 				m_radius*std::sin(m_helices[i].theta)*std::sin(m_helices[i].phi),
 				m_radius*std::cos(m_helices[i].theta)
 			};
-			adjust_helix(
-				helix, result.origin, origin,
-				result.theta, result.phi, m_helices[i].theta, m_helices[i].phi
-			);
+			if (!is_open() && i == size(m_helices) - 1) {
+				adjust_helix(
+					helix, result.origin, origin,
+					result.theta, result.phi, m_helices[i].theta, m_helices[i].phi
+				);
+			}
+			else {
+				adjust_helix(
+					helix, result.origin, origin,
+					result.theta, result.phi, m_helices[i].theta, 180+m_helices[i].phi
+				);
+			}
 			append_helix(chain, helix, m_hinges[i]);
 		}
 

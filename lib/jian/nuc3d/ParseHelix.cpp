@@ -68,6 +68,7 @@ public:
 		sp.apply(z);
         val_t theta = geom::angle(std::vector<val_t>{0, 0, 1}, Vec::Zero(), z);
         val_t phi = geom::angle(std::vector<val_t>{1, 0, 0}, Vec::Zero(), std::vector<val_t>{z[0], z[1], 0});
+		if (z[1] < 0) phi = 2*PI-phi;
         return Result{origin, x-origin, y-origin, z-origin, theta, phi};
     }
 

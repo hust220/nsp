@@ -70,8 +70,8 @@ public:
         auto rot = geom::suppos_axis_polar<num_t>(theta_o, phi_o, theta_n, phi_n);
         std::vector<num_t> v1 {-o[0], -o[1], -o[2]}, v2 {n[0], n[1], n[2]};
         LOG 
-			<< o[0] << ':' << o[1] << ':' << o[2] << ' '
-			<< n[0] << ':' << n[1] << ':' << n[2] << std::endl;
+			<< o[0] << ',' << o[1] << ',' << o[2] << ':' << theta_o << ',' << phi_o << ' '
+			<< n[0] << ':' << n[1] << ':' << n[2] << ':' << theta_n << ',' << phi_n << std::endl;
         for (auto &chain : model) for (auto &residue : chain) for (auto &atom : residue) {
             geom::translate(atom, v1);
 			geom::rotate(atom, rot);

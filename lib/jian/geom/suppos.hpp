@@ -144,11 +144,11 @@ namespace jian {
 		template<typename NumType, typename A, typename B, typename C, typename D>
 		MatX<NumType> suppos_axis_polar(A theta_o, B phi_o, C theta_n, D phi_n) {
 			MatX<NumType> m = MatX<NumType>::Identity(3, 3);
-			double ang = PI / 2 - phi_o;
+			double ang = - phi_o;
 			if (ang != 0) m *= z_rot_mat(std::cos(ang), std::sin(ang));
-			ang = theta_o - theta_n;
-			if (ang != 0) m *= x_rot_mat(std::cos(ang), std::sin(ang));
-			ang = phi_n - PI / 2;
+			ang = -theta_o + theta_n;
+			if (ang != 0) m *= y_rot_mat(std::cos(ang), std::sin(ang));
+			ang = phi_n;
 			if (ang != 0) m *= z_rot_mat(std::cos(ang), std::sin(ang));
 			return m;
 		}
