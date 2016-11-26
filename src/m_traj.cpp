@@ -1,4 +1,5 @@
 #include <list>
+#include <numeric>
 #include <array>
 #include <iostream>
 #include "nsp.hpp"
@@ -14,9 +15,14 @@ namespace jian {
 		public:
 			std::string m_func;
 			std::string m_traj;
-			std::string m_ref;
+			std::string m_ref_file;
+			std::string m_align;
+			Chain m_ref;
+			std::deque<int> m_common_ref, m_common_tgt;
 			int m_bin = 1;
 			bool m_loose;
+			Mat m_mat_ref;
+			Mat m_mat_tgt;
 
 			TrajComponent(const Par &par) {
 				auto v = par.getv("global");
@@ -26,67 +32,122 @@ namespace jian {
 
 				m_traj = v[2];
 				if (v.size() == 4) {
-					m_ref = v[3];
+					m_ref_file = v[3];
+					chain_read_model(m_ref, m_ref_file);
 				}
+
 				par.set(m_bin, "b", "bin");
+
 				m_loose = par.has("loose");
+
+				par.set(m_align, "align");
+				set_common();
+
+				//set_mat(m_mat_ref, m_ref, m_common_ref);
 			}
 
-			val_t rmsd(const Model &m1, const Model &m2) {
-				assert(num_residues(m1) == num_residues(m2));
-				int len = num_residues(m1);
-				std::list<std::array<double, 3>> l1, l2;
-				int i1 = 0, j1 = 0, i2 = 0, j2 = 0, n = 0;
+			//void set_mat(Mat &mat, const Chain &chain, const std::deque<int> &common) {
+			//	int i, j, n, l, rows;
 
-				while (true) {
-					const Residue & r1 = m1[i1][j1];
-					const Residue & r2 = m2[i2][j2];
+			//	l = size(chain);
+			//	rows = size(common);
+			//	mat.resize(rows, 3);
+			//	n = 0;
+			//	for (i = 0; i < l; i++) {
+			//		if (std::find(common.begin(), common.end(), i) != common.end()) {
+			//			const Atom &atom = chain[i]["C4*"];
+			//			for (j = 0; j < 3; j++) {
+			//				mat(n, j) = atom[j];
+			//			}
+			//			n++;
+			//		}
+			//	}
+			//}
+
+			Chain model_to_chain(const Model &m) {
+				Chain c;
+				for (auto && chain : m) {
+					for (auto && res : chain) {
+						c.push_back(res);
+					}
+				}
+				return c;
+			}
+
+			val_t rmsd(const Chain &tgt) {
+				std::deque<std::array<double, 3>> l1, l2;
+				int i, l, n;
+
+				auto it_ref = m_common_ref.begin();
+				auto it_tgt = m_common_tgt.begin();
+				while (it_ref != m_common_ref.end() && it_tgt != m_common_tgt.end()) {
+					const Residue & r1 = m_ref[*it_ref];
+					const Residue & r2 = tgt[*it_tgt];
 					if (!m_loose) assert(r1.name == r2.name);
 					for (auto && a1 : r1) {
 						for (auto && a2 : r2) {
 							if (a1.name == a2.name) {
 								l1.push_back({ a1[0],a1[1],a1[2] });
 								l2.push_back({ a2[0],a2[1],a2[2] });
-								n++;
 							}
 						}
 					}
-					j1++;
-					if (j1 >= m1[i1].size()) {
-						j1 = 0;
-						i1++;
-						if (i1 >= m1.size()) {
-							break;
-						}
-					}
-					j2++;
-					if (j2 >= m2[i2].size()) {
-						j2 = 0;
-						i2++;
-						if (i2 >= m2.size()) {
-							break;
-						}
-					}
+					it_ref++;
+					it_tgt++;
 				}
+				
 
-				Mat mat1(n, 3), mat2(n, 3);
-				int i = 0;
-				auto it1 = l1.begin(), it2 = l2.begin();
-				for (; it1 != l1.end() && it2 != l2.end(); it1++, it2++, i++) {
+				i = 0;
+				l = l1.size();
+				Mat mat1(l, 3);
+				Mat mat2(l, 3);
+				for (i = 0; i < l; i++) {
 					for (int k = 0; k < 3; k++) {
-						mat1(i, k) = (*it1)[k];
-						mat2(i, k) = (*it2)[k];
+						mat1(i, k) = l1[i][k];
+						mat2(i, k) = l2[i][k];
 					}
 				}
 				return geom::rmsd(mat1, mat2);
 			}
 
+			void set_common() {
+				std::ifstream ifile;
+				std::string seq1, seq2;
+				std::deque<int> dq1, dq2;
+				int i, l, n1, n2;
+
+				if (m_align.empty()) {
+					l = size(m_ref);
+					m_common_ref.resize(l);
+					m_common_tgt.resize(l);
+					std::iota(m_common_ref.begin(), m_common_ref.end(), 0);
+					std::iota(m_common_tgt.begin(), m_common_tgt.end(), 0);
+				}
+				else {
+					FOPEN(ifile, m_align);
+					ifile >> seq1 >> seq2;
+					assert(size(seq1) == size(seq2));
+					l = size(seq1);
+					n1 = 0;
+					n2 = 0;
+					for (i = 0; i < l; i++) {
+						if (seq1[i] != '-' && seq2[i] != '-') {
+							dq1.push_back(n1);
+							dq2.push_back(n2);
+						}
+						if (seq1[i] != '-') n1++;
+						if (seq2[i] != '-') n2++;
+					}
+					FCLOSE(ifile);
+					m_common_ref = std::move(dq1);
+					m_common_tgt = std::move(dq2);
+				}
+			}
+
 			void rmsd() {
-				Model m;
-				mol_read(m, m_ref);
-				for_each_model(m_traj, [this, &m](const Model &model, int i) {
+				for_each_model(m_traj, [this](const Model &model, int i) {
 					if (i % m_bin == 0) {
-						JN_OUT << i+1 << ' ' << rmsd(m, model) << std::endl;
+						JN_OUT << i+1 << ' ' << rmsd(model_to_chain(model)) << std::endl;
 					}
 				});
 			}

@@ -24,15 +24,15 @@ namespace jian {
 		}
 	};
 
-#define FOPEN(f, s) \
-	jian::file::open(f, s); \
-    if (!(f)) {\
+#define FOPEN(fstream, filename) \
+	jian::file::open(fstream, filename); \
+    if (!(fstream)) {\
         std::ostringstream stream;\
-        stream << "Can't open file '" << s << "'!" << std::endl;\
+        stream << "Can't open file '" << filename << "'!" << std::endl;\
         throw stream.str();\
     }
 
-#define FCLOSE(f) (f).close()
+#define FCLOSE(fstream) (fstream).close()
 
 #define BEGIN_READ_FILE(f, t) do {\
 	int N = 0;\
