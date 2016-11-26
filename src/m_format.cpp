@@ -6,12 +6,9 @@ namespace jian {
 	namespace {
 		void m_format(const Par &par, std::string mol_type) {
 			std::string in = par.get("s", "pdb", "i", "in");
-			std::string out = par.get("o", "out");
-			std::ofstream ofile;
 			Format format;
 			Molecule mol;
 
-			FOPEN(ofile, out);
 			mol_read(mol, in, mol_type);
 			if (par.has("format")) {
 				mol = format(mol);
@@ -19,8 +16,7 @@ namespace jian {
 			else {
 				format.sort(mol);
 			}
-			ofile << mol << std::endl;
-			FCLOSE(ofile);
+			JN_OUT << mol << std::endl;
 		}
 
 		REGISTER_NSP_COMPONENT(format) {
