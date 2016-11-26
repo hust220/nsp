@@ -25,17 +25,17 @@ int main(int argc, char **argv) {
 	jian::g_argc = argc;
 	jian::g_argv = argv;
 	JN_INIT_MPI;
-	//try {
+	try {
 		jian::NSP::run(argc, argv);
-	//}
-	//catch (const jian::Error &inf) {
-	//	std::cout << inf.what() << std::endl;
-	//}
-	//catch (const char * inf) {
-	//	std::cout << inf << std::endl;
-	//}
-	//catch (const std::string &s) {
-	//	std::cout << s << std::endl;
-	//}
+	}
+	catch (const jian::Error &inf) {
+		std::cout << inf.what() << std::endl;
+	}
+	catch (const char * inf) {
+		std::cout << inf << std::endl;
+	}
+	catch (const std::string &s) {
+		std::cout << s << std::endl;
+	}
 }
 
