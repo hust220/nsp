@@ -34,7 +34,7 @@ namespace jian {
 		}
 
 		refs<_ValType> &append(_ValType &val) {
-			push_back(std::ref(val));
+			std::vector<std::reference_wrapper<_ValType>>::push_back(std::ref(val));
 			return *this;
 		}
 
