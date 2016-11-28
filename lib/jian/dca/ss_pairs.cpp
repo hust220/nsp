@@ -12,7 +12,7 @@
 namespace jian {
 namespace dca {
 
-std::vector<std::array<char, 2>> patterns = {{'.', '.'}, {'(', ')'}};
+	std::vector<std::array<char, 2>> patterns = { {'.', '.'}, {'(', ')'}, {'[', ']'}, {'{', '}'} };
 
 void pairs_sort(pairs_t &pairs) {
     pairs.sort([](auto && pair1, auto && pair2){

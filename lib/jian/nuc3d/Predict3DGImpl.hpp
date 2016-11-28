@@ -107,7 +107,12 @@ public:
     Model to_all_atom(const Eigen::MatrixXd &c) {
         Chain chain;
 		std::shared_ptr<CG> cg(CG::fac_t::create("1p"));
-		EACH(i, _frags, EACH(j, cg->to_aa(c, i[0], i[1]), chain.push_back(j)));
+		for (auto && i : _frags) {
+			for (auto && j : cg->to_aa(c, i[0], i[1])) {
+				chain.push_back(j);
+			}
+		}
+		//EACH(i, _frags, EACH(j, cg->to_aa(c, i[0], i[1]), chain.push_back(j)));
         Model m; m.push_back(chain); 
         return m;
     }

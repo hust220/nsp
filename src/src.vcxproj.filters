@@ -77,6 +77,9 @@
     <Filter Include="jian\mpi">
       <UniqueIdentifier>{39d87b82-58bf-4244-8053-ed231f32a4be}</UniqueIdentifier>
     </Filter>
+    <Filter Include="jian\pp">
+      <UniqueIdentifier>{22404873-cbcc-4df0-86c8-c413422b6e3f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="align.cpp">
@@ -444,6 +447,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="m_ss_tree.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_ss.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -975,6 +981,12 @@
     </ClInclude>
     <ClInclude Include="..\lib\jian\nuc3d\BuildLoopRaw.hpp">
       <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\pp\core.hpp">
+      <Filter>jian\pp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\pp\map.hpp">
+      <Filter>jian\pp</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

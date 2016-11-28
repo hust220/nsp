@@ -31,7 +31,13 @@ namespace jian {
 
 		Residue &operator +=(const Residue &r);
 
+		JN_DEF_ATOMS;
 	};
+
+#define JN_DEF_RESIDUES \
+	refs<Residue> residues() { return refs<Residue>().append(*this); }\
+	refs<const Residue> residues() const { return refs<const Residue>().append(*this); }
+
 
 	bool res_is_type(const Residue &res, std::string type);
 

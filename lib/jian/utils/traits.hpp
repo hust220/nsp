@@ -1,16 +1,52 @@
 #pragma once
 
 #include <type_traits>
+#include <vector>
 
 namespace jian {
 
 #define JN_ENABLE(t) std::enable_if_t<t, int> = 42
 #define JN_IS_SAME(A, B) std::is_same<A, B>::value
 
+#define JN_DEFAULT_CONSTRUCTORS(type) \
+	type() = default;\
+	type(const type &) = default;\
+	type(type &&) = default;\
+	type &operator =(const type &) = default;\
+	type &operator =(type &&) = default
+
 	template<typename T>
 	int size(T &&t) {
 		return int(t.size());
 	}
+
+	template<typename _ValType>
+	class refs : public std::vector<std::reference_wrapper<_ValType>> {
+	public:
+		using value_type = _ValType;
+
+		_ValType &operator [](int i) const {
+			return std::vector<std::reference_wrapper<_ValType>>::operator[](i);
+		}
+
+		_ValType &at(int i) const {
+			return std::vector<std::reference_wrapper<_ValType>>::at(i);
+		}
+
+		refs<_ValType> &append(_ValType &val) {
+			push_back(std::ref(val));
+			return *this;
+		}
+
+		template<typename _Ls>
+		refs<_ValType> &append(_Ls &&ls) {
+			for (auto && item : ls) {
+				append(item);
+			}
+			return *this;
+		}
+
+	};
 
 	template<typename T, typename U>
 	struct is_decay_same {

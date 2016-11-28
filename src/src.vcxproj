@@ -391,6 +391,7 @@
     <ClCompile Include="m_new_score.cpp" />
     <ClCompile Include="m_pdb2jn.cpp" />
     <ClCompile Include="m_server.cpp" />
+    <ClCompile Include="m_ss.cpp" />
     <ClCompile Include="m_traj.cpp" />
     <ClCompile Include="nsp.cpp" />
     <ClCompile Include="parse_helix.cpp" />
@@ -529,6 +530,8 @@
     <ClInclude Include="..\lib\jian\pdb\RNA.hpp" />
     <ClInclude Include="..\lib\jian\pdb\utils\cluster_chains.hpp" />
     <ClInclude Include="..\lib\jian\pp.hpp" />
+    <ClInclude Include="..\lib\jian\pp\core.hpp" />
+    <ClInclude Include="..\lib\jian\pp\map.hpp" />
     <ClInclude Include="..\lib\jian\qhmc.hpp" />
     <ClInclude Include="..\lib\jian\qhmc\HeadHairpin.hpp" />
     <ClInclude Include="..\lib\jian\qhmc\Helix.hpp" />

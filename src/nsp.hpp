@@ -8,14 +8,15 @@
 #include <jian/utils/Env.hpp>
 #include <jian/utils/log.hpp>
 #include <string>
-#include <boost/preprocessor.hpp>
+#include <jian/pp.hpp>
+//#include <boost/preprocessor.hpp>
 
 namespace jian {
 
 #define REGISTER_NSP_COMPONENT(i)\
-    void BOOST_PP_CAT(nsp_, i)(Par par);\
-    NSPComponent BOOST_PP_CAT(component_, i)(#i, BOOST_PP_CAT(nsp_, i));\
-    void BOOST_PP_CAT(nsp_, i)(Par par)
+    void PP_CAT(nsp_, i)(Par par);\
+    NSPComponent  PP_CAT(component_, i)(PP_STRING(i), PP_CAT(nsp_, i));\
+    void PP_CAT(nsp_, i)(Par par)
 
 class NSP {
 public:

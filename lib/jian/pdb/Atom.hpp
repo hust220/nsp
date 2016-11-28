@@ -5,13 +5,6 @@
 #include <map>
 #include "../matrix.hpp"
 
-#define JN_DEFAULT_CONSTRUCTORS(type) \
-	type() = default;\
-	type(const type &) = default;\
-	type(type &&) = default;\
-	type &operator =(const type &) = default;\
-	type &operator =(type &&) = default
-
 namespace jian {
 
 	class Atom : public std::array<double, 3> {
@@ -32,6 +25,10 @@ namespace jian {
 		void set_mass();
 
 	};
+
+#define JN_DEF_ATOMS\
+	refs<Atom> atoms() { return refs<Atom>().append(*this); }\
+	refs<const Atom> atoms() const { return refs<const Atom>().append(*this); }
 
 } // namespace jian
 
