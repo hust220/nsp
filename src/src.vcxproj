@@ -593,6 +593,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\CMakeLists.txt" />
+    <Text Include="..\说明.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md" />

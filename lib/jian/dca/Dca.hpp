@@ -34,8 +34,8 @@ public:
     std::vector<char> m_symbols {'A', 'U', 'C', 'G'};
     std::map<char, int> m_map_symbols;
 
-	Dca();
-	Dca(std::string mol_type, float pw);
+	Dca() = default;
+	Dca(std::string mol_type, float pw) : pseudocount_weight(pw) {}
     ~Dca();
     void fastaread(std::string fastafile, seqs_t &seqs);
     void trim_seqs(seqs_t &seqs, int n);

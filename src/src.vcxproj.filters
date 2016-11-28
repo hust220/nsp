@@ -397,7 +397,6 @@
     <ClCompile Include="m_aa.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\jian\scoring\ParBp.cpp" />
     <ClCompile Include="..\lib\jian\matrix\Mat4.cpp">
       <Filter>jian\matrix</Filter>
     </ClCompile>
@@ -451,6 +450,9 @@
     </ClCompile>
     <ClCompile Include="..\lib\jian\dca\Dca.cpp">
       <Filter>jian\dca</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\scoring\ParBp.cpp">
+      <Filter>jian\scoring</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -991,6 +993,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\CMakeLists.txt" />
+    <Text Include="..\说明.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md" />
