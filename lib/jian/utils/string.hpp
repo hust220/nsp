@@ -21,6 +21,21 @@ namespace jian {
 	void tokenize(const str_t &str, tokenize_v &tokens, const str_t &delimiters = " ");
 	void tokenize(const str_t &str, tokenize_v &tokens, const str_t &delimiters, const str_t &temp);
 
+    inline void stream_push(std::ostream &stream) {}
+
+    template<typename _First, typename... _Tail>
+    inline void stream_push(std::ostream &stream, _First &&first, _Tail && ...tail) {
+        stream << first;
+        stream_push(stream, tail...);
+    }
+
+    template<typename... _Args>
+    inline str_t to_str(_Args && ...args) {
+        std::ostringstream stream;
+        stream_push(stream, args...);
+        return stream.str();
+    }
+
 	str_t upper(const str_t &str);
 	str_t lower(const str_t &str);
 

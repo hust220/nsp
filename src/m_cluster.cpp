@@ -21,7 +21,7 @@ namespace jian {
 			std::string cg = "C4'";
 			std::string list_file;
 			std::string matrix_file;
-			std::string models_file;
+			Par::pars_t m_trajs;
 			int m_bin = 1;
 			std::string m_method = "kmeans";
 			std::shared_ptr<Par> m_par;
@@ -31,7 +31,7 @@ namespace jian {
 				par.set(cg, "cg");
 				par.set(list_file, "l", "list");
 				par.set(matrix_file, "m", "mat", "matrix");
-				par.set(models_file, "models");
+				par.setv(m_trajs, "trajs");
 				par.set(m_bin, "b", "bin");
 				m_par = std::make_shared<Par>(par);
 			}
@@ -123,16 +123,17 @@ namespace jian {
 					LOG << "Clustering..." << std::endl;
 					mat = Cluster::to_mat(mats.begin(), mats.end(), dist);
 				}
-				else if (!models_file.empty()) {
-					for_each_model(models_file, [this, &names, &mats, &method](const Model &model, int i) {
-						if (i % m_bin == 0) {
-							LOG << "Reading: model " << i + 1 << " (" << num_residues(model) << " nt)" << std::endl;
-							mats.push_back(method(model));
-							std::ostringstream stream;
-							stream << "model-" << i + 1;
-							names.push_back(stream.str());
-						}
-					});
+				else if (!m_trajs.empty()) {
+                    for (auto && traj : m_trajs) {
+                        LOG << "Loading file: " << traj << "..." << std::endl;
+                        for_each_model(traj, [this, &names, &mats, &method, &traj](const Model &model, int i) {
+                            if (i % m_bin == 0) {
+                                LOG << "Reading: model " << i + 1 << " (" << num_residues(model) << " nt)" << std::endl;
+                                mats.push_back(method(model));
+                                names.push_back(to_str(traj, ":model-", i+1));
+                            }
+                        });
+                    }
 					LOG << "Clustering..." << std::endl;
 					mat = Cluster::to_mat(mats.begin(), mats.end(), dist);
 				}
