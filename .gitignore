@@ -19,8 +19,8 @@ para-release
 para-debug
 serial-release
 serial-debug
-pDebug/
-pRelease/
+p[Dd]ebug/
+p[Rr]elease/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/

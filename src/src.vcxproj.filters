@@ -280,9 +280,6 @@
     <ClCompile Include="..\lib\jian\cg\CGpsb.cpp">
       <Filter>jian\cg</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\jian\dca\Dca.cpp">
-      <Filter>jian\dca</Filter>
-    </ClCompile>
     <ClCompile Include="..\lib\jian\dca\MfDca.cpp">
       <Filter>jian\dca</Filter>
     </ClCompile>
@@ -451,6 +448,9 @@
     </ClCompile>
     <ClCompile Include="m_ss.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\dca\Dca.cpp">
+      <Filter>jian\dca</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -772,9 +772,6 @@
     <ClInclude Include="..\lib\jian\cg\CGpsb.hpp">
       <Filter>jian\cg</Filter>
     </ClInclude>
-    <ClInclude Include="..\lib\jian\dca\Dca.hpp">
-      <Filter>jian\dca</Filter>
-    </ClInclude>
     <ClInclude Include="..\lib\jian\dca\MfDca.hpp">
       <Filter>jian\dca</Filter>
     </ClInclude>
@@ -987,6 +984,9 @@
     </ClInclude>
     <ClInclude Include="..\lib\jian\pp\map.hpp">
       <Filter>jian\pp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\dca\Dca.hpp">
+      <Filter>jian\dca</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
