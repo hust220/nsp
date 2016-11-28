@@ -10,7 +10,15 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+# Vim swap files
+.*.swp
+*.bak
+
 # Build results
+para-release
+para-debug
+serial-release
+serial-debug
 pDebug/
 pRelease/
 [Dd]ebug/
