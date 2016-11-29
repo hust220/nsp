@@ -1,4 +1,5 @@
 #include "nsp.hpp"
+#include <jian/utils/string.hpp>
 #include <jian/utils/exception.hpp>
 #include <jian/utils/Env.hpp>
 
@@ -34,7 +35,7 @@ int main(int argc, char **argv) {
 	catch (const char * inf) {
 		std::cout << inf << std::endl;
 	}
-	catch (const std::string &s) {
+	catch (const jian::str_t &s) {
 		std::cout << s << std::endl;
 	}
 }

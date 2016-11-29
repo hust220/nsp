@@ -171,8 +171,8 @@ namespace jian {
 		TSP::init(par);
 
 		m_selected_mvel = NULL;
-		m_sample_mode = SAMPLE_SSE;
-		m_cal_en_constraints = false;
+		m_sample_mode = SAMPLE_TREE;
+		m_cal_en_constraints = true;
 		m_max_angle = PI * 1.5;
 		m_box = 2;
 		m_box_size = 12;
@@ -197,9 +197,10 @@ namespace jian {
 		LOG << "# Read initial structure" << std::endl;
 		par.set(m_init_sfile, "init");
 		if (m_init_sfile.empty()) {
-			nuc3d::Assemble assemble(Par(par)("loop_building", "all_raw"));
-			assemble.predict_one();
-			_pred_chain = assemble._pred_chain;
+			//nuc3d::Assemble assemble(Par(par)("loop_building", "all_raw"));
+			//assemble.predict_one();
+			//_pred_chain = assemble._pred_chain;
+			_pred_chain = BuildChain()(_seq.size()).m_chain;
 		}
 		else {
 			chain_read_model(_pred_chain, m_init_sfile);
@@ -580,7 +581,7 @@ namespace jian {
 	void MCBase::before_run() {}
 	void MCBase::finish_run() {}
 
-	std::string MCBase::file_parameters() const {
+	str_t MCBase::file_parameters() const {
 		return "3drna";
 	}
 

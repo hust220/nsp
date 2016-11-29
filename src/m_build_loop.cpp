@@ -5,9 +5,9 @@ namespace jian {
 
 REGISTER_NSP_COMPONENT(build_loop) {
 	int n = 1;
-	std::string name = "aa";
-	std::string seq = "AACCCCUU";
-	std::string ss = "((....))";
+	str_t name = "aa";
+	str_t seq = "AACCCCUU";
+	str_t ss = "((....))";
 
 	par.set(n, "n", "num");
 	par.set(name, "name");

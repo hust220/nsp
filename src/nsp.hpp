@@ -20,7 +20,7 @@ namespace jian {
 
 class NSP {
 public:
-    std::map<std::string, std::function<void(Par)>> _methods;
+    std::map<str_t, std::function<void(Par)>> _methods;
 	int m_argc;
 	char **m_argv;
 
@@ -33,7 +33,7 @@ public:
 class NSPComponent : public NSP {
 public:
     template<typename F>
-    NSPComponent(const std::string &name, F &&f) {
+    NSPComponent(const str_t &name, F &&f) {
         NSP::instance()._methods[name] = f;
     }
 };

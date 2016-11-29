@@ -105,7 +105,7 @@ namespace jian {
 
 	// mat_from_file
 	template<typename T = Eigen::MatrixXd>
-	inline T mat_from_file(const std::string &file) {
+	inline T mat_from_file(const str_t &file) {
 		std::ifstream ifile;
 		FOPEN(ifile, file);
 		int rows, cols;

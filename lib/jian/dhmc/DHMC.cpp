@@ -409,7 +409,7 @@ namespace jian {
 
 		for (int i = 0; i < _seq.size(); i++) {
 			for (int j = i; j < _seq.size(); j++) {
-				if (foo(i, j)) {
+				if (/*foo(i, j)*/true) {
 					m_mvels.push_back(new MvEl(i, j, MvEl::MVEL_FG));
 				}
 			}

@@ -118,7 +118,7 @@ void TSP::display_end_information() {
 }
 
 void TSP::read_seq() {
-	std::string seq;
+	str_t seq;
 	jian::tokenize_v v;
 	jian::tokenize_v w;
 

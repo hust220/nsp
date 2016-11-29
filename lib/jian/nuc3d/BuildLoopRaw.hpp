@@ -25,19 +25,19 @@ public:
 	using Frag = std::deque<int>;
 	using Frags = std::deque<Frag>;
 
-    std::string _lib = Env::lib();
-	std::map<std::string, Hinges> m_cache_hinges;
-	std::map<std::string, Frags> m_cache_frags;
-    std::string type = "RNA";
-	std::string m_seq;
-	std::string m_ss;
+    str_t _lib = Env::lib();
+	std::map<str_t, Hinges> m_cache_hinges;
+	std::map<str_t, Frags> m_cache_frags;
+    str_t type = "RNA";
+	str_t m_seq;
+	str_t m_ss;
 	Hinges m_hinges;
 	Helices m_helices;
 	Frags m_frags;
 	std::vector<Pos> m_res_pos;
 	num_t m_radius;
 
-	BuildLoopRaw &init(const std::string &seq, const std::string &ss);
+	BuildLoopRaw &init(const str_t &seq, const str_t &ss);
 
 	Chain operator ()();
 

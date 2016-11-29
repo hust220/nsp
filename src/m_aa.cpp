@@ -4,11 +4,22 @@
 #include <jian/scoring/ParBp.hpp>
 #include <jian/geom.hpp>
 #include <jian/utils/Serial.hpp>
+#include <jian/nuc3d/BuildChain.hpp>
 //#include <jian/mpi.hpp>
 #include "nsp.hpp"
 
 namespace jian {
 	namespace {
+
+		REGISTER_NSP_COMPONENT(test_build_chain) {
+			BuildChain builder;
+			int n = 10;
+
+			par.set(n, "n");
+			builder(n);
+			JN_OUT << builder.m_chain << std::endl;
+		}
+
 
 		REGISTER_NSP_COMPONENT(test_count) {
 			std::vector<int> v{ 1, 2, 3 };

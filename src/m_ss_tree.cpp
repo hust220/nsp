@@ -7,8 +7,8 @@ namespace jian {
 
 REGISTER_NSP_COMPONENT(ss_tree) {
     try {
-		std::string seq = "AAAACCCCUUUU";
-		std::string ss = "((((....))))";
+		str_t seq = "AAAACCCCUUUU";
+		str_t ss = "((((....))))";
         SSTree ss_tree;
 
 		par.set(seq, "seq");

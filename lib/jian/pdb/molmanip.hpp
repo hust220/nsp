@@ -29,8 +29,8 @@ namespace jian {
 	}
 
 	//template<typename T, JN_ENABLE(JN_GE_CHAIN(T))>
-	//std::string seq(T && t) {
-	//	std::string s;
+	//str_t seq(T && t) {
+	//	str_t s;
 	//	for (auto && i : t) {
 	//		s += seq(i);
 	//	}
@@ -38,7 +38,7 @@ namespace jian {
 	//}
 
 	//template<typename T, JN_ENABLE(JN_IS_RESIDUE(T))>
-	//std::string seq(T && t) {
+	//str_t seq(T && t) {
 	//	return t.name;
 	//}
 

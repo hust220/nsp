@@ -39,11 +39,11 @@ namespace jian {
 	public:
 
 		//template<typename T, JN_ENABLE(std::is_integral<T>::value || std::is_floating_point<T>::value || JN_IS_SAME(T, char))>
-		//void write(std::stringstream &stream, const T &t) {
+		//void write(str_tstream &stream, const T &t) {
 		//	stream.write(reinterpret_cast<const char *>(&t), sizeof t);
 		//}
 
-		//void write(std::stringstream &stream, const std::string &t) {
+		//void write(str_tstream &stream, const str_t &t) {
 		//	stream.write(t.c_str(), t.size() + 1);
 		//}
 
@@ -59,7 +59,7 @@ namespace jian {
 		template<typename Head, typename... Tail>
 		std::string stringify(Head && head, Tail && ...tail) {
 			std::stringstream stream;
-			std::string s;
+			str_t s;
 			std::size_t size;
 
 			stringify_(stream, head, tail...);

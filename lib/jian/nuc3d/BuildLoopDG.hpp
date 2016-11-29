@@ -9,7 +9,7 @@
 
 namespace jian {
 
-	Chain *build_chain_dg(std::string seq, std::string ss);
+	Chain *build_chain_dg(str_t seq, str_t ss);
 
 	class BuildLoopDG {
 	public:
@@ -24,7 +24,7 @@ namespace jian {
 
 		void init_dist_bound(Mat &b, int l);
 
-		BuildLoopDG &init(const std::string &seq, const std::string &ss);
+		BuildLoopDG &init(const str_t &seq, const str_t &ss);
 
 		BuildLoopDG &init(const Chain &c, const std::vector<int> &brokens);
 

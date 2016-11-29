@@ -18,7 +18,7 @@
 #include "../geom.hpp"
 #include "../nuc2d.hpp"
 #include "../pp.hpp"
-
+#include "../nuc3d/BuildChain.hpp"
 
 
 #define JN_MCXP_PARS1 \

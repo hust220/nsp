@@ -13,10 +13,10 @@ namespace jian {
 
 		class TrajComponent {
 		public:
-			std::string m_func;
-			std::string m_traj;
-			std::string m_ref_file;
-			std::string m_align;
+			str_t m_func;
+			str_t m_traj;
+			str_t m_ref_file;
+			str_t m_align;
 			Chain m_ref;
 			std::deque<int> m_common_ref, m_common_tgt;
 			int m_bin = 1;
@@ -112,7 +112,7 @@ namespace jian {
 
 			void set_common() {
 				std::ifstream ifile;
-				std::string seq1, seq2;
+				str_t seq1, seq2;
 				std::deque<int> dq1, dq2;
 				int i, l, n1, n2;
 

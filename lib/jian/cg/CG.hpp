@@ -14,8 +14,8 @@ namespace jian {
 		using constructor_t = CG*(void);
 		using fac_t = Factory<CG::constructor_t>;
 
-		std::string m_cg;
-		//std::map<std::string, std::map<std::string, std::map<std::string, std::vector<std::string>>>>
+		str_t m_cg;
+		//std::map<str_t, std::map<str_t, std::map<str_t, std::vector<str_t>>>>
 		//	m_maps;
 
 		template<typename T>

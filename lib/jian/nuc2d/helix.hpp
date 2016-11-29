@@ -6,6 +6,7 @@
 #include <list>
 #include <sstream>
 #include "bp.hpp"
+#include "../utils/string.hpp"
 
 #define JN_BREAK_INIT bool is_break = false
 #define JN_BREAK is_break = true; break
@@ -62,15 +63,15 @@ public:
 		return l;
     }
 
-    std::string ss() const {
-        std::string str;
+    str_t ss() const {
+        str_t str;
         HELIX_EACH(*this, str += '(');
         HELIX_EACH(*this, str += ')');
         return str;
     }
 
-    std::string seq() const {
-        std::string str;
+    str_t seq() const {
+        str_t str;
         HELIX_EACH(*this, str.insert(N_BP, {BP->res1.name, BP->res2.name}));
         return str;
     }
@@ -83,8 +84,8 @@ public:
         return nums;
     }
 
-    operator std::string() const {
-//        std::string str;
+    operator str_t() const {
+//        str_t str;
         std::ostringstream stream;
         stream << seq() << ' ' << ss();
         for (auto && i : nums()) {
@@ -97,7 +98,7 @@ public:
     }
 
     friend std::ostream &operator <<(std::ostream &out, const helix &h) {
-        out << "Helix: " << ' ' << (std::string)h;
+        out << "Helix: " << ' ' << (str_t)h;
     }
 
 };

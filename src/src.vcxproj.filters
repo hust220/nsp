@@ -990,6 +990,9 @@
     <ClInclude Include="..\lib\jian\dca\Dca.hpp">
       <Filter>jian\dca</Filter>
     </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\BuildChain.hpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\CMakeLists.txt" />

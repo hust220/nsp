@@ -42,7 +42,7 @@ namespace jian {
 		}
 	}
 
-	void ss_read_tree(std::string &ss, loop *l) {
+	void ss_read_tree(str_t &ss, loop *l) {
 		auto p = loop_head_tail(l);
 		ss.resize(p.second - p.first + 1);
 		LOOP_TRAVERSE(l,
@@ -56,7 +56,7 @@ namespace jian {
 		);
 	}
 
-	void seq_read_tree(std::string &seq, loop *l) {
+	void seq_read_tree(str_t &seq, loop *l) {
 		auto p = loop_head_tail(l);
 		seq.resize(p.second - p.first + 1);
 		LOOP_TRAVERSE(l,
@@ -190,7 +190,7 @@ namespace jian {
 			return true;
 		}
 
-		loop *set_tree(const std::string &ss, int hinge) {
+		loop *set_tree(const str_t &ss, int hinge) {
 			std::deque<res> v;
 			int i = 0;
 			for (auto && c : ss) {
@@ -202,7 +202,7 @@ namespace jian {
 			return ls.back();
 		}
 
-		void read_seq(loop *l, const std::string &seq, const std::string &ss) {
+		void read_seq(loop *l, const str_t &seq, const str_t &ss) {
 			std::vector<int> v(ss.size());
 			int f = 1;
 			int i = 0;
@@ -262,12 +262,12 @@ namespace jian {
 		return _impl->head == NULL;
 	}
 
-	void SSTree::make(const std::string &seq, const std::string &ss, int hinge) {
+	void SSTree::make(const str_t &seq, const str_t &ss, int hinge) {
 		LOG << "## Make secondary structure tree with no broken tag" << std::endl;
 		LOG << seq << std::endl;
 		LOG << ss << std::endl;
 		if (NASS::seq_match_ss(seq, ss)) {
-			std::string ss_nbt;
+			str_t ss_nbt;
 			std::copy_if(ss.begin(), ss.end(), std::back_inserter(ss_nbt), [](auto &&c) {return c != '&'; });
 			_impl->head = sstree_detail::set_tree(ss_nbt, hinge);
 			sstree_detail::read_seq(_impl->head, seq, ss_nbt);
@@ -281,7 +281,7 @@ namespace jian {
 		}
 	}
 
-	void SSTree::make_b(const std::string &seq, const std::string &ss, int hinge) {
+	void SSTree::make_b(const str_t &seq, const str_t &ss, int hinge) {
 		LOG << "## Make secondary structure tree with broken tag" << std::endl;
 		LOG << seq << std::endl;
 		LOG << ss << std::endl;
@@ -298,7 +298,7 @@ namespace jian {
 		}
 	}
 
-	loop *ss_tree(std::string seq, std::string ss, int hinge) {
+	loop *ss_tree(str_t seq, str_t ss, int hinge) {
 		loop *tree = sstree_detail::set_tree(ss, hinge);
 		sstree_detail::read_seq(tree, seq, ss);
 		return tree;

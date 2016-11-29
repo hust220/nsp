@@ -491,6 +491,7 @@
     <ClInclude Include="..\lib\jian\nuc3d\AddPhos.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\Assemble.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\BasicPredict3D.hpp" />
+    <ClInclude Include="..\lib\jian\nuc3d\BuildChain.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\BuildHelix.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\BuildLoopRaw.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\BuildLoopDG.hpp" />

@@ -6,8 +6,8 @@ namespace jian {
 
 		Dca::~Dca() {}
 
-		void Dca::fastaread(std::string fastafile, Dca::seqs_t &seqs) {
-			std::string tmp;
+		void Dca::fastaread(str_t fastafile, Dca::seqs_t &seqs) {
+			str_t tmp;
 			BEGIN_READ_FILE(fastafile, " ") {
 				if (L[0] == '>') {
 					seqs.push_back(tmp);
@@ -45,7 +45,7 @@ namespace jian {
 			}
 		}
 
-		void Dca::init(std::string Rfamfile, int n) {
+		void Dca::init(str_t Rfamfile, int n) {
 			seqs_t seqs;
 			char c;
 
@@ -180,7 +180,7 @@ namespace jian {
 			}
 		}
 
-		void Dca::calculate_DI(std::string out_file) {
+		void Dca::calculate_DI(str_t out_file) {
 			LOGI << "Calculate eij ..." << std::endl;
 			calculate_eij();
 
@@ -202,7 +202,7 @@ namespace jian {
 			ofile.close();
 		}
 
-		Dca &Dca::run(std::string input, std::string out_file, int n) {
+		Dca &Dca::run(str_t input, str_t out_file, int n) {
 			LOGI << "Load FASTA alignment file: " << input << std::endl;
 			init(input, n);
 			LOGI << "M = " << M << ", N = " << N << ", q = " << q << std::endl;

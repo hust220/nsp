@@ -20,7 +20,7 @@ void pairs_sort(pairs_t &pairs) {
 	});
 }
 
-pairs_t pairs_from_file(const std::string &file_name, int size) {
+pairs_t pairs_from_file(const str_t &file_name, int size) {
     auto && tuples = tuples_from_file(file_name, size);
     pairs_t pairs;
     for (auto && tuple : tuples) {
@@ -29,7 +29,7 @@ pairs_t pairs_from_file(const std::string &file_name, int size) {
     return pairs;
 }
 
-tuples_t tuples_from_file(const std::string &file_name, int size) {
+tuples_t tuples_from_file(const str_t &file_name, int size) {
     tuples_t tuples;
 	BEGIN_READ_FILE(file_name, " ") {
 		//        if (N >= size) return pairs;

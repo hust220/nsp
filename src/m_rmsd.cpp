@@ -19,8 +19,8 @@ namespace jian {
 			bool m_has_traj;
 			nums_t nums;
 			Par::pars_t m_files;
-			std::string m_ref;
-			std::string m_tgt;
+			str_t m_ref;
+			str_t m_tgt;
 
 			RmsdComponent(const Par &par) {
 				m_loose = par.has("loose");
@@ -37,8 +37,8 @@ namespace jian {
 
 			}
 
-			void set_nums(nums_t &nums, const std::string &par) {
-				std::vector<std::string> v, w;
+			void set_nums(nums_t &nums, const str_t &par) {
+				std::vector<str_t> v, w;
 				jian::tokenize(par, v, "+");
 				for (auto && i : v) {
 					jian::tokenize(i, w, "-");

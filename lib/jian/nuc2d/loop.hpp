@@ -210,12 +210,12 @@ public:
         return num_branches() == num_sons();
     }
 
-    std::string ss() const {
-        std::string ss; LOOP_EACH(this, ss += RES->type); return ss;
+    str_t ss() const {
+        str_t ss; LOOP_EACH(this, ss += RES->type); return ss;
     }
 
-    std::string seq() const {
-		std::string seq;
+    str_t seq() const {
+		str_t seq;
 		LOOP_EACH(this, if (RES->type != '&') seq += RES->name);
 		return seq;
     }
@@ -225,7 +225,7 @@ public:
 //        LOOP_EACH(&l, out << RES->num << ' ');
 //    }
 
-    operator std::string() const {
+    operator str_t() const {
         std::ostringstream stream;
         stream << seq() << ' ' << ss() << ' ';
         LOOP_EACH(this, stream << RES->num << ' ');

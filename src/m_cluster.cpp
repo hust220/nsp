@@ -18,12 +18,12 @@ namespace jian {
 		public:
 			using method_t = std::function<Mat*(const Model &)>;
 
-			std::string cg = "C4'";
-			std::string list_file;
-			std::string matrix_file;
+			str_t cg = "C4'";
+			str_t list_file;
+			str_t matrix_file;
 			Par::pars_t m_trajs;
 			int m_bin = 1;
-			std::string m_method = "kmeans";
+			str_t m_method = "kmeans";
 			std::shared_ptr<Par> m_par;
 
 			ClusterComponent(const Par &par) {
@@ -49,7 +49,7 @@ namespace jian {
 				}
 			}
 
-			Mat *read_mat(std::string filename) {
+			Mat *read_mat(str_t filename) {
 					std::ifstream ifile;
 					FOPEN(ifile, filename);
 					int rows, cols;
@@ -63,7 +63,7 @@ namespace jian {
 			}
 
 			void run() {
-				std::map<std::string, method_t> methods;
+				std::map<str_t, method_t> methods;
 				methods["C4'"] = [](const Model &model) {
 							int len = num_residues(model);
 							Mat *mat = new Mat(len, 3);
@@ -108,7 +108,7 @@ namespace jian {
 				method_t &method = methods[cg];
 				std::deque<Mat *> mats;
 				Mat *mat;
-				std::deque<std::string> names;
+				std::deque<str_t> names;
 				auto dist = [](Mat *m1, Mat *m2) {return geom::rmsd(*m1, *m2); };
 				auto cluster = Cluster::fac_t::make(m_method, *m_par);
 				//Cluster cluster(k);
