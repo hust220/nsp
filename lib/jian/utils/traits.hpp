@@ -17,7 +17,7 @@ namespace jian {
 	type &operator =(type &&) = default
 
 	template<typename T>
-	int size(T &&t) {
+	inline int size(T &&t) {
 		return int(t.size());
 	}
 
@@ -100,6 +100,70 @@ namespace jian {
 
 	template<typename T>
 	using template_first_parameter_t = typename template_first_parameter<T>::type;
+
+	template<typename _ValType>
+	inline int count(const _ValType &val) {
+		return 1;
+	}
+
+	template<typename _ValType, typename... _Args, template<typename...> class _Ls>
+	inline int count(const _Ls<_ValType, _Args...> &ls) {
+		return int(ls.size());
+	}
+
+	template<typename _ValType, typename _Ls, JN_ENABLE(JN_IS_SAME(_Ls, _ValType))>
+	inline int count(const _Ls &ls) {
+		return 1;
+	}
+
+	template<typename _ValType, typename _Ls, JN_ENABLE(JN_IS_SAME(typename _Ls::value_type, _ValType))>
+	inline int count(const _Ls &ls) {
+		return size(ls);
+	}
+
+	template<typename _ValType, typename _Ls, JN_ENABLE(!JN_IS_SAME(typename _Ls::value_type, _ValType))>
+	inline int count(const _Ls &ls) {
+		int c = 0;
+		for (auto && item : ls) c += count<_ValType>(item);
+		return c;
+	}
+
+	template<typename _ValType, typename _Fn>
+	inline bool each(_ValType &&ls, _Fn &&fn) {
+		fn(ls);
+		return true;
+	}
+
+	template<typename _ValType, typename... _Args, template<typename...> class _Ls, typename _Fn>
+	inline bool each(_Ls<_ValType, _Args...> &&ls, _Fn &&fn) {
+		for (auto && item : ls) {
+			if (!fn(item)) return false;
+		}
+		return true;
+	}
+
+	template<typename _ValType, typename _Ls, typename _Fn, JN_ENABLE(JN_IS_SAME(_Ls, _ValType))>
+	inline bool each(_Ls &&ls, _Fn &&fn) {
+		fn(ls);
+		return true;
+	}
+
+	template<typename _ValType, typename _Ls, typename _Fn, JN_ENABLE(JN_IS_SAME(typename std::decay_t<_Ls>::value_type, _ValType))>
+	inline bool each(_Ls &&ls, _Fn &&fn) {
+		for (auto && item : ls) {
+			if (!fn(item)) return false;
+		}
+		return true;
+	}
+
+	template<typename _ValType, typename _Ls, typename _Fn, JN_ENABLE(!JN_IS_SAME(typename std::decay_t<_Ls>::value_type, _ValType))>
+	inline bool each(_Ls &&ls, _Fn &&fn) {
+		for (auto && item : ls) {
+			if (!each<_ValType>(item, fn)) return false;
+		}
+		return true;
+	}
+
 
 } // namespace jian
 

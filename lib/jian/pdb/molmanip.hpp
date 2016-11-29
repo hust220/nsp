@@ -18,49 +18,64 @@ namespace jian {
 #define JN_GE_MOLECULE(T) JN_IS_MOLECULE(T)
 
 	// seq
-	template<typename T, JN_ENABLE(JN_GE_CHAIN(T))>
-	std::string seq(T && t) {
-		std::string s;
-		for (auto && i : t) {
-			s += seq(i);
-		}
+	template<typename T>
+	str_t seq(T &&t) {
+		str_t s;
+		each<Residue>(t, [](auto &&res) {
+			s += res.name;
+		});
 		return s;
 	}
 
-	template<typename T, JN_ENABLE(JN_IS_RESIDUE(T))>
-	std::string seq(T && t) {
-		return t.name;
-	}
+	//template<typename T, JN_ENABLE(JN_GE_CHAIN(T))>
+	//std::string seq(T && t) {
+	//	std::string s;
+	//	for (auto && i : t) {
+	//		s += seq(i);
+	//	}
+	//	return s;
+	//}
 
-	// num_residues 
-	template<typename T, JN_ENABLE(JN_GE_MODEL(T))>
-	int num_residues(T && t) {
-		int n = 0;
-		for (auto && i : t) {
-			n += num_residues(i);
-		}
-		return n;
-	}
+	//template<typename T, JN_ENABLE(JN_IS_RESIDUE(T))>
+	//std::string seq(T && t) {
+	//	return t.name;
+	//}
 
-	template<typename T, JN_ENABLE(JN_IS_CHAIN(T))>
-	int num_residues(T && t) {
-		return t.size();
-	}
+	template<typename T>
+	int num_residues(T &&t) { return count<Residue>(t); }
 
-	// num_atoms
-	template<typename T, JN_ENABLE(JN_GE_CHAIN(T))>
-	int num_atoms(T && t) {
-		int n = 0;
-		for (auto && i : t) {
-			n += num_atoms(i);
-		}
-		return n;
-	}
+	//// num_residues 
+	//template<typename T, JN_ENABLE(JN_GE_MODEL(T))>
+	//int num_residues(T && t) {
+	//	int n = 0;
+	//	for (auto && i : t) {
+	//		n += num_residues(i);
+	//	}
+	//	return n;
+	//}
 
-	template<typename T, JN_ENABLE(JN_IS_RESIDUE(T))>
-	int num_atoms(T && t) {
-		return t.size();
-	}
+	//template<typename T, JN_ENABLE(JN_IS_CHAIN(T))>
+	//int num_residues(T && t) {
+	//	return t.size();
+	//}
+
+	template<typename T>
+	int num_atoms(T &&t) { return count<Atom>(t); }
+
+	//// num_atoms
+	//template<typename T, JN_ENABLE(JN_GE_CHAIN(T))>
+	//int num_atoms(T && t) {
+	//	int n = 0;
+	//	for (auto && i : t) {
+	//		n += num_atoms(i);
+	//	}
+	//	return n;
+	//}
+
+	//template<typename T, JN_ENABLE(JN_IS_RESIDUE(T))>
+	//int num_atoms(T && t) {
+	//	return t.size();
+	//}
 
 	// is_empty
 	template<typename T, JN_ENABLE(JN_GE_RESIDUE(T))>

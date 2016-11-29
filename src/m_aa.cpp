@@ -10,6 +10,16 @@
 namespace jian {
 	namespace {
 
+		REGISTER_NSP_COMPONENT(test_count) {
+			std::vector<int> v{ 1, 2, 3 };
+			std::vector<std::vector<int>> ls{ {1, 2}, {2, 3, 4} };
+			each<int>(ls, [](auto i) {
+				LOG << i << std::endl;
+				return true;
+			});
+			LOG << count(v) << ' ' << count(ls) << ' ' << count<int>(ls) << std::endl;
+		}
+
 		REGISTER_NSP_COMPONENT(test_aa) {
 			int n, l, i, j, k;
 			Chain chain;
