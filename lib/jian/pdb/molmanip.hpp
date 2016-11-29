@@ -21,7 +21,7 @@ namespace jian {
 	template<typename T>
 	str_t seq(T &&t) {
 		str_t s;
-		each<Residue>(t, [](auto &&res) {
+		each<Residue>(t, [&s](auto &&res) {
 			s += res.name;
 		});
 		return s;
