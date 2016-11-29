@@ -2,6 +2,7 @@
 
 #include <string>
 #include <sstream>
+#include "string.hpp"
 #include "../utils/traits.hpp"
 
 namespace jian {
