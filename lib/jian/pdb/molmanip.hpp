@@ -23,6 +23,7 @@ namespace jian {
 		str_t s;
 		each<Residue>(t, [&s](auto &&res) {
 			s += res.name;
+			return true;
 		});
 		return s;
 	}
