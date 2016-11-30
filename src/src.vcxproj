@@ -157,6 +157,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\Users\Jian\Desktop\项目\nsp\include;C:\Users\Jian\Desktop\项目\nsp\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions> /wd4018 /wd4305 %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -174,6 +175,7 @@
       <PreprocessorDefinitions>JN_PARA;WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)lib;$(MSMPI_INC)x64;$(MSMPI_INC);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions> /wd4018 /wd4305 %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -219,6 +221,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)lib;$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions> /wd4018 /wd4305 %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -241,6 +244,7 @@
       <PreprocessorDefinitions>JN_PARA;WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)lib;$(SolutionDir)include;$(MSMPI_INC)x64;$(MSMPI_INC);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions> /wd4018 /wd4305 %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -543,6 +547,7 @@
     <ClInclude Include="..\lib\jian\scoring.hpp" />
     <ClInclude Include="..\lib\jian\scoring\AssessPSB.h" />
     <ClInclude Include="..\lib\jian\scoring\ParBp.hpp" />
+    <ClInclude Include="..\lib\jian\scoring\ResConf.hpp" />
     <ClInclude Include="..\lib\jian\scoring\Score.hpp" />
     <ClInclude Include="..\lib\jian\scoring\DihAnal.hpp" />
     <ClInclude Include="..\lib\jian\scoring\DistAnal.hpp" />

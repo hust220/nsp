@@ -177,6 +177,13 @@ namespace jian {
 		m_box = 2;
 		m_box_size = 12;
 
+		LOG << "# Extract residue conformations..." << std::endl;
+		for_each_model(to_str(Env::lib(), "/RNA/pars/cg/CG2AA/templates.pdb"), [this](const Model &model, int n) {
+			//LOG << model << std::endl;
+			ResConf::extract(m_res_confs, model.residues());
+		});
+		for (auto && conf : m_res_confs) conf.res = m_cg->to_cg(conf.res);
+
 		LOG << "# Set the file of trajectory..." << std::endl;
 		std::ostringstream stream;
 #ifdef JN_PARA
@@ -331,27 +338,53 @@ namespace jian {
 				if (min == 0 && max == _seq.size() - 1) {
 					return;
 				}
-				else if (min == 0 || max == _seq.size() - 1) {
-					int t = (min == 0 ? max : min);
-					int index = int(rand() * 3);
-					double dih = (rand() - 0.5) * m_max_angle;
-					auto &&rot = geom::rot_mat(index, dih);
-					Vec origin(3);
-					for (int i = 0; i < 3; i++) origin[i] = _pred_chain[t][0][i];
-					for (int i = min; i <= max; i++) {
-						for (auto && atom : _pred_chain[i]) {
-							geom::rotate(atom, origin, rot);
-						}
-						space_update_item(i);
+				else if (min == max) {
+					int l = size(m_res_confs);
+					int n = int(rand()*l);
+					geom::Superposition<num_t> sp;
+					if (min == 0) {
+						Mat x(1, 3);
+						for (int j = 0; j < 3; j++) x(0, j) = _pred_chain[min + 1]["P"][j];
+						sp.init(m_res_confs[n].p2, x);
 					}
+					else if (max == _seq.size() - 1) {
+						Mat x(1, 3);
+						for (int j = 0; j < 3; j++) x(0, j) = _pred_chain[min]["P"][j];
+						sp.init(m_res_confs[n].p1, x);
+					}
+					else {
+						Mat x(2, 3);
+						for (int j = 0; j < 3; j++) x(0, j) = _pred_chain[min]["P"][j];
+						for (int j = 0; j < 3; j++) x(1, j) = _pred_chain[min+1]["P"][j];
+						sp.init(m_res_confs[n].pp, x);
+					}
+					Residue r = m_res_confs[n].res;
+					for (auto && atom : r) sp.apply(atom);
+					_pred_chain[min].set_atoms(r);
 				}
 				else {
-					geom::RotateAlong<double> rotate_along(_pred_chain[min][0], _pred_chain[max + 1][0], m_max_angle * (rand() - 0.5));
-					for (int i = min; i <= max; i++) {
-						for (auto && atom : _pred_chain[i]) {
-							rotate_along(atom);
+					if (min == 0 || max == _seq.size() - 1) {
+						int t = (min == 0 ? max : min);
+						int index = int(rand() * 3);
+						double dih = (rand() - 0.5) * m_max_angle;
+						auto &&rot = geom::rot_mat(index, dih);
+						Vec origin(3);
+						for (int i = 0; i < 3; i++) origin[i] = _pred_chain[t][0][i];
+						for (int i = min; i <= max; i++) {
+							for (auto && atom : _pred_chain[i]) {
+								geom::rotate(atom, origin, rot);
+							}
+							space_update_item(i);
 						}
-						space_update_item(i);
+					}
+					else {
+						geom::RotateAlong<double> rotate_along(_pred_chain[min][0], _pred_chain[max + 1][0], m_max_angle * (rand() - 0.5));
+						for (int i = min; i <= max; i++) {
+							for (auto && atom : _pred_chain[i]) {
+								rotate_along(atom);
+							}
+							space_update_item(i);
+						}
 					}
 				}
 			},
@@ -402,28 +435,29 @@ namespace jian {
 		};
 
 		backup();
+		actions[0]();
 
-		int min = m_selected_mvel->min();
-		int max = m_selected_mvel->max();
-		if (m_sample_mode == SAMPLE_SSE) {
-			if (min == max) {
-				actions[std::vector<int>{0, 1, 2}[int(rand() * 3)]]();
-			}
-			else {
-				actions[std::vector<int>{0, 2}[int(rand()*2)]]();
-			}
-		}
-		else if (m_sample_mode == SAMPLE_TREE) {
-			if (min == max) {
-				actions[std::vector<int>{0, 1}[int(rand() * 2)]]();
-			}
-			else {
-				actions[0]();
-			}
-		}
-		else {
-			throw "jian::MCBase::sample_res error!";
-		}
+		//int min = m_selected_mvel->min();
+		//int max = m_selected_mvel->max();
+		//if (m_sample_mode == SAMPLE_SSE) {
+		//	if (min == max) {
+		//		actions[std::vector<int>{0, 1, 2}[int(rand() * 3)]]();
+		//	}
+		//	else {
+		//		actions[std::vector<int>{0, 2}[int(rand()*2)]]();
+		//	}
+		//}
+		//else if (m_sample_mode == SAMPLE_TREE) {
+		//	if (min == max) {
+		//		actions[std::vector<int>{0, 1}[int(rand() * 2)]]();
+		//	}
+		//	else {
+		//		actions[0]();
+		//	}
+		//}
+		//else {
+		//	throw "jian::MCBase::sample_res error!";
+		//}
 
 	}
 

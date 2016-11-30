@@ -4,6 +4,7 @@
 #include <regex>
 #include <algorithm>
 #include "../utils/file.hpp"
+#include "../utils/log.hpp"
 #include "MolParser.hpp"
 #include "Residue.hpp"
 #include "names.hpp"
@@ -80,12 +81,19 @@ namespace jian {
 
 	Atom &Residue::operator [](const std::string &s) {
 		for (auto &&atom : *this) if (atom.name == s) { return atom; }
-		throw "jian::Residue::operator[] error! Not found atom!";
+		LOG << "Residue " << this->name << " : ";
+		for (auto && atom : *this) LOG << atom.name << " ";
+		LOG << std::endl;
+		throw to_str("jian::Residue::operator[] error! Not found atom '", s, "'!");
 	}
 
 	const Atom &Residue::operator[](const std::string &s) const {
 		for (auto &&atom : *this) if (atom.name == s) { return atom; }
-		throw "jian::Residue::operator[] error! Not found atom!";
+		LOG << "Residue " << this->name << " :" << std::endl;
+		LOG << "Residue " << this->name << " : ";
+		for (auto && atom : *this) LOG << atom.name << " ";
+		LOG << std::endl;
+		throw to_str("jian::Residue::operator[] error! Not found atom '",s,"'!");
 	}
 
 	Residue &Residue::operator+=(const Residue &res) {

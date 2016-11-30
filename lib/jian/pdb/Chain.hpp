@@ -14,6 +14,14 @@ namespace jian {
 		std::string model_name = "unknown";
 		std::string m_cg = "aa";
 
+		template<typename _Residues>
+		void set_residues(const _Residues &residues) {
+			this->clear();
+			for (const Residue &res : residues) {
+				this->push_back(res);
+			}
+		}
+
 		JN_DEF_ATOMS;
 		JN_DEF_RESIDUES;
 

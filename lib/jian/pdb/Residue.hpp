@@ -31,6 +31,25 @@ namespace jian {
 
 		Residue &operator +=(const Residue &r);
 
+		bool has_atom(const str_t &atom_name) const {
+			return std::find_if(this->begin(), this->end(), [&atom_name](const Atom &atom) {
+				return atom.name == atom_name;
+			}) != this->end();
+		}
+
+		template<typename _Second, typename... _Rest>
+		bool has_atom(const str_t &first, _Second &&second, _Rest &&...rest) const {
+			 return has_atom(first) && has_atom(second, rest...);
+		}
+
+		template<typename _Atoms>
+		void set_atoms(const _Atoms &atoms) {
+			this->clear();
+			for (const Atom &atom : atoms) {
+				this->push_back(atom);
+			}
+		}
+
 		JN_DEF_ATOMS;
 	};
 

@@ -119,13 +119,14 @@ namespace jian {
 	}
 
 	// rows_mats
-	inline int rows_mats() {
-		return 0;
+	template<typename _Mat>
+	inline int rows_mats(_Mat &&mat) {
+		return mat.rows();
 	}
 
-	template<typename T, typename... L>
-	inline int rows_mats(const T &mat, const L & ...mats) {
-		return mat.rows() + rows_mats(mats...);
+	template<typename _First, typename _Second, typename... _Rest>
+	inline int rows_mats(_First &&first, _Second &&second, _Rest && ...rest) {
+		return rows_mats(first) + rows_mats(second, rest...);
 	}
 
 	// cols_mats
@@ -139,22 +140,21 @@ namespace jian {
 	}
 
 	// hstack
-	template<typename T>
-	inline void hstack_helper(T &t, int n) {}
+	inline void hstack_helper(Mat &t, int n) {}
 
-	template<typename T, typename... L>
-	inline void hstack_helper(T &t, int n, const T &mat, const L & ...mats) {
-		for (int i = 0; i < mat.rows(); i++) {
-			for (int j = 0; j < mat.cols(); j++) t(n, j) = mat(i, j);
+	template<typename _First, typename... _Rest>
+	inline void hstack_helper(Mat &mat, int n, const _First &first, const _Rest & ...rest) {
+		for (int i = 0; i < first.rows(); i++) {
+			for (int j = 0; j < first.cols(); j++) mat(n, j) = first(i, j);
 			n++;
 		}
-		hstack_helper(t, n, mats...);
+		hstack_helper(mat, n, rest...);
 	}
 
-	template<typename T, typename... L>
-	inline T hstack(const T &mat, const L & ...mats) {
-		T t(rows_mats(mat, mats...), cols_mats(mat, mats...));
-		hstack_helper(t, 0, mat, mats...);
+	template<typename... _Mats>
+	inline Mat hstack(const _Mats & ...mats) {
+		Mat t(rows_mats(mats...), cols_mats(mats...));
+		hstack_helper(t, 0, mats...);
 		return t;
 	}
 

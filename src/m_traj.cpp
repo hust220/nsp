@@ -76,7 +76,7 @@ namespace jian {
 
 			val_t rmsd(const Chain &tgt) {
 				std::deque<std::array<double, 3>> l1, l2;
-				int i, l, n;
+				int i, l;
 
 				auto it_ref = m_common_ref.begin();
 				auto it_tgt = m_common_tgt.begin();
