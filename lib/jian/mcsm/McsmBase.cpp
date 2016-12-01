@@ -173,25 +173,37 @@ namespace jian {
 		m_selected_mvel = NULL;
 		m_sample_mode = SAMPLE_TREE;
 		m_cal_en_constraints = true;
-		m_max_angle = PI * 1.5;
+		m_max_angle = PI * 0.5;
 		m_box = 2;
 		m_box_size = 12;
 
 		LOG << "# Extract residue conformations..." << std::endl;
 		for_each_model(to_str(Env::lib(), "/RNA/pars/cg/CG2AA/templates.pdb"), [this](const Model &model, int n) {
-			//LOG << model << std::endl;
 			ResConf::extract(m_res_confs, model.residues());
 		});
-		for (auto && conf : m_res_confs) conf.res = m_cg->to_cg(conf.res);
+		for (auto && pair : m_res_confs) {
+			for (auto && conf : pair.second) {
+				conf.res = m_cg->to_cg(conf.res);
+			}
+		}
 
-		LOG << "# Set the file of trajectory..." << std::endl;
-		std::ostringstream stream;
 #ifdef JN_PARA
-		stream << _name << "." << g_mpi->m_rank + 1 << ".traj.pdb";
+		m_traj = (g_mpi->m_size == 1 ? to_str(_name, ".traj.pdb") : to_str(_name, ".", g_mpi->m_rank + 1, ".traj.pdb"));
 #else
-		stream << _name << ".traj.pdb";
+		m_traj = to_str(_name, ".traj.pdb");
 #endif
-		m_traj = stream.str();
+		LOG << "# Trajectory file: " << m_traj << std::endl;
+
+		LOG << "# Read parameters..." << std::endl;
+		m_par_file = m_cg_type;
+		_par->set(m_par_file, "par_file");
+		read_parameters();
+
+		LOG << "# Set parameters..." << std::endl;
+		set_parameters(*_par);
+
+		LOG << "# Print parameters..." << std::endl;
+		print_parameters();
 
 		LOG << "# Set continuous points..." << std::endl;
 		set_continuous_pts();
@@ -204,10 +216,14 @@ namespace jian {
 		LOG << "# Read initial structure" << std::endl;
 		par.set(m_init_sfile, "init");
 		if (m_init_sfile.empty()) {
-			//nuc3d::Assemble assemble(Par(par)("loop_building", "all_raw"));
-			//assemble.predict_one();
-			//_pred_chain = assemble._pred_chain;
-			_pred_chain = BuildChain()(_seq.size()).m_chain;
+			if (par.has("init:chain")) {
+				_pred_chain = BuildChain()(_seq.size()).m_chain;
+			}
+			else /*if (par.has("init:raw"))*/ {
+				nuc3d::Assemble assemble(Par(par)("loop_building", "partial_raw"));
+				assemble.predict_one();
+				_pred_chain = assemble._pred_chain;
+			}
 		}
 		else {
 			chain_read_model(_pred_chain, m_init_sfile);
@@ -217,7 +233,7 @@ namespace jian {
 		validate_constraints();
 
 		//_mc_queue = "heat:30000:20+cool:1000000";
-		//par.set(_mc_queue, "mc_queue");
+		par.set(_mc_queue, "queue");
 	}
 
 	void MCBase::mc_next_step() {
@@ -331,7 +347,6 @@ namespace jian {
 		};
 
 		std::vector<std::function<void()>> actions{
-			// rotate along P-P
 			[this]() {
 				int min = m_selected_mvel->min();
 				int max = m_selected_mvel->max();
@@ -339,32 +354,37 @@ namespace jian {
 					return;
 				}
 				else if (min == max) {
-					int l = size(m_res_confs);
+					ResConf::Confs &confs = m_res_confs[_pred_chain[min].name];
+					int l = size(confs);
 					int n = int(rand()*l);
 					geom::Superposition<num_t> sp;
 					if (min == 0) {
 						Mat x(1, 3);
 						for (int j = 0; j < 3; j++) x(0, j) = _pred_chain[min + 1]["P"][j];
-						sp.init(m_res_confs[n].p2, x);
+						sp.init(confs[n].p2, x);
 					}
 					else if (max == _seq.size() - 1) {
 						Mat x(1, 3);
 						for (int j = 0; j < 3; j++) x(0, j) = _pred_chain[min]["P"][j];
-						sp.init(m_res_confs[n].p1, x);
+						sp.init(confs[n].p1, x);
 					}
 					else {
 						Mat x(2, 3);
 						for (int j = 0; j < 3; j++) x(0, j) = _pred_chain[min]["P"][j];
 						for (int j = 0; j < 3; j++) x(1, j) = _pred_chain[min+1]["P"][j];
-						sp.init(m_res_confs[n].pp, x);
+						sp.init(confs[n].pp, x);
 					}
-					Residue r = m_res_confs[n].res;
+					Residue r = confs[n].res;
 					for (auto && atom : r) sp.apply(atom);
 					_pred_chain[min].set_atoms(r);
 				}
 				else {
-					if (min == 0 || max == _seq.size() - 1) {
-						int t = (min == 0 ? max : min);
+					num_t d1 = -1;
+					num_t d2 = -1;
+					if (min > 0) d1 = geom::distance(_pred_chain[min - 1][1], _pred_chain[min][0]);
+					if (max < size(_seq) - 1) d1 = geom::distance(_pred_chain[max][1], _pred_chain[max + 1][0]);
+					if (min == 0 || max == size(_seq) - 1 || d1 > 4.2 || d2 > 4.2) {
+						int t = ((min == 0 || d1 > 4.2) ? max : min);
 						int index = int(rand() * 3);
 						double dih = (rand() - 0.5) * m_max_angle;
 						auto &&rot = geom::rot_mat(index, dih);
@@ -524,17 +544,6 @@ namespace jian {
 		if (num_residues(_pred_chain) == 0) {
 			throw "Please give an initial structure before the optimization procedure!";
 		}
-
-		LOG << "# Read parameters..." << std::endl;
-		m_par_file = m_cg_type;
-		_par->set(m_par_file, "par_file");
-		read_parameters();
-
-		LOG << "# Set parameters..." << std::endl;
-		set_parameters(*_par);
-
-		LOG << "# Print parameters..." << std::endl;
-		print_parameters();
 
 		LOG << "# Initializing running..." << std::endl;
 		before_run();

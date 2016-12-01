@@ -14,17 +14,15 @@
 namespace jian {
 
 void TSP::init(const Par &pars) {
-	std::ostringstream stream;
-
     _par = new Par(pars);
     _lib = Env::lib();
 	_name = pars.get("job_name", "job", "name");
 #ifdef JN_PARA
-	stream << _name << "." << g_mpi->m_rank + 1 << ".tsp.log";
+	if (g_mpi->m_size == 1) log_file(to_str(_name, ".tsp.log"));
+	else log_file(to_str(_name, ".", g_mpi->m_rank + 1, ".tsp.log"));
 #else
-	stream << _name << ".tsp.log";
+	log_file(to_str(_name, ".tsp.log"));
 #endif
-	log_file(stream.str());
     //m_cmd = (*_par)[1];
 	LOG << "# Reading sequence" << std::endl;
 	read_seq();
@@ -86,13 +84,12 @@ void TSP::run() {
 }
 
 void TSP::write_final_model() {
-	std::ostringstream stream;
 #ifdef JN_PARA
-	stream << _name << "." << g_mpi->m_rank + 1 << ".pred.pdb";
+	if (g_mpi->m_size == 1) mol_write(_pred_chain, to_str(_name, ".pred.pdb"));
+	else mol_write(_pred_chain, to_str(_name, ".", g_mpi->m_rank + 1, ".pred.pdb"));
 #else
-	stream << _name << ".pred.pdb";
+	mol_write(_pred_chain, to_str(_name, ".pred.pdb"));
 #endif
-	mol_write(_pred_chain, stream.str());
 }
 
 

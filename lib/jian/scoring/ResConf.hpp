@@ -7,6 +7,9 @@ namespace jian {
 
 	class ResConf {
 	public:
+		using Confs = std::deque<ResConf>;
+		using MapConfs = std::map<str_t, Confs>;
+
 		Residue res;
 		RowVec p1;
 		RowVec p2;
@@ -23,18 +26,20 @@ namespace jian {
 			pp = hstack(p1, p2);
 		}
 
-		template<typename _Ls, typename _Residues>
-		static void extract(_Ls &&ls, const _Residues &residues) {
+		template<typename _Residues>
+		static void extract(MapConfs &map, const _Residues &residues) {
 			int l = size(residues);
 			num_t d;
 			for (int i = 0; i < l - 1; i++) {
 				if (residues[i].has_atom("P", "C4*") && residues[i+1].has_atom("P")) {
+					const Residue &r1 = residues[i];
+					const Residue &r2 = residues[i+1];
 					//LOG << residues[i] << std::endl;
-					const Atom &p1 = residues[i]["P"];
-					const Atom &c1 = residues[i]["C4*"];
-					const Atom &p2 = residues[i + 1]["P"];
+					const Atom &p1 = r1["P"];
+					const Atom &c1 = r1["C4*"];
+					const Atom &p2 = r2["P"];
 					d = geom::distance(c1, p2);
-					if (d < 4.0) ls.push_back(ResConf(residues[i], p2));
+					if (d < 4.0) map[r1.name].push_back(ResConf(r1, p2));
 				}
 			}
 		}

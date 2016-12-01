@@ -14,7 +14,11 @@ namespace jian {
 		par.set(_mc_heat_steps, "mc_heat_steps");
 		par.set(_mc_cool_steps, "mc_cool_steps");
 		par.set(_mc_heat_rate, "mc_heat_rate");
+		_mc_init_tempr = 20;
 		par.set(_mc_init_tempr, "mc_init_tempr");
+		_mc_inc_rate = 1.05;
+		par.set(_mc_inc_rate, "mc_inc_rate");
+		_mc_dec_rate = 0.9995;
 		par.set(_mc_dec_rate, "mc_dec_rate");
 	}
 
@@ -40,24 +44,44 @@ namespace jian {
 
 		LOG << __FUNCTION__ << "..." << std::endl;
 		tokenize(_mc_queue, v, "+");
-		_mc_tempr = _mc_init_tempr;
 		for (auto && s : v) {
 			tokenize(s, w, ":");
 			if (w.size() >= 2) {
 				if (w[0] == "heat") {
 					steps = JN_INT(w[1]);
-					if (w.size() == 3) _mc_tempr = JN_DBL(w[2]);
+					if (w.size() == 3) _mc_init_tempr = JN_DBL(w[2]);
 					mc_heat(steps);
 				}
 				else if (w[0] == "cool") {
 					steps = JN_INT(w[1]);
-					if (w.size() == 3) _mc_tempr = JN_DBL(w[2]);
+					if (w.size() == 3) _mc_init_tempr = JN_DBL(w[2]);
 					mc_cool(steps);
 				}
 				else if (w[0] == "warm") {
 					steps = JN_INT(w[1]);
-					if (w.size() == 3) _mc_tempr = JN_DBL(w[2]);
+					if (w.size() == 3) _mc_init_tempr = JN_DBL(w[2]);
 					mc_warm(steps);
+				}
+				else if (w[0] == "samc") {
+					steps = JN_INT(w[1]);
+					tokenize(w[2], u, "-");
+					if (size(u) == 2) {
+						_mc_highest_tempr = JN_DBL(u[0]);
+						_mc_lowest_tempr = JN_DBL(u[1]);
+					}
+					else if (size(u) == 1) {
+						_mc_highest_tempr = JN_DBL(u[0]);
+						_mc_lowest_tempr = 0;
+					}
+					else {
+						throw "Illegal settings of SAMC temperature!";
+					}
+					_mc_init_tempr = _mc_highest_tempr;
+					_mc_num_samc = 1;
+					if (size(w) >= 4) _mc_num_samc = JN_INT(w[3]);
+					for (int i = 0; i < _mc_num_samc; i++) {
+						mc_samc(steps);
+					}
 				}
 				else if (w[0] == "remc") {
 					steps = JN_INT(w[1]);
@@ -81,6 +105,7 @@ namespace jian {
 
 	void MC::mc_heat(int steps) {
 		LOG << __FUNCTION__ << "..." << std::endl;
+		_mc_tempr = _mc_init_tempr;
 		_mc_state = MC_HEATING;
 		mc_base(steps, [this]() {
 			if (_mc_local_succ_rate < _mc_heat_rate) {
@@ -99,6 +124,7 @@ namespace jian {
 
 	void MC::mc_cool(int steps) {
 		LOG << __FUNCTION__ << "..." << std::endl;
+		_mc_tempr = _mc_init_tempr;
 		_mc_state = MC_COOLING;
 		int n_rate = 0, n_en = 0;
 		double en = 0;
@@ -113,9 +139,25 @@ namespace jian {
 
 	void MC::mc_warm(int steps) {
 		LOG << __FUNCTION__ << "..." << std::endl;
+		_mc_tempr = _mc_init_tempr;
 		_mc_state = MC_WARMING;
 		mc_base(steps, [this]() {
 			return true;
+		});
+	}
+
+	void MC::mc_samc(int steps) {
+		LOG << __FUNCTION__ << "..." << std::endl;
+		_mc_tempr = _mc_init_tempr;
+		_mc_state = MC_SAMC;
+		int n_rate = 0, n_en = 0;
+		double en = 0;
+		mc_base(steps, [this, &en, &n_en, &n_rate]() {
+			_mc_tempr *= _mc_dec_rate;
+			n_en += (std::fabs(en - _mc_en) <= 0.5 ? 1 : 0);
+			en = _mc_en;
+			n_rate += (_mc_local_succ_rate <= 0.01 ? 1 : 0);
+			return n_rate < 5 && n_en < 5 && _mc_tempr >= _mc_lowest_tempr;
 		});
 	}
 

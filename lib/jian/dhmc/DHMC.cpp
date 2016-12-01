@@ -12,6 +12,7 @@ namespace jian {
 		m_sample_all_res = par.has("sample_all_res");
 		m_not_sample_hp = par.has("not_sample_hp");
 		m_not_sample_il = par.has("not_sample_il");
+		m_all_free = par.has("all_free");
 
 		LOG << "# Set bps" << std::endl;
 		set_bps();
@@ -409,7 +410,7 @@ namespace jian {
 
 		for (int i = 0; i < _seq.size(); i++) {
 			for (int j = i; j < _seq.size(); j++) {
-				if (/*foo(i, j)*/true) {
+				if (m_all_free || foo(i, j)) {
 					m_mvels.push_back(new MvEl(i, j, MvEl::MVEL_FG));
 				}
 			}

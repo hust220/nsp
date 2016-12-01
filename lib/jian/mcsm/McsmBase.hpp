@@ -105,7 +105,7 @@ namespace jian {
 			SAMPLE_TREE
 		};
 
-		std::deque<ResConf> m_res_confs;
+		ResConf::MapConfs m_res_confs;
 		sample_mode_t m_sample_mode;
 		bool m_cal_en_constraints;
 		space_t m_space;

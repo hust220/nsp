@@ -31,9 +31,10 @@ namespace jian {
 		bool m_sample_frag;
 		bool m_pk_ahead;
 		bool m_sample_all_res;
-		bool m_not_sample_hp = false;
-		bool m_not_sample_il = false;
-		bool m_set_mvel_pk = false;
+		bool m_not_sample_hp;
+		bool m_not_sample_il;
+		bool m_set_mvel_pk;
+		bool m_all_free;
 		std::vector<bool> m_is_free;
 
 		template<typename T>

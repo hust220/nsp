@@ -4,6 +4,7 @@
 #include <fstream>
 #include <deque>
 #include <map>
+#include <list>
 #include <vector>
 #include <iostream>
 #include "string.hpp"
@@ -24,7 +25,7 @@ public:
 
     Par(int argc, char **argv);
 
-    Par(std::string str);
+    Par(str_t str);
 
 	template<typename _FirstVal, typename... _RestVals>
 	Par(const std::string &key, _FirstVal &&first_val, _RestVals &&...rest_vals) {
@@ -98,29 +99,44 @@ public:
 		}
 	}
 
+	std::list<str_t> &keys_chain() const {
+		static std::list<str_t> chain;
+		return chain;
+	}
+
     std::string get() const {
-        throw "jian::Par::get error! Didn't found parameters for keys!";
-    }
+		std::ostringstream stream;
+		stream << "jian::Par::get error! Didn't found parameters for keys:";
+		for (auto && key : keys_chain()) stream << " " << key;
+		throw stream.str();
+	}
 
     template<typename K, typename... V>
     std::string get(K &&s, V && ...pars) const {
         if (_pars.count(s)) {
+			keys_chain().clear();
             return _pars.at(s)[0];
         } else {
+			keys_chain().push_back(s);
             return get(pars...);
         }
     }
 
 	pars_t getv() const {
-		throw "jian::Par::getv error! Didn't found parameters for keys!";
+		std::ostringstream stream;
+		stream << "jian::Par::getv error! Didn't found parameters for keys:";
+		for (auto && key : keys_chain()) stream << " " << key;
+		throw stream.str();
 	}
 
 	template<typename K, typename... V>
 	pars_t getv(K &&s, V && ...pars) const {
 		if (_pars.count(s)) {
+			keys_chain().clear();
 			return _pars.at(s);
 		}
 		else {
+			keys_chain().push_back(s);
 			return getv(pars...);
 		}
 	}

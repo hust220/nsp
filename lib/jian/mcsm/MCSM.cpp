@@ -79,7 +79,7 @@ namespace jian {
 					c = space_index(it[2]) + k;
 					space_val_t &s = m_space[a][b][c];
 					for (auto && t : s) {
-						if ((is_total && t - n > 1) || (!is_total && !is_selected(t))) {
+						if ((is_total && t - n > 0) || (!is_total && !is_selected(t))) {
 							auto p = std::minmax(n, t);
 							e.crash += _mc_crash_weight * m_scorer->en_crash(_pred_chain[p.first], _pred_chain[p.second]);
 							m_scorer->en_bp(_pred_chain[p.first], _pred_chain[p.second]);
@@ -159,7 +159,8 @@ namespace jian {
 	void MCSM::write_en() {
 		en_t e;
 		set_total_energy(e);
-		LOG << _mc_step + 1 << ": " << e.sum() << "(total) "
+		LOG 
+			<< _mc_step + 1 << ": " << e.sum() << "(total) "
 			JN_MAP(PRINT_MEM_MCPSB, MEM_EN_MCPSB)
 			<< _mc_tempr << "(tempr) "
 			<< _mc_local_succ_rate << "(rate)" << std::endl;

@@ -12,8 +12,8 @@ namespace jian {
 
 		e = 0;
 		if (beg + 1 < c.size()) {
-			d = geom::distance(c[beg][0], c[beg + 1][0]);
-			e += square(d - m_bond_len_std[0]);
+			d = geom::distance(c[beg][0], c[beg][1]);
+			e += square(d - m_bond_len_std[1]);
 			d = geom::distance(c[beg][1], c[beg + 1][0]);
 			e += square(d - m_bond_len_std[1]);
 		}

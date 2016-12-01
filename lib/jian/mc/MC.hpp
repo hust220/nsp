@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <iostream>
+#include "../matrix.hpp"
 #include "../utils/rand.hpp"
 #include "../utils/Par.hpp"
 #include "../utils/Env.hpp"
@@ -14,29 +15,32 @@ namespace jian {
 
 	class MC {
 	public:
-		enum mc_state_t {
+		enum State {
 			MC_READY,
 			MC_HEATING,
 			MC_COOLING,
 			MC_WARMING,
 			MC_REMC,
+			MC_SAMC,
 			MC_DONE
 		};
 
-		double _mc_init_tempr;
-		double _mc_lowest_tempr;
-		double _mc_highest_tempr;
-		double _mc_tempr;
+		num_t _mc_init_tempr;
+		num_t _mc_lowest_tempr;
+		num_t _mc_highest_tempr;
+		num_t _mc_tempr;
 		int _mc_cycle_steps;
 		int _mc_write_steps;
-		int _mc_step = 0;
-		double _mc_local_succ_rate;
-		double _mc_en;
+		int _mc_step;
+		int _mc_num_samc;
+		num_t _mc_local_succ_rate;
+		num_t _mc_en;
 		int _mc_heat_steps;
 		int _mc_cool_steps;
-		double _mc_heat_rate;
-		mc_state_t _mc_state = MC_READY; // 0: ready, 1: heating, 2: cooling, 3: done
-		double _mc_dec_rate;
+		num_t _mc_heat_rate;
+		State _mc_state = MC_READY; // 0: ready, 1: heating, 2: cooling, 3: done
+		num_t _mc_inc_rate;
+		num_t _mc_dec_rate;
 		std::string _mc_queue;
 
 		MC();
@@ -82,6 +86,7 @@ namespace jian {
 		virtual void mc_cool(int);
 		virtual void mc_warm(int);
 		virtual void mc_remc(int);
+		virtual void mc_samc(int);
 		virtual double mc_total_energy();
 		virtual double mc_partial_energy();
 		virtual void mc_select();
