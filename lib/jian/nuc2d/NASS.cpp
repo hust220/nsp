@@ -9,7 +9,7 @@
 #include "../pp.hpp"
 #include "../utils/Env.hpp"
 #include "../utils/file.hpp"
-#include "NucSS.hpp"
+#include "NASS.hpp"
 
 namespace jian {
 
@@ -44,7 +44,7 @@ namespace jian {
 	} // namespace nass_detail
 
 	NASS::NASS() {
-		std::string name = Env::lib() + "/RNA/pars/nuc2d/dbn.symbols";
+		str_t name = Env::lib() + "/RNA/pars/nuc2d/dbn.symbols";
 		BEGIN_READ_FILE(name, " ") {
 			if (F.size() > 1) {
 				if (F[1] == "paired_keys") {
@@ -72,8 +72,8 @@ namespace jian {
 		} END_READ_FILE;
 	}
 
-	std::vector<int> NASS::get_bps(const std::string &ss) {
-		NASS &nass = NASS::instance();
+	std::vector<int> NASS::get_bps(const str_t &ss) {
+		const NASS &nass = NASS::instance();
 		std::deque<std::deque<int>> dq;
 		std::vector<int> bps;
 		int i, j, k;
@@ -109,7 +109,7 @@ namespace jian {
 		return bps;
 	}
 
-	NASS &NASS::instance() {
+	const NASS &NASS::instance() {
 		static NASS nuc_ss;
 		return nuc_ss;
 	}
@@ -124,12 +124,12 @@ namespace jian {
 	}
 
 
-	bool NASS::check_ss(const std::string &ss) {
-		std::string info_errors;
+	bool NASS::check_ss(const str_t &ss) {
+		str_t info_errors;
 		return check_ss(ss, info_errors);
 	}
 
-	bool NASS::check_ss(const std::string &ss, std::string &info_errors) {
+	bool NASS::check_ss(const str_t &ss, str_t &info_errors) {
 		std::lock_guard<std::mutex> gd(nass_detail::mt);
 		std::ostringstream stream;
 
@@ -171,7 +171,7 @@ namespace jian {
 		return true;
 	}
 
-	int NASS::len_ss(const std::string &ss) {
+	int NASS::len_ss(const str_t &ss) {
 		std::lock_guard<std::mutex> gd(nass_detail::mt);
 
 		return std::count_if(ss.begin(), ss.end(), [&](const char &c) {
@@ -181,18 +181,18 @@ namespace jian {
 		});
 	}
 
-	std::string NASS::pure_ss(const std::string &ss) {
+	str_t NASS::pure_ss(const str_t &ss) {
 		std::lock_guard<std::mutex> gd(nass_detail::mt);
 
-		std::string p_ss;
+		str_t p_ss;
 		std::copy_if(ss.begin(), ss.end(), std::back_inserter(p_ss), [](const char &c) {return c != '&'; });
 		return p_ss;
 	}
 
-	std::string NASS::lower_ss(const std::string &ss, int n) {
+	str_t NASS::lower_ss(const str_t &ss, int n) {
 		std::lock_guard<std::mutex> gd(nass_detail::mt);
 
-		std::string l_ss;
+		str_t l_ss;
 		std::transform(ss.begin(), ss.end(), std::back_inserter(l_ss), [&](const char &c) {
 			if (nass_detail::pos_keys.count(c) && (nass_detail::pos_keys[c] > n || nass_detail::pos_keys[c] < -n)) {
 				return '.';
@@ -204,8 +204,8 @@ namespace jian {
 		return l_ss;
 	}
 
-	std::string NASS::hinge_ss(const std::string &ss) {
-		std::string h_ss;
+	str_t NASS::hinge_ss(const str_t &ss) {
+		str_t h_ss;
 		for (auto && i : ss) {
 			if (i == '(' || i == ')') {
 				h_ss += i;
@@ -215,7 +215,7 @@ namespace jian {
 		return h_ss;
 	}
 
-	bool NASS::seq_match_ss(const std::string &seq, const std::string &ss) {
+	bool NASS::seq_match_ss(const str_t &seq, const str_t &ss) {
 		return std::count_if(seq.begin(), seq.end(), [](auto && c) {return c != '&'; }) ==
 			std::count_if(ss.begin(), ss.end(), [](auto && c) {return c != '&'; });
 	}

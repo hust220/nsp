@@ -2,7 +2,7 @@
 #define JIAN_NUC2D_BUILDSST_H
 
 #include "SST.hpp"
-#include "NucSS.hpp"
+#include "NASS.hpp"
 
 namespace jian {
 namespace nuc2d {

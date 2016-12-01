@@ -1,5 +1,5 @@
 #include <numeric>
-
+#include "../nuc2d/NASS.hpp"
 #include "DHMC.hpp"
 
 namespace jian {
@@ -118,7 +118,7 @@ namespace jian {
 	void DHMC::set_trees() {
 		m_trees.push_back(std::make_shared<SSTree>());
 		m_trees.back()->make_b(_seq, _ss, 2);
-		auto & keys = NASS::instance().paired_keys;
+		const NASS::PairedKeys & keys = NASS::instance().paired_keys;
 		for (auto it = keys.begin() + 1; it != keys.end(); it++) {
 			auto ss = partial_ss(_ss, *it);
 			if (std::any_of(ss.begin(), ss.end(), [](auto &&c) {return c != '.' && c != '&'; })) {
@@ -190,37 +190,41 @@ namespace jian {
 	}
 
 	void DHMC::set_pseudo_knots() {
-		auto it = m_trees.begin();
+		if (m_pk_ahead) {
+			LOG << "# Set pseudo-knots" << std::endl;
 
-		auto foo = [this](const helix &h) {
-			auto && seq = h.seq();
-			auto && m = build_helix(seq);
-			auto && nums = h.nums();
+			auto it = m_trees.begin();
 
-			assert(nums.size() >= 2 && nums.size() % 2 == 0);
-			translate_pseudo_knots_helix(m, nums);
+			auto foo = [this](const helix &h) {
+				auto && seq = h.seq();
+				auto && m = build_helix(seq);
+				auto && nums = h.nums();
 
-			int i = 0;
-			for (auto && n : nums) {
-				_pred_chain[n] = std::move(m[0][i]);
-				i++;
-			}
-		};
+				assert(nums.size() >= 2 && nums.size() % 2 == 0);
+				translate_pseudo_knots_helix(m, nums);
 
-		// 设置第一个二级结构树中长度为1的helix
-		LOOP_TRAVERSE((*it)->head(),
-			if (L->has_helix() && L->s.len() == 1) {
-				foo(L->s);
-			}
-		);
+				int i = 0;
+				for (auto && n : nums) {
+					_pred_chain[n] = std::move(m[0][i]);
+					i++;
+				}
+			};
 
-		// 设置除了第一个二级结构树以外的其它的树中的helix
-		for (it = m_trees.begin() + 1; it != m_trees.end(); it++) {
+			// 设置第一个二级结构树中长度为1的helix
 			LOOP_TRAVERSE((*it)->head(),
-				if (L->has_helix()) {
+				if (L->has_helix() && L->s.len() == 1) {
 					foo(L->s);
 				}
 			);
+
+			// 设置除了第一个二级结构树以外的其它的树中的helix
+			for (it = m_trees.begin() + 1; it != m_trees.end(); it++) {
+				LOOP_TRAVERSE((*it)->head(),
+					if (L->has_helix()) {
+						foo(L->s);
+					}
+				);
+			}
 		}
 	}
 
@@ -265,12 +269,17 @@ namespace jian {
 	}
 
 	void DHMC::restore_fixed_ranges() {
-		for (auto it = m_trees.begin(); it != m_trees.end(); it++) {
-			LOOP_TRAVERSE((*it)->head(),
-				if (L->has_helix()) {
-					restore_helix(&(L->s));
-				}
-			);
+		if (!m_all_free) {
+			LOG << "# " << __FUNCTION__ << std::endl;
+
+			auto end = (m_pk_ahead ? m_trees.end() : std::next(m_trees.begin()));
+			for (auto it = m_trees.begin(); it != end; it++) {
+				LOOP_TRAVERSE((*it)->head(),
+					if (L->has_helix()) {
+						restore_helix(&(L->s));
+					}
+				);
+			}
 		}
 	}
 
@@ -389,23 +398,36 @@ namespace jian {
 		//	}
 		//}
 
-		auto is_paired = [this](int n) {return _ss[n] == '(' || _ss[n] == ')'; };
-		auto foo = [this, &is_paired](int i, int j) {
-			//if (is_paired(i) && is_paired(j) &&
-			//	i > 0 && j < _seq.size() - 1 && is_paired(i - 1) && is_paired(j + 1)) return false;
-			if (m_bps[i] == j && 
-				i > 0 && j < _seq.size() - 1 && m_bps[i-1] == j+1) return false;
-			int s = 0;
+		const NASS::PairedKeys &keys = NASS::instance().paired_keys;
+		auto is_paired = [this](int i, int j) {return m_bps[i] == j && (_ss[i] == '(' || m_pk_ahead); };
+		auto foo = [this, &is_paired, &keys](int i, int j) {
+			if (is_paired(i, j) && i > 0 && j < size(_seq) - 1 && is_paired(i-1, j+1)) return false;
+			auto end = (m_pk_ahead ? keys.end() : std::next(keys.begin(), 1));
+			std::vector<int> v(std::distance(keys.begin(), end));
+			//int s = 0;
+			int m;
 			for (int n = i; n <= j; n++) {
-				if (_ss[n] == '(') {
-					s++;
+				char c = _ss[n];
+				auto it1 = std::find_if(keys.begin(), end, [&c](const NASS::PairedKey &pair) {
+					return pair.first == c;
+				});
+				auto it2 = std::find_if(keys.begin(), end, [&c](const NASS::PairedKey &pair) {
+					return pair.second == c;
+				});
+				if (it1 != end) {
+					m = std::distance(keys.begin(), it1);
+					v[m]++;
+					//s++;
 				}
-				else if (_ss[n] == ')') {
-					s--;
-					if (s < 0) return false;
+				else if (it2 != end) {
+					m = std::distance(keys.begin(), it2);
+					v[m]--;
+					//s--;
+					if (v[m] < 0) return false;
 				}
 			}
-			return s == 0;
+			return std::all_of(v.begin(), v.end(), [](int s) {return s == 0; });
+			//return s == 0;
 		};
 
 		for (int i = 0; i < _seq.size(); i++) {
@@ -509,20 +531,22 @@ namespace jian {
 	}
 
 	void DHMC::save_fixed_ranges() {
-		for (auto it = m_trees.begin(); it != m_trees.end(); it++) {
-			LOOP_TRAVERSE((*it)->head(),
-				if (L->has_helix()) {
-					save_helix(&(L->s));
-				}
-			);
+		if (!m_all_free) {
+			LOG << "# " << __FUNCTION__ << std::endl;
+
+			auto end = (m_pk_ahead ? m_trees.end() : std::next(m_trees.begin()));
+			for (auto it = m_trees.begin(); it != end; it++) {
+				LOOP_TRAVERSE((*it)->head(),
+					if (L->has_helix()) {
+						save_helix(&(L->s));
+					}
+				);
+			}
 		}
 	}
 
 	void DHMC::before_run() {
-		if (m_pk_ahead) {
-			LOG << "# Set pseudo-knots" << std::endl;
-			set_pseudo_knots();
-		}
+		set_pseudo_knots();
 	}
 
 	void DHMC::mc_select() {

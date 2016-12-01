@@ -190,9 +190,6 @@
     <ClCompile Include="..\lib\jian\pdb\utils\cluster_chains.cpp">
       <Filter>jian\pdb\utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\jian\nuc2d\NucSS.cpp">
-      <Filter>jian\nuc2d</Filter>
-    </ClCompile>
     <ClCompile Include="..\lib\jian\nuc2d\SSTree.cpp">
       <Filter>jian\nuc2d</Filter>
     </ClCompile>
@@ -454,6 +451,9 @@
     <ClCompile Include="..\lib\jian\scoring\ParBp.cpp">
       <Filter>jian\scoring</Filter>
     </ClCompile>
+    <ClCompile Include="..\lib\jian\nuc2d\NASS.cpp">
+      <Filter>jian\nuc2d</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="nsp.hpp">
@@ -577,9 +577,6 @@
       <Filter>jian\nuc2d</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jian\nuc2d\MergeRings.hpp">
-      <Filter>jian\nuc2d</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\nuc2d\NucSS.hpp">
       <Filter>jian\nuc2d</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jian\nuc2d\PredQuaSS.hpp">
@@ -995,6 +992,9 @@
     </ClInclude>
     <ClInclude Include="..\lib\jian\scoring\ResConf.hpp">
       <Filter>jian\scoring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc2d\NASS.hpp">
+      <Filter>jian\nuc2d</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

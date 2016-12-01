@@ -5,7 +5,7 @@
 #include <algorithm>
 #include "SSTree.hpp"
 #include "loop.hpp"
-#include "NucSS.hpp"
+#include "NASS.hpp"
 #include "../pdb.hpp"
 #include "../utils/log.hpp"
 

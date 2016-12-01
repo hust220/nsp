@@ -315,7 +315,7 @@
     <ClCompile Include="..\lib\jian\mcsm\McsmBase.cpp" />
     <ClCompile Include="..\lib\jian\mcsm\MCSM.cpp" />
     <ClCompile Include="..\lib\jian\mc\MC.cpp" />
-    <ClCompile Include="..\lib\jian\nuc2d\NucSS.cpp" />
+    <ClCompile Include="..\lib\jian\nuc2d\NASS.cpp" />
     <ClCompile Include="..\lib\jian\nuc2d\SSTree.cpp" />
     <ClCompile Include="..\lib\jian\nuc2d\ss_pred.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\Assemble.cpp" />
@@ -483,7 +483,7 @@
     <ClInclude Include="..\lib\jian\nuc2d\helix.hpp" />
     <ClInclude Include="..\lib\jian\nuc2d\loop.hpp" />
     <ClInclude Include="..\lib\jian\nuc2d\MergeRings.hpp" />
-    <ClInclude Include="..\lib\jian\nuc2d\NucSS.hpp" />
+    <ClInclude Include="..\lib\jian\nuc2d\NASS.hpp" />
     <ClInclude Include="..\lib\jian\nuc2d\PredQuaSS.hpp" />
     <ClInclude Include="..\lib\jian\nuc2d\PredTriSS.hpp" />
     <ClInclude Include="..\lib\jian\nuc2d\res.hpp" />

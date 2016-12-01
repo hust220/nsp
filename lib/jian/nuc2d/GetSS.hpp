@@ -1,6 +1,6 @@
 #pragma once
 
-#include "NucSS.hpp"
+#include "NASS.hpp"
 #include "../pdb/IFModel.hpp"
 
 namespace jian {

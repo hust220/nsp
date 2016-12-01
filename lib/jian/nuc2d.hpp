@@ -1,6 +1,6 @@
 #pragma once
 
-#include "nuc2d/NucSS.hpp"
+#include "nuc2d/NASS.hpp"
 #include "nuc2d/SSTree.hpp"
 #include "nuc2d/loop.hpp"
 #include "nuc2d/helix.hpp"

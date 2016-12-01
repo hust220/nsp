@@ -548,7 +548,6 @@ namespace jian {
 		LOG << "# Initializing running..." << std::endl;
 		before_run();
 
-		LOG << "# Save helices" << std::endl;
 		save_fixed_ranges();
 
 		LOG << "# Carrying on CG processing with the Chain..." << std::endl;
