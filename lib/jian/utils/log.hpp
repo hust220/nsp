@@ -151,7 +151,7 @@ namespace jian {
 
 		~Logger() {
 			for (auto && pair : streams) {
-				if (pair.second != &std::cout) {
+				if (pair.second != &std::cout && pair.second != &onstream) {
 					delete pair.second;
 				}
 			}
