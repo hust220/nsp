@@ -20,6 +20,10 @@ namespace jian {
 		par.set(_mc_inc_rate, "mc_inc_rate");
 		_mc_dec_rate = 0.9995;
 		par.set(_mc_dec_rate, "mc_dec_rate");
+		_mc_lowest_en = 0.5;
+		par.set(_mc_lowest_en, "mc_lowest_en");
+		_mc_lowest_rate = 0.01;
+		par.set(_mc_lowest_rate, "mc_lowest_rate");
 	}
 
 	void MC::mc_next_step() {
@@ -154,9 +158,9 @@ namespace jian {
 		double en = 0;
 		mc_base(steps, [this, &en, &n_en, &n_rate]() {
 			_mc_tempr *= _mc_dec_rate;
-			n_en += (std::fabs(en - _mc_en) <= 0.5 ? 1 : 0);
+			n_en += (std::fabs(en - _mc_en) <= _mc_lowest_en ? 1 : 0);
 			en = _mc_en;
-			n_rate += (_mc_local_succ_rate <= 0.01 ? 1 : 0);
+			n_rate += (_mc_local_succ_rate <= _mc_lowest_rate ? 1 : 0);
 			return n_rate < 5 && n_en < 5 && _mc_tempr >= _mc_lowest_tempr;
 		});
 	}

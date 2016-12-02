@@ -41,6 +41,8 @@ namespace jian {
 		State _mc_state = MC_READY; // 0: ready, 1: heating, 2: cooling, 3: done
 		num_t _mc_inc_rate;
 		num_t _mc_dec_rate;
+		num_t _mc_lowest_rate;
+		num_t _mc_lowest_en;
 		std::string _mc_queue;
 
 		MC();
