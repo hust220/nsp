@@ -312,7 +312,7 @@ namespace jian {
 		Residue *temp1, *temp2;
 		double d;
 
-		auto bar = [this](auto && f, auto && w, int t1, int t2, auto && v, int l, int m, int n) -> double {
+		auto bar = [this](auto && f, auto && w, int t1, int t2, auto && v, num_t theta, int l, int m, int n) -> double {
 			if (std::fabs(v[0]) < l && std::fabs(v[1]) < m && std::fabs(v[2]) < n) {
 				double d = f[t1][t2](int((v[0] + l) / 0.5), int((v[1] + m) / 0.5), int((v[2] + n) / 0.5));
 				if (d == 0) {
@@ -320,7 +320,7 @@ namespace jian {
 				}
 				else {
 					double s = -std::log(d) /** w[t1][t2]*/;
-					return (s > 18 ? 0 : w[t1][t2] * (s - 18));
+					return (s > 18 ? 0 : (1 - 0.9*square(theta - 1)) * w[t1][t2] * (s - 18));
 					//return s;
 				}
 			}
@@ -351,11 +351,11 @@ namespace jian {
 		m_en_nwc = 0;
 		ParBp parbp(*p1, *p2);
 		//m_en_pairing += foo(t1, t2, parbp.o21_) + foo(t2, t1, parbp.o12_);
-		m_en_pairing += bar(m_freqs_bp, m_weights_bp, t1, t2, parbp.o21_, 10, 10, 2);
-		m_en_pairing += bar(m_freqs_bp, m_weights_bp, t2, t1, parbp.o12_, 10, 10, 2);
+		m_en_pairing += bar(m_freqs_bp, m_weights_bp, t1, t2, parbp.o21_, std::fabs(parbp.theta), 10, 10, 2);
+		m_en_pairing += bar(m_freqs_bp, m_weights_bp, t2, t1, parbp.o12_, std::fabs(parbp.theta), 10, 10, 2);
 		//if (m_en_pairing > 1.5) LOG << ">" << m_en_pairing << "\n" << parbp.o21_ << "\n" << parbp.o12_ << "\n" << std::endl;
-		m_en_stacking += bar(m_freqs_st53, m_weights_st53, t1, t2, parbp.o21_, 5, 5, 5);
-		m_en_stacking += bar(m_freqs_st35, m_weights_st35, t2, t1, parbp.o12_, 5, 5, 5);
+		m_en_stacking += bar(m_freqs_st53, m_weights_st53, t1, t2, parbp.o21_, std::fabs(parbp.theta), 5, 5, 5);
+		m_en_stacking += bar(m_freqs_st35, m_weights_st35, t2, t1, parbp.o12_, std::fabs(parbp.theta), 5, 5, 5);
 
 		d = geom::distance(p1->at(2), p2->at(2));
 		//if (d < 20 && d > 10) m_en_vdw += -25 + square(d - 15);
