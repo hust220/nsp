@@ -6,6 +6,7 @@
 #include <mutex>
 #include <iostream>
 #include <string>
+#include "platform.hpp"
 
 #define OUTMANAGER (Logger::out())
 #define OUTSTREAM (*(OUTMANAGER.get_stream()))
@@ -33,6 +34,55 @@ namespace jian {
 	const int LOG_LEVEL_DEBUG = 5;
 	const int LOG_LEVEL_VERBOSE = 6;
 
+
+	template<typename CharType, class CharTraits = ::std::char_traits<CharType> >
+	class basic_nullbuf : public ::std::basic_streambuf<CharType, CharTraits> {
+		typedef ::std::basic_streambuf<CharType, CharTraits>  base_type;
+	public:
+		// Types
+		typedef typename base_type::char_type    char_type;
+		typedef typename base_type::traits_type  traits_type;
+		typedef typename base_type::int_type     int_type;
+		typedef typename base_type::pos_type     pos_type;
+		typedef typename base_type::off_type     off_type;
+
+	protected:
+		virtual  ::std::streamsize  xsputn(char_type const* /*s*/, ::std::streamsize n) { return n; } // "s" is unused
+		virtual  int_type           overflow(int_type c = traits_type::eof()) { return traits_type::not_eof(c); }
+	};
+
+	typedef basic_nullbuf<char>      nullbuf;
+	typedef basic_nullbuf<wchar_t>  wnullbuf;
+
+#ifdef JN_OS_WIN
+# pragma warning(push)
+# pragma warning(disable: 4355) // 'this' : used in base member initializer list
+#endif
+
+	template<typename T>
+	struct member_from_base {
+		T member;
+	};
+
+	template< typename _CharType, class _CharTraits = ::std::char_traits<_CharType> >
+	class basic_onullstream : 
+		protected member_from_base<basic_nullbuf<_CharType, _CharTraits>>,
+		public ::std::basic_ostream<_CharType, _CharTraits>
+	{
+		typedef member_from_base<basic_nullbuf<_CharType, _CharTraits>> pbase_type;
+		typedef ::std::basic_ostream<_CharType, _CharTraits> base_type;
+	public:
+		basic_onullstream() : pbase_type(), base_type(&this->pbase_type::member) {}
+	};
+
+#ifdef JN_OS_WIN
+# pragma warning(default: 4355)
+#endif
+
+	typedef basic_onullstream<char>      onullstream;
+	typedef basic_onullstream<wchar_t>  wonullstream;
+
+	// Swallow all types
 	class Logger {
 	public:
 		std::map<std::thread::id, std::ostream *> streams;
@@ -40,6 +90,7 @@ namespace jian {
 		std::map<std::thread::id, std::string> filenames;
 		int level = LOG_LEVEL_INFO;
 		std::mutex mt;
+		onullstream onstream;
 
 		Logger(std::string file) {
 			set_file(file);
@@ -52,10 +103,13 @@ namespace jian {
 		void set_file(std::string filename) {
 			std::lock_guard<std::mutex> gd(mt);
 			auto id = get_id();
-			if (streams.count(id) && streams[id] != &std::cout) {
+			if (streams.count(id) && streams[id] != &onstream && streams[id] != &std::cout) {
 				delete streams[id];
 			}
 			if (filename == "") {
+				streams[id] = &onstream;
+			}
+			else if (filename == "std.out") {
 				streams[id] = &std::cout;
 			}
 			else {

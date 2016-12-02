@@ -220,7 +220,7 @@ namespace jian {
 				_pred_chain = BuildChain()(_seq.size()).m_chain;
 			}
 			else /*if (par.has("init:raw"))*/ {
-				nuc3d::Assemble assemble(Par(par)("loop_building", "partial_raw"));
+				nuc3d::Assemble assemble(Par(par)("loop_building", "partial_raw")("log::off"));
 				assemble.predict_one();
 				_pred_chain = assemble._pred_chain;
 			}

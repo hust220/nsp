@@ -17,12 +17,20 @@ void TSP::init(const Par &pars) {
     _par = new Par(pars);
     _lib = Env::lib();
 	_name = pars.get("job_name", "job", "name");
+	if (pars.has("log:off")) {
+		log_file("");
+	}
+	else if (pars.has("log")) {
+		log_file(pars.get("log"));
+	}
+	else {
 #ifdef JN_PARA
-	if (g_mpi->m_size == 1) log_file(to_str(_name, ".tsp.log"));
-	else log_file(to_str(_name, ".", g_mpi->m_rank + 1, ".tsp.log"));
+		if (g_mpi->m_size == 1) log_file(to_str(_name, ".tsp.log"));
+		else log_file(to_str(_name, ".", g_mpi->m_rank + 1, ".tsp.log"));
 #else
-	log_file(to_str(_name, ".tsp.log"));
+		log_file(to_str(_name, ".tsp.log"));
 #endif
+	}
     //m_cmd = (*_par)[1];
 	LOG << "# Reading sequence" << std::endl;
 	read_seq();
