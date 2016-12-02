@@ -24,6 +24,10 @@ namespace jian {
 		par.set(_mc_lowest_en, "mc_lowest_en");
 		_mc_lowest_rate = 0.01;
 		par.set(_mc_lowest_rate, "mc_lowest_rate");
+		_mc_lowest_tempr = 20;
+		par.set(_mc_lowest_tempr, "mc_lowest_tempr");
+		_mc_highest_tempr = 200;
+		par.set(_mc_highest_tempr, "mc_highest_tempr");
 	}
 
 	void MC::mc_next_step() {
