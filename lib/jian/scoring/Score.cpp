@@ -361,9 +361,9 @@ namespace jian {
 		num_t d2 = geom::distance(p1->at(0), p2->at(1));
 		if (d1 > 5 && d2 > 5) {
 			d = geom::distance(p1->at(1), p2->at(2));
-			if (d < 4.5) m_en_vdw++;
+			if (d < 4.5) m_en_vdw--;
 			d = geom::distance(p1->at(2), p2->at(1));
-			if (d < 4.5) m_en_vdw++;
+			if (d < 4.5) m_en_vdw--;
 		}
 		//if (d < 6.5) m_en_vdw += -1;
 		//for (i = 0; i < m_res_size; i++) {
