@@ -79,7 +79,6 @@ namespace jian {
 					}
 					else if (size(u) == 1) {
 						_mc_highest_tempr = JN_DBL(u[0]);
-						_mc_lowest_tempr = 0;
 					}
 					else {
 						throw "Illegal settings of SAMC temperature!";
