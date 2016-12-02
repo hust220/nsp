@@ -158,12 +158,12 @@ namespace jian {
 		}
 
 		static Logger &log() {
-			static Logger g_log("");
+			static Logger g_log("std.out");
 			return g_log;
 		}
 
 		static Logger &out() {
-			static Logger g_out("");
+			static Logger g_out("std.out");
 			return g_out;
 		}
 	};
