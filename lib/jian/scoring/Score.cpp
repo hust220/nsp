@@ -320,7 +320,7 @@ namespace jian {
 				}
 				else {
 					double s = -std::log(d) /** w[t1][t2]*/;
-					return (s > 18 ? 0 : (1 - 0.9*square(theta - 1)) * w[t1][t2] * (s - 18));
+					return (s > 18 ? 0 : (1 - square(theta - 1)) * w[t1][t2] * (s - 18));
 					//return s;
 				}
 			}
