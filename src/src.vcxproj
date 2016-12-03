@@ -364,7 +364,6 @@
     <ClCompile Include="..\lib\jian\utils\Env.cpp" />
     <ClCompile Include="..\lib\jian\utils\file.cpp" />
     <ClCompile Include="..\lib\jian\utils\KMeans.cpp" />
-    <ClCompile Include="..\lib\jian\utils\log.cpp" />
     <ClCompile Include="..\lib\jian\utils\Par.cpp" />
     <ClCompile Include="..\lib\jian\utils\rand.cpp" />
     <ClCompile Include="..\lib\jian\utils\string.cpp" />

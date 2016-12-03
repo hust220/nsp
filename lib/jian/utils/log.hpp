@@ -110,11 +110,11 @@ namespace jian {
 
 		void pop() {
 			auto id = get_id();
-			set_file(chains[id].back());
+			set_file(chains[id].back(), std::ios::app);
 			chains[id].pop_back();
 		}
 
-		void set_file(str_t filename) {
+		void set_file(str_t filename, std::ios::openmode openmode = std::ios::out) {
 			std::lock_guard<std::mutex> gd(mt);
 			auto id = get_id();
 			if (streams.count(id) && streams[id] != &onstream && streams[id] != &std::cout) {
@@ -127,7 +127,7 @@ namespace jian {
 				streams[id] = &std::cout;
 			}
 			else {
-				streams[id] = new std::ofstream(filename.c_str());
+				streams[id] = new std::ofstream(filename.c_str(), openmode);
 			}
 			filenames[id] = filename;
 		}
@@ -198,16 +198,16 @@ namespace jian {
 		OUTMANAGER.pop();
 	}
 
-	inline void out_file(str_t filename) {
-		OUTMANAGER.set_file(filename);
+	inline void out_file(str_t filename, std::ios::openmode openmode = std::ios::out) {
+		OUTMANAGER.set_file(filename, openmode);
 	}
 
 	inline str_t out_file() {
 		return OUTMANAGER.get_file();
 	}
 
-	inline void log_file(str_t file_name) {
-		LOGMANAGER.set_file(file_name);
+	inline void log_file(str_t file_name, std::ios::openmode openmode = std::ios::out) {
+		LOGMANAGER.set_file(file_name, openmode);
 	}
 
 	inline str_t log_file() {

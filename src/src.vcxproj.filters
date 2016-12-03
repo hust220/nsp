@@ -154,9 +154,6 @@
     <ClCompile Include="..\lib\jian\utils\file.cpp">
       <Filter>jian\utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\jian\utils\log.cpp">
-      <Filter>jian\utils</Filter>
-    </ClCompile>
     <ClCompile Include="..\lib\jian\utils\Par.cpp">
       <Filter>jian\utils</Filter>
     </ClCompile>
