@@ -35,6 +35,7 @@ namespace jian {
 		bool m_not_sample_il;
 		bool m_set_mvel_pk;
 		bool m_all_free;
+		std::map<str_t, std::array<num_t, 6>> m_bp_distances;
 		std::vector<bool> m_is_free;
 
 		template<typename T>

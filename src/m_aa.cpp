@@ -49,14 +49,14 @@ namespace jian {
 				for (i = 0; i < l; i++) {
 					for (j = i + 1; j < l; j++) {
 						par_bp.anal(chain[i], chain[j]);
-						if (par_bp.is_stacked()) {
-							std::cout << chain[i].name << ' ' << chain[j].name << ' ';
-							std::cout << par_bp.theta;
-							//for (k = 0; k < 6; k++) {
-							//	std::cout
-							//		<< geom::distance(chain[i][k], chain[j][k]) << ' ';
-							//}
-							std::cout << std::endl;
+						if (par_bp.is_paired()) {
+							JN_OUT << chain[i].name << ' ' << chain[j].name << ' ';
+							//std::cout << par_bp.theta;
+							for (k = 0; k < 6; k++) {
+								JN_OUT
+									<< geom::distance(chain[i][k], chain[j][k]) << ' ';
+							}
+							JN_OUT << std::endl;
 						}
 						n++;
 					}

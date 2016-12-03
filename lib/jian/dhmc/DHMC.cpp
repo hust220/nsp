@@ -14,6 +14,15 @@ namespace jian {
 		m_not_sample_il = par.has("not_sample_il");
 		m_all_free = par.has("all_free");
 
+		LOG << "# Load  bp distances..." << std::endl;
+		BEGIN_READ_FILE(to_str(Env::lib(), "/RNA/pars/nuc3d/bp_distances.txt"), " ") {
+			if (size(F) == 7) {
+				for (int i = 0; i < 6; i++) {
+					m_bp_distances[F[0]][i] = lexical_cast<num_t>(F[i+1]);
+				}
+			}
+		} END_READ_FILE;
+
 		LOG << "# Set bps" << std::endl;
 		set_bps();
 
@@ -137,12 +146,12 @@ namespace jian {
 
 	void DHMC::bps_to_constraints() {
 		int i, j;
-		std::vector<val_t> dists{ 18.2, 15.2, 10.7, 4.2, 6.3, 6.4 };
+		//std::vector<val_t> dists{ 18.2, 15.2, 10.7, 4.2, 6.3, 6.4 };
 
-		auto foo = [this, &dists](int n1, int n2) {
+		auto foo = [this](int n1, int n2) {
 			//int t1 = pdb::res_type(_pred_chain[n1].name);
 			//int t2 = pdb::res_type(_pred_chain[n2].name);
-
+			auto &dists = m_bp_distances[to_str(_pred_chain[n1].name, _pred_chain[n2].name)];
 			for (int i = 0; i < 6; i++) {
 				m_distance_constraints.push_back({ { n1, i },{ n2, i }, dists[i], dists[i] });
 			}
@@ -237,19 +246,23 @@ namespace jian {
 			Residue && res1 = m_cg->to_cg(h->at(i));
 			Residue && res2 = m_cg->to_cg(_pred_chain[j]);
 			for (int k = 0; k < m_cg->res_size(); k++) {
-				for (int t = 0; t < 3; t++) {
-					x(l, t) = res1[k][t];
-					y(l, t) = res2[k][t];
-				}
+				mat_set_rows(x, l, res1[k]);
+				mat_set_rows(y, l, res2[k]);
+				//for (int t = 0; t < 3; t++) {
+				//	x(l, t) = res1[k][t];
+				//	y(l, t) = res2[k][t];
+				//}
 				l++;
 			}
 			i++;
 		}
-		auto sp = geom::suppos(x, y);
-		INIT_SUPPOS(sp);
+		geom::Superposition<num_t> sp(x, y);
+		//auto sp = geom::suppos(x, y);
+		//INIT_SUPPOS(sp);
 		for (auto && res : *h) {
 			for (auto && atom : res) {
-				APPLY_SUPPOS(atom, sp);
+				sp.apply(atom);
+				//APPLY_SUPPOS(atom, sp);
 			}
 		}
 	}
