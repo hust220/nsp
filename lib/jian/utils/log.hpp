@@ -3,10 +3,12 @@
 #include <map>
 #include <thread>
 #include <fstream>
+#include <deque>
 #include <mutex>
 #include <iostream>
 #include <string>
 #include "platform.hpp"
+#include "string.hpp"
 
 #define OUTMANAGER (Logger::out())
 #define OUTSTREAM (*(OUTMANAGER.get_stream()))
@@ -87,12 +89,13 @@ namespace jian {
 	public:
 		std::map<std::thread::id, std::ostream *> streams;
 		std::map<std::thread::id, int> levels;
-		std::map<std::thread::id, std::string> filenames;
+		std::map<std::thread::id, str_t> filenames;
+		std::map<std::thread::id, std::deque<str_t>> chains;
 		int level = LOG_LEVEL_INFO;
 		std::mutex mt;
 		onullstream onstream;
 
-		Logger(std::string file) {
+		Logger(str_t file) {
 			set_file(file);
 		}
 
@@ -100,7 +103,18 @@ namespace jian {
 			return std::this_thread::get_id();
 		}
 
-		void set_file(std::string filename) {
+		void push() {
+			auto id = get_id();
+			chains[id].push_back(filenames[id]);
+		}
+
+		void pop() {
+			auto id = get_id();
+			set_file(chains[id].back());
+			chains[id].pop_back();
+		}
+
+		void set_file(str_t filename) {
 			std::lock_guard<std::mutex> gd(mt);
 			auto id = get_id();
 			if (streams.count(id) && streams[id] != &onstream && streams[id] != &std::cout) {
@@ -118,7 +132,7 @@ namespace jian {
 			filenames[id] = filename;
 		}
 
-		std::string get_file() {
+		str_t get_file() {
 			auto id = get_id();
 			return filenames[id];
 		}
@@ -168,17 +182,46 @@ namespace jian {
 		}
 	};
 
-	void out_file(std::string f);
+	inline void log_push() {
+		LOGMANAGER.push();
+	}
 
-	std::string out_file();
+	inline void log_pop() {
+		LOGMANAGER.pop();
+	}
 
-	void log_file(std::string f);
+	inline void out_push() {
+		OUTMANAGER.push();
+	}
 
-	std::string log_file();
+	inline void out_pop() {
+		OUTMANAGER.pop();
+	}
 
-	void log_level(int l);
+	inline void out_file(str_t filename) {
+		OUTMANAGER.set_file(filename);
+	}
 
-	int log_level();
+	inline str_t out_file() {
+		return OUTMANAGER.get_file();
+	}
+
+	inline void log_file(str_t file_name) {
+		LOGMANAGER.set_file(file_name);
+	}
+
+	inline str_t log_file() {
+		return LOGMANAGER.get_file();
+	}
+
+	inline void log_level(int l) {
+		LOGMANAGER.set_level(l);
+	}
+
+	inline int log_level() {
+		return LOGMANAGER.get_level();
+	}
+
 
 }
 

@@ -17,6 +17,7 @@ void TSP::init(const Par &pars) {
     _par = new Par(pars);
     _lib = Env::lib();
 	_name = pars.get("job_name", "job", "name");
+	log_push();
 	if (pars.has("log:off")) {
 		log_file("");
 	}
@@ -57,6 +58,7 @@ void TSP::init(const Par &pars) {
 
 TSP::~TSP() {
     delete _par;
+	log_pop();
 }
 
 void TSP::set_disused_pdbs() {
