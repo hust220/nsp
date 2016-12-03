@@ -382,7 +382,7 @@ namespace jian {
 						}
 					}
 					else */if (min == 0 || max == size(_seq) - 1) {
-						int t = ((min == 0 || d1 > 4.2) ? max : min);
+						int t = ((min == 0/* || d1 > 4.2*/) ? max : min);
 						int index = int(rand() * 3);
 						double dih = (rand() - 0.5) * m_max_angle;
 						auto &&rot = geom::rot_mat(index, dih);
