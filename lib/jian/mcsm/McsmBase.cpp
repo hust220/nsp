@@ -1,3 +1,4 @@
+#include <functional>
 #include "McsmBase.hpp"
 
 #define JN_MCXP_TEMPPAR_SET(a) temp_par.set(PP_CAT(_mc_, a), PP_STRING3(PP_CAT(mc_, a)));
@@ -327,22 +328,10 @@ namespace jian {
 			std::array<Vec, 2> axis;
 			axis[0].resize(3);
 			axis[1].resize(3);
-			for (int i = 0; i < 3; i++) {
-				axis[0][i] = residue[1][i];
-			}
-			if (t == 1 || t == 3) {
-				for (int i = 0; i < 3; i++) {
-					axis[1][i] = residue[3][i] + residue[5][i];
-				}
-			}
-			else if (t == 0 || t == 2) {
-				for (int i = 0; i < 3; i++) {
-					axis[1][i] = residue[5][i];
-				}
-			}
-			else {
-				throw "jian::MCBase::mc_sample_res::get_base_axis error!";
-			}
+			vec_set(axis[0], residue[1]);
+			if (t == 1 || t == 3)  vec_set(axis[1], std::plus<>{}, residue[3], residue[5]);
+			else if (t == 0 || t == 2) vec_set(axis[1], residue[5]);
+			else throw "jian::MCBase::mc_sample_res::get_base_axis error!";
 			return axis;
 		};
 
@@ -360,18 +349,17 @@ namespace jian {
 					geom::Superposition<num_t> sp;
 					if (min == 0) {
 						Mat x(1, 3);
-						for (int j = 0; j < 3; j++) x(0, j) = _pred_chain[min + 1]["P"][j];
+						mat_set_rows(x, 0, _pred_chain[min + 1]["P"]);
 						sp.init(confs[n].p2, x);
 					}
 					else if (max == _seq.size() - 1) {
 						Mat x(1, 3);
-						for (int j = 0; j < 3; j++) x(0, j) = _pred_chain[min]["P"][j];
+						mat_set_rows(x, 0, _pred_chain[min]["P"]);
 						sp.init(confs[n].p1, x);
 					}
 					else {
 						Mat x(2, 3);
-						for (int j = 0; j < 3; j++) x(0, j) = _pred_chain[min]["P"][j];
-						for (int j = 0; j < 3; j++) x(1, j) = _pred_chain[min+1]["P"][j];
+						mat_set_rows(x, 0, _pred_chain[min]["P"], _pred_chain[min + 1]["P"]);
 						sp.init(confs[n].pp, x);
 					}
 					Residue r = confs[n].res;
@@ -381,15 +369,25 @@ namespace jian {
 				else {
 					num_t d1 = -1;
 					num_t d2 = -1;
-					if (min > 0) d1 = geom::distance(_pred_chain[min - 1][1], _pred_chain[min][0]);
-					if (max < size(_seq) - 1) d1 = geom::distance(_pred_chain[max][1], _pred_chain[max + 1][0]);
-					if (min == 0 || max == size(_seq) - 1 || d1 > 4.2 || d2 > 4.2) {
+					//if (min > 0) d1 = geom::distance(_pred_chain[min - 1][1], _pred_chain[min][0]);
+					if (max < size(_seq) - 1) d2 = geom::distance(_pred_chain[max][1], _pred_chain[max + 1][0]);
+					if (d2 > 4.0) {
+						int index = int(rand() * 3);
+						num_t dist = (rand() - 0.5) * 0.3 * _mc_max_shift;
+						for (int i = min; i <= max; i++) {
+							for (auto && atom : _pred_chain[i]) {
+								atom[index] += dist;
+							}
+							space_update_item(i);
+						}
+					}
+					else if (min == 0 || max == size(_seq) - 1) {
 						int t = ((min == 0 || d1 > 4.2) ? max : min);
 						int index = int(rand() * 3);
 						double dih = (rand() - 0.5) * m_max_angle;
 						auto &&rot = geom::rot_mat(index, dih);
 						Vec origin(3);
-						for (int i = 0; i < 3; i++) origin[i] = _pred_chain[t][0][i];
+						vec_set(origin, _pred_chain[t][0]);
 						for (int i = min; i <= max; i++) {
 							for (auto && atom : _pred_chain[i]) {
 								geom::rotate(atom, origin, rot);

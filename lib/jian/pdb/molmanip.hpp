@@ -28,57 +28,12 @@ namespace jian {
 		return s;
 	}
 
-	//template<typename T, JN_ENABLE(JN_GE_CHAIN(T))>
-	//str_t seq(T && t) {
-	//	str_t s;
-	//	for (auto && i : t) {
-	//		s += seq(i);
-	//	}
-	//	return s;
-	//}
-
-	//template<typename T, JN_ENABLE(JN_IS_RESIDUE(T))>
-	//str_t seq(T && t) {
-	//	return t.name;
-	//}
-
 	template<typename T>
 	int num_residues(T &&t) { return count<Residue>(t); }
-
-	//// num_residues 
-	//template<typename T, JN_ENABLE(JN_GE_MODEL(T))>
-	//int num_residues(T && t) {
-	//	int n = 0;
-	//	for (auto && i : t) {
-	//		n += num_residues(i);
-	//	}
-	//	return n;
-	//}
-
-	//template<typename T, JN_ENABLE(JN_IS_CHAIN(T))>
-	//int num_residues(T && t) {
-	//	return t.size();
-	//}
 
 	template<typename T>
 	int num_atoms(T &&t) { return count<Atom>(t); }
 
-	//// num_atoms
-	//template<typename T, JN_ENABLE(JN_GE_CHAIN(T))>
-	//int num_atoms(T && t) {
-	//	int n = 0;
-	//	for (auto && i : t) {
-	//		n += num_atoms(i);
-	//	}
-	//	return n;
-	//}
-
-	//template<typename T, JN_ENABLE(JN_IS_RESIDUE(T))>
-	//int num_atoms(T && t) {
-	//	return t.size();
-	//}
-
-	// is_empty
 	template<typename T, JN_ENABLE(JN_GE_RESIDUE(T))>
 	int is_empty(T && t) {
 		return num_atoms(t) == 0;

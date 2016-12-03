@@ -64,6 +64,29 @@ namespace jian {
 		return stream;
 	}
 
+	template<typename _Row>
+	inline void mat_set_rows(Mat &mat, int beg, const _Row &row) {
+		for (int i = 0; i < 3; i++) {
+			mat(beg, i) = row[i];
+		}
+	}
+
+	template<typename _First, typename _Second, typename... _Rest>
+	inline void mat_set_rows(Mat &mat, int beg, const _First &first, const _Second &second, const _Rest &...rest) {
+		mat_set_rows(mat, beg, first);
+		mat_set_rows(mat, beg + 1, second, rest...);
+	}
+
+	template<typename _Vec, typename _Row>
+	inline void vec_set(_Vec &vec, const _Row &row) {
+		for (int i = 0; i < 3; i++) vec[i] = row[i];
+	}
+
+	template<typename _Vec, typename _Fn, typename _First, typename... _Rest>
+	inline void vec_set(_Vec &vec, _Fn &&fn, const _First &first, const _Rest &...rest) {
+		for (int i = 0; i < 3; i++) vec[i] = fn(first[i], (rest[i])...);
+	}
+
 	// rows
 	template<typename MatType, std::enable_if_t<is_stl_mat<MatType>::value, int> = 42>
 	inline int rows(MatType &&mat) {
