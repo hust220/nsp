@@ -38,7 +38,8 @@ namespace jian {
 
 
 	template<typename CharType, class CharTraits = ::std::char_traits<CharType> >
-	class basic_nullbuf : public ::std::basic_streambuf<CharType, CharTraits> {
+	class basic_nullbuf : public ::std::basic_streambuf<CharType, CharTraits>
+	{
 		typedef ::std::basic_streambuf<CharType, CharTraits>  base_type;
 	public:
 		// Types
@@ -62,7 +63,8 @@ namespace jian {
 #endif
 
 	template<typename T>
-	struct member_from_base {
+	struct member_from_base
+	{
 		T member;
 	};
 
@@ -85,7 +87,8 @@ namespace jian {
 	typedef basic_onullstream<wchar_t>  wonullstream;
 
 	// Swallow all types
-	class Logger {
+	class Logger
+	{
 	public:
 		std::map<std::thread::id, std::ostream *> streams;
 		std::map<std::thread::id, int> levels;

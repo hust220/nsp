@@ -431,7 +431,8 @@ namespace jian {
 		};
 
 		for (int i = 0; i < _seq.size(); i++) {
-			for (int j = i; j < _seq.size(); j++) {
+			m_mvels.push_back(new MvEl(i, i, MvEl::MVEL_FG));
+			for (int j = i + 1; j < _seq.size(); j++) {
 				if (m_all_free || foo(i, j)) {
 					m_mvels.push_back(new MvEl(i, j, MvEl::MVEL_FG));
 				}

@@ -367,7 +367,7 @@ namespace jian {
 					_pred_chain[min].set_atoms(r);
 				}
 				else {
-					num_t d1 = -1;
+					/*num_t d1 = -1;
 					num_t d2 = -1;
 					if (min > 0) d1 = geom::distance(_pred_chain[min - 1][1], _pred_chain[min][0]);
 					if (max < size(_seq) - 1) d2 = geom::distance(_pred_chain[max][1], _pred_chain[max + 1][0]);
@@ -381,7 +381,7 @@ namespace jian {
 							space_update_item(i);
 						}
 					}
-					else if (min == 0 || max == size(_seq) - 1) {
+					else */if (min == 0 || max == size(_seq) - 1) {
 						int t = ((min == 0 || d1 > 4.2) ? max : min);
 						int index = int(rand() * 3);
 						double dih = (rand() - 0.5) * m_max_angle;
