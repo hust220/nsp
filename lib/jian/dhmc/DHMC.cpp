@@ -402,7 +402,8 @@ namespace jian {
 		auto is_paired = [this](int i, int j) {return m_bps[i] == j && (_ss[i] == '(' || m_pk_ahead); };
 		auto foo = [this, &is_paired, &keys](int i, int j) {
 			if (is_paired(i, j) && i > 0 && j < size(_seq) - 1 && is_paired(i-1, j+1)) return false;
-			auto end = (m_pk_ahead ? keys.end() : std::next(keys.begin(), 1));
+			auto end = std::next(keys.begin(), 1);
+			//auto end = (m_pk_ahead ? keys.end() : std::next(keys.begin(), 1));
 			std::vector<int> v(std::distance(keys.begin(), end));
 			//int s = 0;
 			int m;
