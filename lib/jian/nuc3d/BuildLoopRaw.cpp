@@ -2,7 +2,7 @@
 
 namespace jian {
 
-	BuildLoopRaw &BuildLoopRaw::init(const std::string &seq, const std::string &ss) {
+	BuildLoopRaw &BuildLoopRaw::init(const str_t &seq, const str_t &ss) {
 		//Hinges &&hinges = ss_to_hinges(NASS::hinge_ss(ss));
 		m_seq = seq;
 		m_ss = ss;
@@ -46,7 +46,7 @@ namespace jian {
 			}
 		}
 		if (!stack.empty()) {
-			throw std::string("jian::ss_to_hinges error! ss: ") + m_ss;
+			throw to_str("jian::ss_to_hinges error! ss: ", m_ss);
 		}
 		m_cache_hinges[m_ss] = hinges;
 		m_hinges = hinges;
@@ -123,12 +123,17 @@ namespace jian {
 
 	void BuildLoopRaw::set_pos() {
 		int i1, i2;
-		num_t phi, j, n;
+		num_t phi, j, n, bin, res_bins, helix_begin_bins, helix_end_bins, helix_bins;
 
+		bin = 7.0;
+		res_bins = 1;
+		helix_begin_bins = 2;
+		helix_end_bins = 3;
+		helix_bins = helix_begin_bins + helix_end_bins;
 		n = std::accumulate(m_frags.begin(), m_frags.end(), 0.0, [](num_t n, auto &&frag) {
 			return n + size(frag);
-		}) + size(m_hinges) * 5 + 1;
-		m_radius = 7.0 * n / (2.0 * PI);
+		}) * res_bins + size(m_hinges) * helix_bins + 1;
+		m_radius = bin * n / (2.0 * PI);
 		LOG << "radius: " << m_radius << std::endl;
 		phi = 2.0 * PI / n;
 		LOG << "phi: " << phi << std::endl;
@@ -142,14 +147,14 @@ namespace jian {
 			if (i1 < m_frags.size()) {
 				for (auto && i : m_frags[i1]) {
 					m_res_pos[i] = { PI / 2.0, phi * j };
-					j++;
+					j += res_bins;
 				}
 				i1++;
 			}
 			if (i2 < m_hinges.size()) {
-				j += 2;
+				j += helix_begin_bins;
 				m_helices[i2] = { PI / 2.0, phi * j };
-				j += 3;
+				j += helix_end_bins;
 				i2++;
 			}
 		}
