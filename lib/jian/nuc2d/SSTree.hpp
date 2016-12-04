@@ -1,6 +1,8 @@
 #pragma once
 
-#include <string>
+#include <list>
+#include "../utils/string.hpp"
+#include "loop.hpp"
 
 namespace jian {
 
@@ -8,22 +10,85 @@ namespace jian {
 	class SSTreeImpl;
 
 	std::pair<int, int> loop_head_tail(loop *l);
-	loop *ss_tree(std::string seq, std::string ss, int hinge = 2);
-	void ss_read_tree(std::string &ss, loop *l);
-	void seq_read_tree(std::string &seq, loop *l);
+	loop *ss_tree(str_t seq, str_t ss, int hinge = 2);
+	void ss_read_tree(str_t &ss, loop *l);
+	void seq_read_tree(str_t &seq, loop *l);
 	void free_ss_tree(loop *l);
 	void print_ss_tree(loop *l);
 
 	class SSTree {
 	public:
+		using Path = std::list<const loop *>;
+
 		SSTree();
 		~SSTree();
 		loop *&head();
+		const loop *head() const;
 		bool empty() const;
 		// make tree with no broken tag
-		void make(const std::string &seq, const std::string &ss, int hinge = 2);
+		void make(const str_t &seq, const str_t &ss, int hinge = 2);
 		// make tree with broken tag
-		void make_b(const std::string &seq, const std::string &ss, int hinge = 2);
+		void make_b(const str_t &seq, const str_t &ss, int hinge = 2);
+
+		template<typename _Fn>
+		void traverse(_Fn &&fn) {
+			Path ls;
+			loop * L = head();
+			while (true) {
+				if (L == NULL) break;
+				ls.push_back(L);
+				fn(L, ls);
+				if (L->son != NULL) {
+					L = L->son;
+				}
+				else if (L->brother != NULL) {
+					L = L->brother;
+					ls.pop_back();
+				}
+				else {
+					while (true) {
+						ls.pop_back();
+						if (!ls.empty()) {
+							L = ls.back()->brother;
+							if (L == NULL) continue;
+							else { ls.pop_back(); break; }
+						}
+						else { L = NULL; break; }
+					}
+				}
+			}
+		}
+
+		template<typename _Fn>
+		Path path(_Fn &&fn) const {
+			Path ls;
+			const loop * L = head();
+			while (true) {
+				if (L == NULL) break;
+				ls.push_back(L);
+				if (fn(L)) return ls;
+				if (L->son != NULL) {
+					L = L->son;
+				}
+				else if (L->brother != NULL) {
+					L = L->brother;
+					ls.pop_back();
+				}
+				else {
+					while (true) {
+						ls.pop_back();
+						if (!ls.empty()) {
+							L = ls.back()->brother;
+							if (L == NULL) continue;
+							else { ls.pop_back(); break; }
+						}
+						else { L = NULL; break; }
+					}
+				}
+			}
+			return ls;
+		}
+
 	private:
 		SSTreeImpl *_impl;
 	};

@@ -33,7 +33,7 @@ tuples_t tuples_from_file(const str_t &file_name, int size) {
     tuples_t tuples;
 	BEGIN_READ_FILE(file_name, " ") {
 		//        if (N >= size) return pairs;
-		if (F.size() >= 2) {
+		if (F.size() >= 3) {
 			int a = std::stoi(F[0]) - 1;
 			int b = std::stoi(F[1]) - 1;
 			double c = std::stod(F[2]);

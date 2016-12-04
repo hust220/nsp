@@ -28,12 +28,12 @@
 #define BEGIN_LOOP_TRAVERSE(l) \
 	do {\
 		using type = std::remove_reference_t<decltype(l)>;\
-		std::list<type> ls;\
+		std::list<type> path;\
 		type L = l;\
 		JN_BREAK_INIT;\
 		while (true) {\
 			if (L == NULL) break;\
-			ls.push_back(L);\
+			path.push_back(L);\
 			do
 
 #define END_LOOP_TRAVERSE \
@@ -42,14 +42,14 @@
 			if (L->son != NULL) { L = L->son;\
 			} else if (L->brother != NULL) {\
 				L = L->brother;\
-				ls.pop_back(); \
+				path.pop_back(); \
 			} else {\
 				while (true) {\
-					ls.pop_back();\
-					if (!ls.empty()) {\
-						L = ls.back()->brother;\
+					path.pop_back();\
+					if (!path.empty()) {\
+						L = path.back()->brother;\
 						if (L == NULL) continue;\
-						else { ls.pop_back(); break; }\
+						else { path.pop_back(); break; }\
 					} else { L = NULL; break; }\
 				}\
 			}\
@@ -102,6 +102,16 @@ public:
     ~loop() {
         res::del(head);
     }
+
+	bool has(int i) const {
+		BEGIN_LOOP_EACH(this) {
+			if (RES->type != '(' && RES->type != ')' && RES->num == i) return true;
+		} END_LOOP_EACH;
+		BEGIN_HELIX_EACH(s) {
+			if (BP->res1.num == i || BP->res2.num == i) return true;
+		} END_HELIX_EACH;
+		return false;
+	}
 
     bool has_helix() const { return s.head != NULL; }
     bool has_loop() const { return head != NULL; }
@@ -205,6 +215,10 @@ public:
     int num_sons() const {
         return hinges.size();
     }
+
+	bool is_ml() const {
+		return num_sons() > 1;
+	}
 
     bool is_open() const {
         return num_branches() == num_sons();

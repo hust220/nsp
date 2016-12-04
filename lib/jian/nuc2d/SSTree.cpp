@@ -258,6 +258,10 @@ namespace jian {
 		return _impl->head;
 	}
 
+	const loop *SSTree::head() const {
+		return _impl->head;
+	}
+
 	bool SSTree::empty() const {
 		return _impl->head == NULL;
 	}
