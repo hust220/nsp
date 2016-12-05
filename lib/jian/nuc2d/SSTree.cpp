@@ -239,31 +239,29 @@ namespace jian {
 
 	} // namespace sstree_detail
 
-	class SSTreeImpl {
-	public:
-		loop *head = NULL;
+//	class SSTreeImpl {
+//	public:
+//		loop *head = NULL;
+//
+//		~SSTreeImpl() {
+//			if (head != NULL) free_ss_tree(head);
+//		}
+//	};
 
-		~SSTreeImpl() {
-			if (head != NULL) free_ss_tree(head);
-		}
-	};
+	SSTree::SSTree() : m_head(NULL) {}
 
-	SSTree::SSTree() : _impl(new SSTreeImpl) {}
-
-	SSTree::~SSTree() {
-		delete _impl;
-	}
+	SSTree::~SSTree() {}
 
 	loop *&SSTree::head() {
-		return _impl->head;
+		return m_head;
 	}
 
 	const loop *SSTree::head() const {
-		return _impl->head;
+		return m_head;
 	}
 
 	bool SSTree::empty() const {
-		return _impl->head == NULL;
+		return m_head == NULL;
 	}
 
 	void SSTree::make(const str_t &seq, const str_t &ss, int hinge) {
@@ -273,8 +271,8 @@ namespace jian {
 		if (NASS::seq_match_ss(seq, ss)) {
 			str_t ss_nbt;
 			std::copy_if(ss.begin(), ss.end(), std::back_inserter(ss_nbt), [](auto &&c) {return c != '&'; });
-			_impl->head = sstree_detail::set_tree(ss_nbt, hinge);
-			sstree_detail::read_seq(_impl->head, seq, ss_nbt);
+			m_head = sstree_detail::set_tree(ss_nbt, hinge);
+			sstree_detail::read_seq(m_head, seq, ss_nbt);
 		}
 		else {
 			LOG << "Error:" << std::endl;
@@ -290,8 +288,8 @@ namespace jian {
 		LOG << seq << std::endl;
 		LOG << ss << std::endl;
 		if (NASS::seq_match_ss(seq, ss)) {
-			_impl->head = sstree_detail::set_tree(ss, hinge);
-			sstree_detail::read_seq(_impl->head, seq, ss);
+			m_head = sstree_detail::set_tree(ss, hinge);
+			sstree_detail::read_seq(m_head, seq, ss);
 		}
 		else {
 			LOG << "Error:" << std::endl;

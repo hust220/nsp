@@ -55,8 +55,9 @@ namespace jian {
 
 		void trim_di(const Par &par) {
 			str_t ss = par.get("ss");
+            int l = size(ss);
 			str_t seq;
-			seq.resize(size(ss), 'A');
+			seq.resize(l, 'A');
 			str_t difile = par.get("di");
 			tuples_t tuples = tuples_from_file(difile, ss.size());
 			tuples_t ls;
@@ -64,8 +65,14 @@ namespace jian {
 			sst.make(seq, ss, 1);
 			sst.head()->print_tree();
 			//print_tuples(tuples);
+            std::vector<loop *> v;
+            v.resize(l);
+            for (int i = 0; i < l; i++) v[i] = sst.find([&i](auto &&l, auto &&path){return l->has(i+1);});
+            for (auto && l : v) LOG << l << ' '; LOG << std::endl;
 			for (auto && tuple : tuples) {
-				if (connect_by_ml(tuple.a, tuple.b, sst)) {
+				//if (connect_by_ml(tuple.a, tuple.b, sst)) {
+				//if (v[tuple.a] != v[tuple.b] && ss[tuple.a] == '.' && ss[tuple.b] == '.') {
+				if (v[tuple.a] != v[tuple.b]) {
 					ls.push_back(tuple);
 				}
 			}

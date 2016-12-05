@@ -7,7 +7,6 @@
 namespace jian {
 
 	class loop;
-	class SSTreeImpl;
 
 	std::pair<int, int> loop_head_tail(loop *l);
 	loop *ss_tree(str_t seq, str_t ss, int hinge = 2);
@@ -18,7 +17,9 @@ namespace jian {
 
 	class SSTree {
 	public:
-		using Path = std::list<const loop *>;
+		using Path = std::list<loop *>;
+
+        loop *m_head;
 
 		SSTree();
 		~SSTree();
@@ -30,14 +31,27 @@ namespace jian {
 		// make tree with broken tag
 		void make_b(const str_t &seq, const str_t &ss, int hinge = 2);
 
+        template<typename _Fn>
+        loop *find(_Fn &&fn) const {
+            loop *p = NULL;
+            traverse([&p, &fn](auto &&q, auto &&path){
+                if (fn(q, path)) {
+                    p = q;
+                    return true;
+                }
+                return false;
+            });
+            return p;
+        }
+
 		template<typename _Fn>
-		void traverse(_Fn &&fn) {
+		void traverse(_Fn &&fn) const {
 			Path ls;
-			loop * L = head();
+			loop * L = m_head;
 			while (true) {
 				if (L == NULL) break;
 				ls.push_back(L);
-				fn(L, ls);
+				if (fn(L, ls)) return;
 				if (L->son != NULL) {
 					L = L->son;
 				}
@@ -62,7 +76,7 @@ namespace jian {
 		template<typename _Fn>
 		Path path(_Fn &&fn) const {
 			Path ls;
-			const loop * L = head();
+			loop * L = m_head;
 			while (true) {
 				if (L == NULL) break;
 				ls.push_back(L);
@@ -89,8 +103,6 @@ namespace jian {
 			return ls;
 		}
 
-	private:
-		SSTreeImpl *_impl;
 	};
 
 } // namespace jian
