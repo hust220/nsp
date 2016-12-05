@@ -14,8 +14,8 @@ BEGIN_JN
 class SplitModel {
 public:
     SSTree _ss_tree;
-    std::map<loop *, Model> _helices;
-    std::map<loop *, Model> _loops;
+    std::map<Hairpin *, Model> _helices;
+    std::map<Hairpin *, Model> _loops;
     std::shared_ptr<Model> _model;
 
     SplitModel(const S &name, const S &seq, const S &ss) {
@@ -26,7 +26,7 @@ public:
         );
     }
 
-    SplitModel &parse_helix(loop *l) {
+    SplitModel &parse_helix(Hairpin *l) {
         if (l->has_helix()) {
             int len = l->s.len();
             std::vector<int> nums(len * 2);
@@ -39,7 +39,7 @@ public:
         return *this;
     }
 
-    SplitModel &parse_loop(loop *l) {
+    SplitModel &parse_loop(Hairpin *l) {
         if (l->has_loop()) {
             std::deque<int> all_nums;
             LOOP_EACH(l, all_nums.push_back(RES->num - 1));

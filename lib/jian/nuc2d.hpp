@@ -2,7 +2,7 @@
 
 #include "nuc2d/NASS.hpp"
 #include "nuc2d/SSTree.hpp"
-#include "nuc2d/loop.hpp"
+#include "nuc2d/Hairpin.hpp"
 #include "nuc2d/helix.hpp"
 //#include "nuc2d/Seq2Ss.hpp"
 //#include "nuc2d/Seq2Tri.hpp"

@@ -38,7 +38,6 @@
     <ProjectGuid>{98477EA2-84E8-4F53-9E89-EE24E9E7FAC3}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>src</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
     <ProjectName>nsp</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -281,12 +280,15 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)lib;$(MSMPI_INC);$(MSMPI_INC)x64</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(MSMPI_LIB64)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Ws2_32.lib;msmpi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -482,7 +484,7 @@
     <ClInclude Include="..\lib\jian\nuc2d\BuildSST.hpp" />
     <ClInclude Include="..\lib\jian\nuc2d\GetSS.hpp" />
     <ClInclude Include="..\lib\jian\nuc2d\helix.hpp" />
-    <ClInclude Include="..\lib\jian\nuc2d\loop.hpp" />
+    <ClInclude Include="..\lib\jian\nuc2d\Hairpin.hpp" />
     <ClInclude Include="..\lib\jian\nuc2d\MergeRings.hpp" />
     <ClInclude Include="..\lib\jian\nuc2d\NASS.hpp" />
     <ClInclude Include="..\lib\jian\nuc2d\PredQuaSS.hpp" />

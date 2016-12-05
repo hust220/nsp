@@ -8,8 +8,8 @@ BEGIN_JN
 	namespace dca {
 
 		SSTree::Path direct_path(const SSTree::Path &p1, const SSTree::Path &p2) {
-			auto pos = std::adjacent_find(p1.begin(), p1.end(), [&p2](const loop *a1, const loop *a2) {
-				return std::adjacent_find(p2.begin(), p2.end(), [&a1, &a2](const loop *b1, const loop *b2) {
+			auto pos = std::adjacent_find(p1.begin(), p1.end(), [&p2](const Hairpin *a1, const Hairpin *a2) {
+				return std::adjacent_find(p2.begin(), p2.end(), [&a1, &a2](const Hairpin *b1, const Hairpin *b2) {
 					return a1 == b1 && a2 != b2;
 				}) != p2.end() || size(p2) == 1;
 			});
@@ -43,14 +43,14 @@ BEGIN_JN
 		}
 
 		bool connect_by_ml(int a, int b, const SSTree &sst) {
-			auto path_a = sst.path([&a](const loop *l) {return l->has(a+1); });
-			auto path_b = sst.path([&b](const loop *l) {return l->has(b+1); });
+			auto path_a = sst.path([&a](const Hairpin *l) {return l->has(a+1); });
+			auto path_b = sst.path([&b](const Hairpin *l) {return l->has(b+1); });
 			auto path = direct_path(path_a, path_b);
 			LOG << a << ' ' << b << std::endl;
 			print_path(path_a);
 			print_path(path_b);
 			print_path(path);
-			return std::any_of(path.begin(), path.end(), [](const loop *l) {return l->is_ml(); });
+			return std::any_of(path.begin(), path.end(), [](const Hairpin *l) {return l->is_ml(); });
 		}
 
 		void trim_di(const Par &par) {
@@ -65,7 +65,7 @@ BEGIN_JN
 			sst.make(seq, ss, 1);
 			sst.head()->print_tree();
 			//print_tuples(tuples);
-            std::vector<loop *> v;
+            std::vector<Hairpin *> v;
             v.resize(l);
             for (int i = 0; i < l; i++) v[i] = sst.find([&i](auto &&l, auto &&path){return l->has(i+1);});
             for (auto && l : v) LOG << l << ' '; LOG << std::endl;

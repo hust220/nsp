@@ -55,9 +55,9 @@ public:
 
 	void bps_to_constraints();
 
-	bool is_hp(loop *l);
+	bool is_hp(Hairpin *l);
 
-	bool is_il(loop *l);
+	bool is_il(Hairpin *l);
 
 	void set_base_mvels();
 
@@ -108,7 +108,7 @@ public:
 };
 
 template<typename T>
-void chain_refine(Chain &chain, loop *l, const fixed_ranges_t &fixed_ranges = {}, S traj = "") {
+void chain_refine(Chain &chain, Hairpin *l, const fixed_ranges_t &fixed_ranges = {}, S traj = "") {
 	Par par;
 	par._orig_pars = { "nsp", "" };
 	S seq, ss;

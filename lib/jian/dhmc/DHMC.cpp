@@ -289,7 +289,7 @@ void DHMC::restore_fixed_ranges() {
 	}
 }
 
-bool DHMC::is_hp(loop *l) {
+bool DHMC::is_hp(Hairpin *l) {
 	if (l->has_loop() && l->has_helix() && l->num_sons() == 0) {
 		int flag = 0, n = 0;
 		LOOP_EACH(l,
@@ -309,7 +309,7 @@ bool DHMC::is_hp(loop *l) {
 	}
 };
 
-bool DHMC::is_il(loop *l) {
+bool DHMC::is_il(Hairpin *l) {
 	if (l->has_loop() && l->has_helix() && l->num_sons() == 1) {
 		int flag = 0, n = 0;
 		LOOP_EACH(l,
@@ -342,7 +342,7 @@ void DHMC::set_mvels() {
 	//	m_mvels.push_back(el);
 	//};
 
-	//auto set_res_module_types_ss = [&](loop *l, bool is_first) {
+	//auto set_res_module_types_ss = [&](Hairpin *l, bool is_first) {
 	//	LOOP_TRAVERSE(l,
 	//		if (m_not_sample_hp && is_first && is_hp(L)) {
 	//			add_el(new MvEl(L, MvEl::MVEL_HP));

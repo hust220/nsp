@@ -54,7 +54,7 @@ public:
         );
     }
 
-    void parse_helix(loop *l) {
+    void parse_helix(Hairpin *l) {
         if (l->has_helix()) {
             _helix_num++;
 
@@ -81,14 +81,14 @@ public:
         }
     }
 
-    S get_loop_name(loop *l, S name, int loop_num) {
+    S get_loop_name(Hairpin *l, S name, int loop_num) {
         auto type = l->hinges.size();
         std::ostringstream stream;
         stream << name << '-' << loop_num << '-' << (l->is_open() ? "open_" : "") << "loop-" << type;
         return stream.str();
     }
 
-    nums_t get_loop_nums(loop *l) {
+    nums_t get_loop_nums(Hairpin *l) {
         nums_t nums;
         LOOP_EACH(l,
             nums.push_back(RES->num-1);
@@ -96,7 +96,7 @@ public:
         return nums;
     }
 
-    void parse_loop(loop *l) {
+    void parse_loop(Hairpin *l) {
         if (l->has_loop()) {
             _loop_num++;
 

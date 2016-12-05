@@ -15,7 +15,7 @@
 
 BEGIN_JN
 
-	std::pair<int, int> loop_head_tail(loop *l) {
+	std::pair<int, int> loop_head_tail(Hairpin *l) {
 		int left, right;
 		if (l != NULL) {
 			if (l->has_helix()) {
@@ -42,7 +42,7 @@ BEGIN_JN
 		}
 	}
 
-	void ss_read_tree(Str &ss, loop *l) {
+	void ss_read_tree(Str &ss, Hairpin *l) {
 		auto p = loop_head_tail(l);
 		ss.resize(p.second - p.first + 1);
 		LOOP_TRAVERSE(l,
@@ -56,7 +56,7 @@ BEGIN_JN
 		);
 	}
 
-	void seq_read_tree(Str &seq, loop *l) {
+	void seq_read_tree(Str &seq, Hairpin *l) {
 		auto p = loop_head_tail(l);
 		seq.resize(p.second - p.first + 1);
 		LOOP_TRAVERSE(l,
@@ -70,11 +70,11 @@ BEGIN_JN
 		);
 	}
 
-	void print_ss_tree(loop *l) {
+	void print_ss_tree(Hairpin *l) {
 		LOOP_TRAVERSE(l, _l->print());
 	}
 
-	void free_ss_tree(loop *l) {
+	void free_ss_tree(Hairpin *l) {
 		if (l != NULL) {
 			free_ss_tree(l->son);
 			free_ss_tree(l->brother);
@@ -84,7 +84,7 @@ BEGIN_JN
 
 	namespace sstree_detail {
 
-		void set_tree_relation(std::vector<loop *> &s, loop *l) {
+		void set_tree_relation(std::vector<Hairpin *> &s, Hairpin *l) {
 			int num = l->num_sons();
 			int i = s.size() - num;
 			if (s.size() != 0 && num != 0) { l->son = s[i]; }
@@ -134,8 +134,8 @@ BEGIN_JN
 			return len;
 		}
 
-		loop *dig_hairpin(std::deque<res> &v, int left, int right, int len, int hinge) {
-			loop *l = new loop;
+		Hairpin *dig_hairpin(std::deque<res> &v, int left, int right, int len, int hinge) {
+			Hairpin *l = new Hairpin;
 			if (right - left != 1) for (int i = left - hinge + 1; i < right + hinge; i++) {
 				l->push_back(new res(v[i]));
 			}
@@ -149,9 +149,9 @@ BEGIN_JN
 			return l;
 		}
 
-		bool find_hairpin(std::deque<res> &v, std::vector<loop *> &ls, int hinge) {
+		bool find_hairpin(std::deque<res> &v, std::vector<Hairpin *> &ls, int hinge) {
 			int left, right;
-			loop *l;
+			Hairpin *l;
 
 			if (v.empty()) return false;
 
@@ -169,7 +169,7 @@ BEGIN_JN
 				}
 			}
 			else {
-				l = new loop;
+				l = new Hairpin;
 				for (auto && i : v) l->push_back(new res(i));
 				//EACH(i, v, l->push_back(new res(i)));
 				v.clear();
@@ -190,19 +190,19 @@ BEGIN_JN
 			return true;
 		}
 
-		loop *set_tree(const Str &ss, int hinge) {
+		Hairpin *set_tree(const Str &ss, int hinge) {
 			std::deque<res> v;
 			int i = 0;
 			for (auto && c : ss) {
 				v.push_back(res(c, i + 1));
 				i++;
 			}
-			std::vector<loop *> ls;
+			std::vector<Hairpin *> ls;
 			while (find_hairpin(v, ls, hinge));
 			return ls.back();
 		}
 
-		void read_seq(loop *l, const Str &seq, const Str &ss) {
+		void read_seq(Hairpin *l, const Str &seq, const Str &ss) {
 			std::vector<int> v(ss.size());
 			int f = 1;
 			int i = 0;
@@ -241,7 +241,7 @@ BEGIN_JN
 
 //	class SSTreeImpl {
 //	public:
-//		loop *head = NULL;
+//		Hairpin *head = NULL;
 //
 //		~SSTreeImpl() {
 //			if (head != NULL) free_ss_tree(head);
@@ -252,11 +252,11 @@ BEGIN_JN
 
 	SSTree::~SSTree() {}
 
-	loop *&SSTree::head() {
+	Hairpin *&SSTree::head() {
 		return m_head;
 	}
 
-	const loop *SSTree::head() const {
+	const Hairpin *SSTree::head() const {
 		return m_head;
 	}
 
@@ -300,8 +300,8 @@ BEGIN_JN
 		}
 	}
 
-	loop *ss_tree(Str seq, Str ss, int hinge) {
-		loop *tree = sstree_detail::set_tree(ss, hinge);
+	Hairpin *ss_tree(Str seq, Str ss, int hinge) {
+		Hairpin *tree = sstree_detail::set_tree(ss, hinge);
 		sstree_detail::read_seq(tree, seq, ss);
 		return tree;
 	}

@@ -117,7 +117,7 @@ public:
         return m;
     }
 
-    void set_bound_loop(Eigen::MatrixXd &b, DihBound &d, loop *l) {
+    void set_bound_loop(Eigen::MatrixXd &b, DihBound &d, Hairpin *l) {
         LOOP_EACH(l, 
             if (RES->next != NULL) {
                 if (RES->type == '(' && RES->next->type == ')') {

@@ -26,7 +26,7 @@ public:
     using en_t = struct {double len = 0, ang = 0, dih = 0, crash = 0, cons = 0, stacking = 0, pairing = 0;};
 
     std::vector<res_module_t> _res_module_types;
-    std::vector<loop *> _res_module;
+    std::vector<Hairpin *> _res_module;
     int _mc_index;
     std::deque<Atom> _moved_atoms;
     std::vector<int> _moved_residues;
@@ -148,7 +148,7 @@ public:
         _res_module_types.resize(_seq.size(), RES_LOOP);
         _res_module.resize(_seq.size(), NULL);
 
-        auto is_hairpin = [&](loop *l) {
+        auto is_hairpin = [&](Hairpin *l) {
             if (l->has_loop() && l->has_helix()) {
                 int flag = 0, n = 0;
                 LOOP_EACH(l,
@@ -171,7 +171,7 @@ public:
             }
         };
 
-        auto set_res_module_types_ss = [&](loop *l, bool is_first){
+        auto set_res_module_types_ss = [&](Hairpin *l, bool is_first){
             LOOP_TRAVERSE(l,
 //                _l->print();
 //                LOG << "is_hairpin: " << is_hairpin(_l) << std::endl;
@@ -508,13 +508,13 @@ public:
         _mc_index = _free_atoms[int(rand() * len)];
         _moved_residues.resize(4);
         if (_res_module_types[_mc_index] == RES_HAIRPIN) {
-            loop *l = _res_module[_mc_index];
+            Hairpin *l = _res_module[_mc_index];
             _moved_residues[0] = l->s.head->res1.num - 1;
             _moved_residues[1] = l->s.head->res2.num - 1;
             _moved_residues[2] = l->s.head->res1.num - 1;
             _moved_residues[3] = l->s.head->res2.num - 1;
         } else if (_res_module_types[_mc_index] == RES_HELIX) {
-            loop *l = _res_module[_mc_index];
+            Hairpin *l = _res_module[_mc_index];
             _moved_residues[0] = l->s.head->res1.num - 1;
             _moved_residues[3] = l->s.head->res2.num - 1;
             HELIX_EACH(l->s,

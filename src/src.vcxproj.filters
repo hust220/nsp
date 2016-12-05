@@ -576,9 +576,6 @@
     <ClInclude Include="..\lib\jian\nuc2d\helix.hpp">
       <Filter>jian\nuc2d</Filter>
     </ClInclude>
-    <ClInclude Include="..\lib\jian\nuc2d\loop.hpp">
-      <Filter>jian\nuc2d</Filter>
-    </ClInclude>
     <ClInclude Include="..\lib\jian\nuc2d\MergeRings.hpp">
       <Filter>jian\nuc2d</Filter>
     </ClInclude>
@@ -998,6 +995,9 @@
     </ClInclude>
     <ClInclude Include="..\lib\jian\nuc3d\SampleLoop.hpp">
       <Filter>jian\nuc3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc2d\Hairpin.hpp">
+      <Filter>jian\nuc2d</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

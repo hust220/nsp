@@ -6,25 +6,25 @@
 
 BEGIN_JN
 
-	class loop;
+	class Hairpin;
 
-	std::pair<int, int> loop_head_tail(loop *l);
-	loop *ss_tree(Str seq, Str ss, int hinge = 2);
-	void ss_read_tree(Str &ss, loop *l);
-	void seq_read_tree(Str &seq, loop *l);
-	void free_ss_tree(loop *l);
-	void print_ss_tree(loop *l);
+	std::pair<int, int> loop_head_tail(Hairpin *l);
+	Hairpin *ss_tree(Str seq, Str ss, int hinge = 2);
+	void ss_read_tree(Str &ss, Hairpin *l);
+	void seq_read_tree(Str &seq, Hairpin *l);
+	void free_ss_tree(Hairpin *l);
+	void print_ss_tree(Hairpin *l);
 
 	class SSTree {
 	public:
-		using Path = std::list<loop *>;
+		using Path = std::list<Hairpin *>;
 
-        loop *m_head;
+        Hairpin *m_head;
 
 		SSTree();
 		~SSTree();
-		loop *&head();
-		const loop *head() const;
+		Hairpin *&head();
+		const Hairpin *head() const;
 		bool empty() const;
 		// make tree with no broken tag
 		void make(const Str &seq, const Str &ss, int hinge = 2);
@@ -32,8 +32,8 @@ BEGIN_JN
 		void make_b(const Str &seq, const Str &ss, int hinge = 2);
 
         template<typename _Fn>
-        loop *find(_Fn &&fn) const {
-            loop *p = NULL;
+        Hairpin *find(_Fn &&fn) const {
+            Hairpin *p = NULL;
             traverse([&p, &fn](auto &&q, auto &&path){
                 if (fn(q, path)) {
                     p = q;
@@ -47,7 +47,7 @@ BEGIN_JN
 		template<typename _Fn>
 		void traverse(_Fn &&fn) const {
 			Path ls;
-			loop * L = m_head;
+			Hairpin * L = m_head;
 			while (true) {
 				if (L == NULL) break;
 				ls.push_back(L);
@@ -76,7 +76,7 @@ BEGIN_JN
 		template<typename _Fn>
 		Path path(_Fn &&fn) const {
 			Path ls;
-			loop * L = m_head;
+			Hairpin * L = m_head;
 			while (true) {
 				if (L == NULL) break;
 				ls.push_back(L);

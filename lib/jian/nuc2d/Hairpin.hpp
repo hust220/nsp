@@ -83,25 +83,72 @@
 
 BEGIN_JN
 
-class loop {
+class Hairpin {
 public:
+	using Path = L<Hairpin *>;
+
+	struct TreePathNode {
+		Hairpin *val;
+		Path path;
+	};
+
+	using TreePath = L<TreePathNode>;
+
     res *head = NULL;
     helix s;
-    std::vector<std::pair<int, int>> hinges;
-    loop *son = NULL;
-    loop *brother = NULL;
+    V<Pair<int, int>> hinges;
+    Hairpin *son = NULL;
+    Hairpin *brother = NULL;
 
-    loop() = default;
+    Hairpin() = default;
 
-    loop(const loop &l) {
+    Hairpin(const Hairpin &l) {
         head = res::copy(l.head);
         s = l.s;
         hinges = l.hinges;
     }
 
-    ~loop() {
+    ~Hairpin() {
         res::del(head);
     }
+
+	template<typename _Fn>
+	void traverse(_Fn &&fn) const {
+		Path ls;
+		Hairpin *L = m_head;
+		while (true) {
+			if (L == NULL) break;
+			ls.push_back(L);
+			if (!fn(L, ls)) return;
+			if (L->son != NULL) {
+				L = L->son;
+			}
+			else if (L->brother != NULL) {
+				L = L->brother;
+				ls.pop_back();
+			}
+			else {
+				while (true) {
+					ls.pop_back();
+					if (!ls.empty()) {
+						L = ls.back()->brother;
+						if (L == NULL) continue;
+						else { ls.pop_back(); break; }
+					}
+					else { L = NULL; break; }
+				}
+			}
+		}
+	}
+
+	TreePath tree_path() const {
+		TreePath path;
+		traverse([&path](Hairpin *_l, const Path &_path) {
+			path.push_back(TreePathNode{_l, _path});
+			return false;
+		});
+		return path;
+	}
 
 	bool has(int i) const {
 		BEGIN_LOOP_EACH(this) {
@@ -184,16 +231,16 @@ public:
         LOOP_EACH(this, if (RES->next == NULL) {RES->prev->next = NULL; delete RES; break;});
     }
 
-    loop *copy(loop *l) {
+    Hairpin *copy(Hairpin *l) {
         if (l == NULL) { return NULL; }
 
-        loop *p = new loop(*l);
+        Hairpin *p = new Hairpin(*l);
         p->son = copy(l->son);
         p->brother = copy(l->brother);
         return p;
     }
 
-    void del(loop *l) {
+    void del(Hairpin *l) {
         if (l == NULL) { return; }
 
         del(l->son);
@@ -234,7 +281,7 @@ public:
 		return seq;
     }
 
-//    friend std::ostream &operator <<(std::ostream &out, const loop &l) {
+//    friend std::ostream &operator <<(std::ostream &out, const Hairpin &l) {
 //        out << "Loop: " << l.seq() << ' ' << l.ss() << ' ';
 //        LOOP_EACH(&l, out << RES->num << ' ');
 //    }

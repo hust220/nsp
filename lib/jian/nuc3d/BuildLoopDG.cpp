@@ -74,7 +74,7 @@ BEGIN_JN
 		return m_cg->to_aa(c, 0, c.rows() - 1);
 	}
 
-	void BuildLoopDG::set_bound_loop(Mat &b, DihBound &d, loop *l) {
+	void BuildLoopDG::set_bound_loop(Mat &b, DihBound &d, Hairpin *l) {
 		BEGIN_LOOP_EACH(l) {
 			if (RES->next != NULL) {
 				if (RES->type == '(' && RES->next->type == ')') {

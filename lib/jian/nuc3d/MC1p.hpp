@@ -199,7 +199,7 @@ public:
     void set_ranges() {
         std::vector<int> v(_seq.size(), 0);
 
-        auto is_hp = [&](loop *l) {
+        auto is_hp = [&](Hairpin *l) {
             if (l->has_loop() && l->has_helix() && l->num_sons() == 0) {
                 int flag = 0, n = 0;
                 LOOP_EACH(l,
@@ -221,7 +221,7 @@ public:
             }
         };
 
-        auto is_il = [&](loop *l) {
+        auto is_il = [&](Hairpin *l) {
             if (l->has_loop() && l->has_helix() && l->num_sons() == 1) {
                 int flag = 0, n = 0;
                 LOOP_EACH(l,
@@ -249,7 +249,7 @@ public:
             m_range.push_back(range);
         };
 
-        auto set_res_module_types_ss = [&](loop *l, bool is_first){
+        auto set_res_module_types_ss = [&](Hairpin *l, bool is_first){
             LOOP_TRAVERSE(l,
                 if (!_sample_hp && is_first && is_hp(_l)) {
                     update_range(make_hp_range(_l));

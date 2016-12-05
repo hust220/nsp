@@ -179,7 +179,7 @@ public:
     void set_res_module_types() {
         std::vector<int> v(_seq.size(), 0);
 
-        auto is_hairpin = [&](loop *l) {
+        auto is_hairpin = [&](Hairpin *l) {
             if (l->has_loop() && l->has_helix()) {
                 int flag = 0, n = 0;
                 LOOP_EACH(l,
@@ -223,7 +223,7 @@ public:
             return p;
         };
 
-        auto set_res_module_types_ss = [&](loop *l, bool is_first){
+        auto set_res_module_types_ss = [&](Hairpin *l, bool is_first){
             LOOP_TRAVERSE(l,
                 if (!_sample_hp && is_first && is_hairpin(_l)) {
                     m_range.push_back(make_hairpin_range(_l));

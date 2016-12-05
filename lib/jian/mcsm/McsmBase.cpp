@@ -32,7 +32,7 @@ BEGIN_JN
 		range.push_back({ c, d });
 	}
 
-	MvEl::MvEl(loop *l, MvEl::mvel_t t) : type(t) {
+	MvEl::MvEl(Hairpin *l, MvEl::mvel_t t) : type(t) {
 		int a, b, c, d;
 
 		if (t == MVEL_HP) {
