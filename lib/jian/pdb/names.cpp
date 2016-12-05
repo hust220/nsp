@@ -5,7 +5,7 @@
 #include "../utils/Env.hpp"
 #include "names.hpp"
 
-namespace jian {
+BEGIN_JN
 	namespace pdb {
 		Names::Names() {}
 
@@ -26,7 +26,7 @@ namespace jian {
 
 		void Names::init_map(Names::map_Names &map_names) {
 			std::shared_ptr<Names> p;
-			std::string filename = Env::lib() + "/RNA/pars/pdb/names";
+			S filename = Env::lib() + "/RNA/pars/pdb/names";
 			int i;
 			jian::tokenize_v v;
 
@@ -75,7 +75,7 @@ namespace jian {
 			} END_READ_FILE;
 		}
 
-		const Names & Names::instance(std::string mol_type) {
+		const Names & Names::instance(S mol_type) {
 			static std::map<std::string, std::shared_ptr<Names>> map;
 			if (map.empty()) {
 				map["RNA"].reset(new Names);
@@ -92,5 +92,5 @@ namespace jian {
 		}
 
 	} // namespace pdb
-} // namespace jian
+END_JN
 

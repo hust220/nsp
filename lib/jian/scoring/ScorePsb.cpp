@@ -1,10 +1,10 @@
 #include "ScorePsb.hpp"
 
-namespace jian {
+BEGIN_JN
 	REG_SCORER("psb", ScorePsb);
 
 	ScorePsb::ScorePsb() {
 		m_cg = CG::fac_t::create("psb");
 	}
 
-} // namespace jian
+END_JN

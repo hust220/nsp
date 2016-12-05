@@ -3,7 +3,7 @@
 #include "../utils/log.hpp"
 #include "Score.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	void Score::init() {
 		int i, j;
@@ -165,7 +165,7 @@ namespace jian {
 	void Score::read_counts() {
 		std::ifstream ifile;
 
-		auto foo = [this](Mati & mat, std::string path, int cutoff) {
+		auto foo = [this](Mati & mat, S path, int cutoff) {
 			std::ifstream ifile;
 			int i, j;
 
@@ -312,7 +312,7 @@ namespace jian {
 		Residue *temp1, *temp2;
 		double d;
 
-		auto bar = [this](auto && f, auto && w, int t1, int t2, auto && v, num_t theta, int l, int m, int n) -> double {
+		auto bar = [this](auto && f, auto && w, int t1, int t2, auto && v, Num theta, int l, int m, int n) -> double {
 			if (std::fabs(v[0]) < l && std::fabs(v[1]) < m && std::fabs(v[2]) < n) {
 				double d = f[t1][t2](int((v[0] + l) / 0.5), int((v[1] + m) / 0.5), int((v[2] + n) / 0.5));
 				if (d == 0) {
@@ -357,8 +357,8 @@ namespace jian {
 		m_en_stacking += bar(m_freqs_st53, m_weights_st53, t1, t2, parbp.o21_, std::fabs(parbp.theta), 5, 5, 5);
 		m_en_stacking += bar(m_freqs_st35, m_weights_st35, t2, t1, parbp.o12_, std::fabs(parbp.theta), 5, 5, 5);
 
-		num_t d1 = geom::distance(p1->at(1), p2->at(0));
-		num_t d2 = geom::distance(p1->at(0), p2->at(1));
+		Num d1 = geom::distance(p1->at(1), p2->at(0));
+		Num d2 = geom::distance(p1->at(0), p2->at(1));
 		if (d1 > 5 && d2 > 5) {
 			d = geom::distance(p1->at(1), p2->at(2));
 			if (d < 4.5) m_en_vdw--;
@@ -492,5 +492,5 @@ namespace jian {
 		return e;
 	}
 
-} // namespace jian
+END_JN
 

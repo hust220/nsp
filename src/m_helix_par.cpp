@@ -2,7 +2,7 @@
 #include <jian/nuc3d/ParseHelix.hpp>
 #include <jian/geom.hpp>
 
-namespace jian {
+BEGIN_JN
 
 REGISTER_NSP_COMPONENT(helix_par) {
     int n = JN_INT(par[2]);
@@ -13,7 +13,7 @@ REGISTER_NSP_COMPONENT(helix_par) {
     }
 }
 
-} // namespace jian
+END_JN
 
 
 

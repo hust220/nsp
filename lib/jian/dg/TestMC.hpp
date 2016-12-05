@@ -3,7 +3,7 @@
 
 #include "DG.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace dg {
 
 class TestMC {
@@ -68,7 +68,7 @@ public:
 
 
 } // namespace dg
-} // namespace jian
+END_JN
 
 #endif
 

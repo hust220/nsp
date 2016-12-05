@@ -1,7 +1,7 @@
 #include "DG.hpp"
 #include "DGImpl.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	DG::DG() : _impl(new DGImpl) {}
 
@@ -27,5 +27,5 @@ namespace jian {
 		return _impl->operator ()(b, d);
 	}
 
-} // namespace jian
+END_JN
 

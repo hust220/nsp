@@ -2,7 +2,7 @@
 #include <algorithm>
 #include "Format.hpp"
 
-namespace jian {
+BEGIN_JN
 
 Format::Format() {
     _atom_rank["A"] = {{"P", 0}, {"O1P", 1}, {"O2P", 2}, {"O5*", 3},
@@ -56,7 +56,7 @@ Residue Format::operator ()(const Residue &res) {
     Residue new_res;
     new_res.name = res.name;
     std::vector<std::string> v{"P", "O1P", "O2P"};
-    if (std::all_of(v.begin(), v.end(), [&](std::string s){
+    if (std::all_of(v.begin(), v.end(), [&](S s){
 		return std::any_of(res.begin(), res.end(), [&](const Atom &atom){
 			return atom.name == s;
 		});
@@ -139,5 +139,5 @@ void Format::sort(Molecule &pdb) {
     }
 }
 
-} // namespace jian
+END_JN
 

@@ -2,7 +2,7 @@
 
 #include "Dca.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace dca {
 
 class MfDca : public Dca {
@@ -10,7 +10,7 @@ public:
     Matf C, eij;
 
 	MfDca();
-	MfDca(std::string mol_type, float pw);
+	MfDca(S mol_type, float pw);
 	void calculate_C();
     virtual void calculate_eij();
     void set_mu(const Matf &m, const Vecf &pi, const Vecf &pj, Vecf &mu1, Vecf &mu2);
@@ -18,6 +18,6 @@ public:
 };
 
 } // namespace dca
-} // namespace jian
+END_JN
 
 

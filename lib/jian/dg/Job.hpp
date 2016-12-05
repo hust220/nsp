@@ -5,7 +5,7 @@
 #include "../matrix.hpp"
 #include "DihBound.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace dg {
 
 struct Job {
@@ -28,5 +28,5 @@ struct Job {
 };
 
 } // namespace dg
-} // namespace jian
+END_JN
 

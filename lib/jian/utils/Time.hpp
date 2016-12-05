@@ -3,14 +3,14 @@
 #include <string>
 #include <ctime>
 
-namespace jian {
+BEGIN_JN
 
 class Time {
 public:
-    static std::string time() {
+    static S time() {
         time_t t;
         std::time(&t);
-        std::string str = asctime(localtime(&t));
+        S str = asctime(localtime(&t));
         return str.substr(0, str.size() - 1);
     }
 

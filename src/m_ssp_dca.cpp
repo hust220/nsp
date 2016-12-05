@@ -2,13 +2,14 @@
 #include <jian/dca.hpp>
 #include <jian/utils/log.hpp>
 #include "nsp.hpp"
+#include <jian/utils/traits.hpp>
 
-namespace jian {
+BEGIN_JN
 
 REGISTER_NSP_COMPONENT(ssp_dca) {
-    std::string seq = par["seq"][0];
+    S seq = par["seq"][0];
     double k = std::stof(par["k"][0]);
-    std::string di_file = par["di"][0];
+    S di_file = par["di"][0];
 
     LOGI << "Sequence:" << std::endl;
     LOGI << seq << std::endl;
@@ -42,5 +43,5 @@ REGISTER_NSP_COMPONENT(ssp_dca) {
     LOGI << ss << std::endl;
 }
 
-} // namespace jian
+END_JN
 

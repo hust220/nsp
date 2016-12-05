@@ -1,6 +1,6 @@
 #include "Mat5.hpp"
 
-namespace jian {
+BEGIN_JN
 
 Mat5::Mat5() {
     init();
@@ -124,6 +124,6 @@ std::ostream &operator <<(std::ostream &out, const Mat5 &mat) {
 	return out;
 }
 
-} // namespace jian
+END_JN
 
 

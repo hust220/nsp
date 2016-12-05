@@ -1,6 +1,6 @@
 #pragma once
 
-namespace jian {
+BEGIN_JN
 
 template<typename Data>
 class Tree {
@@ -67,5 +67,5 @@ public:
 
 };
 
-} // namespace jian
+END_JN
 

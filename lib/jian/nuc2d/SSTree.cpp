@@ -13,7 +13,7 @@
 	std::count_if(a.begin(), a.end(), [](auto && c){return c != '&';})
 
 
-namespace jian {
+BEGIN_JN
 
 	std::pair<int, int> loop_head_tail(loop *l) {
 		int left, right;
@@ -42,36 +42,36 @@ namespace jian {
 		}
 	}
 
-	void ss_read_tree(str_t &ss, loop *l) {
+	void ss_read_tree(Str &ss, loop *l) {
 		auto p = loop_head_tail(l);
 		ss.resize(p.second - p.first + 1);
 		LOOP_TRAVERSE(l,
-			HELIX_EACH(L->s,
+			HELIX_EACH(_l->s,
 				ss[BP->res1.num - 1] = BP->res1.type;
 		ss[BP->res2.num - 1] = BP->res2.type;
 		);
-		LOOP_EACH(L,
+		LOOP_EACH(_l,
 			ss[RES->num - 1] = RES->type;
 		);
 		);
 	}
 
-	void seq_read_tree(str_t &seq, loop *l) {
+	void seq_read_tree(Str &seq, loop *l) {
 		auto p = loop_head_tail(l);
 		seq.resize(p.second - p.first + 1);
 		LOOP_TRAVERSE(l,
-			HELIX_EACH(L->s,
+			HELIX_EACH(_l->s,
 				seq[BP->res1.num - 1] = BP->res1.name;
 		seq[BP->res2.num - 1] = BP->res2.name;
 		);
-		LOOP_EACH(L,
+		LOOP_EACH(_l,
 			seq[RES->num - 1] = RES->name;
 		);
 		);
 	}
 
 	void print_ss_tree(loop *l) {
-		LOOP_TRAVERSE(l, L->print());
+		LOOP_TRAVERSE(l, _l->print());
 	}
 
 	void free_ss_tree(loop *l) {
@@ -190,7 +190,7 @@ namespace jian {
 			return true;
 		}
 
-		loop *set_tree(const str_t &ss, int hinge) {
+		loop *set_tree(const Str &ss, int hinge) {
 			std::deque<res> v;
 			int i = 0;
 			for (auto && c : ss) {
@@ -202,7 +202,7 @@ namespace jian {
 			return ls.back();
 		}
 
-		void read_seq(loop *l, const str_t &seq, const str_t &ss) {
+		void read_seq(loop *l, const Str &seq, const Str &ss) {
 			std::vector<int> v(ss.size());
 			int f = 1;
 			int i = 0;
@@ -218,16 +218,16 @@ namespace jian {
 			}
 			//EACH((c, i), ss, IF(c != '&', v[i] = f; f++, v[i] = -1));
 			BEGIN_LOOP_TRAVERSE(l) {
-				if (L->has_loop()) {
-					BEGIN_LOOP_EACH(L) {
+				if (_l->has_loop()) {
+					BEGIN_LOOP_EACH(_l) {
 						RES->num = v[RES->num - 1];
 						if (RES->num != -1) {
 							RES->name = seq[RES->num - 1];
 						}
 					} END_LOOP_EACH;
 				}
-				if (L->has_helix()) {
-					BEGIN_HELIX_EACH(L->s) {
+				if (_l->has_helix()) {
+					BEGIN_HELIX_EACH(_l->s) {
 						BP->res1.num = v[BP->res1.num - 1];
 						BP->res1.name = seq[BP->res1.num - 1];
 						BP->res2.num = v[BP->res2.num - 1];
@@ -264,12 +264,12 @@ namespace jian {
 		return m_head == NULL;
 	}
 
-	void SSTree::make(const str_t &seq, const str_t &ss, int hinge) {
+	void SSTree::make(const Str &seq, const Str &ss, int hinge) {
 		LOG << "## Make secondary structure tree with no broken tag" << std::endl;
 		LOG << seq << std::endl;
 		LOG << ss << std::endl;
 		if (NASS::seq_match_ss(seq, ss)) {
-			str_t ss_nbt;
+			Str ss_nbt;
 			std::copy_if(ss.begin(), ss.end(), std::back_inserter(ss_nbt), [](auto &&c) {return c != '&'; });
 			m_head = sstree_detail::set_tree(ss_nbt, hinge);
 			sstree_detail::read_seq(m_head, seq, ss_nbt);
@@ -283,7 +283,7 @@ namespace jian {
 		}
 	}
 
-	void SSTree::make_b(const str_t &seq, const str_t &ss, int hinge) {
+	void SSTree::make_b(const Str &seq, const Str &ss, int hinge) {
 		LOG << "## Make secondary structure tree with broken tag" << std::endl;
 		LOG << seq << std::endl;
 		LOG << ss << std::endl;
@@ -300,11 +300,11 @@ namespace jian {
 		}
 	}
 
-	loop *ss_tree(str_t seq, str_t ss, int hinge) {
+	loop *ss_tree(Str seq, Str ss, int hinge) {
 		loop *tree = sstree_detail::set_tree(ss, hinge);
 		sstree_detail::read_seq(tree, seq, ss);
 		return tree;
 	}
 
-} // namespace jian
+END_JN
 

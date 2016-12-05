@@ -6,11 +6,11 @@
 #include "../pdb/Model.hpp"
 #include "../geom.hpp"
 
-namespace jian {
+BEGIN_JN
 
 class Script {
 public:
-    using Word = struct {std::string value; int type;};
+    using Word = struct {S value; int type;};
     using Var = struct {int addr; int type;};
     
     enum word_type {WORD_NUMBER, WORD_STRING, WORD_VARIABLE, WORD_SYMBOL};
@@ -24,7 +24,7 @@ public:
         {3, 3, 3, -1, 3, 3}, {4, 4, 4, 4, -1, 4}, {-1, -1, -1, -1, -1, -1}
     };
 
-    std::string _line;
+    S _line;
 
     Var var(const Word &word) {
         if (word.type == WORD_NUMBER) return Var{JN_INT(word.value), VAR_NUMBER};
@@ -32,7 +32,7 @@ public:
             if (_strings.count(word.value)) {
                 return _strings[word.value];
             } else {
-                std::string *s = new std::string(word.value);
+                S *s = new std::string(word.value);
                 _strings[word.value] = Var{s, VAR_STRING};
             }
         } else if (word.type == WORD_VARIABLE) {
@@ -40,7 +40,7 @@ public:
         }
     }
 
-    void set_var(const std::string &name, void * addr,  int type) {
+    void set_var(const S &name, void * addr,  int type) {
         _vars[name].addr = addr;
         _vars[name].type = type;
     }
@@ -69,10 +69,10 @@ public:
     }
 
     template<typename T>
-    Word read_word(T &&ifile, const std::string &s = "") {
+    Word read_word(T &&ifile, const S &s = "") {
         int state = 0, new_state;
         char c;
-        std::string word;
+        S word;
         while (ifile) {
             c = ifile.get();
             if ((c != '\n' && c != '\r') && (_line.back() == '\n' || _line.back() == '\r')) _line = "";
@@ -179,7 +179,7 @@ public:
     std::function<Name()> read_exec_func(T &&ifile, U &&func, V &&word) {
         auto model = [&](auto &&var) ->Var {
             if (var.type == VAR_STRING) {
-                Model *model = new Model(*((std::string *)(var.addr)));
+                Model *model = new Model(*((S *)(var.addr)));
                 return make_var(model, VAR_MODEL);
             }
         }
@@ -219,7 +219,7 @@ public:
         throw "End of file.";
     }
 
-    void run(const std::string &file_name) {
+    void run(const S &file_name) {
         std::ifstream ifile(file_name.c_str());
         while (ifile) {
             try {
@@ -232,13 +232,13 @@ public:
         ifile.close();
     }
 
-    std::string anonym() {
+    S anonym() {
         static int n = 0;
         n++;
         return "anonym_"s + std::to_string(n);
     }
 
-    void exec(const std::string &content) {}
+    void exec(const S &content) {}
 
 };
 

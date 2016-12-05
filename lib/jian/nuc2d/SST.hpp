@@ -2,7 +2,7 @@
 
 #include "Tree.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace nuc2d {
 
 struct Res {
@@ -19,8 +19,8 @@ class Frag : public std::vector<Res> {
 public:
     Frag() {}
 
-    Frag(const std::string &seq, const std::string &ss) {
-        if (seq.size() != ss.size()) throw "jian::Frag::Frag(const std::string &, const std::string &) error!";
+    Frag(const S &seq, const S &ss) {
+        if (seq.size() != ss.size()) throw "jian::Frag::Frag(const S &, const S &) error!";
         reserve(seq.size());
         int ss_index = 0;
         for (int i = 0; i < seq.size(); i++) {
@@ -30,15 +30,15 @@ public:
         }
     }
 
-    std::string seq() const {
-        std::string seq;
+    S seq() const {
+        S seq;
         seq.reserve(size());
         for (auto &&res: *this) seq.push_back(res.seq);
         return seq;
     }
 
-    std::string ss() const {
-        std::string ss;
+    S ss() const {
+        S ss;
         ss.reserve(size());
         for (auto &&res: *this) ss.push_back(res.ss);
         return ss;
@@ -48,11 +48,11 @@ public:
 
 class Helix : public std::array<Frag, 2> {
 public:
-    std::string seq() const {
+    S seq() const {
         return at(0).seq() + at(1).seq();
     }
 
-    std::string ss() const {
+    S ss() const {
         return at(0).ss() + at(1).ss();
     }
 
@@ -60,14 +60,14 @@ public:
 
 class Loop : public std::list<Frag> {
 public:
-    std::string seq() const {
-        return std::accumulate(begin(), end(), std::string(), [](const std::string &s, const Frag &frag) {
+    S seq() const {
+        return std::accumulate(begin(), end(), std::string(), [](const S &s, const Frag &frag) {
             return s + frag.seq();
         });
     }
 
-    std::string ss() const {
-        return std::accumulate(begin(), end(), std::string(), [](const std::string &s, const Frag &frag) {
+    S ss() const {
+        return std::accumulate(begin(), end(), std::string(), [](const S &s, const Frag &frag) {
             return s + frag.ss();
         });
     }
@@ -122,5 +122,5 @@ std::ostream &operator <<(std::ostream &out, T &&hairpin) {
 }
 
 } // namespace nuc2d
-} // namespace jian
+END_JN
 

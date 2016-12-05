@@ -3,7 +3,7 @@
 #include "NASS.hpp"
 #include "../pdb/IFModel.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace nuc2d {
 
 class GetSS {
@@ -12,12 +12,12 @@ public:
     typedef std::list<BP> BPs;
 
     template<typename ModelType> 
-    std::string operator ()(ModelType &&model) {
+    S operator ()(ModelType &&model) {
         return get_ss(model);
     }
 
     template<typename ModelType> 
-    std::string get_ss(ModelType &&model) {
+    S get_ss(ModelType &&model) {
         auto bps = get_bps(model);
 //        print_bps(bps);
         int len = pdb::num_residues(model);
@@ -49,8 +49,8 @@ public:
         return bps;
     }
 
-    std::string bps_to_ss(const BPs &bps, int len) {
-        std::string ss(len, '.');
+    S bps_to_ss(const BPs &bps, int len) {
+        S ss(len, '.');
         for (auto && bp : bps) {
             auto level = bp_level(ss, bp);
             if (level >= 0) {
@@ -61,7 +61,7 @@ public:
         return ss;
     }
 
-    int bp_level(const std::string &ss, const BP &bp) {
+    int bp_level(const S &ss, const BP &bp) {
         int left = bp.first, right = bp.second;
         if (ss[left] != '.' or ss[right] != '.') return -1;
         for (int i = 0; i < NASS::instance().paired_keys.size(); i++) {
@@ -80,5 +80,5 @@ public:
 };
 
 } // namespace nuc2d
-} // namespace jian
+END_JN
 

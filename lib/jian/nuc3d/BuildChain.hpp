@@ -4,7 +4,7 @@
 #include "../geom.hpp"
 #include "../utils/Env.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	class BuildChain {
 	public:
@@ -13,7 +13,7 @@ namespace jian {
 		Mat m_mat_chain;
 		Mat m_mat_frag;
 		int m_len;
-		std::vector<str_t> m_joints;
+		std::vector<Str> m_joints;
 
 		BuildChain() : m_joints{"O5*", "C3*", "C1*"} {
 			load_frag();
@@ -44,7 +44,7 @@ namespace jian {
 		void increment() {
 			set_mat(m_mat_chain, m_chain, size(m_chain) - m_len + 1);
 			Residue r = m_frag[m_len-1];
-			geom::Superposition<num_t> sp(m_mat_frag, m_mat_chain);
+			geom::Superposition<Num> sp(m_mat_frag, m_mat_chain);
 			for (auto && atom : r) {
 				sp.apply(atom);
 			}

@@ -2,12 +2,12 @@
 #include <jian/pdb.hpp>
 #include <jian/socket.hpp>
 
-namespace jian {
+BEGIN_JN
 
 	REGISTER_NSP_COMPONENT(client) {
-		std::string ip = "127.0.0.1";
+		S ip = "127.0.0.1";
 		int port = 80;
-		std::string content = "hi";
+		S content = "hi";
 		Socket socket;
 
 		par.set(ip, "ip");
@@ -20,5 +20,5 @@ namespace jian {
 		socket.close(s);
 	}
 
-} // namespace jian
+END_JN
 

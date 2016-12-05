@@ -4,7 +4,7 @@
 #include "../geom.hpp"
 #include "DihAnal.hpp"
 
-namespace jian {
+BEGIN_JN
 
 DihAnal::DihAnal(double n) {
     p = NULL;
@@ -102,10 +102,10 @@ void DihAnal::read_mol(const Chain &chain) {
 
         int n = 0;
         for (auto && res : chain) {
-            std::string resName = res.name;
+            S resName = res.name;
             int k = 0;
             for (auto && atom : res) {
-                std::string name = atom.name;
+                S name = atom.name;
                 if (name == "P") {
                     p[n] = new Point{atom[0], atom[1], atom[2]};
                 } else if (name == "O5*") {
@@ -188,7 +188,7 @@ void DihAnal::train() {
     }
 }
 
-void DihAnal::read_parm(std::string filename) {
+void DihAnal::read_parm(S filename) {
     std::ifstream ifile(filename.c_str());
     if (!ifile) {
         std::cout << "DihAnal::readParm error! '" << filename << "' doesn't exist!" << std::endl;

@@ -7,8 +7,9 @@
 #include <jian/nuc2d/SSTree.hpp>
 #include <jian/utils/exception.hpp>
 #include <jian/utils/file.hpp>
+#include <jian/utils/traits.hpp>
 
-namespace jian {
+BEGIN_JN
 
 REGISTER_NSP_COMPONENT(view_constraints) {
     auto &&chain = read_model_to_chain(par["s"][0]);
@@ -45,5 +46,5 @@ REGISTER_NSP_COMPONENT(view_constraints) {
 	} END_READ_FILE;
 }
 
-} // namespace jian
+END_JN
 

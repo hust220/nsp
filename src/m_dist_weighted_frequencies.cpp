@@ -1,11 +1,11 @@
 #include "nsp.hpp"
 #include <jian/matrix.hpp>
 
-namespace jian {
+BEGIN_JN
 
 REGISTER_NSP_COMPONENT(dist_weighted_frequencies) {
-    std::string weight_file = par[std::vector<std::string>{"weights", "w"}][0];
-    std::string freq_file = par[std::vector<std::string>{"frequencies", "f"}][0];
+    S weight_file = par[std::vector<std::string>{"weights", "w"}][0];
+    S freq_file = par[std::vector<std::string>{"frequencies", "f"}][0];
     Eigen::MatrixXd w(85, 85);
     std::ifstream ifile(weight_file);
     for (int i = 0; i < 85; i++) {
@@ -41,5 +41,5 @@ REGISTER_NSP_COMPONENT(dist_weighted_frequencies) {
     }
 }
 
-} // namespace jian
+END_JN
 

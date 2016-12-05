@@ -7,7 +7,7 @@
 #include "../geom.hpp"
 #include "../utils/log.hpp"
 
-namespace jian {
+BEGIN_JN
 
 class DGImpl : public dg::MC {
 public:
@@ -131,5 +131,5 @@ public:
 
 };
 
-} // namespace jian
+END_JN
 

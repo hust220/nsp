@@ -2,11 +2,14 @@
 
 #include <string>
 #include <iostream>
+#include "traits.hpp"
+#include "Par.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	extern int g_argc;
 	extern char **g_argv;
+	extern Par g_par;
 
 	class Env {
 	private:
@@ -17,7 +20,7 @@ namespace jian {
 
 		Env &operator =(const Env &env) = default;
 
-		std::string m_path_lib;
+		S m_path_lib;
 
 	public:
 
@@ -26,15 +29,15 @@ namespace jian {
 			return env;
 		}
 
-		static std::string lib() {
+		static S lib() {
 			return Env::instance().get_lib();
 		}
 
-		void set_lib(std::string s) {
+		void set_lib(S s) {
 			m_path_lib = s;
 		}
 
-		std::string get_lib() {
+		S get_lib() {
 			if (m_path_lib.empty()) {
 				char *path = std::getenv("NSP");
 				if (path == NULL) {

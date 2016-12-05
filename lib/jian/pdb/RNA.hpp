@@ -4,14 +4,14 @@
 
 #include <string>
 
-namespace jian {
+BEGIN_JN
 
 class RNA {
 public:
-    static int rank(const std::string &res_name, const std::string &atom_name);
+    static int rank(const S &res_name, const S &atom_name);
     static void check(const Model &m);
 };
 
-} // namespace jian
+END_JN
 
 

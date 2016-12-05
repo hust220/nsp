@@ -4,14 +4,14 @@
 #include "../utils/string.hpp"
 #include "loop.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	class loop;
 
 	std::pair<int, int> loop_head_tail(loop *l);
-	loop *ss_tree(str_t seq, str_t ss, int hinge = 2);
-	void ss_read_tree(str_t &ss, loop *l);
-	void seq_read_tree(str_t &seq, loop *l);
+	loop *ss_tree(Str seq, Str ss, int hinge = 2);
+	void ss_read_tree(Str &ss, loop *l);
+	void seq_read_tree(Str &seq, loop *l);
 	void free_ss_tree(loop *l);
 	void print_ss_tree(loop *l);
 
@@ -27,9 +27,9 @@ namespace jian {
 		const loop *head() const;
 		bool empty() const;
 		// make tree with no broken tag
-		void make(const str_t &seq, const str_t &ss, int hinge = 2);
+		void make(const Str &seq, const Str &ss, int hinge = 2);
 		// make tree with broken tag
-		void make_b(const str_t &seq, const str_t &ss, int hinge = 2);
+		void make_b(const Str &seq, const Str &ss, int hinge = 2);
 
         template<typename _Fn>
         loop *find(_Fn &&fn) const {
@@ -105,5 +105,5 @@ namespace jian {
 
 	};
 
-} // namespace jian
+END_JN
 

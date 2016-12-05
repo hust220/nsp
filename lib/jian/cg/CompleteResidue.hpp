@@ -2,7 +2,7 @@
 
 #include "../pdb.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	class CompleteResidue {
 	private:

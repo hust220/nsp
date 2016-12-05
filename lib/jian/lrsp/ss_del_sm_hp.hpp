@@ -1,10 +1,11 @@
 #include <string>
+#include "../utils/traits.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace lrsp {
 
-std::string ss_del_sm_hp(std::string ss);
+S ss_del_sm_hp(S ss);
 
 } // namespace lrsp
-} // namespace jian
+END_JN
 

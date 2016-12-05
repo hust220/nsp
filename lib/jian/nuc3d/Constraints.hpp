@@ -2,7 +2,7 @@
 
 #include "../utils/ls.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	class Constraint {
 	public:
@@ -32,10 +32,10 @@ namespace jian {
 		bool has_distance(int i, int j);
 		bool has_angle(int i, int j, int k);
 		bool has_dihedral(int i, int j, int k, int l);
-		void read_dca(const std::string &f, int size);
-		void read_contacts(const std::string &f);
-		void read_distances(const std::string &f);
+		void read_dca(const S &f, int size);
+		void read_contacts(const S &f);
+		void read_distances(const S &f);
 	};
 
-} // namespace jian
+END_JN
 

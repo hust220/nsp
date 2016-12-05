@@ -4,17 +4,17 @@
 #include "Par.hpp"
 #include "file.hpp"
 
-namespace jian {
+BEGIN_JN
 
 Par::Par(int argc, char **argv) {
     read(argc, argv);
 }
 
-Par::Par(str_t str) {
+Par::Par(Str str) {
     read(str);
 }
 
-void Par::read(str_t par_file) {
+void Par::read(Str par_file) {
 	BEGIN_READ_FILE(par_file, " ") {
 		if (!(F.empty())) {
 			_pars[F[0]] = pars_t();
@@ -32,11 +32,11 @@ void Par::read(str_t par_file) {
 
 void Par::read(int argc, char **argv) {
     for (int i = 0; i < argc; i++) _orig_pars.push_back(argv[i]);
-    str_t key;
-    std::deque<str_t> values;
+    Str key;
+    std::deque<Str> values;
     int n = 0;
     for (int i = 1; i < argc; i++) {
-        if (str_t(argv[i]).size() >=2 && argv[i][0] == '-' && std::isalpha(argv[i][1])) {
+        if (Str(argv[i]).size() >=2 && argv[i][0] == '-' && std::isalpha(argv[i][1])) {
             if (n != 0) {
                 _pars[key] = values;
                 if (key == "par") {
@@ -47,7 +47,7 @@ void Par::read(int argc, char **argv) {
             } else {
                 _pars["global"] = values;
             }
-            str_t str(argv[i]);
+            Str str(argv[i]);
             key = str.substr(1, str.size() - 1);
             values.clear();
             n++;
@@ -73,15 +73,15 @@ void Par::read(int argc, char **argv) {
 
 }
 
-std::deque<str_t> &Par::operator [](const str_t &s) {
+std::deque<Str> &Par::operator [](const Str &s) {
     return _pars.at(s);
 }
 
-const std::deque<str_t> &Par::operator [](const str_t &s) const {
+const std::deque<Str> &Par::operator [](const Str &s) const {
     return _pars.at(s);
 }
 
-std::deque<str_t> &Par::operator [](const std::vector<str_t> &v) {
+std::deque<Str> &Par::operator [](const std::vector<Str> &v) {
     for (auto && s : v) {
         if (has(s)) {
             return _pars.at(s);
@@ -90,7 +90,7 @@ std::deque<str_t> &Par::operator [](const std::vector<str_t> &v) {
     throw "jian::Par error!";
 }
 
-const std::deque<str_t> &Par::operator [](const std::vector<str_t> &v) const {
+const std::deque<Str> &Par::operator [](const std::vector<Str> &v) const {
     for (auto && s : v) {
         if (has(s)) {
             return _pars.at(s);
@@ -99,15 +99,15 @@ const std::deque<str_t> &Par::operator [](const std::vector<str_t> &v) const {
     throw "jian::Par error!";
 }
 
-str_t &Par::operator [](int n) {
+Str &Par::operator [](int n) {
     return _orig_pars[n];
 }
 
-const str_t &Par::operator [](int n) const {
+const Str &Par::operator [](int n) const {
     return _orig_pars[n];
 }
 
-bool Par::count(const str_t &s) const {
+bool Par::count(const Str &s) const {
     return _pars.find(s) != _pars.end();
 }
 
@@ -122,5 +122,5 @@ std::ostream &operator <<(std::ostream &out, const Par &par) {
     return out;
 }
 
-} // namespace jian
+END_JN
 

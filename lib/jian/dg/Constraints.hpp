@@ -1,6 +1,6 @@
 #pragma once
 
-namespace jian {
+BEGIN_JN
 namespace dg {
 
 class hash {
@@ -69,5 +69,5 @@ public:
 };
 
 } // namespace dg
-} // namespace jian
+END_JN
 

@@ -4,13 +4,13 @@
 #include <sstream>
 #include "Molecule.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	class MolSerial {
 	public:
 		std::fstream m_stream;
 
-		MolSerial(std::string out, std::ios::openmode mode) {
+		MolSerial(S out, std::ios::openmode mode) {
 			m_stream.open(out, std::ios::binary | mode);
 		}
 
@@ -52,12 +52,12 @@ namespace jian {
 			n = T(m);
 		}
 
-		void write(const std::string &s) {
+		void write(const S &s) {
 			//write(s.size());
 			m_stream.write(s.c_str(), s.size() + 1);
 		}
 
-		void read(std::string &s) {
+		void read(S &s) {
 			char c[2];
 			std::ostringstream stream;
 
@@ -170,7 +170,7 @@ namespace jian {
 			}
 		}
 
-		void write_mol(std::string filename) {
+		void write_mol(S filename) {
 			for_each_model(filename, [this](const Model &model, int i) {
 				write(model);
 			});

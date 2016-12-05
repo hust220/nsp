@@ -2,9 +2,9 @@
 #include <string>
 #include "MolParser.hpp"
 
-namespace jian {
+BEGIN_JN
 
-MolParser::MolParser(const std::string &f) {
+MolParser::MolParser(const S &f) {
 	FOPEN(ifile, f);
 }
 
@@ -46,7 +46,7 @@ bool MolParser::eof() {
     return _next_line == NULL;
 }
 
-MolParser *MolParser::make(const std::string &file_type, const std::string &file_path, std::string mol_type) {
+MolParser *MolParser::make(const S &file_type, const S &file_path, S mol_type) {
     MolParser *parser = FacMolParser::create(file_type, file_path);
     parser->mol_type = mol_type;
     parser->file_name = jian::file::name(file_path);
@@ -55,5 +55,5 @@ MolParser *MolParser::make(const std::string &file_type, const std::string &file
     return parser;
 }
 
-} // namespace jian
+END_JN
 

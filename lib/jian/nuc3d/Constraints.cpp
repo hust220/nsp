@@ -3,7 +3,7 @@
 #include "../utils/ls.hpp"
 #include "../dca.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	template<typename T>
 	static bool equal(T &&ls, int i, int j) {
@@ -69,7 +69,7 @@ namespace jian {
 		for (auto &&c : dihedrals) if (equal(c.key, i, j, k, l)) return true; return false;
 	}
 
-	void Constraints::read_dca(const std::string &f, int size) {
+	void Constraints::read_dca(const S &f, int size) {
 		if (!f.empty()) {
 			dca::tuples_t && tuples = dca::tuples_from_file(f, size);
 			for (auto && tuple : tuples) {
@@ -78,7 +78,7 @@ namespace jian {
 		}
 	}
 
-	void Constraints::read_contacts(const std::string &f) {
+	void Constraints::read_contacts(const S &f) {
 		if (!f.empty()) {
 			BEGIN_READ_FILE(f, " ") {
 				if (F.size() == 3) add_contact(JN_INT(F[0]) - 1, JN_INT(F[1]) - 1, JN_DBL(F[2]));
@@ -87,7 +87,7 @@ namespace jian {
 		}
 	}
 
-	void Constraints::read_distances(const std::string &f) {
+	void Constraints::read_distances(const S &f) {
 		if (!f.empty()) {
 			BEGIN_READ_FILE(f, " ") {
 				if (F.size() == 3) add_distance(JN_INT(F[0]) - 1, JN_INT(F[1]) - 1, JN_DBL(F[2]));
@@ -96,5 +96,5 @@ namespace jian {
 		}
 	}
 
-} // namespace jian
+END_JN
 

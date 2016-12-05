@@ -4,34 +4,35 @@
 #include "../jian.hpp"
 #include "Assemble.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace nuc3d {
 
 void chain_read_record(Chain &chain, const record_t &templ_res) {
-    std::ostringstream stream;
+    STD_ ostringstream stream;
     stream << Env::lib() << "/RNA/templates/" << templ_res._name << ".pdb";
     chain_read_model(chain, stream.str());
 }
 
-void find_loop_records(loop *l, records_t &records, std::string name,
-                       const pdbs_t &used_pdbs, const pdbs_t &disused_pdbs, family_t family) {
+void find_loop_records(loop *l, records_t &records, S name, 
+	const pdbs_t &used_pdbs, const pdbs_t &disused_pdbs, family_t family)
+{
     if (l->empty()) return;
 
-    std::string seq = l->seq(),
-                ss = l->ss(),
-                p_ss = NASS::pure_ss(ss),
-                lower_ss = NASS::lower_ss(p_ss, 1);
+    S seq = l->seq(),
+    ss = l->ss(),
+    p_ss = NASS::pure_ss(ss),
+    lower_ss = NASS::lower_ss(p_ss, 1);
 
     int num_sons = l->num_sons();
 
-    std::ostringstream stream;
+	STD_ ostringstream stream;
     stream << Env::lib() << "/RNA/records/" << (l->is_open() ? "open_" : "") << "loop";
 //LOGI << "FIND LOOP RECORDS OF: " << l << ' ' << stream.str() << std::endl;
-	std::ifstream ifile;
+	STD_ ifstream ifile;
 	FOPEN(ifile, stream.str());
 
     record_t templ_rec;
-    std::string line;
+    S line;
     int num = 0;
     while (std::getline(ifile, line) && set_loop_rec(templ_rec, line)) {
         if (std::find(disused_pdbs.begin(), disused_pdbs.end(), templ_rec._src) != disused_pdbs.end()) {
@@ -68,21 +69,21 @@ void find_loop_records(loop *l, records_t &records, std::string name,
     });
 }
 
-void find_helix_records(loop *l, records_t &records, std::string name, std::string family) {
+void find_helix_records(loop *l, records_t &records, S name, S family) {
     if (l->s.empty()) return;
 
-    std::string seq = l->s.seq(),
+    S seq = l->s.seq(),
                 ss = l->s.ss();
 
     int len = l->s.len();
 
-    std::ostringstream stream;
+	STD_ ostringstream stream;
     stream << Env::lib() << "/RNA/records/helix";
-	std::ifstream ifile;
+	STD_ ifstream ifile;
     FOPEN(ifile, stream.str());
 
     record_t templ_rec;
-    std::string line;
+    S line;
     int num = 0;
     while (std::getline(ifile, line) && set_helix_rec(templ_rec, line)) {
         if (templ_rec._len == len) {
@@ -120,7 +121,7 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
 		to_lower(m_loop_building_method);
 
         LOG << "# Check input" << std::endl;
-		std::string info_errors;
+		S info_errors;
 		auto b = NASS::check_ss(_ss, info_errors);
         if (!b) throw info_errors;
 
@@ -130,23 +131,26 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
         LOG << "# Set Virtual Loops" << std::endl;
         set_virtual_loops();
 
-        LOG << "# Searching Templates..." << std::endl;
-        find_templates();
+		LOG << "# Searching Templates..." << std::endl;
+		find_records();
 
-        LOG << "# Printing records..." << std::endl;
+		LOG << "# Completing Templates..." << std::endl;
+		complete_records();
+
+		LOG << "# Printing records..." << std::endl;
         print_records();
 
     }
 
     void Assemble::set_virtual_loops() {
         LOOP_TRAVERSE(_ss_tree.head(), 
-            if (L->has_loop()) {
+            if (_l->has_loop()) {
                 if (_method == "FADG") {
-                    _is_virtual[L] = false;
-//                } else if (_strategy == "loose" && (L->is_open() || L->num_sons() >= 2)) {
-//                    _is_virtual[L] = true;
+                    _is_virtual[_l] = false;
+//                } else if (_strategy == "loose" && (_l->is_open() || _l->num_sons() >= 2)) {
+//                    _is_virtual[_l] = true;
                 } else {
-                    _is_virtual[L] = false;
+                    _is_virtual[_l] = false;
                 }
             }
         );
@@ -193,7 +197,7 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
 
     double Assemble::score_templates() {
         double e = 0;
-        for (auto && pair : _records) {
+        for (auto && pair : m_records) {
             auto & l = pair.first;
             if (l->has_loop()) {
                 e += m_selected_record[l].first._score;
@@ -207,20 +211,20 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
 
     bool Assemble::lack_templates() {
         loop *l;
-        for (auto && pair : _templates) {
+        for (auto && pair : m_templates) {
             l = pair.first;
             if (l->has_loop()) {
-                if (_records[l].first.empty()) return true;
+                if (m_records[l].first.empty()) return true;
             }
         }
         return false;
     }
 
-    void Assemble::print_templates() {
-        LOOP_TRAVERSE(_ss_tree.head(),
-			LOG << L << " : " << _templates[L].first.model_name << ' ' << _templates[L].second.model_name << std::endl;
+	void Assemble::print_templates() {
+		LOOP_TRAVERSE(_ss_tree.head(),
+			LOG << _l << " : " << m_templates[_l].first.model_name << ' ' << m_templates[_l].second.model_name << std::endl;
 		);
-    }
+	}
 
     void Assemble::assemble() {
         LOG << "## Score of Templates: " << score_templates() << std::endl;
@@ -244,24 +248,31 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
         _pred_chain = std::move(jian::transform(m, _seq, _type)[0]);
     }
 
-	void Assemble::set_loop_template(loop *l, bool is_first) {
+	void Assemble::set_loop_template(loop *l, B is_first) {
 		if (l != NULL && l->has_loop()) {
 			if (m_loop_building_method == "all_dg" ||
-				(m_loop_building_method == "partial_dg" && _records[l].first.empty())) {
+				(m_loop_building_method == "partial_dg" && m_records[l].first.empty())) {
 				build_loop_dg.init(l->seq(), NASS::lower_ss(l->ss()));
-				_templates[l].first = build_loop_dg();
+				m_templates[l].first = build_loop_dg();
 				m_selected_record[l].first = TemplRec{};
 			}
 			else if (m_loop_building_method == "all_raw" ||
-				(m_loop_building_method == "partial_raw" && _records[l].first.empty())) {
+				(m_loop_building_method == "partial_raw" && m_records[l].first.empty())) {
 				build_loop_raw.init(l->seq(), NASS::lower_ss(l->ss()));
-				_templates[l].first = build_loop_raw();
+				m_templates[l].first = build_loop_raw();
+				m_selected_record[l].first = TemplRec{};
+			}
+			else if (m_loop_building_method == "all_mc" ||
+				(m_loop_building_method == "partial_mc" && m_records[l].first.empty())) {
+				build_loop_raw.init(l->seq(), NASS::lower_ss(l->ss()));
+				sample_loop.init(build_loop_raw(), l->ss());
+				m_templates[l].first = sample_loop();
 				m_selected_record[l].first = TemplRec{};
 			}
 			else {
-				int n = (is_first ? 0 : int(rand() * _records[l].first.size()));
-				_templates[l].first = load_pdb(_records[l].first[n]);
-				m_selected_record[l].first = _records[l].first[n];
+				int n = (is_first ? 0 : int(rand() * m_records[l].first.size()));
+				m_templates[l].first = load_pdb(m_records[l].first[n]);
+				m_selected_record[l].first = m_records[l].first[n];
 			}
 		}
 	}
@@ -269,29 +280,29 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
     void Assemble::select_templates() {
 		BEGIN_LOOP_TRAVERSE(_ss_tree.head()) {
 			//if (L->has_loop()) {
-			//	if (_records[L].first.empty()) {
+			//	if (m_records[L].first.empty()) {
 			//		build_loop_dg.init(L->seq(), NASS::lower_ss(L->ss()));
-			//		_templates[L].first = build_loop_dg();
+			//		m_templates[L].first = build_loop_dg();
 			//		m_selected_record[L].first = TemplRec{};
 			//	}
 			//	else {
-			//		_templates[L].first = load_pdb(_records[L].first[0]);
-			//		m_selected_record[L].first = _records[L].first[0];
+			//		m_templates[L].first = load_pdb(m_records[L].first[0]);
+			//		m_selected_record[L].first = m_records[L].first[0];
 			//	}
 			//}
-			set_loop_template(L, true);
-			if (L->has_helix()) {
-				_templates[L].second = load_pdb(_records[L].second[0]);
-				m_selected_record[L].second = _records[L].second[0];
+			set_loop_template(_l, true);
+			if (_l->has_helix()) {
+				m_templates[_l].second = load_pdb(m_records[_l].second[0]);
+				m_selected_record[_l].second = m_records[_l].second[0];
 			}
 		} END_LOOP_TRAVERSE;
     }
 
 	void Assemble::sample_helix_template() {
-		assert(_records.size() == 1);
-		records_t & r = _records.begin()->second.second;
+		assert(m_records.size() == 1);
+		records_t & r = m_records.begin()->second.second;
 		uint n = static_cast<uint>(rand() * r.size());
-		_templates[0].second = load_pdb(r[n]);
+		m_templates[0].second = load_pdb(r[n]);
 		m_selected_record[0].second = r[n];
 	}
 
@@ -306,7 +317,7 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
     }
 
     void Assemble::sample_all_templates() {
-        for (auto && pair : _templates) {
+        for (auto && pair : m_templates) {
             loop *l = pair.first;
             if (l->has_loop()) {
                 sample_loop_template(l);
@@ -320,7 +331,7 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
 
     loop *Assemble::select_loop() {
         std::deque<loop *> ls;
-        for (auto && pair : _records) {
+        for (auto && pair : m_records) {
             auto &l = pair.first;
             if (l->has_loop()) {
                 ls.push_back(l);
@@ -329,7 +340,7 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
 		return (ls.empty() ? NULL : ls[static_cast<uint>(ls.size() * jian::rand())]);
     }
 
-    Chain Assemble::load_pdb(const TemplRec &templ_res, std::string type) {
+    Chain Assemble::load_pdb(const TemplRec &templ_res, S type) {
         Chain chain;
         chain_read_record(chain, templ_res);
         return chain;
@@ -338,23 +349,23 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
     void Assemble::assemble_templates(loop *l) {
         _pred_chain.resize(_seq.size());
         LOOP_TRAVERSE(l,
-//L->print();
-            if (L->has_loop()) {
-                auto &temp_residues = _templates[L].first;
+//_l->print();
+            if (_l->has_loop()) {
+                auto &temp_residues = m_templates[_l].first;
 //                LOGI << "loop: \n" << temp_residues << std::endl;
                 int i = 0;
-                LOOP_EACH(L,
+                LOOP_EACH(_l,
                     if (RES->type != '&') {
                         _pred_chain[RES->num - 1] = temp_residues[i];
                         i++;
                     }
                 );
             }
-            if (L->has_helix()) {
-                int len = L->s.len();
-                auto &temp_residues = _templates[L].second;
+            if (_l->has_helix()) {
+                int len = _l->s.len();
+                auto &temp_residues = m_templates[_l].second;
 //                LOGI << "helix: \n" << temp_residues << std::endl;
-                HELIX_EACH(L->s,
+                HELIX_EACH(_l->s,
                     _pred_chain[BP->res1.num - 1] = temp_residues[N_BP];
                     _pred_chain[BP->res2.num - 1] = temp_residues[2*len-1-N_BP];
                 );
@@ -363,13 +374,13 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
     }
 
     void Assemble::position_templates() {
-        position_templates(_ss_tree.head(), std::list<Mat>());
+        position_templates(_ss_tree.head(), L<Mat>());
     }
 
-    void Assemble::position_templates(loop *l, std::list<Mat> mats) {
+    void Assemble::position_templates(loop *l, L<Mat> mats) {
         if (l == NULL) return;
-        auto &loop = _templates[l].first;
-        auto &helix = _templates[l].second;
+        auto &loop = m_templates[l].first;
+        auto &helix = m_templates[l].second;
         if (l->has_helix()) {
             // position helix
             if (!mats.empty()) {
@@ -422,7 +433,7 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
 //        );
     }
 
-    Mat Assemble::model_mat(const Chain &chain, const std::list<int> &list) {
+    Mat Assemble::model_mat(const Chain &chain, const Li &list) {
         Mat mat(_suppos_atoms.size() * list.size(), 3);
         int index = 0;
         for (uint n = 0; n < chain.size(); n++) {
@@ -454,23 +465,33 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
         }
     }
 
-    void Assemble::find_templates() {
+    void Assemble::find_records() {
         LOOP_TRAVERSE(_ss_tree.head(), 
-            _find_self[L] = false;
-            find_loop_records(L); 
-            find_helix_records(L)
+            _find_self[_l] = false;
+            find_loop_records(_l);
+			find_helix_records(_l);
         );
     }
+
+	void Assemble::complete_records() {
+		//BEGIN_LOOP_TRAVERSE(_ss_tree.m_head) {
+		//	records_t &records = m_records[_l].first;
+		//	Int d = _num - size(records);
+		//	if (d > 0) {
+
+		//	}
+		//} END_LOOP_TRAVERSE;
+	}
 
     void Assemble::print_records() {
         LOG << "Records searching results:" << std::endl;
         LOOP_TRAVERSE(_ss_tree.head(),
-            LOG << "Hairpin(" << L << "):" << std::endl;
-            if (L->has_helix()) {
-                LOG << "  Helix " << std::string(L->s) << " (" << _records[L].second.size() << ")" << std::endl;
+            LOG << "Hairpin(" << _l << "):" << std::endl;
+            if (_l->has_helix()) {
+                LOG << "  Helix " << Str(_l->s) << " (" << m_records[_l].second.size() << ")" << std::endl;
             }
-            if (L->has_loop()) {
-                LOG << "  Loop " << std::string(*L) << " (" << _records[L].first.size() << ")" << std::endl;
+            if (_l->has_loop()) {
+                LOG << "  Loop " << std::string(*_l) << " (" << m_records[_l].first.size() << ")" << std::endl;
             }
         );
     }
@@ -478,15 +499,15 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
     void Assemble::find_loop_records(loop *l) {
         if (l->empty()) return;
 
-        std::string seq = l->seq(), ss = l->ss(), p_ss = NASS::pure_ss(ss), lower_ss = NASS::lower_ss(p_ss, 1), family = _family;
+        S seq = l->seq(), ss = l->ss(), p_ss = NASS::pure_ss(ss), lower_ss = NASS::lower_ss(p_ss, 1), family = _family;
         int num_sons = l->num_sons();
 
-        std::string info_file = _lib + "/RNA/records/" + (l->is_open() ? "open_" : "") + "loop";
+        S info_file = _lib + "/RNA/records/" + (l->is_open() ? "open_" : "") + "loop";
 		std::ifstream ifile;
         FOPEN(ifile, info_file);
 
         TemplRec templ_rec;
-        std::string line;
+        S line;
         int num = 0;
         while (std::getline(ifile, line) && set_loop_rec(templ_rec, line)) {
             if (std::find(_disused_pdbs.begin(), _disused_pdbs.end(), templ_rec._src) != _disused_pdbs.end()) {
@@ -510,11 +531,11 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
                         }
                     }
                 }
-                _records[l].first.push_back(templ_rec);
+                m_records[l].first.push_back(templ_rec);
                 num++;
                 if ((!(_source_pdb.empty())) && (templ_rec._src == _source_pdb)) {
-                    _records[l].first.clear(); 
-                    _records[l].first.push_back(templ_rec);
+                    m_records[l].first.clear(); 
+                    m_records[l].first.push_back(templ_rec);
                     num = 1;
                     _find_self[l] = true;
                     break;
@@ -522,22 +543,22 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
             }
         }
         ifile.close();
-        std::sort(_records[l].first.begin(), _records[l].first.end(), []( const TemplRec &loop1, const TemplRec &loop2) {
+        std::sort(m_records[l].first.begin(), m_records[l].first.end(), []( const TemplRec &loop1, const TemplRec &loop2) {
             return loop1._score > loop2._score; });
     }
 
     void Assemble::find_helix_records(loop *l) {
         if (l->s.empty()) return;
 
-        std::string seq = l->s.seq(), ss = l->s.ss(), family = _family;
+        S seq = l->s.seq(), ss = l->s.ss(), family = _family;
         int len = l->s.len();
 
-        std::string info_file = _lib + "/RNA/records/helix";
+        S info_file = _lib + "/RNA/records/helix";
         std::ifstream ifile(info_file.c_str());
         if (!ifile) throw "jian::FindTemplates error! Can't find '" + info_file + "'!";
 
         TemplRec templ_rec;
-        std::string line;
+        S line;
         int num = 0;
         while (std::getline(ifile, line) && set_helix_rec(templ_rec, line)) {
             /* if (std::find(_disused_pdbs.begin(), _disused_pdbs.end(), templ_rec._src) != _disused_pdbs.end()) {
@@ -556,15 +577,15 @@ void find_helix_records(loop *l, records_t &records, std::string name, std::stri
 						templ_rec._score++;
 					}
 				}
-				_records[l].second.push_back(std::move(templ_rec));
+				m_records[l].second.push_back(std::move(templ_rec));
 				num++;
 			}
         }
         ifile.close();
-        std::sort(_records[l].second.begin(), _records[l].second.end(), []( const TemplRec &loop1, const TemplRec &loop2) {
+        std::sort(m_records[l].second.begin(), m_records[l].second.end(), []( const TemplRec &loop1, const TemplRec &loop2) {
             return loop1._score > loop2._score; });
     }
 
 } // namespace nuc3d
-} // namespace jian
+END_JN
 

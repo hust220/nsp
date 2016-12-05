@@ -1,11 +1,11 @@
 #include "nsp.hpp"
 #include <jian/nuc3d/split.hpp>
 
-namespace jian {
+BEGIN_JN
 
 REGISTER_NSP_COMPONENT(split) {
     nuc3d::split(par);
 }
 
-} // namespace jian
+END_JN
 

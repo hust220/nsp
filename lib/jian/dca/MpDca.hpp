@@ -2,7 +2,7 @@
 
 #include "Dca.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace dca {
 
 class MpDca : public Dca {
@@ -16,7 +16,7 @@ public:
     float m_step_size;
 
     MpDca();
-	MpDca(std::string mol_type, float pw);
+	MpDca(S mol_type, float pw);
 	void init_val();
     void cal_pi();
     void cal_pij();
@@ -30,6 +30,6 @@ public:
 };
 
 } // namespace dca
-} // namespace jian
+END_JN
 
 

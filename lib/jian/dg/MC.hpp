@@ -5,7 +5,7 @@
 #include "CG.hpp"
 #include "Move.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace dg {
 
 // simulated annealing monte carlo method
@@ -83,5 +83,5 @@ public:
 };
 
 } // namespace dg
-} // namespace jian
+END_JN
 

@@ -5,13 +5,13 @@
 #include "../utils/traits.hpp"
 #include "Atom.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	class Residue : public std::deque<Atom> {
 	public:
 		int num = -1;
-		std::string name = "X";
-		std::string m_cg = "aa";
+		S name = "X";
+		S m_cg = "aa";
 
 		JN_DEFAULT_CONSTRUCTORS(Residue);
 
@@ -19,26 +19,26 @@ namespace jian {
 
 		void sort();
 
-		std::string format_name(const std::string &s);
+		S format_name(const S &s);
 
 		Atom &operator [](int n);
 
 		const Atom &operator [](int n) const;
 
-		Atom &operator [](const std::string &s);
+		Atom &operator [](const S &s);
 
-		const Atom &operator [](const std::string &s) const;
+		const Atom &operator [](const S &s) const;
 
 		Residue &operator +=(const Residue &r);
 
-		bool has_atom(const str_t &atom_name) const {
+		bool has_atom(const Str &atom_name) const {
 			return std::find_if(this->begin(), this->end(), [&atom_name](const Atom &atom) {
 				return atom.name == atom_name;
 			}) != this->end();
 		}
 
 		template<typename _Second, typename... _Rest>
-		bool has_atom(const str_t &first, _Second &&second, _Rest &&...rest) const {
+		bool has_atom(const Str &first, _Second &&second, _Rest &&...rest) const {
 			 return has_atom(first) && has_atom(second, rest...);
 		}
 
@@ -58,12 +58,12 @@ namespace jian {
 	refs<const Residue> residues() const { return refs<const Residue>().append(*this); }
 
 
-	bool res_is_type(const Residue &res, std::string type);
+	bool res_is_type(const Residue &res, S type);
 
 	template<typename T>
-	uniform_const_t<Atom, T> &atom(T &&res, const std::string &s) {
+	uniform_const_t<Atom, T> &atom(T &&res, const S &s) {
 		for (auto &&atom : res) if (atom.name == s) return atom;
-		throw "jian::pdb::Atom::operator [](const std::string &) error!";
+		throw "jian::pdb::Atom::operator [](const S &) error!";
 	}
 
 	template<typename T, template<typename...> class L = std::deque>
@@ -74,10 +74,10 @@ namespace jian {
 	}
 
 	template<typename T>
-	bool exists_atom(T &&res, const std::string &s) {
+	bool exists_atom(T &&res, const S &s) {
 		for (auto &&atom : res) if (atom.name == s) return true;
 		return false;
 	}
 
-} // namespace jian
+END_JN
 

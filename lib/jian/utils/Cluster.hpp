@@ -14,7 +14,7 @@
 
 #define REG_CLUSTER(name, type) REGISTER_FACTORY(::jian::Cluster::constructor_t, name, type)
 
-namespace jian {
+BEGIN_JN
 
 	class Cluster {
 	public:
@@ -38,7 +38,7 @@ namespace jian {
 		template<typename RandomIt, typename F>
 		static Mat *to_mat(RandomIt && first, RandomIt && last, F && dist) {
 			int i, j, size;
-			num_t d;
+			Num d;
 			Mat *mat;
 
 			size = std::distance(first, last);
@@ -61,5 +61,5 @@ namespace jian {
 
 	};
 
-} // namespace jian
+END_JN
 

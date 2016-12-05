@@ -8,7 +8,7 @@
 //#include <jian/mpi.hpp>
 #include "nsp.hpp"
 
-namespace jian {
+BEGIN_JN
 	namespace {
 
 		REGISTER_NSP_COMPONENT(test_build_chain) {
@@ -35,7 +35,7 @@ namespace jian {
 			int n, l, i, j, k;
 			Chain chain;
 			std::shared_ptr<CG> cg;
-			std::string list_file;
+			S list_file;
 
 			list_file = par.get("l", "list");
 			cg.reset(CG::fac_t::create("6p"));
@@ -65,18 +65,18 @@ namespace jian {
 		}
 
 		REGISTER_NSP_COMPONENT(aa) {
-			std::string list_file, prefix;
+			S list_file, prefix;
 			Chain chain;
 			int l, n, i, j;
 			std::shared_ptr<CG> cg;
-			std::string content = "hi";
+			S content = "hi";
 
 			Serial serial;
 			int a = 1;
 			double b = 3.5;
-			std::string c = "hi";
+			S c = "hi";
 			LOG << "stringify" << std::endl;
-			std::string s = serial.stringify(a, b);
+			S s = serial.stringify(a, b);
 			LOG << "parse" << std::endl;
 			short e, f;
 			serial.parse(s, e, f, b, c);
@@ -141,5 +141,5 @@ namespace jian {
 			} END_READ_FILE;
 		}
 	}
-} // namespace jian
+END_JN
 

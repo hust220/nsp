@@ -4,7 +4,7 @@
 #include <jian/nuc2d/loop.hpp>
 #include "nsp.hpp"
 
-namespace jian {
+BEGIN_JN
 	namespace dca {
 
 		SSTree::Path direct_path(const SSTree::Path &p1, const SSTree::Path &p2) {
@@ -54,11 +54,11 @@ namespace jian {
 		}
 
 		void trim_di(const Par &par) {
-			str_t ss = par.get("ss");
+			Str ss = par.get("ss");
             int l = size(ss);
-			str_t seq;
+			Str seq;
 			seq.resize(l, 'A');
-			str_t difile = par.get("di");
+			Str difile = par.get("di");
 			tuples_t tuples = tuples_from_file(difile, ss.size());
 			tuples_t ls;
 			SSTree sst;
@@ -83,16 +83,16 @@ namespace jian {
 			int n = 1;
 			float step = 1;
 			float pw = 0.5;
-			std::string mol_type = "RNA";
-			std::string method = "mf";
+			S mol_type = "RNA";
+			S method = "mf";
 			Par::pars_t global = par.getv("global");
 			if (size(global) == 2 && global[1] == "trim_di") {
 				trim_di(par);
 				return;
 			}
 
-			std::string out_file = par.get("o", "out");
-			std::string fa_file = par.get("i", "in");
+			S out_file = par.get("o", "out");
+			S fa_file = par.get("i", "in");
 
 			par.set(method, "m", "method");
 			par.set(n, "n");
@@ -107,5 +107,5 @@ namespace jian {
 		}
 
 	}
-} // namespace jian
+END_JN
 

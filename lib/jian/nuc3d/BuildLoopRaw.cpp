@@ -1,8 +1,8 @@
 #include "BuildLoopRaw.hpp"
 
-namespace jian {
+BEGIN_JN
 
-	BuildLoopRaw &BuildLoopRaw::init(const str_t &seq, const str_t &ss) {
+	BuildLoopRaw &BuildLoopRaw::init(const Str &seq, const Str &ss) {
 		//Hinges &&hinges = ss_to_hinges(NASS::hinge_ss(ss));
 		m_seq = seq;
 		m_ss = ss;
@@ -123,14 +123,14 @@ namespace jian {
 
 	void BuildLoopRaw::set_pos() {
 		int i1, i2;
-		num_t phi, j, n, bin, res_bins, helix_begin_bins, helix_end_bins, helix_bins;
+		Num phi, j, n, bin, res_bins, helix_begin_bins, helix_end_bins, helix_bins;
 
 		bin = 7.0;
 		res_bins = 1;
 		helix_begin_bins = 2;
 		helix_end_bins = 3;
 		helix_bins = helix_begin_bins + helix_end_bins;
-		n = std::accumulate(m_frags.begin(), m_frags.end(), 0.0, [](num_t n, auto &&frag) {
+		n = std::accumulate(m_frags.begin(), m_frags.end(), 0.0, [](Num n, auto &&frag) {
 			return n + size(frag);
 		}) * res_bins + size(m_hinges) * helix_bins + 1;
 		m_radius = bin * n / (2.0 * PI);
@@ -190,7 +190,7 @@ namespace jian {
 
 		for (i = 0; i < m_helices.size(); i++) {
 			Model helix = pairs;
-			std::vector<num_t> origin {
+			std::vector<Num> origin {
 				m_radius*std::sin(m_helices[i].theta)*std::cos(m_helices[i].phi),
 				m_radius*std::sin(m_helices[i].theta)*std::sin(m_helices[i].phi),
 				m_radius*std::cos(m_helices[i].theta)
@@ -252,7 +252,7 @@ namespace jian {
 			}
 		}
 
-		geom::Superposition<num_t> sp(y, x);
+		geom::Superposition<Num> sp(y, x);
 		for (auto && res : c) {
 			for (auto && atom : res) {
 				sp.apply(atom);

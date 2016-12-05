@@ -2,7 +2,7 @@
 
 #include "res.hpp"
 
-namespace jian {
+BEGIN_JN
 
 class bp {
 public:
@@ -41,5 +41,5 @@ public:
 
 };
 
-} // namespace jian
+END_JN
 

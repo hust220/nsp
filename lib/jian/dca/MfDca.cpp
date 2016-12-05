@@ -1,13 +1,13 @@
 #include "MfDca.hpp"
 
-namespace jian {
+BEGIN_JN
 	namespace dca {
 
 		REG_DCA_FAC("mf", MfDca);
 
 		MfDca::MfDca() : Dca() {}
 
-		MfDca::MfDca(std::string mol_type, float pw) : Dca(mol_type, pw) {}
+		MfDca::MfDca(S mol_type, float pw) : Dca(mol_type, pw) {}
 
 		void MfDca::calculate_C() {
 			int i, j, k, l;
@@ -91,6 +91,6 @@ namespace jian {
 		}
 
 	} // namespace dca
-} // namespace jian
+END_JN
 
 

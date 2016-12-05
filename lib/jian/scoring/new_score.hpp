@@ -3,7 +3,7 @@
 #include "../pdb.hpp"
 #include "../matrix.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace scoring {
 
 double new_score(const Model &model);

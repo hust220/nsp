@@ -1,7 +1,7 @@
 #ifndef JIAN_MPL_ARITHMETIC
 #define JIAN_MPL_ARITHMETIC
 
-namespace jian {
+BEGIN_JN
 namespace mpl {
 
 template<int N>
@@ -42,7 +42,7 @@ struct divides<I<a>, I<b>> {
 };
 
 } // namespace mpl
-} // namespace jian
+END_JN
 
 
 

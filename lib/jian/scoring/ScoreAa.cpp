@@ -4,7 +4,7 @@
 #include "../pdb.hpp"
 #include "ScoreAa.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	REG_SCORER("aa", ScoreAa);
 
@@ -13,7 +13,7 @@ namespace jian {
 	}
 
 	void ScoreAa::init() {
-		std::string lib = Env::lib() + "/RNA/pars/scoring";
+		S lib = Env::lib() + "/RNA/pars/scoring";
 
 		m_bin_dist = 0.3;
 		m_bin_dih = 4.5;
@@ -92,5 +92,5 @@ namespace jian {
 	}
 
 
-} // namespace jian
+END_JN
 

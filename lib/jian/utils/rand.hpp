@@ -1,9 +1,11 @@
 #pragma once
 
-namespace jian {
+#include "traits.hpp"
 
-	double rand();
-	void seed(int t);
+BEGIN_JN
 
-} // namespace jian
+double rand();
+void seed(int t);
+
+END_JN
 

@@ -6,7 +6,7 @@
 #include "../utils/log.hpp"
 #include "../geom.hpp"
 
-namespace jian {
+BEGIN_JN
 	Chain CG::to_cg(const Chain &chain) const {
 		Chain c;
 		c.name = chain.name;
@@ -46,12 +46,12 @@ namespace jian {
 		std::deque<Mat *> m_frags;
 		std::deque<Chain> m_chains;
 		std::deque<std::string> m_names;
-		std::string m_path;
+		S m_path;
 		int m_frag_size = 4;
 		int m_res_size;
 		static std::map<std::string, CG2AA> m_instances;
 
-		static CG2AA &instance(std::string cg) {
+		static CG2AA &instance(S cg) {
 			if (m_instances.find(cg) == m_instances.end()) {
 				m_instances[cg] = CG2AA();
 				m_instances[cg].init(cg);
@@ -66,7 +66,7 @@ namespace jian {
 			delete m_cg;
 		}
 
-		void init(std::string cg) {
+		void init(S cg) {
 			m_cg = CG::fac_t::create(cg);
 			m_res_size = m_cg->res_size();
 			m_path = Env::lib() + "/RNA/pars/cg/CG2AA/templates.pdb";
@@ -118,11 +118,11 @@ namespace jian {
 			return chain;
 		}
 
-		void extract_frags(const std::string &pdb) {
+		void extract_frags(const S &pdb) {
 			std::deque<int> dq;
 			Chain full_chain, chain;
 			int i, j, k, n;
-			std::string name;
+			S name;
 
 			chain_read_model(full_chain, pdb);
 			chain = m_cg->to_cg(full_chain);
@@ -157,4 +157,4 @@ namespace jian {
 	}
 
 
-} // namespace jian
+END_JN

@@ -2,16 +2,16 @@
 
 #define PRINT_MEM_MCPSB(a) << e.a << PP_STRING3((a)) << ' '
 
-namespace jian {
+BEGIN_JN
 
 	void MCSM::init(const Par &par) {
 		MCBase::init(par);
 
-		LOG << "# Initializing scorer..." << std::endl;
+		log << "# Initializing scorer..." << std::endl;
 		m_scorer = ScoreBase::fac_t::create(m_cg_type);
 		m_scorer->init();
 
-		LOG << "# Seting indices..." << std::endl;
+		log << "# Seting indices..." << std::endl;
 		set_indices();
 	}
 
@@ -32,7 +32,7 @@ namespace jian {
 			for (j = i + 1; j < _seq.size(); j++) {
 				m_scorer->en_bp(_pred_chain[i], _pred_chain[j]);
 				if (m_scorer->m_en_pairing != 0 || m_scorer->m_en_stacking != 0) {
-					LOG
+					log
 						<< i + 1 << ' ' << j + 1 << ' '
 						<< m_scorer->m_en_stacking << ' '
 						<< m_scorer->m_en_pairing << ' '
@@ -159,20 +159,20 @@ namespace jian {
 	void MCSM::write_en() {
 		en_t e;
 		set_total_energy(e);
-		LOG 
+		log 
 			<< _mc_step + 1 << ": " << e.sum() << "(total) "
 			JN_MAP(PRINT_MEM_MCPSB, MEM_EN_MCPSB)
 			<< _mc_tempr << "(tempr) "
 			<< _mc_local_succ_rate << "(rate)" << std::endl;
 	}
 
-	std::string MCSM::file_parameters() const {
+	S MCSM::file_parameters() const {
 		return "mcpsb";
 	}
 
 	void MCSM::finish_run() {
-		LOG << "# Displaying pairing information" << std::endl;
+		log << "# Displaying pairing information" << std::endl;
 		print_pairing();
 	}
 
-} // namespace jian
+END_JN

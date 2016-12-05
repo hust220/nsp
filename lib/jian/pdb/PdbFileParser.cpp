@@ -4,16 +4,16 @@
 #include "PdbFileParser.hpp"
 #include "../utils/string.hpp"
 
-namespace jian {
+BEGIN_JN
 
 REG_MOL_PARSER("pdb", PdbFileParser)
 
-PdbFileParser::PdbFileParser(const std::string &f) : MolParser(f) {
+PdbFileParser::PdbFileParser(const S &f) : MolParser(f) {
 }
 
 MolParsedLine *PdbFileParser::getline() {
     thread_local static std::vector<std::string> v {"A5", "U5", "G5", "C5", "T5", "A3", "U3", "G3", "C3", "T3"};
-    std::string line;
+    S line;
     std::vector<std::string> arr;
     int model_num = 0;
     while (std::getline(ifile, line)) {
@@ -42,5 +42,5 @@ MolParsedLine *PdbFileParser::getline() {
     return NULL;
 }
 
-} // namespace jian
+END_JN
 

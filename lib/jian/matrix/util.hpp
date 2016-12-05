@@ -6,15 +6,8 @@
 #include "../utils/Serial.hpp"
 #include "../utils/file.hpp"
 
-namespace jian {
+BEGIN_JN
 
-
-#ifdef JN_PRECISION
-	using num_t = JN_PRECISION;
-#else
-	using num_t = double;
-	using val_t = double;
-#endif
 
 	template<typename NumType>
 	using MatX = Eigen::Matrix<NumType, -1, -1>;
@@ -128,7 +121,7 @@ namespace jian {
 
 	// mat_from_file
 	template<typename T = Eigen::MatrixXd>
-	inline T mat_from_file(const str_t &file) {
+	inline T mat_from_file(const Str &file) {
 		std::ifstream ifile;
 		FOPEN(ifile, file);
 		int rows, cols;
@@ -181,5 +174,5 @@ namespace jian {
 		return t;
 	}
 
-} // namespace jian
+END_JN
 

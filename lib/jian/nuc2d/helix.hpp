@@ -26,7 +26,7 @@
 		c;\
 	} END_HELIX_EACH
 
-namespace jian {
+BEGIN_JN
 
 class helix {
 public:
@@ -63,15 +63,15 @@ public:
 		return l;
     }
 
-    str_t ss() const {
-        str_t str;
+    Str ss() const {
+        Str str;
         HELIX_EACH(*this, str += '(');
         HELIX_EACH(*this, str += ')');
         return str;
     }
 
-    str_t seq() const {
-        str_t str;
+    Str seq() const {
+        Str str;
         HELIX_EACH(*this, str.insert(N_BP, {BP->res1.name, BP->res2.name}));
         return str;
     }
@@ -84,8 +84,8 @@ public:
         return nums;
     }
 
-    operator str_t() const {
-//        str_t str;
+    operator Str() const {
+//        Str str;
         std::ostringstream stream;
         stream << seq() << ' ' << ss();
         for (auto && i : nums()) {
@@ -98,10 +98,10 @@ public:
     }
 
     friend std::ostream &operator <<(std::ostream &out, const helix &h) {
-        out << "Helix: " << ' ' << (str_t)h;
+        out << "Helix: " << ' ' << (Str)h;
     }
 
 };
 
-} // namespace jian
+END_JN
 

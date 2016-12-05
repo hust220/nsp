@@ -12,11 +12,11 @@
 #include "Factory.hpp"
 #include "Cluster.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	class DBSCAN : public Cluster {
 	public:
-		num_t m_eps;
+		Num m_eps;
 		int m_min_pts;
 		std::vector<int> m_is_visited;
 		std::vector<std::list<int>> m_neighbors;
@@ -32,5 +32,5 @@ namespace jian {
 
 	};
 
-} // namespace jian
+END_JN
 

@@ -1,12 +1,12 @@
 #include "nsp.hpp"
 #include <jian/nuc3d/Assemble.hpp>
 
-namespace jian {
+BEGIN_JN
 
 REGISTER_NSP_COMPONENT(assemble) {
     nuc3d::Assemble ass(par);
     ass.predict();
 }
 
-} // namespace jian
+END_JN
 

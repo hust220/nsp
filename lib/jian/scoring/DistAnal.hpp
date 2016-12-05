@@ -3,7 +3,7 @@
 #include <array>
 #include <string>
 
-namespace jian {
+BEGIN_JN
 
 	class Chain;
 
@@ -35,7 +35,7 @@ namespace jian {
 		void print_freqs(std::ostream &) const;
 		void print_counts(std::ostream &) const;
 		bool in_base(int type);
-		int res_type(std::string name);
+		int res_type(S name);
 		int atom_type(const Residue &r, int k);
 		double en_stacking(const Residue &r1, const Residue &r2);
 		double en_pairing(const Residue &r1, const Residue &r2);

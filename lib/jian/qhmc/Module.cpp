@@ -2,7 +2,7 @@
 #include "Module.hpp"
 #include "../utils/Factory.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace qhmc {
 
 void Module::set_indices(int n, const Frag &f, bool d = true) {
@@ -15,6 +15,6 @@ void Module::set_indices(int n, const Frag &f, bool d = true) {
 }
 
 } // namespace qhmc
-} // namespace jian
+END_JN
 
 

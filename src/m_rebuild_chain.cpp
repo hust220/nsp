@@ -5,7 +5,7 @@
 #include <jian/pdb.hpp>
 #include <jian/geom/core.hpp>
 
-namespace jian {
+BEGIN_JN
 
 namespace rebuild_chain_detail {
 
@@ -22,8 +22,8 @@ void set_break_pts(break_pts_t &v, const Chain &c) {
     }            
 }
 
-std::string set_ss(std::string &ss, const break_pts_t &v) {
-    std::string str;
+S set_ss(S &ss, const break_pts_t &v) {
+    S str;
     int n = 0;     
     for (auto && c : ss) {
         if (c != '&') {
@@ -45,5 +45,5 @@ REGISTER_NSP_COMPONENT(rebuild_chain) {
     std::cout << rebuild_chain_detail::set_ss(par["ss"][0], v);
 }
 
-} // namespace jian
+END_JN
 

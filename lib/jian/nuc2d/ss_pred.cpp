@@ -11,7 +11,7 @@
 
 #include "ss_pred.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	namespace ss_pred_detail {
 
@@ -37,7 +37,7 @@ namespace jian {
 			using mat_t = std::array<std::array<val_t, 4>, 4>;
 			using stack_t = std::array<std::array<mat_t, 4>, 4>;
 
-			std::string _lib;
+			S _lib;
 
 			std::vector<int> _indices;
 			std::map<int, std::map<int, inf_t*>> _inf;
@@ -153,25 +153,25 @@ namespace jian {
 				init();
 			}
 
-			void seq_to_indices(const std::string &seq) {
+			void seq_to_indices(const S &seq) {
 				std::map<char, int> temp_map{ {'A', 0}, {'C', 1}, {'G', 2}, {'U', 3}, {'X', -1} };
 				_indices.resize(seq.size());
 				std::transform(seq.begin(), seq.end(), _indices.begin(), [&](char c) {return temp_map[c]; });
 				for (auto && i : _indices) LOGV << i << ' '; LOGV << std::endl;
 			}
 
-			std::string operator ()(const std::string &seq) {
+			S operator ()(const S &seq) {
 				std::lock_guard<std::mutex> gd(g_mt);
 				print_pars();
 				init();
 				seq_to_indices(seq);
-				std::string ss(seq.size(), '.');
+				S ss(seq.size(), '.');
 				loop_inf(-1, seq.size());
 				set_loop(ss, -1, seq.size());
 				return ss;
 			}
 
-			void set_loop(std::string &s, int beg, int end) {
+			void set_loop(S &s, int beg, int end) {
 				if (_inf.count(beg) && _inf[beg].count(end)) {
 					if (!(_inf[beg][end]->path.empty())) {
 						for (auto && loop : _inf[beg][end]->path) {
@@ -329,9 +329,9 @@ namespace jian {
 
 	} // namespace_ss_pred_detail
 
-	std::string ss_pred(const std::string &seq) {
+	S ss_pred(const S &seq) {
 		return ss_pred_detail::pred(seq);
 	}
 
-} // namespace jian
+END_JN
 

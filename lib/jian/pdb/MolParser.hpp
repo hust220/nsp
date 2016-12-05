@@ -8,14 +8,14 @@
 #include "../utils/file.hpp"
 #include "../utils/Factory.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	struct MolParsedLine {
-		std::string atom_type;
-		std::string atom_name;
-		std::string res_name;
-		std::string chain_name;
-		std::string res_flag;
+		S atom_type;
+		S atom_name;
+		S res_name;
+		S chain_name;
+		S res_flag;
 		int atom_num;
 		int res_num;
 		int chain_num;
@@ -26,17 +26,17 @@ namespace jian {
 
 	class MolParser {
 	public:
-		using creater_t = MolParser *(const std::string &);
+		using creater_t = MolParser *(const S &);
 
 		MolParsedLine *_curr_line = NULL;
 		MolParsedLine *_next_line = NULL;
 		std::list<MolParsedLine *> gc_line;
-		std::string file_name;
-		std::string file_type;
-		std::string mol_type = "";
+		S file_name;
+		S file_type;
+		S mol_type = "";
 		std::ifstream ifile;
 
-		MolParser(const std::string &f);
+		MolParser(const S &f);
 
 		~MolParser();
 
@@ -46,12 +46,12 @@ namespace jian {
 
 		virtual MolParsedLine *getline() = 0;
 
-		static MolParser *make(const std::string &file_type, const std::string &file_path, std::string mol_type);
+		static MolParser *make(const S &file_type, const S &file_path, S mol_type);
 
 	};
 
 #define REG_MOL_PARSER(name, Type) REGISTER_FACTORY(jian::MolParser::creater_t, name, Type)
 	using FacMolParser = Factory<MolParser::creater_t>;
 
-} // namespace jian
+END_JN
 

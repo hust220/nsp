@@ -2,10 +2,10 @@
 #include <jian/pdb.hpp>
 #include <jian/nuc3d/Format.hpp>
 
-namespace jian {
+BEGIN_JN
 	namespace {
-		void m_format(const Par &par, std::string mol_type) {
-			std::string in = par.get("s", "pdb", "i", "in");
+		void m_format(const Par &par, S mol_type) {
+			S in = par.get("s", "pdb", "i", "in");
 			Format format;
 			Molecule mol;
 
@@ -31,5 +31,5 @@ namespace jian {
 			m_format(par, "DNA");
 		}
 	}
-} // namespace jian
+END_JN
 

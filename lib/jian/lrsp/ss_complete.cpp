@@ -9,7 +9,7 @@
 #include "../nuc2d.hpp"
 #include "ss_complete.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace lrsp {
 
 std::map<char, int> index_base {{'X', 0}, {'A', 1}, {'U', 2}, {'T', 2}, {'G', 4}, {'C', 8}};
@@ -55,12 +55,12 @@ void ss_complete(pairs_t & pairs, const seq_t & seq) {
     }
 }
 
-std::string ss_complete(std::string seq, std::string ss) {
+S ss_complete(S seq, S ss) {
     pairs_t pairs = dca::pairs_from_ss(ss);
     ss_complete(pairs, seq);
     return dca::pairs_to_ss(pairs, seq.size());
 }
 
 } // namespace lrsp
-} // namespace jian
+END_JN
 

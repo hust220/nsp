@@ -3,7 +3,7 @@
 #include <functional>
 #include <vector>
 
-namespace jian {
+BEGIN_JN
 
 template <typename T>
 class FSM {

@@ -6,15 +6,15 @@
 #define TRACE_IN Trace::enter_function(__FUNCTION__)
 #define TRACE_OUT Trace::exit_function(__FUNCTION__)
 
-namespace jian {
+BEGIN_JN
 
 class Trace {
 public:
-    static void enter_function(const std::string &func_name) {
+    static void enter_function(const S &func_name) {
         log("\n<", func_name, ">\n");
     }
 
-    static void exit_function(const std::string &func_name) {
+    static void exit_function(const S &func_name) {
         log("\n</", func_name, ">\n");
     }
 

@@ -8,7 +8,7 @@
 #include <string>
 #include <algorithm>
 
-namespace jian {
+BEGIN_JN
 
 class NASS {
 public:
@@ -21,20 +21,20 @@ public:
     Keys unpaired_keys;
     Keys break_keys;
 
-	static std::vector<int> get_bps(const str_t &ss);
+	static std::vector<int> get_bps(const Str &ss);
     static const NASS &instance();
 	static bool is_char_ss(char c);
-	static bool check_ss(const str_t &ss, str_t &info_errors);
-	static bool check_ss(const str_t &ss);
-    static int len_ss(const str_t &ss);
-    static str_t pure_ss(const str_t &ss);
-    static str_t lower_ss(const str_t &ss, int n = 2);
-    static str_t hinge_ss(const str_t &ss);
-    static bool seq_match_ss(const str_t &seq, const str_t &ss);
+	static bool check_ss(const Str &ss, Str &info_errors);
+	static bool check_ss(const Str &ss);
+    static int len_ss(const Str &ss);
+    static Str pure_ss(const Str &ss);
+    static Str lower_ss(const Str &ss, int n = 2);
+    static Str hinge_ss(const Str &ss);
+    static bool seq_match_ss(const Str &seq, const Str &ss);
 
 private:
 	NASS();
 };
 
-} // namespace jian
+END_JN
 

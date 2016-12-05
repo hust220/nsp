@@ -3,7 +3,7 @@
 #include <numeric>
 #include "HeadHairpin.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace qhmc {
 
 REGISTER_QUADRUPLE_MODULE_FACTORY("head_hairpin", HeadHairpin);
@@ -59,7 +59,7 @@ HeadHairpin::HeadHairpin(const Tuple &head, const Tuple &tail, int len) {
     }
 }
 
-std::string HeadHairpin::type() const {
+S HeadHairpin::type() const {
     return "head_hairpin";
 }
 

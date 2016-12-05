@@ -8,7 +8,7 @@
 #include "../geom.hpp"
 #include "../cg.hpp"
 
-namespace jian {
+BEGIN_JN
 
 class BuildStrand {
     using Mat = Eigen::MatrixXd;
@@ -81,5 +81,5 @@ public:
 
 };
 
-} // namespace jian
+END_JN
 

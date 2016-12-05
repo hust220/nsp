@@ -35,7 +35,7 @@
 
 #endif
 
-namespace jian {
+BEGIN_JN
 
 	class Socket {
 	public:
@@ -53,7 +53,7 @@ namespace jian {
 #endif
 		struct accept_t {
 			socket_t socket;
-			std::string ip;
+			S ip;
 			int port;
 		};
 
@@ -106,14 +106,14 @@ namespace jian {
 			//if (ret == SOCKET_ERROR)  throw "Socket::bind_local failed!";
 		}
 
-		int bind(socket_t socket, std::string ip, port_t port) {
+		int bind(socket_t socket, S ip, port_t port) {
 			sockaddr_in sin;
 			set_sin(sin, inet_addr(ip.c_str()), port);
 			return ::bind(socket, (struct sockaddr *)&sin, sizeof(sockaddr_in));
 			//if (ret == SOCKET_ERROR)  throw "Socket::bind failed!";
 		}
 
-		int connect(socket_t socket, std::string ip, port_t port) {
+		int connect(socket_t socket, S ip, port_t port) {
 			sockaddr_in sin;
 			set_sin(sin, inet_addr(ip.c_str()), port);
 			return ::connect(socket, (struct sockaddr *)&sin, sizeof(sockaddr_in));
@@ -136,19 +136,19 @@ namespace jian {
 			return rt;
 		}
 
-		int send(socket_t socket, std::string content) {
+		int send(socket_t socket, S content) {
 			return ::send(socket, content.c_str(), content.size(), BLOCKREADWRITE | SENDNOSIGNAL);
 			//if (ret == SOCKET_ERROR) throw "Socket::send failed!";
 		}
 
-		std::string recv(socket_t socket) {
+		S recv(socket_t socket) {
 			char buf[1024];
 			int ret = ::recv(socket, buf, 1024, BLOCKREADWRITE);
 			if (ret <= 0) throw "Socket::recv failed!";
 			return std::string(buf, ret);
 		}
 
-		std::string recv_all(socket_t socket) {
+		S recv_all(socket_t socket) {
 			std::ostringstream stream;
 			while (true) {
 				try {

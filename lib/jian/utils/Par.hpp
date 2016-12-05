@@ -10,13 +10,13 @@
 #include "string.hpp"
 #include "traits.hpp"
 
-namespace jian {
+BEGIN_JN
 
 class Par {
 public:
-    using pars_t = std::deque<str_t>;
+    using pars_t = std::deque<Str>;
 
-    std::map<str_t, pars_t> _pars;
+    std::map<Str, pars_t> _pars;
     pars_t _orig_pars;
 
 	Par() = default;
@@ -25,41 +25,41 @@ public:
 
     Par(int argc, char **argv);
 
-    Par(str_t str);
+    Par(Str str);
 
 	template<typename _FirstVal, typename... _RestVals>
-	Par(const str_t &key, _FirstVal &&first_val, _RestVals &&...rest_vals) {
+	Par(const Str &key, _FirstVal &&first_val, _RestVals &&...rest_vals) {
 		(*this)(key, first_val, rest_vals...);
 	}
 
     void read(int argc, char **argv);
 
-    std::deque<str_t> &operator [](const str_t &s);
+    std::deque<Str> &operator [](const Str &s);
 
-    const std::deque<str_t> &operator [](const str_t &s) const;
+    const std::deque<Str> &operator [](const Str &s) const;
 
-    std::deque<str_t> &operator [](const std::vector<str_t> &s);
+    std::deque<Str> &operator [](const std::vector<Str> &s);
 
-    const std::deque<str_t> &operator [](const std::vector<str_t> &s) const;
+    const std::deque<Str> &operator [](const std::vector<Str> &s) const;
 
-    str_t &operator [](int n);
+    Str &operator [](int n);
 
-    const str_t &operator [](int n) const;
+    const Str &operator [](int n) const;
 
-	Par &operator ()(const str_t &key) {
+	Par &operator ()(const Str &key) {
 		_pars[key];
 		return *this;
 	}
 
 	template<typename _FirstVal, typename... _RestVals>
-	Par &operator ()(const str_t &key, _FirstVal &&first_val, _RestVals &&...rest_vals) {
-		_pars[key].push_back(lexical_cast<str_t>(first_val));
+	Par &operator ()(const Str &key, _FirstVal &&first_val, _RestVals &&...rest_vals) {
+		_pars[key].push_back(lexical_cast<Str>(first_val));
 		return (*this)(key, rest_vals...);
 	}
 
-	bool count(const str_t &s) const;
+	bool count(const Str &s) const;
 
-    void read(str_t par_file);
+    void read(Str par_file);
 
     friend std::ostream &operator <<(std::ostream &out, const Par &par);
 
@@ -99,12 +99,12 @@ public:
 		}
 	}
 
-	std::list<str_t> &keys_chain() const {
-		static std::list<str_t> chain;
+	std::list<Str> &keys_chain() const {
+		static std::list<Str> chain;
 		return chain;
 	}
 
-    str_t get() const {
+    Str get() const {
 		std::ostringstream stream;
 		stream << "jian::Par::get error! Didn't found parameters for keys:";
 		for (auto && key : keys_chain()) stream << " " << key;
@@ -112,7 +112,7 @@ public:
 	}
 
     template<typename K, typename... V>
-    str_t get(K &&s, V && ...pars) const {
+    Str get(K &&s, V && ...pars) const {
         if (_pars.count(s)) {
 			keys_chain().clear();
             return _pars.at(s)[0];
@@ -142,11 +142,11 @@ public:
 	}
 
 	template<typename T>
-	T parse(const str_t &s) const {
+	T parse(const Str &s) const {
 		return jian::lexical_cast<T>(s);
 	}
 
 };
 
-} // namespace jian
+END_JN
 

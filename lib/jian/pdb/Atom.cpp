@@ -2,7 +2,7 @@
 #include <iostream>
 #include "Atom.hpp"
 
-namespace jian {
+BEGIN_JN
 
 thread_local std::map<char, double> s_mass {
     {'H', 1.00794},
@@ -13,7 +13,7 @@ thread_local std::map<char, double> s_mass {
     {'S', 32},
 };
  
-void Atom::init(std::string name, double x, double y, double z, int n) {
+void Atom::init(S name, double x, double y, double z, int n) {
     set_name(name);
     at(0) = x;
     at(1) = y;
@@ -21,7 +21,7 @@ void Atom::init(std::string name, double x, double y, double z, int n) {
     this->num = num;
 }
 
-void Atom::set_name(const std::string &s) {
+void Atom::set_name(const S &s) {
     name = "";
     for (auto && c : s) {
         if (c != ' ') {
@@ -47,5 +47,5 @@ void Atom::set_mass() {
     }
 }
 
-} // namespace jian
+END_JN
 

@@ -7,9 +7,9 @@
 #include "../cg.hpp"
 #include "HelixPar.hpp"
 
-namespace jian {
+BEGIN_JN
 
-	Chain *build_chain_dg(str_t seq, str_t ss);
+	Chain *build_chain_dg(Str seq, Str ss);
 
 	class BuildLoopDG {
 	public:
@@ -24,7 +24,7 @@ namespace jian {
 
 		void init_dist_bound(Mat &b, int l);
 
-		BuildLoopDG &init(const str_t &seq, const str_t &ss);
+		BuildLoopDG &init(const Str &seq, const Str &ss);
 
 		BuildLoopDG &init(const Chain &c, const std::vector<int> &brokens);
 
@@ -35,5 +35,5 @@ namespace jian {
 		void set_bound_helix(Mat &b, DihBound &d, const helix &h);
 	};
 
-} // namespace jian
+END_JN
 

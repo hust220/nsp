@@ -3,7 +3,7 @@
 #include "Molecule.hpp"
 #include "../utils/traits.hpp"
 
-namespace jian {
+BEGIN_JN
 
 #define JN_IS_ATOM(T)     std::is_same<std::decay_t<T>, Atom    >::value
 #define JN_IS_RESIDUE(T)  std::is_same<std::decay_t<T>, Residue >::value
@@ -19,8 +19,8 @@ namespace jian {
 
 	// seq
 	template<typename T>
-	str_t seq(T &&t) {
-		str_t s;
+	Str seq(T &&t) {
+		Str s;
 		each<Residue>(t, [&s](auto &&res) {
 			s += res.name;
 			return true;
@@ -121,6 +121,6 @@ namespace jian {
 		return model;
 	}
 
-} // namespace jian
+END_JN
 
 

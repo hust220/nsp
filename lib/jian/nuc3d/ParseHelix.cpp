@@ -7,7 +7,7 @@
 #include "../geom.hpp"
 #include "../utils/log.hpp"
 
-namespace jian {
+BEGIN_JN
 
 namespace parse_helix_detail {
 
@@ -93,5 +93,5 @@ Eigen::MatrixXd make_standard_helix(int n) {
     return parse_helix_detail::parser.make_standard_helix(n);
 }
 
-} // namespace jian
+END_JN
 

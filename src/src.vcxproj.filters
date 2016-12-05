@@ -82,73 +82,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="align.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="build_loop_dg.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="contacts.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="dist_frequencies.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="dist_weighted_frequencies.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="dist_weights.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="get_all_residues.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="helix_par.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="joint.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="lrtsp.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="mcc.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="md.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="min_dist.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="nsp.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="parse_helix.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="rebuild_chain.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="seq.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="ssa.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="ssp_dca.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="ssp_fe.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="tri2d.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="view_mol_constraints.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\jian\utils\file.cpp">
@@ -451,6 +391,72 @@
     <ClCompile Include="..\lib\jian\nuc2d\NASS.cpp">
       <Filter>jian\nuc2d</Filter>
     </ClCompile>
+    <ClCompile Include="..\lib\jian\mpi\MPI.cpp">
+      <Filter>jian\mpi</Filter>
+    </ClCompile>
+    <ClCompile Include="m_seq.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_ssa.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_mcc.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_md.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_ssp_fe.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_ssp_dca.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_rebuild_chain.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_parse_helix.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_tri2d.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_lrtsp.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_joint.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_contacts.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_align.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_build_loop_dg.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_dist_frequencies.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_dist_weighted_frequencies.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_get_all_residues.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_helix_par.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_dist_weights.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="m_view_mol_constraints.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\nuc3d\SampleLoop.cpp">
+      <Filter>jian\nuc3d</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="nsp.hpp">
@@ -646,9 +652,6 @@
       <Filter>jian\nuc3d</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jian\nuc3d\REMCpsb.hpp">
-      <Filter>jian\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\nuc3d\SampleLoop.hpp">
       <Filter>jian\nuc3d</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jian\nuc3d\split.hpp">
@@ -992,6 +995,9 @@
     </ClInclude>
     <ClInclude Include="..\lib\jian\nuc2d\NASS.hpp">
       <Filter>jian\nuc2d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc3d\SampleLoop.hpp">
+      <Filter>jian\nuc3d</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

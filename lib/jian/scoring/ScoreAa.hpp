@@ -5,15 +5,15 @@
 #include "DihAnal.hpp"
 #include "ScoreBase.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	class ScoreAa : public ScoreBase {
 	public:
 		DistAnal * m_dist_anal = NULL;
 		DihAnal  * m_dih_anal = NULL;
 
-		std::string m_par_dist;
-		std::string m_par_dih;
+		S m_par_dist;
+		S m_par_dih;
 
 		double m_bin_dist;
 		double m_bin_dih;
@@ -56,5 +56,5 @@ namespace jian {
 
 	};
 
-} // namespace jian
+END_JN
 

@@ -2,13 +2,13 @@
 
 #include "Module.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace qhmc {
 
 class Helix : public Module {
 public:
     Helix(const Tuple &, const Tuple &, int);
-    virtual std::string type() const;
+    virtual S type() const;
 };
 
 } // namespace quadruple

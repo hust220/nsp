@@ -1,7 +1,7 @@
 #include "nsp.hpp"
 #include <jian/matrix.hpp>
 
-namespace jian {
+BEGIN_JN
 	namespace {
 		double alpha(double max, double min, double beta) {
 			if (max > 0 && min >= 0) {
@@ -23,7 +23,7 @@ namespace jian {
 
 		REGISTER_NSP_COMPONENT(dist_weights) {
 			double beta = std::stod(par["beta"][0]);
-			std::string file_name = par["f"][0];
+			S file_name = par["f"][0];
 			Eigen::MatrixXd mat = Eigen::MatrixXd::Zero(85, 85);
 			std::ifstream ifile(file_name.c_str());
 			int sum = 0;
@@ -94,5 +94,5 @@ namespace jian {
 			//    }
 		}
 	}
-} // namespace jian
+END_JN
 

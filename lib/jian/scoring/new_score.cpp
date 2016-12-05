@@ -7,7 +7,7 @@
 #include "../utils/file.hpp"
 #include "new_score.hpp"
 
-namespace jian {
+BEGIN_JN
 
 class NewScore {
 public:
@@ -35,10 +35,10 @@ public:
 
     NewScore() {
         std::vector<std::string> v {"A", "U", "G", "C"};
-        std::string path = Env::lib() + "/RNA/pars/scoring/new_score/";
+        S path = Env::lib() + "/RNA/pars/scoring/new_score/";
         int i = 0;
         int n;
-        std::string str, list_name, pdb_name;
+        S str, list_name, pdb_name;
         double sum = 0;
         for (auto && clusters : d_all_clusters) {
             str = v[i / 4] + v[i % 4];
@@ -82,7 +82,7 @@ public:
         }
     }
 
-    Eigen::MatrixXd *mat_from_pdb(const std::string &s) {
+    Eigen::MatrixXd *mat_from_pdb(const S &s) {
         auto && m = mol_read_to<Model>(s);
         int len = 5 * num_residues(m);
         Eigen::MatrixXd *mat = new Eigen::MatrixXd(len, 3);

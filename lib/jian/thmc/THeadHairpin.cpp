@@ -2,7 +2,7 @@
 #include <cmath>
 #include "THeadHairpin.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace nuc3d {
 namespace triple {
 
@@ -28,12 +28,12 @@ THeadHairpin::THeadHairpin(const Tuple &tuple, const Tuple &size) {
     set_indices(1, d_frags[1].front() + 1, d_frags[1].back() - 1);
 }
 
-std::string THeadHairpin::type() const {
+S THeadHairpin::type() const {
     return "head_hairpin";
 }
 
 } // namespace triple
 }
-} // namespace jian
+END_JN
 
 

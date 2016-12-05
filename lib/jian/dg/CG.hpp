@@ -4,7 +4,7 @@
 #include "Job.hpp"
 #include "Gradient.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace dg {
 
 class CG : public Gradient {
@@ -57,5 +57,5 @@ public:
 };
 
 } // namespace dg
-} // namespace jian
+END_JN
 

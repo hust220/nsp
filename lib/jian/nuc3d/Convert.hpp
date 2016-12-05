@@ -3,9 +3,9 @@
 #include "../pdb.hpp"
 #include <string>
 
-namespace jian {
+BEGIN_JN
 
-Residue convert_res(const Residue &r, const std::string &name);
+Residue convert_res(const Residue &r, const S &name);
 
-} // namespace jian
+END_JN
 

@@ -1,13 +1,13 @@
 #include "nsp.hpp"
 #include <jian/nuc3d/BuildLoopRaw.hpp>
 
-namespace jian {
+BEGIN_JN
 
 REGISTER_NSP_COMPONENT(build_loop) {
 	int n = 1;
-	str_t name = "aa";
-	str_t seq = "AACCCCUU";
-	str_t ss = "((....))";
+	Str name = "aa";
+	Str seq = "AACCCCUU";
+	Str ss = "((....))";
 
 	par.set(n, "n", "num");
 	par.set(name, "name");
@@ -21,5 +21,5 @@ REGISTER_NSP_COMPONENT(build_loop) {
     }
 }
 
-} // namespace jian
+END_JN
 

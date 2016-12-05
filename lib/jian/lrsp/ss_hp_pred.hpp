@@ -1,12 +1,13 @@
 #pragma once
 
 #include <string>
+#include "../utils/traits.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace lrsp {
 
-std::string ss_hp_pred(std::string seq, std::string ss);
+S ss_hp_pred(S seq, S ss);
 
 } // namespace lrsp
-} // namespace jian
+END_JN
 

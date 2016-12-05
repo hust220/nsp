@@ -2,7 +2,7 @@
 
 #include "SST.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace nuc2d {
 
 class MergeRings {
@@ -12,7 +12,7 @@ public:
     }
 
     void merge_rings(SST &sst) {
-        std::string seq, ss;
+        S seq, ss;
         std::tie(seq, ss) = get_seq_ss(sst);
         std::cout << seq << "\n" << ss << std::endl;
         auto ssts = get_constraint_trees(sst, seq, ss);
@@ -25,13 +25,13 @@ public:
     }
 
     std::pair<std::string, std::string> get_seq_ss(const SST &sst) {
-        std::string seq, ss;
+        S seq, ss;
         int size = sst.fold([](const Hairpin &hairpin){return hairpin.size();}, std::plus<int>());
         (seq.reserve(size), ss.reserve(size));
         seq += sst._data._helix[0].seq() + sst._data._loop.front().seq();
         ss += sst._data._helix[0].ss() + sst._data._loop.front().ss();
         for (int i = 0; i < sst._sons.size(); i++) {
-            std::string temp_seq, temp_ss;
+            S temp_seq, temp_ss;
             std::tie(temp_seq, temp_ss) = get_seq_ss(*std::next(sst._sons.begin(), i));
             seq += temp_seq + std::next(sst._data._loop.begin(), i + 1)->seq();
             ss += temp_ss + std::next(sst._data._loop.begin(), i + 1)->ss();
@@ -41,7 +41,7 @@ public:
         return std::make_pair(seq, ss);
     }
 
-    std::list<SST> get_constraint_trees(const SST &sst, const std::string seq, const std::string ss) {
+    std::list<SST> get_constraint_trees(const SST &sst, const S seq, const S ss) {
         std::list<SST> list;
         BuildSST build_sst;
         for (int i = 1; i < NASS::instance().paired_keys.size(); i++) {

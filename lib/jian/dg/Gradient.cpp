@@ -2,7 +2,7 @@
 #include "../geom.hpp"
 #include <iterator>
 
-namespace jian {
+BEGIN_JN
 namespace dg {
 
 Gradient::Gradient() { init_dihs(); }
@@ -113,5 +113,5 @@ double Gradient::relative_dih_energy(double dih, double std) {
 }
 
 } // namespace dg
-} // namespace jian
+END_JN
 

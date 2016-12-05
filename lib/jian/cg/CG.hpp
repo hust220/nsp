@@ -7,15 +7,15 @@
 
 #define REG_CG(name, type) REGISTER_FACTORY(jian::CG::constructor_t, name, type)
 
-namespace jian {
+BEGIN_JN
 
 	class CG {
 	public:
 		using constructor_t = CG*(void);
 		using fac_t = Factory<CG::constructor_t>;
 
-		str_t m_cg;
-		//std::map<str_t, std::map<str_t, std::map<str_t, std::vector<str_t>>>>
+		Str m_cg;
+		//std::map<Str, std::map<Str, std::map<Str, std::vector<Str>>>>
 		//	m_maps;
 
 		template<typename T>

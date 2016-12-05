@@ -5,7 +5,7 @@
 #include "../pdb.hpp"
 #include "../cg.hpp"
 
-namespace jian {
+BEGIN_JN
 	class ParBp {
 	public:
 		using vec_t = Eigen::Vector3d;

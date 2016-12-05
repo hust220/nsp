@@ -18,7 +18,7 @@
 #include "psb2aa.hpp"
 #include "../pp.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace nuc3d {
 
 class REMCpsb : public TSP, public REMC {
@@ -120,7 +120,7 @@ public:
     }
 
     template<typename T>
-    std::string partial_ss(std::string ss, T &&pair) {
+    S partial_ss(S ss, T &&pair) {
         for (auto && c : ss) {
             if (c == pair.first) {
                 c = '(';
@@ -166,8 +166,8 @@ public:
                 SSTree ss_tree; 
                 ss_tree.make(_seq, ss);
                 LOOP_TRAVERSE(ss_tree.head(), 
-                    if (L->has_helix()) {
-                        set_pseudo_knots_helix(L->s);
+                    if (_l->has_helix()) {
+                        set_pseudo_knots_helix(_l->s);
                     }
                 );
             } else {
@@ -225,14 +225,14 @@ public:
 
         auto set_res_module_types_ss = [&](loop *l, bool is_first){
             LOOP_TRAVERSE(l,
-                if (!_sample_hp && is_first && is_hairpin(L)) {
-                    m_range.push_back(make_hairpin_range(L));
-                    for (int i = L->s.head->res1.num - 1; i <= L->s.head->res2.num - 1; i++) {
+                if (!_sample_hp && is_first && is_hairpin(_l)) {
+                    m_range.push_back(make_hairpin_range(_l));
+                    for (int i = _l->s.head->res1.num - 1; i <= _l->s.head->res2.num - 1; i++) {
                         v[i] = 1;
                     }
-                } else if (L->has_helix()) {
-                    m_range.push_back(make_helix_range(L->s));
-                    HELIX_EACH(L->s,
+                } else if (_l->has_helix()) {
+                    m_range.push_back(make_helix_range(_l->s));
+                    HELIX_EACH(_l->s,
                         v[BP->res1.num - 1] = 1;
                         v[BP->res2.num - 1] = 1;
                     );
@@ -263,7 +263,7 @@ public:
         static int n = 1;
         std::ostringstream stream;
         stream << _name << ".mc." << _seed << ".pdb";
-        std::string name = stream.str();
+        S name = stream.str();
         if (n == 1) {
             file::clean(name);
         }
@@ -692,5 +692,5 @@ public:
 };
 
 } // namespace nuc3d
-} // namespace jian
+END_JN
 

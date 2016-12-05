@@ -1,18 +1,18 @@
 #include "../utils/string.hpp"
 #include "TemplRec.hpp"
 
-namespace jian {
+BEGIN_JN
 
 void templ_rec_set_src(TemplRec &rec) {
     int pos = rec._name.find_first_of("-");
-    if (pos == str_t::npos) {
+    if (pos == Str::npos) {
         rec._src = jian::upper(rec._name);
     } else {
         rec._src = jian::upper(rec._name.substr(0, pos));
     }
 }
 
-bool set_loop_rec(TemplRec &rec, const std::string &s) {
+bool set_loop_rec(TemplRec &rec, const S &s) {
     tokenize_v v;
     jian::tokenize(s, v, " ");
     if (v.size() != 5) {
@@ -28,7 +28,7 @@ bool set_loop_rec(TemplRec &rec, const std::string &s) {
     }
 }
 
-bool set_helix_rec(TemplRec &rec, const std::string &s) {
+bool set_helix_rec(TemplRec &rec, const S &s) {
     tokenize_v v;
     jian::tokenize(s, v, " ");
     if (v.size() != 5) {

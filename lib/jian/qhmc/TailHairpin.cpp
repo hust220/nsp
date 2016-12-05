@@ -3,7 +3,7 @@
 #include "TailHairpin.hpp"
 #include <numeric>
 
-namespace jian {
+BEGIN_JN
 namespace qhmc {
 
 REGISTER_QUADRUPLE_MODULE_FACTORY("tail_hairpin", TailHairpin);
@@ -65,7 +65,7 @@ TailHairpin::TailHairpin(const Tuple &head, const Tuple &tail, int len) {
     }
 }
 
-std::string TailHairpin::type() const {
+S TailHairpin::type() const {
     return "tail_hairpin";
 }
 

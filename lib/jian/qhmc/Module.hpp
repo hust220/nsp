@@ -6,7 +6,7 @@
 #include "../matrix.hpp"
 #include "../utils/Factory.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace qhmc {
 
 using Frag = std::deque<int>;
@@ -24,12 +24,12 @@ public:
     Mati d_indices;
 
     void set_indices(int, const Frag &, bool);
-    virtual std::string type() const = 0;
+    virtual S type() const = 0;
 };
 
 #define REGISTER_QUADRUPLE_MODULE_FACTORY(name, Type) REGISTER_FACTORY(jian::qhmc::Module::cons_t, name, Type)
 
 } // namespace qhmc
-} // namespace jian
+END_JN
 
 

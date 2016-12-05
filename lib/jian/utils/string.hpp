@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include <utility>
 #include "lexical_cast.hpp"
 #include "traits.hpp"
@@ -9,44 +10,42 @@
 #define JN_INT(n) jian::lexical_cast<int>(n)
 #define JN_FLT(n) jian::lexical_cast<float>(n)
 #define JN_DBL(n) jian::lexical_cast<double>(n)
-#define JN_STR(n) jian::lexical_cast<std::string>(n)
+#define JN_STR(n) jian::lexical_cast<S>(n)
 #define JINT JN_INT
 #define JSTR JN_STR
 
-namespace jian {
+BEGIN_JN
 
-	using str_t = std::string;
+using tokenize_v = std::vector<Str>;
+void tokenize(const Str &str, tokenize_v &tokens, const Str &delimiters = " ");
+void tokenize(const Str &str, tokenize_v &tokens, const Str &delimiters, const Str &temp);
 
-	using tokenize_v = std::vector<str_t>;
-	void tokenize(const str_t &str, tokenize_v &tokens, const str_t &delimiters = " ");
-	void tokenize(const str_t &str, tokenize_v &tokens, const str_t &delimiters, const str_t &temp);
+inline void stream_push(std::ostream &stream) {}
 
-    inline void stream_push(std::ostream &stream) {}
+template<typename _First, typename... _Tail>
+inline void stream_push(std::ostream &stream, _First &&first, _Tail && ...tail) {
+    stream << first;
+    stream_push(stream, tail...);
+}
 
-    template<typename _First, typename... _Tail>
-    inline void stream_push(std::ostream &stream, _First &&first, _Tail && ...tail) {
-        stream << first;
-        stream_push(stream, tail...);
-    }
+template<typename... _Args>
+inline Str to_str(_Args && ...args) {
+    std::ostringstream stream;
+    stream_push(stream, args...);
+    return stream.str();
+}
 
-    template<typename... _Args>
-    inline str_t to_str(_Args && ...args) {
-        std::ostringstream stream;
-        stream_push(stream, args...);
-        return stream.str();
-    }
+Str upper(const Str &str);
+Str lower(const Str &str);
 
-	str_t upper(const str_t &str);
-	str_t lower(const str_t &str);
+void to_upper(Str &str);
+Str to_upper_copy(const Str &str);
 
-	void to_upper(str_t &str);
-	str_t to_upper_copy(const str_t &str);
+void to_lower(Str &str);
+Str to_lower_copy(const Str &str);
 
-	void to_lower(str_t &str);
-	str_t to_lower_copy(const str_t &str);
+void trim(Str &);
+Str trim_copy(const Str &);
 
-	void trim(str_t &);
-	str_t trim_copy(const str_t &);
-
-} // namespace jian
+END_JN
 

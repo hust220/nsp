@@ -2,11 +2,11 @@
 #include "../utils/Env.hpp"
 #include "CompleteResidue.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	CompleteResidue::CompleteResidue() {
-		std::string path = Env::lib() + "/RNA/pars/cg/CompleteResidue/";
-		for (std::string s : {"RNA", "DNA"}) {
+		S path = Env::lib() + "/RNA/pars/cg/CompleteResidue/";
+		for (S s : {"RNA", "DNA"}) {
 			mol_read(m_bb[s], path + s + ".bb.pdb");
 			const pdb::Names &names = pdb::Names::instance(s);
 			for (auto && name : names.res) {
@@ -22,7 +22,7 @@ namespace jian {
 
 	bool CompleteResidue::lack_atoms(const Residue &res) const {
 		const pdb::names_t &names = pdb::res_included_atoms(res.name);
-		return std::any_of(names.begin(), names.end(), [&res](std::string name) {
+		return std::any_of(names.begin(), names.end(), [&res](S name) {
 			return std::none_of(res.begin(), res.end(), [&name](const Atom &atom) {
 				return atom.name == name;
 			});

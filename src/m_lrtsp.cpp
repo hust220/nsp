@@ -1,12 +1,12 @@
 #include "nsp.hpp"
 #include <jian/lrsp/LRTSP.hpp>
 
-namespace jian {
+BEGIN_JN
 
 REGISTER_NSP_COMPONENT(lrtsp) {
     lrsp::LRTSP tsp(par);
     tsp.pred();
 }
 
-} // namespace jian
+END_JN
 

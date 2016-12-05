@@ -3,7 +3,7 @@
 #include <jian/thmc/THMC.hpp>
 #include <jian/qhmc/QHMC.hpp>
 
-namespace jian {
+BEGIN_JN
 
 	REGISTER_NSP_COMPONENT(dhmc) {
 		DHMC dhmc;
@@ -23,5 +23,5 @@ namespace jian {
 		qua.predict();
 	}
 
-} // namespace jian
+END_JN
 

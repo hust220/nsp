@@ -3,7 +3,7 @@
 #include "../dg/DG.hpp"
 #include "../pdb.hpp"
 
-namespace jian {
+BEGIN_JN
 
 class BuildNuc {
 public:
@@ -14,8 +14,8 @@ public:
 
     int _view = 0;
 
-    std::string _type = "RNA";
-    std::string _lib;
+    S _type = "RNA";
+    S _lib;
     std::map<string, Mat> _base_aa_par;
     std::map<string, Mat> _base_cg_par;
     std::map<string, Mat> _phos_sugar_par;
@@ -158,5 +158,5 @@ public:
 
 };
 
-} // namespace jian
+END_JN
 

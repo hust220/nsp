@@ -3,13 +3,13 @@
 #include "../geom.hpp"
 #include "BuildLoopDG.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	BuildLoopDG::BuildLoopDG() {
 		m_cg.reset(CG::fac_t::create("1p"));
 	}
 
-	Chain *build_chain_dg(std::string seq, std::string ss) {
+	Chain *build_chain_dg(S seq, S ss) {
 		static BuildLoopDG builder;
 		builder.init(seq, ss);
 		Chain *chain = new Chain(std::move(builder()));
@@ -34,21 +34,21 @@ namespace jian {
 	}
 
 
-	BuildLoopDG &BuildLoopDG::init(const std::string &seq, const std::string &ss) {
+	BuildLoopDG &BuildLoopDG::init(const S &seq, const S &ss) {
 		int len = seq.size(); 
 		init_dist_bound(_dist_bound, len);
 		SSTree ss_tree;
 		ss_tree.make(seq, ss);
 		BEGIN_LOOP_TRAVERSE(ss_tree.head()) {
-			set_bound_loop(_dist_bound, _dih_bound, L);
-			set_bound_helix(_dist_bound, _dih_bound, L->s);
+			set_bound_loop(_dist_bound, _dih_bound, _l);
+			set_bound_helix(_dist_bound, _dih_bound, _l->s);
 		} END_LOOP_TRAVERSE;
 		return *this;
 	}
 
 	BuildLoopDG &BuildLoopDG::init(const Chain &c, const std::vector<int> &brokens) {
 		int i, j, l;
-		num_t d;
+		Num d;
 
 		l = c.size();
 		init_dist_bound(_dist_bound, l);
@@ -104,5 +104,5 @@ namespace jian {
 		for (int i = 0; i < len; i++) b(s1[i], s2[i]) = b(s2[i], s1[i]) = helix_par.dist_bp;
 	}
 
-} // namespace jian
+END_JN
 

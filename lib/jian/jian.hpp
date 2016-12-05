@@ -10,6 +10,6 @@
 	a = NULL; \
 } while (0)
 
-namespace jian {
+BEGIN_JN
 	using uint = unsigned int;
 }

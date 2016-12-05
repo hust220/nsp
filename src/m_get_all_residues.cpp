@@ -3,11 +3,11 @@
 #include <jian/pdb.hpp>
 #include <jian/utils/file.hpp>
 
-namespace jian {
+BEGIN_JN
 
 REGISTER_NSP_COMPONENT(get_all_residues) {
     auto && m = mol_read_to<Model>(par.get("s"));
-    std::string name = file::name(par["s"][0]);
+    S name = file::name(par["s"][0]);
     int i = 1;
     for (auto && chain : m) {
         for (auto && res : chain) {
@@ -17,5 +17,5 @@ REGISTER_NSP_COMPONENT(get_all_residues) {
     }
 }
 
-} // namespace jian
+END_JN
 

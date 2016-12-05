@@ -4,7 +4,7 @@
 #include <cmath>
 #include "../matrix.hpp"
 
-namespace jian {
+BEGIN_JN
 	namespace geom {
 
 		template<typename T, typename U>
@@ -135,5 +135,5 @@ namespace jian {
 		};
 
 	} // namespace geom
-} // namespace jian
+END_JN
 

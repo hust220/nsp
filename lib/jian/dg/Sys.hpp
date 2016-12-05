@@ -1,6 +1,6 @@
 #pragma once
 
-namespace jian {
+BEGIN_JN
 namespace dg {
 
 class State {
@@ -61,5 +61,5 @@ public:
 };
 
 } // namespace dg
-} // namespace jian
+END_JN
 

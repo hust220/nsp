@@ -1,7 +1,7 @@
 #include "nsp.hpp"
 #include <jian/nuc3d/ParseHelix.hpp>
 
-namespace jian {
+BEGIN_JN
 
 REGISTER_NSP_COMPONENT(parse_helix) {
     auto result = parse_helix(mol_read_to<Model>(par.get("s")));
@@ -13,5 +13,5 @@ REGISTER_NSP_COMPONENT(parse_helix) {
     std::cout << result.phi << std::endl;
 }
 
-} // namespace jian
+END_JN
 

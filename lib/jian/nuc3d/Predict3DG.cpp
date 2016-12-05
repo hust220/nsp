@@ -1,7 +1,7 @@
 #include "Predict3DG.hpp"
 #include "Predict3DGImpl.hpp"
 
-namespace jian {
+BEGIN_JN
 
 Predict3DG::Predict3DG() : _impl(NULL) {}
 

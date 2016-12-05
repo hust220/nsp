@@ -1,8 +1,10 @@
 #pragma once
 
 #include <Eigen/Dense>
+#include "../utils/traits.hpp"
 
-namespace jian {
+BEGIN_JN
+
 namespace geom {
 
 template<typename T>
@@ -106,5 +108,5 @@ inline double dihedral(const P1 &p1, const P2 &p2, const P3 &p3, const P4 &p4) {
 } 
 
 } // namespace geometry
-} // namespace jian
+END_JN
 

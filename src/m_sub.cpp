@@ -3,7 +3,7 @@
 #include <jian/geom.hpp>
 #include <jian/cg.hpp>
 
-namespace jian {
+BEGIN_JN
 	namespace {
 		template<typename NUMS>
 		void set_nums(std::deque<int> &ls, NUMS &&nums) {
@@ -28,7 +28,7 @@ namespace jian {
 		REGISTER_NSP_COMPONENT(sub) {
 			std::deque<int> ls;
 			Par::pars_t nums, chains;
-			std::string in, out;
+			S in, out;
 			Molecule mol;
 			std::ostream stream(std::cout.rdbuf());
 			std::ofstream ofile;
@@ -84,7 +84,7 @@ namespace jian {
 				//stream << mol_new << std::endl;
 			}
 			if (par.has("cg")) {
-				std::string cg = par.get("cg");
+				S cg = par.get("cg");
 				CG *m_cg = CG::fac_t::create(cg);
 				mol = m_cg->to_cg(mol);
 				delete m_cg;
@@ -93,7 +93,7 @@ namespace jian {
 
 		}
 	}
-} // namespace jian
+END_JN
 
 
 

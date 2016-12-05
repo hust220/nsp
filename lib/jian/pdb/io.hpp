@@ -4,12 +4,12 @@
 #include "MolParser.hpp"
 #include "../utils/file.hpp"
 
-namespace jian {
+BEGIN_JN
 	class MolWriter {
 	public:
 		const static std::vector<std::string> chain_names;
 		int atom_num, residue_num, model_num;
-		std::string atom_name, residue_name, chain_name, atom_name_label;
+		S atom_name, residue_name, chain_name, atom_name_label;
 		double x, y, z, a, b;
 		std::ostream stream;
 
@@ -55,24 +55,24 @@ namespace jian {
 
 	};
 
-	void chain_read_model(Chain &chain, std::string f, std::string type = "");
-	Chain read_model_to_chain(std::string f, std::string type = "");
-	//void append_chain_to_file(const Chain &chain, const std::string &file_name, int n);
+	void chain_read_model(Chain &chain, S f, S type = "");
+	Chain read_model_to_chain(S f, S type = "");
+	//void append_chain_to_file(const Chain &chain, const S &file_name, int n);
 
 	template<typename T>
-	void mol_write(const T & t, std::string file_name) {
+	void mol_write(const T & t, S file_name) {
 		std::ofstream(file_name.c_str()) << t;
 	}
 
 	template<typename T>
-	void mol_read(T &t, std::string file_name, std::string mol_type = "") {
+	void mol_read(T &t, S file_name, S mol_type = "") {
 		MolParser *parser = MolParser::make(file::type(file_name), file_name, mol_type);
 		(*parser) >> t;
 		delete parser;
 	}
 
 	template<typename T>
-	T mol_read_to(std::string f, std::string type = "") {
+	T mol_read_to(S f, S type = "") {
 		T t;
 		mol_read(t, f, type);
 		return t;
@@ -91,7 +91,7 @@ namespace jian {
 	std::ostream &operator <<(std::ostream &output, const Molecule &mol);
 
 	template<typename F>
-	void for_each_model(std::string filename, F && f, std::string mol_type = "") {
+	void for_each_model(S filename, F && f, S mol_type = "") {
 		int i = 0;
 		MolParser *parser = MolParser::make(jian::file::type(filename), filename, mol_type);
 		Model m;
@@ -129,5 +129,5 @@ namespace jian {
 		return r;
 	}
 
-} // namespace jian
+END_JN
 

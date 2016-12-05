@@ -1,6 +1,6 @@
 #pragma once
 
-namespace jian {
+BEGIN_JN
 
 class res {
 public:
@@ -42,5 +42,5 @@ public:
 
 };
 
-} // namespace jian
+END_JN
 

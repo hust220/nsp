@@ -11,12 +11,12 @@
 #include "BuildLoopDG.hpp"
 #include "transform.hpp"
 
-namespace jian {
+BEGIN_JN
 
 class BuildLoopRaw {
 public:
 	struct Pos {
-		num_t theta, phi;
+		Num theta, phi;
 	};
 	using Helix = Pos;
     using Helices = std::vector<Helix>;
@@ -25,19 +25,19 @@ public:
 	using Frag = std::deque<int>;
 	using Frags = std::deque<Frag>;
 
-    str_t _lib = Env::lib();
-	std::map<str_t, Hinges> m_cache_hinges;
-	std::map<str_t, Frags> m_cache_frags;
-    str_t type = "RNA";
-	str_t m_seq;
-	str_t m_ss;
+    Str _lib = Env::lib();
+	std::map<Str, Hinges> m_cache_hinges;
+	std::map<Str, Frags> m_cache_frags;
+    Str type = "RNA";
+	Str m_seq;
+	Str m_ss;
 	Hinges m_hinges;
 	Helices m_helices;
 	Frags m_frags;
 	std::vector<Pos> m_res_pos;
-	num_t m_radius;
+	Num m_radius;
 
-	BuildLoopRaw &init(const str_t &seq, const str_t &ss);
+	BuildLoopRaw &init(const Str &seq, const Str &ss);
 
 	Chain operator ()();
 
@@ -66,9 +66,9 @@ public:
 	Model read_standard_pairs();
 
     template<typename O, typename N>
-    void adjust_helix(Model &model, const O &o, const N &n, num_t theta_o, num_t phi_o, num_t theta_n, num_t phi_n) {
-        auto rot = geom::suppos_axis_polar<num_t>(theta_o, phi_o, theta_n, phi_n);
-        std::vector<num_t> v1 {-o[0], -o[1], -o[2]}, v2 {n[0], n[1], n[2]};
+    void adjust_helix(Model &model, const O &o, const N &n, Num theta_o, Num phi_o, Num theta_n, Num phi_n) {
+        auto rot = geom::suppos_axis_polar<Num>(theta_o, phi_o, theta_n, phi_n);
+        std::vector<Num> v1 {-o[0], -o[1], -o[2]}, v2 {n[0], n[1], n[2]};
         LOG 
 			<< o[0] << ',' << o[1] << ',' << o[2] << ':' << theta_o << ',' << phi_o << ' '
 			<< n[0] << ':' << n[1] << ':' << n[2] << ':' << theta_n << ',' << phi_n << std::endl;
@@ -81,5 +81,5 @@ public:
 
 };
 
-} // namespace jian
+END_JN
 

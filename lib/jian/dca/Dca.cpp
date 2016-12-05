@@ -1,13 +1,13 @@
 #include "../utils/file.hpp"
 #include "Dca.hpp"
 
-namespace jian {
+BEGIN_JN
 	namespace dca {
 
 		Dca::~Dca() {}
 
-		void Dca::fastaread(str_t fastafile, Dca::seqs_t &seqs) {
-			str_t tmp;
+		void Dca::fastaread(Str fastafile, Dca::seqs_t &seqs) {
+			Str tmp;
 			BEGIN_READ_FILE(fastafile, " ") {
 				if (L[0] == '>') {
 					seqs.push_back(tmp);
@@ -45,7 +45,7 @@ namespace jian {
 			}
 		}
 
-		void Dca::init(str_t Rfamfile, int n) {
+		void Dca::init(Str Rfamfile, int n) {
 			seqs_t seqs;
 			char c;
 
@@ -180,7 +180,7 @@ namespace jian {
 			}
 		}
 
-		void Dca::calculate_DI(str_t out_file) {
+		void Dca::calculate_DI(Str out_file) {
 			LOGI << "Calculate eij ..." << std::endl;
 			calculate_eij();
 
@@ -202,7 +202,7 @@ namespace jian {
 			ofile.close();
 		}
 
-		Dca &Dca::run(str_t input, str_t out_file, int n) {
+		Dca &Dca::run(Str input, Str out_file, int n) {
 			LOGI << "Load FASTA alignment file: " << input << std::endl;
 			init(input, n);
 			LOGI << "M = " << M << ", N = " << N << ", q = " << q << std::endl;
@@ -221,6 +221,6 @@ namespace jian {
 		}
 
 	} // namespace dca
-} // namespace jian
+END_JN
 
 

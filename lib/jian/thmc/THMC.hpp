@@ -19,7 +19,7 @@
 #include "../utils/Env.hpp"
 #include "../utils/file.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace nuc3d {
 namespace triple {
 
@@ -144,7 +144,7 @@ public:
     }
 
     Chain load_triple_helix(int n) {
-        std::string file_name = Env::lib() + "/RNA/pars/nuc3d/triple/triple-helix-" + JN_STR(n) + ".pdb";
+        S file_name = Env::lib() + "/RNA/pars/nuc3d/triple/triple-helix-" + JN_STR(n) + ".pdb";
         Chain chain;
         chain_read_model(chain, file_name);
         return m_cg->to_cg(chain);
@@ -360,6 +360,6 @@ public:
 
 } // namespace triple
 } // namespace nuc3d
-} // namespace jian
+END_JN
 
 

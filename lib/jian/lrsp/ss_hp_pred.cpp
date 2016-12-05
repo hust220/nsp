@@ -12,7 +12,7 @@
 #include "../utils/log.hpp"
 #include "ss_hp_pred.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace lrsp {
 namespace ss_hp_pred_detail {
 
@@ -127,7 +127,7 @@ bool hp_pred(const seq_t & seq, ss_t & ss, ss_t & ss_n, indices_t & indices) {
 
 } // namespace ss_hp_pred_detail
 
-std::string ss_hp_pred(std::string seq, std::string ss) {
+S ss_hp_pred(S seq, S ss) {
     using namespace ss_hp_pred_detail;
     ss_t ss_new = ss;
     indices_t indices(seq.size());
@@ -139,5 +139,5 @@ std::string ss_hp_pred(std::string seq, std::string ss) {
 }
 
 } // lrsp
-} // namespace jian
+END_JN
 

@@ -11,103 +11,112 @@
 #include "transform.hpp"
 #include "BuildLoopDG.hpp"
 #include "BuildLoopRaw.hpp"
+#include "SampleLoop.hpp"
 #include "TSP.hpp"
 
-namespace jian {
-	namespace nuc3d {
+BEGIN_JN
 
-		using record_t = TemplRec;
-		using records_t = std::deque<record_t>;
-		using pdbs_t = std::deque<std::string>;
-		using family_t = std::string;
+namespace nuc3d {
 
-		void chain_read_record(Chain &chain, const record_t &templ_res);
+	using record_t = TemplRec;
+	using records_t = Deque<record_t>;
+	using pdbs_t = Deque<Str>;
+	using family_t = Str;
 
-		void find_loop_records(
-			loop *l, records_t &records, std::string name = "",
-			const pdbs_t &used_pdbs = {}, const pdbs_t &disused_pdbs = {}, family_t family = ""
-		);
+	void chain_read_record(Chain &chain, const record_t &templ_res);
 
-		void find_helix_records(
-			loop *l, records_t &records, std::string name = "", std::string family = ""
-		);
+	void find_loop_records(
+		loop *l, records_t &records, S name = "",
+		const pdbs_t &used_pdbs = {}, const pdbs_t &disused_pdbs = {}, family_t family = ""
+	);
 
-		class Assemble : public TSP {
-		public:
-			using Mat = Eigen::MatrixXd;
-			using RecordsPair = std::pair<records_t, records_t>;
+	void find_helix_records(
+		loop *l, records_t &records, Str name = "", Str family = ""
+	);
 
-			std::map<loop *, RecordsPair> _records;
-			std::map<loop *, std::pair<Chain, Chain>> _templates;
-			std::map<loop *, std::pair<TemplRec, TemplRec>> m_selected_record;
-			int _it_num = 0;
-			std::map<loop *, bool> _is_virtual;
-			std::map<loop *, bool> _is_sampled;
-			std::map<loop *, bool> _find_self;
-			std::set<std::string> _suppos_atoms{ "C5*", "O3*", "C1*" };
-			bool m_sample = false;
-			std::string m_sample_mode = "sample_one";
-			std::string m_loop_building_method;
+	class Assemble : public TSP {
+	public:
+		//using Mat = Eigen::MatrixXd;
+		using RecordsPair = Pair<records_t, records_t>;
 
-			BuildLoopDG build_loop_dg;
-			BuildLoopRaw build_loop_raw;
+		M<loop *, RecordsPair> m_records;
+		M<loop *, Pair<Chain *, Chain *>> m_templates;
+		M<loop *, Pair<Q<record_t *>, Q<record_t *>>> m_records_cache;
+		M<loop *, Pair<Q<Chain *>, Q<Chain *>>> m_templates_cache;
+		M<loop *, Pair<TemplRec, TemplRec>> m_selected_record;
+		I _it_num = 0;
+		M<loop *, B> _is_virtual;
+		M<loop *, B> _is_sampled;
+		M<loop *, B> _find_self;
+		Set<Str> _suppos_atoms{ "C5*", "O3*", "C1*" };
+		B m_sample = false;
+		S m_sample_mode = "sample_one";
+		S m_loop_building_method;
+		I m_num_sse_templs;
 
-			Assemble(const Par &par);
+		BuildLoopDG build_loop_dg;
+		BuildLoopRaw build_loop_raw;
+		SampleLoop sample_loop;
 
-			void set_virtual_loops();
+		Assemble(const Par &par);
 
-			virtual void run();
+		void set_virtual_loops();
 
-			void predict_one();
+		virtual void run();
 
-			double score_templates();
+		void predict_one();
 
-			bool lack_templates();
+		double score_templates();
 
-			void print_templates();
+		bool lack_templates();
 
-			void assemble();
+		void print_templates();
 
-			void transform();
+		void assemble();
 
-			void select_templates();
+		void transform();
 
-			void set_loop_template(loop *l, bool is_first);
+		void select_templates();
 
-			void sample_one_template();
+		void set_loop_template(loop *l, bool is_first);
 
-			void sample_all_templates();
+		void sample_one_template();
 
-			void sample_loop_template(loop *l);
+		void sample_all_templates();
 
-			void sample_helix_template();
+		void sample_loop_template(loop *l);
 
-			loop *select_loop();
+		void sample_helix_template();
 
-			Chain load_pdb(const TemplRec &templ_res, std::string type = "");
+		loop *select_loop();
 
-			void assemble_templates(loop *l);
+		Chain load_pdb(const TemplRec &templ_res, S type = "");
 
-			void position_templates();
+		void assemble_templates(loop *l);
 
-			void position_templates(loop *l, std::list<Mat> mats);
+		void position_templates();
 
-			void position_model(Chain &chain, const Mat &mat);
+		void position_templates(loop *l, L<Mat> mats);
 
-			Mat model_mat(const Chain &chain, const std::list<int> &list);
+		void position_model(Chain &chain, const Mat &mat);
 
-			std::list<Mat> loop_mats(const Chain &chain, loop *l);
+		Mat model_mat(const Chain &chain, const Li &list);
 
-			void find_templates();
+		std::list<Mat> loop_mats(const Chain &chain, loop *l);
 
-			void print_records();
+		void find_records();
 
-			void find_loop_records(loop *l);
+		void complete_records();
 
-			void find_helix_records(loop *l);
+		void print_records();
 
-		};
+		void find_loop_records(loop *l);
 
-	} // namespace nuc3d
-} // namespace jian
+		void find_helix_records(loop *l);
+
+	};
+
+} // namespace nuc3d
+
+END_JN
 

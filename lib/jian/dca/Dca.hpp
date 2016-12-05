@@ -13,13 +13,13 @@
 #include <jian/matrix.hpp>
 #include "../utils/Factory.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace dca {
 
 class Dca {
 public:
     using seqs_t = std::deque<std::string>;
-    using creator_t = Dca *(std::string mol_type, float pw);
+    using creator_t = Dca *(S mol_type, float pw);
 
     int N, M, q;
 	Mati align;
@@ -29,17 +29,17 @@ public:
     float theta = 0.8f;
     float Meff;
     float pseudocount_weight = 0.5f;
-    std::string m_seq;
+    S m_seq;
     std::vector<int> m_indices;
     std::vector<char> m_symbols {'A', 'U', 'C', 'G'};
     std::map<char, int> m_map_symbols;
 
 	Dca() = default;
-	Dca(std::string mol_type, float pw) : pseudocount_weight(pw) {}
+	Dca(S mol_type, float pw) : pseudocount_weight(pw) {}
     ~Dca();
-    void fastaread(std::string fastafile, seqs_t &seqs);
+    void fastaread(S fastafile, seqs_t &seqs);
     void trim_seqs(seqs_t &seqs, int n);
-    void init(std::string Rfamfile, int n);
+    void init(S Rfamfile, int n);
     float seqid(int a, int b);
     void cal_seqids();
     void cal_ma();
@@ -48,8 +48,8 @@ public:
     void cal_fij();
     void calculate_f();
     void calculate_P();
-    void calculate_DI(std::string out_file);
-    Dca &run(std::string input, std::string out_file, int n);
+    void calculate_DI(S out_file);
+    Dca &run(S input, S out_file, int n);
     virtual void calculate_eij() = 0;
     virtual float cal_di(int i, int j) = 0;
     virtual void set_step(float) {}
@@ -59,5 +59,5 @@ public:
 using FacDca = Factory<Dca::creator_t>;
 
 } // namespace dca
-} // namespace jian
+END_JN
 

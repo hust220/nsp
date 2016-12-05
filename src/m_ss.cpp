@@ -2,9 +2,9 @@
 #include <jian/scoring/ParBp.hpp>
 #include <jian/dca.hpp>
 
-namespace jian {
+BEGIN_JN
 	namespace {
-		str_t get_ss(const Model &model) {
+		Str get_ss(const Model &model) {
 			auto residues = model.residues();
 			ParBp pb;
 			int i, j, l;
@@ -35,7 +35,7 @@ namespace jian {
 			}
 		}
 	}
-} // namespace jian
+END_JN
 
 
 

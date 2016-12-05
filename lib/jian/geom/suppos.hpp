@@ -4,7 +4,7 @@
 #include "../utils/math.hpp"
 #include "../utils/string.hpp"
 
-namespace jian {
+BEGIN_JN
 	namespace geom {
 
 #define INIT_SUPPOS(sp) \
@@ -172,5 +172,5 @@ namespace jian {
 		}
 
 	} // namespace geom
-} // namespace jian
+END_JN
 

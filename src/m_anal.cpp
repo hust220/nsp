@@ -5,13 +5,13 @@
 #include <jian/utils/Debug.hpp>
 #include <jian/nuc3d/ParseHelix.hpp>
 
-namespace jian {
+BEGIN_JN
 
 REGISTER_NSP_COMPONENT(anal) {
 	Chain chain;
 	int len;
     std::deque<int> ls; 
-	std::string atom = "C4*";
+	S atom = "C4*";
 
 	chain_read_model(chain, par.get("s"));
     len = chain.size();
@@ -109,7 +109,7 @@ REGISTER_NSP_COMPONENT(anal) {
 }
 
 REGISTER_NSP_COMPONENT(dihs) {
-    std::string pdb = par.get("s");
+    S pdb = par.get("s");
     std::deque<Atom> atoms;
     Chain chain = read_model_to_chain(pdb);
     for (auto && r : chain) {
@@ -128,7 +128,7 @@ REGISTER_NSP_COMPONENT(dihs_std_helix) {
     dihs_std_helix();
 }
 
-} // namespace jian
+END_JN
 
 
 

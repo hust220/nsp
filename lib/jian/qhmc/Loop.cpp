@@ -1,7 +1,7 @@
 #include "Loop.hpp"
 #include <numeric>
 
-namespace jian {
+BEGIN_JN
 namespace qhmc {
 
 REGISTER_QUADRUPLE_MODULE_FACTORY("loop", Loop);
@@ -26,7 +26,7 @@ Loop::Loop(const Tuple &t1, const Tuple &t2, int len) {
     }
 }
 
-std::string Loop::type() const {
+S Loop::type() const {
     return "loop";
 }
 

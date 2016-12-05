@@ -5,7 +5,7 @@
 #include "../matrix.hpp"
 #include "DihBound.hpp"
 
-namespace jian {
+BEGIN_JN
 
 class DGImpl;
 
@@ -27,5 +27,5 @@ private:
     DGImpl *_impl;
 };
 
-} // namespace jian
+END_JN
 

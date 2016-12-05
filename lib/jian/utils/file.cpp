@@ -5,9 +5,9 @@
 #include <fstream>
 #include "file.hpp"
 
-namespace jian {
+BEGIN_JN
 
-std::string file::name(const std::string &file_path) {
+S file::name(const S &file_path) {
     int pos1 = file_path.find_last_of('/');
     int pos2 = file_path.find_last_of('.');
     if (pos1 == std::string::npos) {
@@ -19,7 +19,7 @@ std::string file::name(const std::string &file_path) {
     return file_path.substr(pos1+1, pos2-pos1-1);
 }
 
-std::string file::type(const std::string &file_path) {
+S file::type(const S &file_path) {
     int pos = file_path.find_last_of('.');
     if (pos == std::string::npos) {
         return "";
@@ -28,10 +28,10 @@ std::string file::type(const std::string &file_path) {
     }
 }
 
-void file::clean(const std::string &file_name) {
+void file::clean(const S &file_name) {
     std::ofstream ofile(file_name.c_str());
     ofile.close();
 }
 
-} // namespace jian
+END_JN
 

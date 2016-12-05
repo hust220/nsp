@@ -5,14 +5,14 @@
 #include <string>
 #include <deque>
 
-namespace jian {
+BEGIN_JN
 
 	class Chain : public std::deque<Residue> {
 	public:
-		std::string name = "A";
-		std::string type = "unknown";
-		std::string model_name = "unknown";
-		std::string m_cg = "aa";
+		S name = "A";
+		S type = "unknown";
+		S model_name = "unknown";
+		S m_cg = "aa";
 
 		template<typename _Residues>
 		void set_residues(const _Residues &residues) {
@@ -32,5 +32,5 @@ namespace jian {
 	refs<const Chain> chains() const { return refs<const Chain>().append(*this); }
 
 
-} // namespace jian
+END_JN
 

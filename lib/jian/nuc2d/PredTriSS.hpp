@@ -11,7 +11,7 @@
 #include "../utils/ls.hpp"
 #include "../matrix.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace nuc2d {
 
 namespace seq2tri {
@@ -34,7 +34,7 @@ public:
 
     std::unordered_map<std::vector<int>, infos_t, seq2tri::MyHash> _info;
 
-    std::string _seq;
+    S _seq;
     std::vector<int> _types;
     std::vector<std::tuple<int, int, int>> _pairs;
     std::map<char, int> _convert{{'A', 0}, {'U', 1}, {'T', 1}, {'G', 2}, {'C', 3}, {'X', 999}};
@@ -57,7 +57,7 @@ public:
                          -642.19, -735.33, -851.11, -509.75;
     }
 
-    void run(std::string seq, int k) {
+    void run(S seq, int k) {
         _seq = seq;
         _min_hairpin_size = k;
         seq_t vec(_seq.size());
@@ -76,7 +76,7 @@ public:
         }
     }
 
-    double score_ss(const std::string &ss) {
+    double score_ss(const S &ss) {
         seq_t loop;
         double e = 0;
         for (int i = 0; i < ss.size(); i++) {
@@ -102,7 +102,7 @@ public:
         return e;
     }
 
-    std::string dbn(const tuples_t &tuples, int len) {
+    S dbn(const tuples_t &tuples, int len) {
         auto init_ss = [&](auto &&ss){
             for (int i = 0; i < tuples.size(); i++) {
                 if (tuples[i].size() != 0) {
@@ -131,7 +131,7 @@ public:
             }
         };
 
-        std::string ss(len, '0');
+        S ss(len, '0');
         init_ss(ss);
         std::array<int, 3> v {0, 0, 0};
         count_purine(ss, v);
@@ -331,5 +331,5 @@ public:
 };
 
 } // namespace nuc2d
-} // namespace jian
+END_JN
 

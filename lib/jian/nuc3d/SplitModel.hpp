@@ -9,7 +9,7 @@
 #include "../pdb.hpp"
 #include "../nuc2d.hpp"
 
-namespace jian {
+BEGIN_JN
 
 class SplitModel {
 public:
@@ -18,11 +18,11 @@ public:
     std::map<loop *, Model> _loops;
     std::shared_ptr<Model> _model;
 
-    SplitModel(const std::string &name, const std::string &seq, const std::string &ss) {
+    SplitModel(const S &name, const S &seq, const S &ss) {
         _model = std::make_shared<Model>(name);
         _ss_tree.make(seq, ss);
         LOOP_TRAVERSE(_ss_tree.head(),
-            parse_helix(L).parse_loop(L);
+            parse_helix(_l).parse_loop(_l);
         );
     }
 
@@ -49,6 +49,6 @@ public:
     }
 };
 
-} // namespace jian
+END_JN
 
 

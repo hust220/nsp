@@ -1,13 +1,13 @@
 #include <string>
 #include "MolParser.hpp"
 
-namespace jian {
+BEGIN_JN
 
 class PdbFileParser : public MolParser {
 public:
-    PdbFileParser(const std::string &f);
+    PdbFileParser(const S &f);
     MolParsedLine *getline();
 };
 
-} // namespace jian
+END_JN
 

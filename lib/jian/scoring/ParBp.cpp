@@ -1,6 +1,6 @@
 #include "ParBp.hpp"
 
-namespace jian {
+BEGIN_JN
 	ParBp::ParBp() {
 		m_cg.reset(CG::fac_t::create("6p"));
 	}

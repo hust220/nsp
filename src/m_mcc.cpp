@@ -2,7 +2,7 @@
 #include <jian/nuc2d.hpp>
 #include <jian/dca.hpp>
 
-namespace jian {
+BEGIN_JN
 
 using namespace dca;
 
@@ -102,13 +102,13 @@ REGISTER_NSP_COMPONENT(common_ss) {
 }
 
 REGISTER_NSP_COMPONENT(sort_dis) {
-    std::string di_file = par["di"][0];
+    S di_file = par["di"][0];
     int size = std::stoi(par["size"][0]);
 
     print_tuples(tuples_from_file(di_file, size));
 }
 
-} // namespace jian
+END_JN
 
 
 

@@ -3,18 +3,18 @@
 #include "../nuc2d.hpp"
 #include "split.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace nuc3d {
 
 class Split {
 public:
     using nums_t = std::vector<int>;
 
-    std::string _name;
-    std::string _seq;
-    std::string _ss;
-    std::string _family;
-    std::string _lib;
+    S _name;
+    S _seq;
+    S _ss;
+    S _family;
+    S _lib;
     Model _mol;
     int _hinge;
     int _helix_num;
@@ -49,8 +49,8 @@ public:
         SSTree ss_tree;
         ss_tree.make(_seq, _ss, _hinge);
         LOOP_TRAVERSE(ss_tree.head(),
-            parse_helix(L);
-            parse_loop(L);
+            parse_helix(_l);
+            parse_loop(_l);
         );
     }
 
@@ -60,8 +60,8 @@ public:
 
             // write to pdb file
             int len = l->s.len();
-            std::string pdb_path = _lib + "/RNA/templates/";
-            std::string helix_name = _name + "-" + std::to_string(_helix_num) + "-helix-" + std::to_string(len);
+            S pdb_path = _lib + "/RNA/templates/";
+            S helix_name = _name + "-" + std::to_string(_helix_num) + "-helix-" + std::to_string(len);
             std::vector<int> nums(len * 2);
             int index = 0;
             for (auto b = l->s.head; b != NULL; b = b->next) {
@@ -72,7 +72,7 @@ public:
             mol_write(sub(_mol, nums), pdb_path + helix_name + ".pdb");
 
             // write to records file
-            std::string helix_info_file = _lib + "/RNA/records/helix";
+            S helix_info_file = _lib + "/RNA/records/helix";
             std::ofstream ofile(helix_info_file.c_str(), std::ios::app);
             ofile << helix_name << ' ' << l->s.len() << ' ' << l->s.seq() << ' ' << l->s.ss() << ' ' << _family << std::endl;
             ofile.close();
@@ -81,7 +81,7 @@ public:
         }
     }
 
-    std::string get_loop_name(loop *l, std::string name, int loop_num) {
+    S get_loop_name(loop *l, S name, int loop_num) {
         auto type = l->hinges.size();
         std::ostringstream stream;
         stream << name << '-' << loop_num << '-' << (l->is_open() ? "open_" : "") << "loop-" << type;
@@ -101,13 +101,13 @@ public:
             _loop_num++;
 
             int len = l->len();
-            std::string pdb_path = _lib + "/RNA/templates/";
-            std::string loop_name = get_loop_name(l, _name, _loop_num);
+            S pdb_path = _lib + "/RNA/templates/";
+            S loop_name = get_loop_name(l, _name, _loop_num);
             mol_write(sub(_mol, get_loop_nums(l)), pdb_path + loop_name + ".pdb");
 
             // write to info file
-            std::string l_ss = l->ss();
-            std::string loop_info_file = _lib + "/RNA/records/" + (l->is_open() ? "open_" : "") + "loop";
+            S l_ss = l->ss();
+            S loop_info_file = _lib + "/RNA/records/" + (l->is_open() ? "open_" : "") + "loop";
 
             std::ofstream ofile(loop_info_file.c_str(), std::ios::app);
             ofile << loop_name << ' ' << l->num_sons() << ' ' << l->seq() << ' ' << l->ss() << ' ' << _family << std::endl;
@@ -123,6 +123,6 @@ void split(const Par &par) {
 }
 
 } // namespace nuc3d
-} // namespace jian
+END_JN
 
 

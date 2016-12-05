@@ -10,7 +10,7 @@
 #include "ScoreBase.hpp"
 #include "ParBp.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	class Score : public ScoreBase {
 	public:
@@ -37,7 +37,7 @@ namespace jian {
 		std::vector<double> m_bond_dihedral_std;
 		double m_cutoff_stacking;
 		double m_cutoff_pairing;
-		std::map<std::string, int> m_map{ { "A", 0 },{ "U", 1 },{ "G", 2 },{ "C", 3 } };
+		std::map<S, int> m_map{ { "A", 0 },{ "U", 1 },{ "G", 2 },{ "C", 3 } };
 		double m_cutoff;
 		double m_bin;
 		int m_bins;
@@ -87,5 +87,5 @@ namespace jian {
 
 	};
 
-} // namespace jian
+END_JN
 

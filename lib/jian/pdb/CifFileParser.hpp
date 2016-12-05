@@ -6,18 +6,18 @@
 #include <fstream>
 #include "MolParser.hpp"
 
-namespace jian {
+BEGIN_JN
 
 class Cif;
 
 class CifFileParser : public MolParser {
 public:
-    CifFileParser(const std::string &);
+    CifFileParser(const S &);
     ~CifFileParser();
     MolParsedLine *getline();
 private:
     Cif *_cif;
 };
 
-} // namespace jian
+END_JN
 

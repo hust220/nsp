@@ -3,7 +3,7 @@
 #include <random>
 #include <vector>
 
-namespace jian {
+BEGIN_JN
 namespace dg {
 
 class Move {
@@ -37,6 +37,6 @@ public:
 
 
 } // namespace dg
-} // namespace jian
+END_JN
 
 

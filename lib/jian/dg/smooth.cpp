@@ -1,7 +1,7 @@
 #include "../pp.hpp"
 #include "../matrix.hpp"
 
-namespace jian {
+BEGIN_JN
 
 template<typename T>
 int dg_triangle_smoothing(T &&b) {
@@ -48,5 +48,5 @@ void dg_smooth(Eigen::MatrixXd &b, double min_dist) {
     while (dg_triangle_smoothing(b) + dg_tetrangle_smoothing(b) != 0 && max_step-- > 0);
 }
 
-} // namespace jian
+END_JN
 

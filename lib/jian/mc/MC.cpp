@@ -111,7 +111,7 @@ namespace jian {
 	}
 
 	void MC::mc_heat(int steps) {
-		LOG << __FUNCTION__ << "..." << std::endl;
+		//LOG << __FUNCTION__ << "..." << std::endl;
 		_mc_tempr = _mc_init_tempr;
 		_mc_state = MC_HEATING;
 		mc_base(steps, [this]() {
@@ -130,7 +130,7 @@ namespace jian {
 	}
 
 	void MC::mc_cool(int steps) {
-		LOG << __FUNCTION__ << "..." << std::endl;
+		//LOG << __FUNCTION__ << "..." << std::endl;
 		_mc_tempr = _mc_init_tempr;
 		_mc_state = MC_COOLING;
 		int n_rate = 0, n_en = 0;
@@ -145,7 +145,7 @@ namespace jian {
 	}
 
 	void MC::mc_warm(int steps) {
-		LOG << __FUNCTION__ << "..." << std::endl;
+		//LOG << __FUNCTION__ << "..." << std::endl;
 		_mc_tempr = _mc_init_tempr;
 		_mc_state = MC_WARMING;
 		mc_base(steps, [this]() {
@@ -154,7 +154,7 @@ namespace jian {
 	}
 
 	void MC::mc_samc(int steps) {
-		LOG << __FUNCTION__ << "..." << std::endl;
+		//LOG << __FUNCTION__ << "..." << std::endl;
 		_mc_tempr = _mc_init_tempr;
 		_mc_state = MC_SAMC;
 		int n_rate = 0, n_en = 0;
@@ -169,7 +169,7 @@ namespace jian {
 	}
 
 	void MC::mc_remc(int steps) {
-		LOG << __FUNCTION__ << "..." << std::endl;
+		//LOG << __FUNCTION__ << "..." << std::endl;
 #ifndef JN_PARA
 		throw "REMC is only supported in the parallel version! "
 			"You may need to recompile nsp if you really want to use REMC!";
@@ -230,15 +230,15 @@ namespace jian {
 	}
 
 	void MC::mc_select() {
-		LOG << __FUNCTION__ << "..." << std::endl;
+		//LOG << __FUNCTION__ << "..." << std::endl;
 	}
 
 	void MC::mc_sample() {
-		LOG << __FUNCTION__ << "..." << std::endl;
+		//LOG << __FUNCTION__ << "..." << std::endl;
 	}
 
 	void MC::mc_back() {
-		LOG << __FUNCTION__ << "..." << std::endl;
+		//LOG << __FUNCTION__ << "..." << std::endl;
 	}
 
 } // namespace jian

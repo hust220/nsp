@@ -1,7 +1,7 @@
 #include "nsp.hpp"
 #include <jian/nuc3d/BuildLoopDG.hpp>
 
-namespace jian {
+BEGIN_JN
 
 REGISTER_NSP_COMPONENT(build_loop_dg) {
     BuildLoopDG build_loop_dg;
@@ -10,5 +10,5 @@ REGISTER_NSP_COMPONENT(build_loop_dg) {
     std::cout << build_loop_dg() << std::endl;
 }
 
-} // namespace jian
+END_JN
 

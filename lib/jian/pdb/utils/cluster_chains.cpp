@@ -1,7 +1,7 @@
 #include "../../geom.hpp"
 #include "cluster_chains.hpp"
 
-namespace jian {
+BEGIN_JN
 	namespace pdb {
 
 		static Mat *chain_to_matrix_aa(const Chain &chain) {
@@ -46,4 +46,4 @@ namespace jian {
 
 
 	} // namespace pdb
-} // namespace jian
+END_JN

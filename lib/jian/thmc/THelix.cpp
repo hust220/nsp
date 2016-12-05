@@ -1,6 +1,6 @@
 #include "THelix.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace nuc3d {
 namespace triple {
 
@@ -27,12 +27,12 @@ THelix::THelix(const Tuple &t1, const Tuple &t2) {
     }
 }
 
-std::string THelix::type() const {
+S THelix::type() const {
     return "helix";
 }
 
 } // namespace triple
 }
-} // namespace jian
+END_JN
 
 

@@ -4,7 +4,7 @@
 #include <deque>
 #include "nsp.hpp"
 
-namespace jian {
+BEGIN_JN
 
 using align_t = std::deque<std::string>;
 
@@ -12,7 +12,7 @@ class SSA {
 public:
     int M, N;
     Mat m;
-    std::string _seq1, _seq2;
+    S _seq1, _seq2;
     align_t _align;
 
     static SSA &instance() {
@@ -63,7 +63,7 @@ public:
         }
     }
 
-    void ssa(std::string seq1, std::string seq2, align_t &aln) {
+    void ssa(S seq1, S seq2, align_t &aln) {
         _seq1 = seq1;
         _seq2 = seq2;
         M = seq1.size();
@@ -75,11 +75,11 @@ public:
 };
 
 REGISTER_NSP_COMPONENT(ssa) {
-    std::string seq1 = par["seq"][0];
-    std::string seq2 = par["seq"][1];
+    S seq1 = par["seq"][0];
+    S seq2 = par["seq"][1];
     align_t aln;
     SSA::instance().ssa(seq1, seq2, aln);
 }
 
-} // namespace jian
+END_JN
 

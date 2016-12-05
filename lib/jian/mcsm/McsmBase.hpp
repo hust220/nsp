@@ -8,7 +8,6 @@
 #include "../nuc3d/BuildHelix.hpp"
 #include "../nuc3d/transform.hpp"
 #include "../nuc3d/TemplRec.hpp"
-#include "../nuc3d/Assemble.hpp"
 #include "../cg.hpp"
 #include "../cg/Frags.hpp"
 #include "../utils/Env.hpp"
@@ -31,7 +30,7 @@
     vdw_weight, max_shift
 #define JN_MCXP_DEF_PAR(a) double PP_CAT3(_mc_, a);
 
-namespace jian {
+BEGIN_JN
 
 	// MvEl: Moving element
 	class MvEl {
@@ -108,22 +107,23 @@ namespace jian {
 
 		ResConf::MapConfs m_res_confs;
 		sample_mode_t m_sample_mode;
-		bool m_cal_en_constraints;
+		B m_cal_en_constraints;
+		B m_will_write_traj;
 		space_t m_space;
 		item_space_t m_item_space;
 		int m_box;
-		double m_box_size;
+		D m_box_size;
 		std::deque<Atom> _moved_atoms;
-		std::string m_traj;
+		S m_traj;
 		int mc_num_writing = 1;
 		std::vector<int> m_continuous_pts;
 		std::vector<int> m_ang_pts;
 		std::vector<int> m_dih_pts;
 		std::vector<int> m_brk_pts;
-		std::string m_par_file;
+		S m_par_file;
 		MolWriter m_writer;
 		val_t m_max_angle;
-		std::string m_init_sfile;
+		S m_init_sfile;
 
 		std::deque<MvEl *> m_mvels;
 		std::vector<MvEl *> m_base_mvels;
@@ -135,6 +135,8 @@ namespace jian {
 		MCBase() = default;
 
 		void init(const Par &par);
+
+		void set_traj_name();
 
 		void validate_constraints();
 
@@ -192,7 +194,7 @@ namespace jian {
 
 		virtual void finish_run();
 
-		virtual std::string file_parameters() const;
+		virtual S file_parameters() const;
 
 		virtual void save_fixed_ranges();
 
@@ -206,5 +208,5 @@ namespace jian {
 
 	};
 
-} // namespace jian
+END_JN
 

@@ -3,7 +3,7 @@
 
 #include "../etl.h"
 
-namespace jian {
+BEGIN_JN
 namespace md {
 
 template<typename Mat = MatrixXf>
@@ -12,7 +12,7 @@ public:
     typedef decltype(ref(Mat(), 0, 0)) Val;
 
     int _rand_seed = 12345;
-    std::string _name = "test"
+    S _name = "test"
     int _max_steps = 1000;
     int _record_cycles = 10;
     double _atom_radius = 0.5;
@@ -73,7 +73,7 @@ public:
 };
 
 } // namespace md
-} // namespace jian
+END_JN
 
 #endif
 

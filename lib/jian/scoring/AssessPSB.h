@@ -5,7 +5,7 @@
 #include "../geom/core.h"
 #include "../etl.h"
 
-namespace jian {
+BEGIN_JN
 namespace scoring {
 
 class AssessPSB {
@@ -249,7 +249,7 @@ public:
 };
 
 } // namespace scoring
-} // namespace jian
+END_JN
 
 #endif
 

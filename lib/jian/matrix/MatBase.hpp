@@ -1,19 +1,21 @@
 #pragma
 
-namespace jian {
+#include "../utils/traits.hpp"
+
+BEGIN_JN
 
 
-	template<int N, typename T>
-	class MatBase {
-	public:
-		using num_t = T;
+template<int N, typename T>
+class MatBase {
+public:
+	using Num = T;
 
-		enum {
-			DIM = N
-		};
+	enum {
+		DIM = N
 	};
+};
 
-	template<int N, typename T>
-	class Matrix : public MatBase<N, T> {};
+template<int N, typename T>
+class Matrix : public MatBase<N, T> {};
 
-}
+END_JN

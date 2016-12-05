@@ -6,7 +6,7 @@
 #include "MC.hpp"
 #include "../geom.hpp"
 
-namespace jian {
+BEGIN_JN
 
 class DG : public MC {
 public:
@@ -162,5 +162,5 @@ public:
 
 };
 
-} // namespace jian
+END_JN
 

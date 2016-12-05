@@ -3,14 +3,14 @@
 #include <string>
 #include <exception>
 
-namespace jian {
+BEGIN_JN
 
 class Error : public std::exception {
 private:
-    std::string _inf;
+    S _inf;
 
 public:
-    Error(const std::string &inf = "") : _inf(inf) {}
+    Error(const S &inf = "") : _inf(inf) {}
 
     virtual const char *what() const noexcept {
         return _inf.c_str();

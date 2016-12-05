@@ -6,15 +6,15 @@
 #define DEBUG_IN Debug::enter_function(__FUNCTION__)
 #define DEBUG_OUT Debug::exit_function(__FUNCTION__)
 
-namespace jian {
+BEGIN_JN
 
 class Debug {
 public:
-    static void enter_function(const std::string &func_name) {
+    static void enter_function(const S &func_name) {
         print("\n<", func_name, ">\n");
     }
 
-    static void exit_function(const std::string &func_name) {
+    static void exit_function(const S &func_name) {
         print("\n</", func_name, ">\n");
     }
 

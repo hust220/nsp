@@ -10,7 +10,7 @@
 #include <jian/geom/suppos.hpp>
 #include <jian/utils/file.hpp>
 
-namespace jian {
+BEGIN_JN
 
 static Eigen::MatrixXd * model_to_mat_aa(const Model &model) {
     int len = 0;
@@ -60,5 +60,5 @@ REGISTER_NSP_COMPONENT(align) {
     delete mat2;
 }
 
-} // namespace jian
+END_JN
 

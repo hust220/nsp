@@ -3,9 +3,9 @@
 #include <string>
 #include "../pdb.hpp"
 
-namespace jian {
+BEGIN_JN
 
-Model transform(const Model &m, const std::string &seq, const std::string &type);
+Model transform(const Model &m, const S &seq, const S &type);
 
-} // namespace jian
+END_JN
 

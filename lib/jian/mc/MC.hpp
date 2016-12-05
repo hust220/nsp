@@ -11,7 +11,7 @@
 #include "../mpi.hpp"
 #endif
 
-namespace jian {
+BEGIN_JN
 
 	class MC {
 	public:
@@ -25,25 +25,25 @@ namespace jian {
 			MC_DONE
 		};
 
-		num_t _mc_init_tempr;
-		num_t _mc_lowest_tempr;
-		num_t _mc_highest_tempr;
-		num_t _mc_tempr;
+		Num _mc_init_tempr;
+		Num _mc_lowest_tempr;
+		Num _mc_highest_tempr;
+		Num _mc_tempr;
 		int _mc_cycle_steps;
 		int _mc_write_steps;
 		int _mc_step;
 		int _mc_num_samc;
-		num_t _mc_local_succ_rate;
-		num_t _mc_en;
+		Num _mc_local_succ_rate;
+		Num _mc_en;
 		int _mc_heat_steps;
 		int _mc_cool_steps;
-		num_t _mc_heat_rate;
+		Num _mc_heat_rate;
 		State _mc_state = MC_READY; // 0: ready, 1: heating, 2: cooling, 3: done
-		num_t _mc_inc_rate;
-		num_t _mc_dec_rate;
-		num_t _mc_lowest_rate;
-		num_t _mc_lowest_en;
-		std::string _mc_queue;
+		Num _mc_inc_rate;
+		Num _mc_dec_rate;
+		Num _mc_lowest_rate;
+		Num _mc_lowest_en;
+		S _mc_queue;
 
 		MC();
 
@@ -99,5 +99,5 @@ namespace jian {
 
 	};
 
-} // namespace jian
+END_JN
 

@@ -2,7 +2,7 @@
 
 #include "Score.hpp"
 
-namespace jian {
+BEGIN_JN
 	class ScorePsb : public Score {
 	public:
 		ScorePsb();

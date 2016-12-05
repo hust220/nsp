@@ -1,6 +1,6 @@
 #include "KMeans.hpp"
 
-namespace jian {
+BEGIN_JN
 	REG_CLUSTER("kmeans", KMeans);
 
 	KMeans::KMeans(const Par &par) {
@@ -45,8 +45,8 @@ namespace jian {
 				if (std::any_of(m_clusters.begin(), m_clusters.end(), [&](auto &&v) {return v[0] == i; }))
 					continue;
 				auto min_elem = std::min_element(m_clusters.begin(), m_clusters.end(), [&](auto &&v1, auto &&v2) {
-					num_t d1 = mat(i, v1[0]);
-					num_t d2 = mat(i, v2[0]);
+					Num d1 = mat(i, v1[0]);
+					Num d2 = mat(i, v2[0]);
 					return d1 < d2;
 				});
 				min_elem->push_back(i);
@@ -54,9 +54,9 @@ namespace jian {
 
 			/// select new center
 			for (auto &&cluster : m_clusters) {
-				std::vector<num_t> costs(cluster.size());
+				std::vector<Num> costs(cluster.size());
 				std::transform(cluster.begin(), cluster.end(), costs.begin(), [&](int i) {
-					return std::accumulate(cluster.begin(), cluster.end(), 0.0, [&](num_t sum, int j)->num_t {
+					return std::accumulate(cluster.begin(), cluster.end(), 0.0, [&](Num sum, int j)->Num {
 						return sum + mat(i, j);
 					});
 				});

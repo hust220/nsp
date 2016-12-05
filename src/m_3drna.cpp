@@ -6,11 +6,11 @@
 #include <jian/qhmc/QHMC.hpp>
 #include <jian/pdb/utils/cluster_chains.hpp>
 
-namespace jian {
+BEGIN_JN
 	namespace {
 		void jian_3drna_refine(const Par &par, const Chain &chain, int i) {
 			try {
-				std::string name;
+				S name;
 				par.set(name, "name", "job");
 
 				std::ostringstream stream;
@@ -41,7 +41,7 @@ namespace jian {
 		}
 
 		void jian_3drna_tripred(const Par &par, int i) {
-			std::string name;
+			S name;
 			par.set(name, "name", "job");
 
 			std::ostringstream stream;
@@ -70,10 +70,10 @@ namespace jian {
 			par.set(n, "n", "num", "number");
 			assert(n <= 10);
 
-			std::string ss;
+			S ss;
 			par.set(ss, "ss", "secondary_structure");
 
-			std::string pred_type;
+			S pred_type;
 			par.set(pred_type, "pred_type");
 
 			if (pred_type == "triplex") {
@@ -125,7 +125,7 @@ namespace jian {
 					for (int i = 0; i < n; i++) {
 						std::ostringstream stream;
 						stream << ass._name << ".3drna." << i + 1 << ".pdb";
-						std::string f = stream.str();
+						S f = stream.str();
 						LOG << "# Writing " << f << "..." << std::endl;
 						mol_write(chains[result[i][0]], f);
 					}
@@ -133,5 +133,5 @@ namespace jian {
 			}
 		}
 	}
-} // namespace jian
+END_JN
 

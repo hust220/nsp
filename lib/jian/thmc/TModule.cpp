@@ -1,7 +1,7 @@
 #include <algorithm>
 #include "TModule.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace nuc3d {
 namespace triple {
 
@@ -29,6 +29,6 @@ void TModule::set_indices(int n, int beg, int end) {
 
 } // namespace triple
 }
-} // namespace jian
+END_JN
 
 

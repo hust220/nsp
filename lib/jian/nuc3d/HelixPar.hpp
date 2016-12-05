@@ -1,8 +1,9 @@
 #pragma once
 
 #include <deque>
+#include "../utils/traits.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	struct HelixPar {
 		double dih_backbone;
@@ -18,5 +19,5 @@ namespace jian {
 		double dih(int n);
 	};
 
-} // namespace jian
+END_JN
 

@@ -28,29 +28,29 @@
 #define BEGIN_LOOP_TRAVERSE(l) \
 	do {\
 		using type = std::remove_reference_t<decltype(l)>;\
-		std::list<type> path;\
-		type L = l;\
+		std::list<type> _path;\
+		type _l = l;\
 		JN_BREAK_INIT;\
 		while (true) {\
-			if (L == NULL) break;\
-			path.push_back(L);\
+			if (_l == NULL) break;\
+			_path.push_back(_l);\
 			do
 
 #define END_LOOP_TRAVERSE \
 			while (0);\
 			if (is_break) break;\
-			if (L->son != NULL) { L = L->son;\
-			} else if (L->brother != NULL) {\
-				L = L->brother;\
-				path.pop_back(); \
+			if (_l->son != NULL) { _l = _l->son;\
+			} else if (_l->brother != NULL) {\
+				_l = _l->brother;\
+				_path.pop_back(); \
 			} else {\
 				while (true) {\
-					path.pop_back();\
-					if (!path.empty()) {\
-						L = path.back()->brother;\
-						if (L == NULL) continue;\
-						else { path.pop_back(); break; }\
-					} else { L = NULL; break; }\
+					_path.pop_back();\
+					if (!_path.empty()) {\
+						_l = _path.back()->brother;\
+						if (_l == NULL) continue;\
+						else { _path.pop_back(); break; }\
+					} else { _l = NULL; break; }\
 				}\
 			}\
 		}\
@@ -58,30 +58,30 @@
 
 #define LOOP_TRAVERSE(l, c) do{\
     using type = std::remove_reference_t<decltype(l)>;\
-    std::list<type> ls;\
-    type L = l;\
+    L<type> _path;\
+    type _l = l;\
     while (true) {\
-        if (L == NULL) break;\
-        ls.push_back(L);\
+        if (_l == NULL) break;\
+        _path.push_back(_l);\
         c; \
-        if (L->son != NULL) { L = L->son;\
-        } else if (L->brother != NULL) {\
-            L = L->brother;\
-            ls.pop_back(); \
+        if (_l->son != NULL) { _l = _l->son;\
+        } else if (_l->brother != NULL) {\
+            _l = _l->brother;\
+            _path.pop_back(); \
         } else {\
             while (true) {\
-                ls.pop_back();\
-                if (!ls.empty()) {\
-                    L = ls.back()->brother;\
-                    if (L == NULL) continue;\
-                    else { ls.pop_back(); break; }\
-                } else { L = NULL; break; }\
+                _path.pop_back();\
+                if (!_path.empty()) {\
+                    _l = _path.back()->brother;\
+                    if (_l == NULL) continue;\
+                    else { _path.pop_back(); break; }\
+                } else { _l = NULL; break; }\
             }\
         }\
     }\
 }while(0)
 
-namespace jian {
+BEGIN_JN
 
 class loop {
 public:
@@ -224,12 +224,12 @@ public:
         return num_branches() == num_sons();
     }
 
-    str_t ss() const {
-        str_t ss; LOOP_EACH(this, ss += RES->type); return ss;
+    Str ss() const {
+        Str ss; LOOP_EACH(this, ss += RES->type); return ss;
     }
 
-    str_t seq() const {
-		str_t seq;
+    Str seq() const {
+		Str seq;
 		LOOP_EACH(this, if (RES->type != '&') seq += RES->name);
 		return seq;
     }
@@ -239,7 +239,7 @@ public:
 //        LOOP_EACH(&l, out << RES->num << ' ');
 //    }
 
-    operator str_t() const {
+    operator Str() const {
         std::ostringstream stream;
         stream << seq() << ' ' << ss() << ' ';
         LOOP_EACH(this, stream << RES->num << ' ');
@@ -269,10 +269,10 @@ public:
     }
 
     void print_tree() const {
-        LOOP_TRAVERSE(this, L->print());
+        LOOP_TRAVERSE(this, _l->print());
     }
 
 };
 
-} // namespace jian
+END_JN
 

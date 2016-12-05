@@ -1,6 +1,6 @@
 #include "nsp.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	NSP &NSP::instance() {
 		static NSP nsp;
@@ -21,9 +21,9 @@ namespace jian {
 			out_file(par.get("out", "o"));
 		}
 		auto &m = instance()._methods;
-		std::string path = Env::lib() + "/RNA/pars/src/";
+		S path = Env::lib() + "/RNA/pars/src/";
 		if (par._orig_pars.size() <= 1 || m.find(par[1]) == m.end()) {
-			std::string name = path + "nsp.md";
+			S name = path + "nsp.md";
 			BEGIN_READ_FILE(name, " ") {
 				std::cout << L << std::endl;
 			} END_READ_FILE;
@@ -31,7 +31,7 @@ namespace jian {
 			std::cout << std::endl;
 		}
 		else if (par.has("help") || par.has("h") || par.has("-help")) {
-			std::string name = path + par[1] + ".md";
+			S name = path + par[1] + ".md";
 			BEGIN_READ_FILE(name, " ") {
 				std::cout << L << std::endl;
 			} END_READ_FILE;
@@ -41,6 +41,6 @@ namespace jian {
 		}
 	}
 
-} // namespace jian
+END_JN
 
 

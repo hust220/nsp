@@ -5,23 +5,23 @@
 #include <map>
 #include "../matrix.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	class Atom : public std::array<double, 3> {
 	public:
-		std::string name;
+		S name;
 		int num;
 		double mass;
 
 		JN_DEFAULT_CONSTRUCTORS(Atom);
 
-		Atom(std::string name, double x, double y, double z, int num = -1) {
+		Atom(S name, double x, double y, double z, int num = -1) {
 			init(name, x, y, z, num);
 		}
 
-		void init(std::string name, double x, double y, double z, int num = -1);
+		void init(S name, double x, double y, double z, int num = -1);
 
-		void set_name(const std::string &s);
+		void set_name(const S &s);
 		void set_mass();
 
 	};
@@ -30,5 +30,5 @@ namespace jian {
 	refs<Atom> atoms() { return refs<Atom>().append(*this); }\
 	refs<const Atom> atoms() const { return refs<const Atom>().append(*this); }
 
-} // namespace jian
+END_JN
 

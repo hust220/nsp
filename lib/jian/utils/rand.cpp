@@ -2,7 +2,7 @@
 
 #include "rand.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	thread_local static std::mt19937 _rand_engine{ 11 };
 	thread_local static std::uniform_real_distribution<double> _unif_distr{ 0, 1 };
@@ -15,5 +15,5 @@ namespace jian {
 		_rand_engine.seed(t);
 	}
 
-} // namespace jian
+END_JN
 

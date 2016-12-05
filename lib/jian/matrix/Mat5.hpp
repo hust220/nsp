@@ -2,8 +2,9 @@
 
 #include <array>
 #include <iostream>
+#include "../utils/traits.hpp"
 
-namespace jian {
+BEGIN_JN
 
 class Mat5 {
 public:
@@ -43,6 +44,6 @@ public:
 
 std::ostream &operator <<(std::ostream &out, const Mat5 &mat);
 
-} // namespace jian
+END_JN
 
 

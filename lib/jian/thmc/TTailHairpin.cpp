@@ -2,7 +2,7 @@
 #include <cmath>
 #include "TTailHairpin.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace nuc3d {
 namespace triple {
 
@@ -28,12 +28,12 @@ TTailHairpin::TTailHairpin(const Tuple &tuple, const Tuple &size) {
     set_indices(1, d_frags[1].front() + 1, len - 1);
 }
 
-std::string TTailHairpin::type() const {
+S TTailHairpin::type() const {
     return "tail_hairpin";
 }
 
 } // namespace triple
 }
-} // namespace jian
+END_JN
 
 

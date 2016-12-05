@@ -9,7 +9,7 @@
 #include "../nuc2d.hpp"
 #include "ss_pairs.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace dca {
 
 	std::vector<std::array<char, 2>> patterns = { {'.', '.'}, {'(', ')'}, {'[', ']'}, {'{', '}'} };
@@ -20,7 +20,7 @@ void pairs_sort(pairs_t &pairs) {
 	});
 }
 
-pairs_t pairs_from_file(const str_t &file_name, int size) {
+pairs_t pairs_from_file(const Str &file_name, int size) {
     auto && tuples = tuples_from_file(file_name, size);
     pairs_t pairs;
     for (auto && tuple : tuples) {
@@ -29,7 +29,7 @@ pairs_t pairs_from_file(const str_t &file_name, int size) {
     return pairs;
 }
 
-tuples_t tuples_from_file(const str_t &file_name, int size) {
+tuples_t tuples_from_file(const Str &file_name, int size) {
     tuples_t tuples;
 	BEGIN_READ_FILE(file_name, " ") {
 		//        if (N >= size) return pairs;
@@ -147,5 +147,5 @@ ss_t pairs_to_ss(const pairs_t &pairs, int size) {
 
 
 } // namespace dca
-} // namespace jian
+END_JN
 

@@ -1,10 +1,10 @@
 #include "nsp.hpp"
 #include <jian/matrix.hpp>
 
-namespace jian {
+BEGIN_JN
 
 REGISTER_NSP_COMPONENT(dist_frequencies) {
-    std::string file_name = par["f"][0];
+    S file_name = par["f"][0];
     std::vector<Eigen::MatrixXd *> mats(67);
     for (int i = 0; i < 67; i++) {
         mats[i] = new Eigen::MatrixXd(85, 85);
@@ -49,5 +49,5 @@ REGISTER_NSP_COMPONENT(dist_frequencies) {
     }
 }
 
-} // namespace jian
+END_JN
 

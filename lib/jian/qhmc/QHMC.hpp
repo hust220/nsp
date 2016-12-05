@@ -14,7 +14,7 @@
 #include "../utils/Par.hpp"
 #include "../utils/Env.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace qhmc {
 
 using fac_t = Factory<Module::cons_t>;
@@ -122,7 +122,7 @@ public:
     }
 
     Chain load_quadruple_helix(int n) {
-        std::string file_name = Env::lib() + "/RNA/pars/nuc3d/quadruple/quadruple-helix-" + JN_STR(n) + ".pdb";
+        S file_name = Env::lib() + "/RNA/pars/nuc3d/quadruple/quadruple-helix-" + JN_STR(n) + ".pdb";
         Chain chain;
         chain_read_model(chain, file_name);
         //return cg_t::chain(chain);
@@ -441,7 +441,7 @@ public:
             if (!std::regex_match(s, std::regex("^[Gg.-]+$"))) die();
         };
 
-        std::string ss = _par->get("ss");
+        S ss = _par->get("ss");
         tokenize_v v;
         jian::tokenize(ss, v, ": ");
         std::cout << "v.size() " << v.size() << ' ' << ss << std::endl;
@@ -461,6 +461,6 @@ public:
 };
 
 } // namespace qhmc
-} // namespace jian
+END_JN
 
 

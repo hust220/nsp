@@ -2,9 +2,9 @@
 
 #include <string>
 
-namespace jian {
+BEGIN_JN
 
-std::string ss_pred(const std::string &);
+S ss_pred(const S &);
 
-} // namespace jian
+END_JN
 

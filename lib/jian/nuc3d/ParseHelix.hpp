@@ -3,7 +3,7 @@
 #include <Eigen/Dense>
 #include "../pdb.hpp"
 
-namespace jian {
+BEGIN_JN
 
 struct parse_helix_t {
     using Vec = Eigen::Matrix<double, 3, 1>;
@@ -15,5 +15,5 @@ parse_helix_t parse_helix(const Model &helix);
 Eigen::MatrixXd make_standard_helix(int);
 void dihs_std_helix();
 
-} // namespace jian
+END_JN
 

@@ -2,10 +2,10 @@
 #include "nsp.hpp"
 #include <jian/pdb.hpp>
 
-namespace jian {
+BEGIN_JN
 
-static std::string seq_chain(const Chain &c) {
-    std::string seq(c.size(), 'X');
+static S seq_chain(const Chain &c) {
+    S seq(c.size(), 'X');
     for (int i = 0; i < seq.size(); i++) {
         seq[i] = c[i].name.back();
     }
@@ -25,7 +25,7 @@ REGISTER_NSP_COMPONENT(seq) {
     } else {
         std::vector<std::string> r {"A", "U", "G", "C"};
         std::vector<std::string> d {"DA", "DT", "DG", "DC"};
-        std::string seq;
+        S seq;
         for (auto && chain : m) {
             for (auto && res : chain) {
                 if (std::find(r.begin(), r.end(), res.name) != r.end()) {
@@ -41,5 +41,5 @@ REGISTER_NSP_COMPONENT(seq) {
     }
 }
 
-} // namespace jian
+END_JN
 

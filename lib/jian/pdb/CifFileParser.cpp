@@ -1,13 +1,13 @@
 #include "../utils/log.hpp"
 #include "CifFileParser.hpp"
 
-namespace jian {
+BEGIN_JN
 
 REG_MOL_PARSER("cif", CifFileParser)
 
 class Cif : public std::map<std::string, std::string> {
 public:
-    std::string _name;
+    S _name;
     int _i {0};
     char _ch {'\0'};
     std::map<std::string, std::vector<std::string>> _loop;
@@ -37,9 +37,9 @@ public:
     }
 
     int read_block(std::ifstream &ifile) {
-        std::string key = read_word(ifile);
+        S key = read_word(ifile);
         if (key == "") return 0; else if (key == "#") return 1;
-        std::string value;
+        S value;
         if (key == "loop_") {
             read_loop(ifile);
             return 1;
@@ -56,7 +56,7 @@ public:
 
     void read_loop(std::ifstream &ifile) {
         std::vector<std::string> names;
-        std::string word;
+        S word;
         while (true) {
             word = read_word(ifile);
             if (word[0] == '_') names.push_back(word);
@@ -77,8 +77,8 @@ public:
         }
     }
 
-    std::string read_word(std::ifstream &ifile) {
-        std::string word;
+    S read_word(std::ifstream &ifile) {
+        S word;
         int state = 0, new_state;
         while (true) {
             char c = ifile.get();
@@ -101,7 +101,7 @@ public:
         return strip(word);
     }
 
-    std::string strip(const std::string &s) {
+    S strip(const S &s) {
         if (s.size() >= 2 && (s[0] == '\'' || s[0] == '"')) {
             return s.substr(1);
         } else if (s[0] == ';') {
@@ -156,7 +156,7 @@ public:
     }
 
     int res_num() {
-        std::string str = _loop["_atom_site.label_seq_id"][_i];
+        S str = _loop["_atom_site.label_seq_id"][_i];
         if (str == ".") 
             return -1;
         else 
@@ -165,7 +165,7 @@ public:
 
 };
 
-CifFileParser::CifFileParser(const std::string &f) : MolParser(f) {
+CifFileParser::CifFileParser(const S &f) : MolParser(f) {
     _cif = new Cif(ifile);
 }
 
@@ -177,5 +177,5 @@ MolParsedLine *CifFileParser::getline() {
     return _cif->line();
 }
 
-} // namespace jian
+END_JN
 

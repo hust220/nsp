@@ -4,7 +4,7 @@
 #include <vector>
 #include <list>
 
-namespace jian {
+BEGIN_JN
 namespace dg {
 
 class Gradient : public Job {
@@ -31,5 +31,5 @@ public:
 };
 
 } // namespace dg
-} // namespace jian
+END_JN
 

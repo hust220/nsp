@@ -5,7 +5,7 @@
 
 #define REG_SCORER(name, type) REGISTER_FACTORY(jian::ScoreBase::Constructor, name, type)
 
-namespace jian {
+BEGIN_JN
 
 	class ScoreBase {
 	public:

@@ -5,7 +5,7 @@
 #include "../pdb.hpp"
 #include "../geom.hpp"
 
-namespace jian {
+BEGIN_JN
 
 class Connect {
 public:
@@ -101,5 +101,5 @@ public:
 
 };
 
-} // namespace jian
+END_JN
 

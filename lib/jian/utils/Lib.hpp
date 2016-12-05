@@ -4,24 +4,24 @@
 #include <string>
 #include "../lib.hpp"
 
-namespace jian {
+BEGIN_JN
 
 class Lib {
 public:
-    std::string _lib;
+    S _lib;
 
     Lib() : _lib(env("NSP")) {}
 
-    std::string lib() {
+    S lib() {
         return _lib;
     }
 
-    void lib(const std::string &s) {
+    void lib(const S &s) {
         _lib = s;
     }
 };
 
-} // namespace jian
+END_JN
 
 #endif
 

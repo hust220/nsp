@@ -10,7 +10,7 @@
 #define SUM_MEM_EN_MCPSB(a) + a
 #define PRINT_MEM_EN_MCPSB(a) << a << PP_STRING3((a)) << ' '
 
-namespace jian {
+BEGIN_JN
 	class MCSM : public MCBase {
 	public:
 		struct en_t {
@@ -63,7 +63,7 @@ namespace jian {
 
 		virtual void write_en();
 
-		virtual std::string file_parameters() const;
+		virtual S file_parameters() const;
 
 		virtual void finish_run();
 
@@ -73,5 +73,5 @@ namespace jian {
 
 	};
 
-} // namespace jian
+END_JN
 

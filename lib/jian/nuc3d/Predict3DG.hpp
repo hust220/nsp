@@ -3,7 +3,7 @@
 #include "BasicPredict3D.hpp"
 #include "../utils/Par.hpp"
 
-namespace jian {
+BEGIN_JN
 
 class Predict3DGImpl;
 
@@ -17,5 +17,5 @@ private:
     Predict3DGImpl *_impl;
 };
 
-} // namespace jian
+END_JN
 

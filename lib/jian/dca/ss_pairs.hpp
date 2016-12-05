@@ -5,7 +5,7 @@
 #include <array>
 #include  "../utils/string.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace dca {
 
 struct tuple_t {
@@ -15,11 +15,11 @@ struct tuple_t {
 using tuples_t = std::list<tuple_t>;
 using pair_t = std::array<int, 2>;
 using pairs_t = std::list<pair_t>;
-using seq_t = str_t;
-using ss_t = str_t;
+using seq_t = Str;
+using ss_t = Str;
 
-tuples_t tuples_from_file(const str_t &file_name, int size);
-pairs_t pairs_from_file(const str_t &file_name, int size);
+tuples_t tuples_from_file(const Str &file_name, int size);
+pairs_t pairs_from_file(const Str &file_name, int size);
 pairs_t pairs_from_ss(const ss_t &ss);
 ss_t pairs_to_ss(const pairs_t &pairs, int size);
 
@@ -28,5 +28,5 @@ void print_pairs(const pairs_t & pairs);
 void print_tuples(const tuples_t & tuples);
 
 } // namespace lrsp
-} // namespace jian
+END_JN
 

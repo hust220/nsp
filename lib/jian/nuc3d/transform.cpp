@@ -2,9 +2,9 @@
 #include "Convert.hpp"
 #include "transform.hpp"
 
-namespace jian {
+BEGIN_JN
 
-Model to_rna(const Model &model, const std::string &seq) {
+Model to_rna(const Model &model, const S &seq) {
     Model m;
     int i = 0;
     for (auto && chain : model) {
@@ -20,7 +20,7 @@ Model to_rna(const Model &model, const std::string &seq) {
     return m;
 }
 
-Model to_dna(const Model &model, const std::string &seq) {
+Model to_dna(const Model &model, const S &seq) {
     Model m;
     int i = 0;
     for (auto && chain : model) {
@@ -36,7 +36,7 @@ Model to_dna(const Model &model, const std::string &seq) {
     return m;
 }
 
-Model transform(const Model &m, const std::string &seq, const std::string &type) {
+Model transform(const Model &m, const S &seq, const S &type) {
     if (type == "RNA") {
         return to_rna(m, seq);
     }
@@ -48,5 +48,5 @@ Model transform(const Model &m, const std::string &seq, const std::string &type)
 	}
 }
 
-} // namespace jian
+END_JN
 

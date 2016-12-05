@@ -11,19 +11,19 @@
 #include <jian/utils/Cluster.hpp>
 #include <jian/utils/log.hpp>
 
-namespace jian {
+BEGIN_JN
 	namespace {
 
 		class ClusterComponent {
 		public:
 			using method_t = std::function<Mat*(const Model &)>;
 
-			str_t cg = "C4'";
-			str_t list_file;
-			str_t matrix_file;
+			Str cg = "C4'";
+			Str list_file;
+			Str matrix_file;
 			Par::pars_t m_trajs;
 			int m_bin = 1;
-			str_t m_method = "kmeans";
+			Str m_method = "kmeans";
 			std::shared_ptr<Par> m_par;
 
 			ClusterComponent(const Par &par) {
@@ -49,7 +49,7 @@ namespace jian {
 				}
 			}
 
-			Mat *read_mat(str_t filename) {
+			Mat *read_mat(Str filename) {
 					std::ifstream ifile;
 					FOPEN(ifile, filename);
 					int rows, cols;
@@ -63,7 +63,7 @@ namespace jian {
 			}
 
 			void run() {
-				std::map<str_t, method_t> methods;
+				std::map<Str, method_t> methods;
 				methods["C4'"] = [](const Model &model) {
 							int len = num_residues(model);
 							Mat *mat = new Mat(len, 3);
@@ -71,7 +71,7 @@ namespace jian {
 							for (auto && chain : model) for (auto && res : chain) {
 								auto &&atom = res["C4*"];
 								for (int i = 0; i < 3; i++) {
-									(*mat)(n_res, i) = num_t(atom[i]);
+									(*mat)(n_res, i) = Num(atom[i]);
 								}
 								n_res++;
 							}
@@ -95,7 +95,7 @@ namespace jian {
 							for (auto && atom : res) {
 								if (std::find(atom.name.begin(), atom.name.end(), 'P') == atom.name.end()) {
 									for (int k = 0; k < 3; k++) {
-										(*mat)(i, k) = num_t(atom[k]);
+										(*mat)(i, k) = Num(atom[k]);
 									}
 									i++;
 								}
@@ -108,7 +108,7 @@ namespace jian {
 				method_t &method = methods[cg];
 				std::deque<Mat *> mats;
 				Mat *mat;
-				std::deque<str_t> names;
+				std::deque<Str> names;
 				auto dist = [](Mat *m1, Mat *m2) {return geom::rmsd(*m1, *m2); };
 				auto cluster = Cluster::fac_t::make(m_method, *m_par);
 				//Cluster cluster(k);
@@ -161,5 +161,5 @@ namespace jian {
 
 	}
 
-} // namespace jian
+END_JN
 

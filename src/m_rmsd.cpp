@@ -6,7 +6,7 @@
 #include <jian/geom.hpp>
 #include <jian/utils/string.hpp>
 
-namespace jian {
+BEGIN_JN
 
 	namespace {
 
@@ -19,8 +19,8 @@ namespace jian {
 			bool m_has_traj;
 			nums_t nums;
 			Par::pars_t m_files;
-			str_t m_ref;
-			str_t m_tgt;
+			Str m_ref;
+			Str m_tgt;
 
 			RmsdComponent(const Par &par) {
 				m_loose = par.has("loose");
@@ -37,8 +37,8 @@ namespace jian {
 
 			}
 
-			void set_nums(nums_t &nums, const str_t &par) {
-				std::vector<str_t> v, w;
+			void set_nums(nums_t &nums, const Str &par) {
+				std::vector<Str> v, w;
 				jian::tokenize(par, v, "+");
 				for (auto && i : v) {
 					jian::tokenize(i, w, "-");
@@ -124,5 +124,5 @@ namespace jian {
 		}
 	}
 
-} // namespace jian
+END_JN
 

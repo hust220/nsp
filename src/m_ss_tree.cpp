@@ -3,12 +3,12 @@
 #include <jian/nuc2d/loop.hpp>
 #include <jian/utils/exception.hpp>
 
-namespace jian {
+BEGIN_JN
 
 REGISTER_NSP_COMPONENT(ss_tree) {
     try {
-		str_t seq = "AAAACCCCUUUU";
-		str_t ss = "((((....))))";
+		Str seq = "AAAACCCCUUUU";
+		Str ss = "((((....))))";
         SSTree ss_tree;
 
 		par.set(seq, "seq");
@@ -25,5 +25,5 @@ REGISTER_NSP_COMPONENT(ss_tree) {
     }
 }
 
-} // namespace jian
+END_JN
 

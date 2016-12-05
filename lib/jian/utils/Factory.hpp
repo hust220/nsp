@@ -5,7 +5,7 @@
 #include <string>
 #include <memory>
 
-namespace jian {
+BEGIN_JN
 
 template<typename T>
 class Factory;
@@ -25,12 +25,12 @@ public:
 
     template<typename U>
     struct register_t {
-        register_t(const std::string &s) {
+        register_t(const S &s) {
             instance().s_methods[s] = [](Args && ...args)->T*{return new U{args...};};
         }
     };
 
-	static T *create(const std::string &s, Args ...args) {
+	static T *create(const S &s, Args ...args) {
 		if (instance().s_methods.find(s) != instance().s_methods.end()) {
 			return instance().s_methods[s](args...);
 		}
@@ -39,7 +39,7 @@ public:
 		}
 	}
 
-	static std::shared_ptr<T> make(const std::string &s, Args ...args) {
+	static std::shared_ptr<T> make(const S &s, Args ...args) {
 		if (instance().s_methods.find(s) != instance().s_methods.end()) {
 			std::shared_ptr<T> p(instance().s_methods[s](args...));
 			return p;
@@ -53,5 +53,5 @@ public:
 
 #define REGISTER_FACTORY(Callback, name, Type) namespace {Factory<Callback>::register_t<Type> reg(name);}
 
-} // namespace jian
+END_JN
 

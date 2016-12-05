@@ -44,14 +44,14 @@
 #define EACH_ATOM4(m, c) EACH_ATOM_HELPER(4, m, c)
 #define EACH_ATOM(m, c)  EACH_ATOM_HELPER( , m, c)
 
-namespace jian {
+BEGIN_JN
 
 	class Model : public std::deque<Chain> {
 	public:
-		std::string name = "unknown";
-		std::string type = "unknown";
+		S name = "unknown";
+		S type = "unknown";
 		int num = 1;
-		std::string m_cg = "aa";
+		S m_cg = "aa";
 
 		JN_DEF_ATOMS;
 		JN_DEF_RESIDUES;
@@ -62,5 +62,5 @@ namespace jian {
 	refs<Model> models() { return refs<Model>().append(*this); }\
 	refs<const Model> models() const { return refs<const Model>().append(*this); }
 
-} // namespace jian
+END_JN
 

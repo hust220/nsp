@@ -6,7 +6,7 @@
 #include <deque>
 #include "traits.hpp"
 
-namespace jian {
+BEGIN_JN
 
 template<typename LS>
 inline int len(LS &&ls) {
@@ -115,5 +115,5 @@ List slice(const List &list, int m, int n) {
     return new_list;
 }
 
-} // namespace jian
+END_JN
 

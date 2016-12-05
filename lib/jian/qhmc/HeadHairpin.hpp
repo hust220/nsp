@@ -2,13 +2,13 @@
 
 #include "Module.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace qhmc {
 
 class HeadHairpin : public Module {
 public:
     HeadHairpin(const Tuple &, const Tuple &, int);
-    virtual std::string type() const;
+    virtual S type() const;
 };
 
 } // namespace quadruple

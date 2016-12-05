@@ -2,7 +2,7 @@
 #include <jian/pdb.hpp>
 #include <jian/socket.hpp>
 
-namespace jian {
+BEGIN_JN
 	namespace {
 
 		class Server {
@@ -19,18 +19,18 @@ namespace jian {
 		public:
 			using head_t = std::map<std::string, std::string>;
 
-			std::string m_method;
-			std::string m_url;
-			std::string m_version;
+			S m_method;
+			S m_url;
+			S m_version;
 			head_t m_head;
-			std::string m_content;
+			S m_content;
 
-			Request(const std::string &s) {
+			Request(const S &s) {
 				std::istringstream stream;
 				stream.str(s);
 				tokenize_v v, w;
 				int n = 0;
-				for (std::string line; std::getline(stream, line); ) {
+				for (S line; std::getline(stream, line); ) {
 					tokenize(line, v, " ");
 					//LOG << v.size() << std::endl;
 					//for (auto && s : v) LOG << s << ','; LOG << std::endl;
@@ -46,7 +46,7 @@ namespace jian {
 					}
 					n++;
 				}
-				for (std::string line; std::getline(stream, line); ) {
+				for (S line; std::getline(stream, line); ) {
 					m_content += line;
 				}
 			}
@@ -67,13 +67,13 @@ namespace jian {
 		public:
 			using head_t = typename Request::head_t;
 
-			std::string m_version;
+			S m_version;
 			int m_status_code;
-			std::string m_status_identifier;
+			S m_status_identifier;
 			head_t m_head;
-			std::string m_content;
+			S m_content;
 
-			Response(const Request &request, const std::string &c = "") {
+			Response(const Request &request, const S &c = "") {
 				m_version = request.m_version;
 				m_status_code = 200;
 				m_status_identifier = "OK";
@@ -83,7 +83,7 @@ namespace jian {
 				m_head["Content-Type"] = "text/html";
 			}
 
-			Response &content(const std::string &c) {
+			Response &content(const S &c) {
 				m_content = c;
 				m_head["Content-Length"] = JN_STR(c.size());
 				return *this;
@@ -118,10 +118,10 @@ namespace jian {
 
 				while (true) {
 					auto rt = m_socket->accept(s);
-					std::string r;
+					S r;
 					while (true) {
 						try {
-							std::string s = m_socket->recv(rt.socket);
+							S s = m_socket->recv(rt.socket);
 							for (int i = 0; i + 3 < s.size(); i++) {
 								if (s[i] == '\r' && s[i + 1] == '\n' && s[i + 2] == '\r' && s[i + 3] == '\n') {
 									r += s.substr(0, i);
@@ -164,5 +164,5 @@ namespace jian {
 			});
 		}
 	}
-} // namespace jian
+END_JN
 

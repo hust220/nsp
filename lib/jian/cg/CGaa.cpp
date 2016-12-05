@@ -5,7 +5,7 @@
 #include <algorithm>
 #include "CGaa.hpp"
 
-namespace jian {
+BEGIN_JN
 	REG_CG("aa", CGaa);
 
 	CGaa::CGaa() {
@@ -20,4 +20,4 @@ namespace jian {
 		return r;
 	}
 
-} // namespace jian
+END_JN

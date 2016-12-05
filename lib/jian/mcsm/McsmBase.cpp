@@ -1,11 +1,12 @@
 #include <functional>
+#include "../nuc3d/Assemble.hpp"
 #include "McsmBase.hpp"
 
 #define JN_MCXP_TEMPPAR_SET(a) temp_par.set(PP_CAT(_mc_, a), PP_STRING3(PP_CAT(mc_, a)));
 #define JN_MCXP_PAR_SET(a) par.set(PP_CAT(_mc_, a), PP_STRING3(PP_CAT(mc_, a)));
-#define JN_MCXP_TEMP(a) LOG << PP_STRING3(PP_CAT(mc_, a)) << ' ' << PP_CAT(_mc_, a) << std::endl;
+#define JN_MCXP_TEMP(a) log << PP_STRING3(PP_CAT(mc_, a)) << ' ' << PP_CAT(_mc_, a) << std::endl;
 
-namespace jian {
+BEGIN_JN
 
 	MvEl::MvEl(int a, int b, MvEl::mvel_t t) : type(t) {
 		range.push_back({ a, b });
@@ -109,7 +110,7 @@ namespace jian {
 	}
 
 	void MvEl::merge(std::deque<MvEl *> &dq) {
-		LOG << "# Merge ranges..." << std::endl;
+		//log << "# Merge ranges..." << std::endl;
 		std::deque<MvEl *> els;
 		int flag = 1;
 		std::map<MvEl *, bool> m;
@@ -166,7 +167,15 @@ namespace jian {
 		}
 	}
 
+	void MCBase::set_traj_name() {
+#ifdef JN_PARA
+		m_traj = (g_mpi->m_size == 1 ? to_str(_name, ".traj.pdb") : to_str(_name, ".", g_mpi->m_rank + 1, ".traj.pdb"));
+#else
+		m_traj = to_str(_name, ".traj.pdb");
+#endif
+		log << "# Trajectory file: " << m_traj << std::endl;
 
+	}
 
 	void MCBase::init(const Par &par) {
 		TSP::init(par);
@@ -177,8 +186,9 @@ namespace jian {
 		m_max_angle = PI * 0.5;
 		m_box = 2;
 		m_box_size = 12;
+		m_will_write_traj = !_name.empty();
 
-		LOG << "# Extract residue conformations..." << std::endl;
+		log << "# Extract residue conformations..." << std::endl;
 		for_each_model(to_str(Env::lib(), "/RNA/pars/cg/CG2AA/templates.pdb"), [this](const Model &model, int n) {
 			ResConf::extract(m_res_confs, model.residues());
 		});
@@ -188,40 +198,37 @@ namespace jian {
 			}
 		}
 
-#ifdef JN_PARA
-		m_traj = (g_mpi->m_size == 1 ? to_str(_name, ".traj.pdb") : to_str(_name, ".", g_mpi->m_rank + 1, ".traj.pdb"));
-#else
-		m_traj = to_str(_name, ".traj.pdb");
-#endif
-		LOG << "# Trajectory file: " << m_traj << std::endl;
+		if (m_will_write_traj) {
+			set_traj_name();
+		}
 
-		LOG << "# Read parameters..." << std::endl;
+		log << "# Read parameters..." << std::endl;
 		m_par_file = m_cg_type;
 		_par->set(m_par_file, "par_file");
 		read_parameters();
 
-		LOG << "# Set parameters..." << std::endl;
+		log << "# Set parameters..." << std::endl;
 		set_parameters(*_par);
 
-		LOG << "# Print parameters..." << std::endl;
+		log << "# Print parameters..." << std::endl;
 		print_parameters();
 
-		LOG << "# Set continuous points..." << std::endl;
+		log << "# Set continuous points..." << std::endl;
 		set_continuous_pts();
 
-		LOG << "# Print continuous, angel, dihedral points..." << std::endl;
-		for (auto && i : m_continuous_pts) LOG << i << ' '; LOG << std::endl;
-		for (auto && i : m_ang_pts) LOG << i << ' '; LOG << std::endl;
-		for (auto && i : m_dih_pts) LOG << i << ' '; LOG << std::endl;
+		log << "# Print continuous, angel, dihedral points..." << std::endl;
+		for (auto && i : m_continuous_pts) log << i << ' '; log << std::endl;
+		for (auto && i : m_ang_pts) log << i << ' '; log << std::endl;
+		for (auto && i : m_dih_pts) log << i << ' '; log << std::endl;
 
-		LOG << "# Read initial structure" << std::endl;
+		log << "# Read initial structure" << std::endl;
 		par.set(m_init_sfile, "init");
 		if (m_init_sfile.empty()) {
 			if (par.has("init:chain")) {
 				_pred_chain = BuildChain()(_seq.size()).m_chain;
 			}
-			else /*if (par.has("init:raw"))*/ {
-				nuc3d::Assemble assemble(Par(par)("loop_building", "partial_raw")("log:off"));
+			else if (par.has("init:raw")) {
+				nuc3d::Assemble assemble(Par("seq", _seq)("ss", _ss)("loop_building", "partial_raw")("name", ""));
 				assemble.predict_one();
 				_pred_chain = assemble._pred_chain;
 			}
@@ -230,7 +237,7 @@ namespace jian {
 			chain_read_model(_pred_chain, m_init_sfile);
 		}
 
-		LOG << "# Check constraints" << std::endl;
+		log << "# Check constraints" << std::endl;
 		validate_constraints();
 
 		//_mc_queue = "heat:30000:20+cool:1000000";
@@ -259,7 +266,7 @@ namespace jian {
 	}
 
 	void MCBase::read_parameters() {
-		LOG << "Reading parameters of " << m_par_file << "..." << std::endl;
+		log << "Reading parameters of " << m_par_file << "..." << std::endl;
 		Par temp_par(Env::lib() + "/RNA/pars/nuc3d/mc/" + m_par_file + ".par");
 		JN_MAP(JN_MCXP_TEMPPAR_SET, JN_MCXP_PARS1, JN_MCXP_PARS2)
 	}
@@ -301,7 +308,9 @@ namespace jian {
 	}
 
 	void MCBase::mc_write() {
-		write_traj();
+		if (m_will_write_traj) {
+			write_traj();
+		}
 		write_en();
 		mc_num_writing++;
 	}
@@ -346,7 +355,7 @@ namespace jian {
 					ResConf::Confs &confs = m_res_confs[_pred_chain[min].name];
 					int l = size(confs);
 					int n = int(rand()*l);
-					geom::Superposition<num_t> sp;
+					geom::Superposition<Num> sp;
 					if (min == 0) {
 						Mat x(1, 3);
 						mat_set_rows(x, 0, _pred_chain[min + 1]["P"]);
@@ -367,13 +376,13 @@ namespace jian {
 					_pred_chain[min].set_atoms(r);
 				}
 				else {
-					num_t d1 = -1;
-					num_t d2 = -1;
+					Num d1 = -1;
+					Num d2 = -1;
 					if (min > 0) d1 = geom::distance(_pred_chain[min - 1][1], _pred_chain[min][0]);
 					if (max < size(_seq) - 1) d2 = geom::distance(_pred_chain[max][1], _pred_chain[max + 1][0]);
 					/*if (d1 > 4.0 || d2 > 4.0) {
 						int index = int(rand() * 3);
-						num_t dist = (rand() - 0.5) * 0.3 * _mc_max_shift;
+						Num dist = (rand() - 0.5) * 0.3 * _mc_max_shift;
 						for (int i = min; i <= max; i++) {
 							for (auto && atom : _pred_chain[i]) {
 								atom[index] += dist;
@@ -538,38 +547,38 @@ namespace jian {
 	}
 
 	void MCBase::run() {
-		LOG << "# Check initial structure..." << std::endl;
-		if (num_residues(_pred_chain) == 0) {
+		log << "# Check initial structure..." << std::endl;
+		if (_pred_chain.empty()) {
 			throw "Please give an initial structure before the optimization procedure!";
 		}
 
-		LOG << "# Initializing running..." << std::endl;
+		log << "# Initializing running..." << std::endl;
 		before_run();
 
 		save_fixed_ranges();
 
-		LOG << "# Carrying on CG processing with the Chain..." << std::endl;
+		log << "# Carrying on CG processing with the Chain..." << std::endl;
 		_pred_chain = m_cg->to_cg(_pred_chain);
 
-		LOG << "# Init space..." << std::endl;
+		log << "# Init space..." << std::endl;
 		init_space();
 
-		LOG << "# MC..." << std::endl;
+		log << "# MC..." << std::endl;
 		mc_run();
 
-		LOG << "# Print Constraints and Distances..." << std::endl;
+		log << "# Print Constraints and Distances..." << std::endl;
 		print_final_constraints();
 
-		LOG << "# Finishing running..." << std::endl;
+		log << "# Finishing running..." << std::endl;
 		finish_run();
 
-		LOG << "# Coarsed Grained To All Atom..." << std::endl;
+		log << "# Coarsed Grained To All Atom..." << std::endl;
 		cg_to_aa(chain_to_coords());
 
-		LOG << "# Restore helix..." << std::endl;
+		log << "# Restore helix..." << std::endl;
 		restore_fixed_ranges();
 
-		LOG << "# Transform..." << std::endl;
+		log << "# Transform..." << std::endl;
 		this->transform();
 
 	}
@@ -598,19 +607,19 @@ namespace jian {
 	void MCBase::print_final_constraints() {
 		double d;
 		int i, j;
-		LOG << "Print Contacts:" << std::endl;
+		log << "Print Contacts:" << std::endl;
 		for (auto && c : _constraints.contacts) {
 			i = c.key[0];
 			j = c.key[1];
 			d = dist_two_res(_pred_chain[i], _pred_chain[j]);
-			LOG << i << ' ' << j << " weight:" << c.weight << " dist:" << d << std::endl;
+			log << i << ' ' << j << " weight:" << c.weight << " dist:" << d << std::endl;
 		}
-		LOG << "Print Distances:" << std::endl;
+		log << "Print Distances:" << std::endl;
 		for (auto && c : _constraints.distances) {
 			i = c.key[0];
 			j = c.key[1];
 			d = dist_two_res(_pred_chain[i], _pred_chain[j]);
-			LOG << i << ' ' << j << " value:" << c.value << " weight:" << c.weight << " dist:" << d << std::endl;
+			log << i << ' ' << j << " value:" << c.value << " weight:" << c.weight << " dist:" << d << std::endl;
 		}
 	}
 
@@ -621,7 +630,7 @@ namespace jian {
 	void MCBase::before_run() {}
 	void MCBase::finish_run() {}
 
-	str_t MCBase::file_parameters() const {
+	Str MCBase::file_parameters() const {
 		return "3drna";
 	}
 

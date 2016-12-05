@@ -9,7 +9,7 @@
 #include "../pp.hpp"
 
 
-namespace jian {
+BEGIN_JN
 	const std::vector<std::string> MolWriter::chain_names = {
 		"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
 		"O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
@@ -170,7 +170,7 @@ namespace jian {
 			diff_residue(parser);
 	}
 
-	void chain_read_model(Chain &s, std::string f, std::string type) {
+	void chain_read_model(Chain &s, S f, S type) {
 		MolParser *parser = MolParser::make(jian::file::type(f), f, type);
 		do {
 			(*parser) >> s;
@@ -178,7 +178,7 @@ namespace jian {
 		delete parser;
 	}
 
-	Chain read_model_to_chain(std::string f, std::string type) {
+	Chain read_model_to_chain(S f, S type) {
 		Chain chain;
 		chain_read_model(chain, f, type);
 		return chain;

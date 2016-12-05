@@ -4,7 +4,7 @@
 #include "SST.hpp"
 #include "NASS.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace nuc2d {
 
 class BuildSST {
@@ -29,11 +29,11 @@ public:
         _type_id[left] = 0; _type_id[right] = 2;
     }
 
-    SST operator ()(const std::string &seq, const std::string &ss) {
+    SST operator ()(const S &seq, const S &ss) {
         return build_sst(seq, ss);
     }
 
-    SST build_sst(const std::string &seq, const std::string &ss) {
+    SST build_sst(const S &seq, const S &ss) {
         Frag integral = Frag(seq, ss);
         std::list<SST> ssts;
         extract_hairpins(integral, ssts);
@@ -111,7 +111,7 @@ public:
 };
 
 } // namespace nuc2d
-} // namespace jian
+END_JN
 
 #endif
 

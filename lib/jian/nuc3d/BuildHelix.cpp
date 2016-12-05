@@ -5,14 +5,14 @@
 #include "BuildHelix.hpp"
 #include "../utils/Env.hpp"
 
-namespace jian {
+BEGIN_JN
 
-Model build_helix(std::string seq) {
-    std::string lib = Env::lib() + "/RNA";
+Model build_helix(S seq) {
+    S lib = Env::lib() + "/RNA";
     if (seq.size() < 2 || seq.size() % 2 == 1) {
         throw std::string("jian::BuildHelix::operator (std::string) error! Unreasonable length.\nSequence: ") + seq;
     } else if (seq.size() == 2) {
-        std::string file_name = lib + "/basepair/" + seq + ".pdb";
+        S file_name = lib + "/basepair/" + seq + ".pdb";
         std::ifstream ifile(file_name.c_str());
         if (!ifile) {
             file_name = lib + "/basepair/XX.pdb";
@@ -20,7 +20,7 @@ Model build_helix(std::string seq) {
         ifile.close();
         return mol_read_to<Model>(file_name);
     } else if (seq.size() == 4) {
-        std::string file_name = lib + "/basepair/" + seq + ".pdb";
+        S file_name = lib + "/basepair/" + seq + ".pdb";
         std::ifstream ifile(file_name.c_str());
         if (!ifile) {
             file_name = lib + "/basepair/XXXX.pdb";
@@ -28,7 +28,7 @@ Model build_helix(std::string seq) {
         ifile.close();
         return mol_read_to<Model>(file_name);
     } else {
-        std::string file_name = lib + "/basepair/" + seq.substr(0, 2) + seq.substr(seq.size() - 2, 2) + ".pdb";
+        S file_name = lib + "/basepair/" + seq.substr(0, 2) + seq.substr(seq.size() - 2, 2) + ".pdb";
         std::ifstream ifile(file_name.c_str());
         if (!ifile) {
             file_name = lib + "/basepair/XXXX.pdb";
@@ -40,5 +40,5 @@ Model build_helix(std::string seq) {
     }
 }
 
-} // namespace jian
+END_JN
 

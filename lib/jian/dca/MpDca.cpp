@@ -2,7 +2,7 @@
 #include <numeric>
 #include "MpDca.hpp"
 
-namespace jian {
+BEGIN_JN
 	namespace dca {
 
 		REG_DCA_FAC("mp", MpDca);
@@ -11,7 +11,7 @@ namespace jian {
 			m_step_size = 0.01f;
 		}
 
-		MpDca::MpDca(std::string mol_type, float pw) : Dca(mol_type, pw) {
+		MpDca::MpDca(S mol_type, float pw) : Dca(mol_type, pw) {
 			m_step_size = 0.01f;
 		}
 
@@ -318,6 +318,6 @@ namespace jian {
 		}
 
 	} // namespace dca
-} // namespace jian
+END_JN
 
 

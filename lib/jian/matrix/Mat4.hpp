@@ -1,8 +1,9 @@
 #pragma once
 
 #include <array>
+#include "../utils/traits.hpp"
 
-namespace jian {
+BEGIN_JN
 
 class Mat4 {
 public:
@@ -38,6 +39,6 @@ public:
     void print() const;
 };
 
-} // namespace jian
+END_JN
 
 

@@ -6,7 +6,7 @@
 #include "../matrix.hpp"
 #include "../utils/Env.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	class ConvertImpl {
 	public:
@@ -48,8 +48,8 @@ namespace jian {
 			}
 		}
 
-		Residue read_res(const std::string &name) {
-			std::string file_name = Env::lib() + "/RNA/pars/nuc3d/Convert/" + name + ".pdb";
+		Residue read_res(const S &name) {
+			S file_name = Env::lib() + "/RNA/pars/nuc3d/Convert/" + name + ".pdb";
 			Chain chain;
 			chain_read_model(chain, file_name);
 			return chain[0];
@@ -66,7 +66,7 @@ namespace jian {
 			}
 		}
 
-		Residue convert_res(const Residue &res, const std::string &name) {
+		Residue convert_res(const Residue &res, const S &name) {
 			if (res.name == name) return res;
 			Residue r;
 			r.name = name;
@@ -85,7 +85,7 @@ namespace jian {
 			}
 		}
 
-		void add_sugar(Residue &r, const Residue &res, const std::string &name) {
+		void add_sugar(Residue &r, const Residue &res, const S &name) {
 			Mat a, b = mat_sugar(res);
 			Residue sugar;
 			if (name[0] == 'D') {
@@ -104,7 +104,7 @@ namespace jian {
 			}
 		}
 
-		void add_base(Residue &r, const Residue &res, const std::string &name) {
+		void add_base(Residue &r, const Residue &res, const S &name) {
 			Mat a = mat_bases[name], b = mat_base(res);
 			Residue base = bases[name];
 			auto sp = geom::suppos(a, b);
@@ -121,10 +121,10 @@ namespace jian {
 
 	//ConvertImpl l_convert_impl;
 
-	Residue convert_res(const Residue &res, const std::string &name) {
+	Residue convert_res(const Residue &res, const S &name) {
 		static ConvertImpl convert;
 		return convert.convert_res(res, name);
 	}
 
-} // namespace jian
+END_JN
 

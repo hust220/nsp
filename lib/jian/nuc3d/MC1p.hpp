@@ -16,7 +16,7 @@
 #include "TemplRec.hpp"
 #include "TSP.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace nuc3d {
 
 class MC1p : public TSP, public MC {
@@ -112,7 +112,7 @@ public:
     }
 
     template<typename T>
-    std::string partial_ss(std::string ss, T &&pair) {
+    S partial_ss(S ss, T &&pair) {
         for (auto && c : ss) {
             if (c == pair.first) {
                 c = '(';
@@ -154,14 +154,14 @@ public:
 
         auto it = m_trees.begin();
         LOOP_TRAVERSE((*it)->head(), 
-            if (L->has_helix() && L->s.len() == 1) {
-                set_pseudo_knots_helix(L->s);
+            if (_l->has_helix() && _l->s.len() == 1) {
+                set_pseudo_knots_helix(_l->s);
             }
         );
         for (it = m_trees.begin() + 1; it != m_trees.end(); it++) {
             LOOP_TRAVERSE((*it)->head(), 
-                if (L->has_helix()) {
-                    set_pseudo_knots_helix(L->s);
+                if (_l->has_helix()) {
+                    set_pseudo_knots_helix(_l->s);
                 }
             );
         }
@@ -251,12 +251,12 @@ public:
 
         auto set_res_module_types_ss = [&](loop *l, bool is_first){
             LOOP_TRAVERSE(l,
-                if (!_sample_hp && is_first && is_hp(L)) {
-                    update_range(make_hp_range(L));
-                } else if (is_first && is_il(L)) {
-                    update_range(make_il_range(L));
-                } else if (L->has_helix()) {
-                    update_range(make_helix_range(L->s));
+                if (!_sample_hp && is_first && is_hp(_l)) {
+                    update_range(make_hp_range(_l));
+                } else if (is_first && is_il(_l)) {
+                    update_range(make_il_range(_l));
+                } else if (_l->has_helix()) {
+                    update_range(make_helix_range(_l->s));
                 }
             );
         };
@@ -313,7 +313,7 @@ public:
         thread_local static int n = 1;
         std::ostringstream stream;
         stream << _name << ".mc1p." << _seed << ".traj.pdb";
-        std::string name = stream.str();
+        S name = stream.str();
 
         double old_len; double old_ang; double old_dih; double old_cons; double old_crash;
         if (n == 1) {
@@ -627,5 +627,5 @@ public:
 };
 
 } // namespace nuc3d
-} // namespace jian
+END_JN
 

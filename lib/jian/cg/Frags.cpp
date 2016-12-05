@@ -3,10 +3,10 @@
 #include "../utils/Env.hpp"
 #include "../geom.hpp"
 
-namespace jian {
+BEGIN_JN
 	std::map<std::string, std::map<int, Frags>> Frags::m_instances;
 
-	Frags &Frags::instance(std::string cg, int frag_size) {
+	Frags &Frags::instance(S cg, int frag_size) {
 		if (m_instances.find(cg) == m_instances.end() || m_instances[cg].find(frag_size) == m_instances[cg].end()) {
 			m_instances[cg][frag_size] = Frags();
 			m_instances[cg][frag_size].init(cg, frag_size);
@@ -27,7 +27,7 @@ namespace jian {
 		delete m_cg;
 	}
 
-	void Frags::init(std::string cg, int frag_size) {
+	void Frags::init(S cg, int frag_size) {
 		m_cg = CG::fac_t::create(cg);
 		m_res_size = m_cg->res_size();
 		m_frag_size = frag_size;
@@ -47,13 +47,13 @@ namespace jian {
 		return chain;
 	}
 
-	void Frags::extract_frags(const std::string &pdb) {
+	void Frags::extract_frags(const S &pdb) {
 		std::deque<int> dq;
 		Chain full_chain, chain;
 		Chain *p_chain_aa, *p_chain_cg;
 		Mat *p_mat;
 		int i, j, k, n;
-		std::string name;
+		S name;
 
 		chain_read_model(full_chain, pdb);
 		chain = m_cg->to_cg(full_chain);

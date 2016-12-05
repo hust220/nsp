@@ -5,10 +5,10 @@
 #include "../utils/Env.hpp"
 #include "RNA.hpp"
 
-namespace jian {
+BEGIN_JN
 
 struct res_t {
-    std::string name;
+    S name;
     std::deque<std::string> atoms;
 };
 
@@ -18,8 +18,8 @@ using rank_t = std::map<std::string, std::map<std::string, int>>;
 
 static all_res_t *load_rna_all_res() {
     all_res_t *all_res = new all_res_t;
-    std::string file_name = Env::lib() + "/RNA/pars/pdb/RNA/atoms";
-    std::string name;
+    S file_name = Env::lib() + "/RNA/pars/pdb/RNA/atoms";
+    S name;
 	BEGIN_READ_FILE(file_name, " ") {
 		if (N < 8) {
 			if (N % 2 == 0) {
@@ -51,15 +51,15 @@ static rank_t *get_rna_rank() {
 
 static std::unique_ptr<rank_t> l_rank {get_rna_rank()};
 
-int RNA::rank(const std::string &res_name, const std::string &atom_name) {
+int RNA::rank(const S &res_name, const S &atom_name) {
     return l_rank->at(res_name).at(atom_name);
 }
 
-using check_atom_t = struct {std::string chain_name, res_name, atom_name; int res_num;};
+using check_atom_t = struct {S chain_name, res_name, atom_name; int res_num;};
 using check_res_t = struct {std::deque<check_atom_t> repeat, lack, useless;};
 using check_t = std::array<check_res_t, 4>;
 
-static check_t check_res(const Residue &res, const std::string &chain_name) {
+static check_t check_res(const Residue &res, const S &chain_name) {
     std::array<std::map<std::string, int>, 4> arr;
     check_t check;
     for (int i = 0; i < 4; i++) {
@@ -105,6 +105,6 @@ void RNA::check(const Model &m) {
     }
 }
 
-} // namespace jian
+END_JN
 
 

@@ -7,16 +7,16 @@
 #include <jian/nuc3d/Format.hpp>
 #include <jian/utils/log.hpp>
 
-namespace jian {
+BEGIN_JN
 	namespace {
 		Format formater;
 
-		void read_chain(Chain &chain, std::string filename) {
+		void read_chain(Chain &chain, S filename) {
 			chain_read_model(chain, filename);
 			chain = formater(chain);
 		}
 
-		void sum_counts(std::string filename, int rows, int cols) {
+		void sum_counts(S filename, int rows, int cols) {
 			Veci v;
 			int i, j, d;
 			std::ifstream ifile;
@@ -37,7 +37,7 @@ namespace jian {
 			JN_OUT << std::endl;
 		}
 
-		void score_res(ScoreBase * scoring, std::string filename, std::string score_type = "pairing") {
+		void score_res(ScoreBase * scoring, S filename, S score_type = "pairing") {
 			Chain chain;
 			int i, j, l;
 
@@ -63,7 +63,7 @@ namespace jian {
 			}
 		}
 
-		void score_s(ScoreBase * scoring, std::string filename) {
+		void score_s(ScoreBase * scoring, S filename) {
 			Chain chain;
 			chain_read_model(chain, filename);
 			scoring->run(chain);
@@ -75,13 +75,13 @@ namespace jian {
 				std::endl;
 		}
 
-		void score_l(ScoreBase * scoring, std::string filename) {
+		void score_l(ScoreBase * scoring, S filename) {
 			BEGIN_READ_FILE(filename, " ") {
 				score_s(scoring, F[0]);
 			} END_READ_FILE;
 		}
 
-		void train_s(ScoreBase * scoring, std::string filename) {
+		void train_s(ScoreBase * scoring, S filename) {
 			Chain chain;
 
 			LOG << "Train " << filename << " ..." << std::endl;
@@ -89,7 +89,7 @@ namespace jian {
 			scoring->train(chain);
 		}
 
-		void train_l(ScoreBase * scoring, std::string filename) {
+		void train_l(ScoreBase * scoring, S filename) {
 			BEGIN_READ_FILE(filename, " ") {
 				train_s(scoring, F[0]);
 			} END_READ_FILE;
@@ -121,8 +121,8 @@ namespace jian {
 
 		REGISTER_NSP_COMPONENT(score) {
 			//std::ofstream stream;
-			std::string method;
-			std::string score_type = "pairing";
+			S method;
+			S score_type = "pairing";
 
 			par.set(score_type, "score_type");
 
@@ -155,7 +155,7 @@ namespace jian {
 			}
 			else if (par.has("sum_counts")) {
 				Par::pars_t & pars = par["sum_counts"];
-				std::string filename = pars[0];
+				S filename = pars[0];
 				int rows = std::stoi(pars[1]);
 				int cols = std::stoi(pars[2]);
 				sum_counts(filename, rows, cols);
@@ -197,7 +197,7 @@ namespace jian {
 			delete m_cg;
 		}
 	}
-} // namespace jian
+END_JN
 
 
 

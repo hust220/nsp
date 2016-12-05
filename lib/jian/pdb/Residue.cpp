@@ -9,17 +9,17 @@
 #include "Residue.hpp"
 #include "names.hpp"
 
-namespace jian {
+BEGIN_JN
 
-	bool res_is_type(const Residue &res, std::string type = "") {
+	bool res_is_type(const Residue &res, S type = "") {
 		if (type == "") {
 			return true;
 		}
 		else {
 			const pdb::Names & v = pdb::Names::instance(type);
-			std::string name = jian::upper(res.name);
+			S name = jian::upper(res.name);
 
-			return std::find_if(v.res.begin(), v.res.end(), [&name, &v](const std::string & s) {
+			return std::find_if(v.res.begin(), v.res.end(), [&name, &v](const S & s) {
 				const pdb::names_t & l = v.alias.at(s);
 				return name == s || std::find(l.begin(), l.end(), name) != l.end();
 			}) != v.res.end();
@@ -61,7 +61,7 @@ namespace jian {
 	}
 
 
-	std::string Residue::format_name(const std::string &s) {
+	S Residue::format_name(const S &s) {
 		std::smatch result;
 		if (std::regex_match(s, result, std::regex("^(\\w+)\\d+$"))) {
 			// tLeap would append a '5' after the name of first residue
@@ -79,7 +79,7 @@ namespace jian {
 		return std::deque<Atom>::operator [](n);
 	}
 
-	Atom &Residue::operator [](const std::string &s) {
+	Atom &Residue::operator [](const S &s) {
 		for (auto &&atom : *this) if (atom.name == s) { return atom; }
 		LOG << "Residue " << this->name << " : ";
 		for (auto && atom : *this) LOG << atom.name << " ";
@@ -87,7 +87,7 @@ namespace jian {
 		throw to_str("jian::Residue::operator[] error! Not found atom '", s, "'!");
 	}
 
-	const Atom &Residue::operator[](const std::string &s) const {
+	const Atom &Residue::operator[](const S &s) const {
 		for (auto &&atom : *this) if (atom.name == s) { return atom; }
 		LOG << "Residue " << this->name << " :" << std::endl;
 		LOG << "Residue " << this->name << " : ";
@@ -103,5 +103,5 @@ namespace jian {
 		return *this;
 	}
 
-} // namespace jian
+END_JN
 

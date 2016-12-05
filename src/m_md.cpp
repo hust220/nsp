@@ -6,7 +6,7 @@
 #include <deque>
 #include "nsp.hpp"
 
-namespace jian {
+BEGIN_JN
 
 class MD {
 public:
@@ -16,7 +16,7 @@ public:
     double _box_size = 15;
     double _rmin = 3;
 
-    void read_coords(std::string f) {
+    void read_coords(S f) {
 		std::ifstream ifile;
         FOPEN(ifile, f);
         ifile >> _n;
@@ -126,5 +126,5 @@ REGISTER_NSP_COMPONENT(md) {
     md.run(std::stoi(par["steps"][0]));
 }
 
-} // namespace jian
+END_JN
 

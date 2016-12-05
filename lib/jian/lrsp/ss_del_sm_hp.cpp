@@ -10,7 +10,7 @@
 #include "../utils/FSM.hpp"
 #include "ss_del_sm_hp.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace lrsp {
 namespace ss_del_sm_hp_detail {
 
@@ -72,7 +72,7 @@ bool check_ss(const ss_t & ss) {
 
 } // namespace ss_del_sm_hp_detail;
 
-std::string ss_del_sm_hp(std::string ss) {
+S ss_del_sm_hp(S ss) {
     using namespace ss_del_sm_hp_detail;
     assert(check_ss(ss) && "Illegal 2D structure!");
     while (del_hp(ss));
@@ -80,5 +80,5 @@ std::string ss_del_sm_hp(std::string ss) {
 }
 
 } // namespace lrsp
-} // namespace jian
+END_JN
 

@@ -4,7 +4,7 @@
 #include <string>
 #include "../pdb.hpp"
 
-namespace jian {
+BEGIN_JN
 
 class Format {
 private:
@@ -22,5 +22,5 @@ public:
     void sort(Molecule &pdb);
 };
 
-} // namespace jian
+END_JN
 

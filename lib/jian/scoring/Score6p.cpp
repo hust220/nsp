@@ -1,6 +1,6 @@
 #include "Score6p.hpp"
 
-namespace jian {
+BEGIN_JN
 	REG_SCORER("6p", Score6p);
 
 	Score6p::Score6p() {
@@ -89,4 +89,4 @@ namespace jian {
 		return n > 2;
 	}
 
-} // namespace jian
+END_JN

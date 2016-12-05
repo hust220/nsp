@@ -1,7 +1,7 @@
 #include "nsp.hpp"
 #include <jian/nuc2d/PredTriSS.hpp>
 
-namespace jian {
+BEGIN_JN
 
 REGISTER_NSP_COMPONENT(tri2d) {
     nuc2d::PredTriSS tri2d;
@@ -10,5 +10,5 @@ REGISTER_NSP_COMPONENT(tri2d) {
     tri2d.run(par["seq"][0], k);
 }
 
-} // namespace jian
+END_JN
 

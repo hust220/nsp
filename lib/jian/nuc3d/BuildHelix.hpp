@@ -3,9 +3,9 @@
 #include <string>
 #include "../pdb/Model.hpp"
 
-namespace jian {
+BEGIN_JN
 
-Model build_helix(std::string seq);
+Model build_helix(S seq);
 
-} // namespace jian
+END_JN
 

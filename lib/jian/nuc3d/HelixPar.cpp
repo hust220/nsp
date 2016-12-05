@@ -5,12 +5,13 @@
 #include "../utils/math.hpp"
 #include "../utils/Par.hpp"
 #include "../utils/Env.hpp"
+#include "../utils/traits.hpp"
 
-namespace jian {
+BEGIN_JN
 
 
 	HelixPar::HelixPar() {
-		std::string path = Env::lib() + "/RNA/pars/nuc3d/HelixPar/helix.pars";
+		S path = Env::lib() + "/RNA/pars/nuc3d/HelixPar/helix.pars";
 		Par par(path);
 		dih_backbone = std::stod(par["dih_backbone"][0]);
 		dist_bp = std::stod(par["dist_bp"][0]);
@@ -40,5 +41,5 @@ namespace jian {
 		return dihs[n - 1];
 	}
 
-} // namespace jian
+END_JN
 

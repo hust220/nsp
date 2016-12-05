@@ -11,7 +11,7 @@
 #include <deque>
 #include <array>
 
-namespace jian {
+BEGIN_JN
 
 template<typename T>
 struct is_eigen_mat {
@@ -70,5 +70,5 @@ public:
 template<typename T>
 using mat_value_type_t = typename mat_value_type<T>::type;
 
-} // namespace jian
+END_JN
 

@@ -3,7 +3,7 @@
 #include <array>
 #include "MatBase.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	template<typename NumType>
 	class Matrix<3, NumType> : public MatBase<3, NumType> {
@@ -152,6 +152,6 @@ namespace jian {
 	using Mat3i = Matrix<3, int>;
 	using Mat3u = Matrix<3, unsigned>;
 
-} // namespace jian
+END_JN
 
 

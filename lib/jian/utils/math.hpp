@@ -1,9 +1,10 @@
-#ifndef JIAN_ETL_MATH
-#define JIAN_ETL_MATH
+#pragma once
+
+#include "../utils/traits.hpp"
 
 #define PI 3.1415927
 
-namespace jian {
+BEGIN_JN
 
 template<typename T> 
 inline T square(const T &data) {
@@ -20,9 +21,8 @@ inline auto sum(F &&f, T1 &&t1, T2 && ...t2) {
     return f(std::forward<T1>(t1)) + sum(f, std::forward<T2>(t2)...);
 }
 
-} // namespace jian
+END_JN
 
-#endif
 
 
 

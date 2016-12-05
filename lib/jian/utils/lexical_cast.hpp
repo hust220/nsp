@@ -2,8 +2,9 @@
 
 #include <string>
 #include <sstream>
+#include "traits.hpp"
 
-namespace jian {
+BEGIN_JN
 
 template<typename T, typename U>
 T lexical_cast(U && u) {
@@ -15,5 +16,5 @@ T lexical_cast(U && u) {
     return t;
 }
 
-}
+END_JN
 

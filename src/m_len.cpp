@@ -1,7 +1,7 @@
 #include "nsp.hpp"
 #include <jian/pdb.hpp>
 
-namespace jian {
+BEGIN_JN
 
 REGISTER_NSP_COMPONENT(len) {
     auto && m = mol_read_to<Model>(par.get("s", "pdb", "cif"));
@@ -18,5 +18,5 @@ REGISTER_NSP_COMPONENT(len) {
     }
 }
 
-} // namespace jian
+END_JN
 

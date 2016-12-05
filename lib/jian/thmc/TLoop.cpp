@@ -1,7 +1,7 @@
 #include "TLoop.hpp"
 #include <numeric>
 
-namespace jian {
+BEGIN_JN
 namespace nuc3d {
 namespace triple {
 
@@ -30,12 +30,12 @@ TLoop::TLoop(const Tuple &t1, const Tuple &t2) {
     }
 }
 
-std::string TLoop::type() const {
+S TLoop::type() const {
     return "loop";
 }
 
 } // namespace triple
 }
-} // namespace jian
+END_JN
 
 

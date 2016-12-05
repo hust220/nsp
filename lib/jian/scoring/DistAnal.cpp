@@ -2,7 +2,7 @@
 #include "../geom.hpp"
 #include "DistAnal.hpp"
 
-namespace jian {
+BEGIN_JN
 
 #define FREE_COORDS do {\
 	for (auto && p : m_coords) {\
@@ -36,7 +36,7 @@ namespace jian {
 		FREE_COORDS;
 	}
 
-	inline int DistAnal::res_type(std::string name) {
+	inline int DistAnal::res_type(S name) {
 		return (name == "A" ? 1 : (name == "U" ? 2 : (name == "G" ? 3 : (name == "C" ? 4 : (name == "T" ? 2 : -1)))));
 	}
 
@@ -139,7 +139,7 @@ namespace jian {
 		return *this;
 	}
 
-	void DistAnal::read_freqs(std::string filename) {
+	void DistAnal::read_freqs(S filename) {
 		int i, j, k;
 		std::ifstream ifile;
 
@@ -212,5 +212,5 @@ namespace jian {
 	}
 
 
-} // namespace jian
+END_JN
 

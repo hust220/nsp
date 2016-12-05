@@ -12,44 +12,47 @@
 #include "../pdb.hpp"
 #include "../cg.hpp"
 
-namespace jian {
+BEGIN_JN
 
 class TSP {
 public:
-    std::string _name = "assemble";
-    std::string _seq;
-    std::string _ss;
-    std::string _lib;
-    std::string _family = "other";
-    std::string _type = "RNA";
-    std::string _file_distances;
-	std::string _file_dca;
-	std::string _file_contacts;
-	std::string m_cg_type;
-	std::shared_ptr<CG> m_cg;
+	Log log;
+    S _name = "assemble";
+    S _seq;
+    S _ss;
+    S _lib;
+    S _family = "other";
+    S _type = "RNA";
+    S _file_distances;
+	S _file_dca;
+	S _file_contacts;
+	S m_cg_type;
+	SP<CG> m_cg;
     Constraints _constraints;
-    std::deque<std::string> _disused_pdbs;
-	std::string m_out_pdb;
+    Qs _disused_pdbs;
+	S m_out_pdb;
 	Chain _pred_chain;
     std::time_t _start_time, _end_time;
-    int _hinge = 2;
-    int _num = 1;
-    int _num_sampling = 100;
-    bool _is_test = false; // Is this a test case or not?
-    std::string _method = "FA";
-    std::string _native;
+    I _hinge = 2;
+    I _num = 1;
+    I _num_sampling = 100;
+    B _is_test = false; // Is this a test case or not?
+    S _method = "FA";
+    S _native;
     SSTree _ss_tree;
-    std::string _strategy = "loose";
-    std::string _source_pdb;
-    double _seed = 11;
-    std::string m_mode = "auto";
+    S _strategy = "loose";
+    S _source_pdb;
+    D _seed = 11;
+    S m_mode = "auto";
     const Par *_par = NULL;
-    std::string m_cmd;
-	std::vector<int> m_chain_lens{};
-	std::vector<std::string> m_chain_names{};
+    S m_cmd;
+	Vi m_chain_lens{};
+	Vs m_chain_names{};
+	B m_will_log;
 
     TSP() = default;
     ~TSP();
+	void set_logfile_name();
     void init(const Par &pars);
     void set_constraints();
 	void set_disused_pdbs();
@@ -64,5 +67,5 @@ public:
 
 };
 
-} // namespace jian
+END_JN
 

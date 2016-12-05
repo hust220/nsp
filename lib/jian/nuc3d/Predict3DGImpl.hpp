@@ -11,7 +11,7 @@
 #include "../utils/rand.hpp"
 #include "../utils/file.hpp"
 
-namespace jian {
+BEGIN_JN
 
 class Predict3DGImpl : public BasicPredict3D, public TSP {
 public:
@@ -52,8 +52,8 @@ public:
                 SSTree ss_tree; 
                 ss_tree.make(_seq, ss);
                 LOOP_TRAVERSE(ss_tree.head(), 
-                    set_bound_loop(_dist_bound, _dih_bound, L); 
-                    set_bound_helix(_dist_bound, _dih_bound, L->s)
+                    set_bound_loop(_dist_bound, _dih_bound, _l); 
+                    set_bound_helix(_dist_bound, _dih_bound, _l->s)
                 );
             } else {
                 break;
@@ -152,5 +152,5 @@ public:
 
 };
 
-} // namespace jian
+END_JN
 

@@ -2,7 +2,7 @@
 #include <jian/scoring/new_score.hpp>
 #include <jian/utils/file.hpp>
 
-namespace jian {
+BEGIN_JN
 
 REGISTER_NSP_COMPONENT(new_score) {
 	if (par.has("l")) {
@@ -14,7 +14,7 @@ REGISTER_NSP_COMPONENT(new_score) {
     }
 }
 
-} // namespace jian
+END_JN
 
 
 

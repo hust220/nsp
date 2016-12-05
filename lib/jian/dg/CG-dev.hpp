@@ -3,7 +3,7 @@
 
 #include "Sys.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace dg {
 
 class CG {
@@ -53,7 +53,7 @@ public:
 };
 
 } // namespace dg
-} // namespace jian
+END_JN
 
 #endif
 

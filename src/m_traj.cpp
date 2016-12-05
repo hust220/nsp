@@ -7,16 +7,16 @@
 #include <jian/geom.hpp>
 #include <jian/utils/string.hpp>
 
-namespace jian {
+BEGIN_JN
 
 	namespace {
 
 		class TrajComponent {
 		public:
-			str_t m_func;
-			str_t m_traj;
-			str_t m_ref_file;
-			str_t m_align;
+			Str m_func;
+			Str m_traj;
+			Str m_ref_file;
+			Str m_align;
 			Chain m_ref;
 			std::deque<int> m_common_ref, m_common_tgt;
 			int m_bin = 1;
@@ -112,7 +112,7 @@ namespace jian {
 
 			void set_common() {
 				std::ifstream ifile;
-				str_t seq1, seq2;
+				Str seq1, seq2;
 				std::deque<int> dq1, dq2;
 				int i, l, n1, n2;
 
@@ -178,5 +178,5 @@ namespace jian {
 		}
 	}
 
-} // namespace jian
+END_JN
 

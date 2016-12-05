@@ -6,7 +6,7 @@
 
 #include "../pdb.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	class CG;
 
@@ -17,16 +17,16 @@ namespace jian {
 		std::vector<Chain *> m_chains_aa;
 		std::vector<Chain *> m_chains_cg;
 		std::map<std::string, std::vector<int>> m_ids;
-		std::string m_path;
+		S m_path;
 		int m_frag_size;
 		int m_res_size;
 		static std::map<std::string, std::map<int, Frags>> m_instances;
 
-		static Frags &instance(std::string cg, int frag_size);
+		static Frags &instance(S cg, int frag_size);
 
 		~Frags();
 
-		void init(std::string cg, int frag_size);
+		void init(S cg, int frag_size);
 
 		Chain get_chain(int i, const Mat &c);
 
@@ -63,6 +63,6 @@ namespace jian {
 		//	return chain;
 		//}
 
-		void extract_frags(const std::string &pdb);
+		void extract_frags(const S &pdb);
 	};
 }

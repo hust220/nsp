@@ -1,6 +1,6 @@
 #include "Helix.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace qhmc {
 
 REGISTER_QUADRUPLE_MODULE_FACTORY("helix", Helix);
@@ -26,7 +26,7 @@ Helix::Helix(const Tuple &t1, const Tuple &t2, int len) {
     }
 }
 
-std::string Helix::type() const {
+S Helix::type() const {
     return "helix";
 }
 

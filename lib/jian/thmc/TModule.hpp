@@ -6,7 +6,7 @@
 #include "../matrix.hpp"
 #include "../utils/Factory.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace nuc3d {
 namespace triple {
 
@@ -24,13 +24,13 @@ public:
     std::unique_ptr<Mati> d_indices;
 
     void set_indices(int, int, int);
-    virtual std::string type() const = 0;
+    virtual S type() const = 0;
 };
 
 #define REGISTER_TRIPLE_MODULE_FACTORY(name, Type) REGISTER_FACTORY(jian::nuc3d::triple::TModule::cons_t, name, Type)
 
 } // namespace triple
 } // namespace nuc3d
-} // namespace jian
+END_JN
 
 

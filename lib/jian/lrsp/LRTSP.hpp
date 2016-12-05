@@ -10,7 +10,7 @@
 #include "../nuc3d/BuildLoopDG.hpp"
 #include "../dhmc/DHMC.hpp"
 
-namespace jian {
+BEGIN_JN
 namespace lrsp {
 
 class LRTSP {
@@ -31,11 +31,11 @@ public:
     std::list<Chain *> _gc_chain;
     std::list<std::thread> threads;
 
-    std::string _name;
-    std::string _seq;
-    std::string _ss;
-    std::string _out;
-    std::string _traj;
+    S _name;
+    S _seq;
+    S _ss;
+    S _out;
+    S _traj;
     int _max_len = 400;
 
     LRTSP(const Par &par) {
@@ -100,7 +100,7 @@ public:
         }
     }
 
-    static void lrtsp_chain_refine(Chain *chain, loop *l, std::string log) {
+    static void lrtsp_chain_refine(Chain *chain, loop *l, S log) {
         log_file(log);
         chain_refine<CGpsb>(*chain, l, {});
     }
@@ -347,7 +347,7 @@ public:
         }
     }
 
-    void print_templates(const map_templates_t &m, std::string name) {
+    void print_templates(const map_templates_t &m, S name) {
         LOGI << name << std::endl;
         for (auto && pair : m) {
             if (pair.second != NULL) {
@@ -376,10 +376,10 @@ public:
 
     void init_templates(loop *l) {
         LOOP_TRAVERSE(l,
-            _helix_templates[L] = NULL;
-            _loop_templates[L] = NULL;
-            _helix_templates_mc[L] = NULL;
-            _loop_templates_mc[L] = NULL;
+            _helix_templates[_l] = NULL;
+            _loop_templates[_l] = NULL;
+            _helix_templates_mc[_l] = NULL;
+            _loop_templates_mc[_l] = NULL;
         );
     }
 
@@ -420,5 +420,5 @@ public:
 };
 
 } // namespace lrsp
-} // namespace jian
+END_JN
 

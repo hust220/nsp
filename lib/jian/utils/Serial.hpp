@@ -5,7 +5,7 @@
 #include "string.hpp"
 #include "../utils/traits.hpp"
 
-namespace jian {
+BEGIN_JN
 
 	template<typename T, JN_ENABLE(std::is_integral<T>::value || std::is_floating_point<T>::value || JN_IS_SAME(T, char))>
 	inline std::ostream &operator <(std::ostream &stream, const T &t) {
@@ -13,7 +13,7 @@ namespace jian {
 		return stream;
 	}
 
-	inline std::ostream &operator <(std::ostream &stream, const std::string &t) {
+	inline std::ostream &operator <(std::ostream &stream, const S &t) {
 		stream.write(t.c_str(), t.size() + 1);
 		return stream;
 	}
@@ -24,7 +24,7 @@ namespace jian {
 		return stream;
 	}
 
-	inline std::istream &operator >(std::istream &stream, std::string &t) {
+	inline std::istream &operator >(std::istream &stream, S &t) {
 		char c[2];
 		std::ostringstream ostream;
 
@@ -39,15 +39,6 @@ namespace jian {
 	class Serial {
 	public:
 
-		//template<typename T, JN_ENABLE(std::is_integral<T>::value || std::is_floating_point<T>::value || JN_IS_SAME(T, char))>
-		//void write(str_tstream &stream, const T &t) {
-		//	stream.write(reinterpret_cast<const char *>(&t), sizeof t);
-		//}
-
-		//void write(str_tstream &stream, const str_t &t) {
-		//	stream.write(t.c_str(), t.size() + 1);
-		//}
-
 		void stringify_(std::stringstream &stream) {}
 
 		template<typename Head, typename... Tail>
@@ -58,9 +49,9 @@ namespace jian {
 		}
 
 		template<typename Head, typename... Tail>
-		std::string stringify(Head && head, Tail && ...tail) {
+		S stringify(Head && head, Tail && ...tail) {
 			std::stringstream stream;
-			str_t s;
+			Str s;
 			std::size_t size;
 
 			stringify_(stream, head, tail...);
@@ -75,7 +66,7 @@ namespace jian {
 		//	stream.read(reinterpret_cast<char *>(&t), sizeof t);
 		//}
 
-		//void read(std::stringstream &stream, std::string &t) {
+		//void read(std::stringstream &stream, S &t) {
 		//	char c[2];
 		//	std::ostringstream ostream;
 
@@ -96,7 +87,7 @@ namespace jian {
 		}
 
 		template<typename Head, typename... Tail>
-		void parse(const std::string &s, Head && head, Tail && ...tail) {
+		void parse(const S &s, Head && head, Tail && ...tail) {
 			std::stringstream stream;
 			stream.write(s.c_str(), s.size());
 			parse_(stream, head, tail...);
