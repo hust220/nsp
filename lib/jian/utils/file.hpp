@@ -122,9 +122,14 @@ class File :
 public:
 	Str filename;
 	Str delimiters;
+	STD_ ifstream stream;
 
-	File(Str filename_, Str delimiters_) {
+	File() = delete;
 
+	File(Str filename_, Str delimiters_) :
+		filename(filename_), delimiters(delimiters_), FileRange(&stream, delimiters)
+	{
+		stream.open(filename);
 	}
 
 	~File() {
