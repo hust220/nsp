@@ -46,6 +46,12 @@ public:
 		return seq;
 	}
 
+	friend STD_ ostream &operator <<(STD_ ostream &stream, SSTreeRange sst) {
+		for (auto && sse : sst) {
+			stream << sse << STD_ endl;
+		}
+	}
+
 };
 
 class SSTree : public Tree<SSTreeRange> {

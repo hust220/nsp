@@ -111,9 +111,11 @@ template<typename T>
 void chain_refine(Chain &chain, SSE *l, const fixed_ranges_t &fixed_ranges = {}, S traj = "") {
 	Par par;
 	par._orig_pars = { "nsp", "" };
-	S seq, ss;
-	seq_read_tree(seq, l);
-	ss_read_tree(ss, l);
+	//S seq, ss;
+	Str seq = SSTreeRange(l).seq();
+	Str ss = SSTreeRange(l).ss();
+	//seq_read_tree(seq, l);
+	//ss_read_tree(ss, l);
 	par._pars["traj"].push_front(traj);
 	par._pars["seq"].push_front(seq);
 	par._pars["ss"].push_front(ss);

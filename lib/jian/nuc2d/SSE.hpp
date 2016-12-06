@@ -191,10 +191,11 @@ public:
 		return !is_open() && num_sons() > 1;
 	}
 
-//    friend std::ostream &operator <<(std::ostream &out, const SSE &l) {
-//        out << "Loop: " << l.seq() << ' ' << l.ss() << ' ';
-//        LOOP_EACH(&l, out << RES->num << ' ');
-//    }
+    friend STD_ ostream &operator <<(STD_ ostream &stream, const SSE &sse) {
+		stream << "SSE (" << &sse << ") : " << STD_ endl;
+		stream << sse.helix << STD_ endl;
+		stream << sse.loop;
+    }
 
    // operator Str() const {
    //     std::ostringstream stream;

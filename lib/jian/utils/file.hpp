@@ -3,6 +3,7 @@
 #include "string.hpp"
 #include <regex>
 #include <fstream>
+#include "Range.hpp"
 
 BEGIN_JN
 
@@ -45,6 +46,93 @@ struct file {
 		do
 
 #define END_READ_FILE while(0);N++;}FCLOSE(ifile);}while(0)
+
+struct FileLine {
+	Str line;
+	tokenize_v arr;
+	int n;
+};
+
+class FileRangeIt :
+	public RangeIt<FileRangeIt, FileLine>
+{
+public:
+	using Val = FileLine;
+	using Self = FileRangeIt;
+	using Base = RangeIt<Self, Val>;
+
+	STD_ ifstream *stream;
+	Val file_line;
+	Str delimiters = " ";
+	Val *val;
+
+	FileRangeIt() 
+	{
+		val = NULL;
+	}
+
+	void next_line() {
+		if (STD_ getline(*stream, file_line.line)) {
+			tokenize(file_line.line, file_line.arr, delimiters);
+			file_line.n++;
+			val = &file_line;
+		}
+		else {
+			val = NULL;
+		}
+	}
+
+	Self &operator ++() {
+		if (val == NULL) throw "ListRangeIt operator ++ error!";
+		next_line();
+		return *this;
+	}
+};
+
+class FileRange :
+	public Range<FileRangeIt>
+{
+public:
+	using It = FileRangeIt;
+
+	STD_ ifstream *stream;
+	Str delimiters;
+
+	FileRange(STD_ ifstream &stream_, Str delimiters_ = " ") :
+		stream(&stream_), delimiters(delimiters_)
+	{}
+
+	virtual It begin() const {
+		It it;
+		it.stream = stream;
+		it.delimiters = delimiters;
+		it.next_line();
+		return it;
+	}
+
+	virtual It end() const {
+		return It{};
+	}
+
+};
+
+class File :
+	public Entity<FileRange>
+{
+public:
+	Str filename;
+	Str delimiters;
+
+	File(Str filename_, Str delimiters_) {
+
+	}
+
+	~File() {
+
+	}
+};
+
+
 
 END_JN
 

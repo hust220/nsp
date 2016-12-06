@@ -59,7 +59,7 @@ public:
 
     int loop_length(SSE *l) {
         if (l != NULL) {
-            auto p = loop_head_tail(l);
+			auto p = l->head_tail();
             return p.second - p.first + 1;
         } else {
             return 0;
@@ -68,7 +68,7 @@ public:
 
     void set_templates(SSE *l, bool &b_NR) {
         if (l != NULL) {
-			auto p = loop_head_tail(l);
+			auto p = l->head_tail();
             if (l->has_loop() && p.second - p.first < _max_len) {
                 set_templates_all(l);
             } else {
@@ -88,7 +88,7 @@ public:
     void set_fixed_ranges(SSE *l, fixed_ranges_t &fixed_ranges) {
         if (l != NULL) {
             if (l->has_loop()) {
-                auto p = loop_head_tail(l);
+                auto p = l->head_tail();
                 if (p.second - p.first < _max_len) {
                     fixed_ranges.push_back({p.first, p.second});
                 } else {
@@ -113,7 +113,7 @@ public:
         position_templates_mc(NULL, l);
         Chain *chain = make_chain();
         chain->resize(loop_length(l));
-        auto p = loop_head_tail(l);
+        auto p = l->head_tail();
         assemble_templates_mc(*chain, l, p.first);
         if (b_NR) {
             std::ostringstream stream;
@@ -157,7 +157,7 @@ public:
     void set_loop_templates(SSE *l, bool &b_NR) {
         if (_loop_records[l].empty()) {
             b_NR = true;
-            _loop_templates[l] = build_chain_dg(l->seq(), NASS::lower_ss(l->ss()));
+            _loop_templates[l] = build_chain_dg(l->loop.seq(), NASS::lower_ss(l->loop.ss()));
         } else {
             _loop_templates[l] = make_chain();
             nuc3d::chain_read_record(*(_loop_templates[l]), _loop_records[l][0]);
@@ -176,7 +176,7 @@ public:
     void set_loop_templates_mc(SSE *l, bool &b_NR) {
         if (_loop_records[l].empty()) {
             b_NR = true;
-            _loop_templates_mc[l] = build_chain_dg(l->seq(), NASS::lower_ss(l->ss()));
+            _loop_templates_mc[l] = build_chain_dg(l->loop.seq(), NASS::lower_ss(l->loop.ss()));
         } else {
             _loop_templates_mc[l] = make_chain();
             nuc3d::chain_read_record(*(_loop_templates_mc[l]), _loop_records[l][0]);
@@ -186,7 +186,7 @@ public:
     void position_templates(Mat *m, SSE *l) {
         if (l != NULL) {
             position_hairpin(m, _helix_templates[l], _loop_templates[l]);
-			auto p = loop_head_tail(l);
+			auto p = l->head_tail();
             if (l->has_loop() && p.second - p.first < _max_len) {
                 // pass
             } else if (_loop_templates[l] != NULL) {
@@ -268,7 +268,7 @@ public:
     void assemble_templates(Chain &chain, SSE *l) {
         LOGI << "assemble loop " << l << std::endl;
         if (l != NULL) {
-			auto p = loop_head_tail(l);
+			auto p = l->head_tail();
             if (l->has_loop() && p.second - p.first < _max_len) {
                 // pass
                 chain_from_template(chain, l, _loop_templates[l]);
@@ -294,7 +294,7 @@ public:
     }
 
     void chain_from_template(Chain &chain, SSE *l, Chain *chain_loop) {
-        auto p = loop_head_tail(l);
+        auto p = l->head_tail();
         int n = 0;
         for (int i = p.first; i <= p.second; i++) {
             chain[i] = chain_loop->at(n);
@@ -305,40 +305,44 @@ public:
     void chain_from_template(Chain &chain, SSE *l, map_templates_t *helix_templates, map_templates_t *loop_templates, int beg) {
         if (l != NULL) {
             std::cout << "beg: " << beg << std::endl;
-            l->print();
+            //l->print();
             if (l->has_loop()) {
                 Chain *loop_chain = loop_templates->at(l);
                 if (loop_chain == NULL) {
                     throw "chain_from_template error! no loop chain";
                 }
                 int i = 0;
-                for (res *r = l->head; r != NULL; r = r->next) {
-                    if (r->type != '&') {
-                        chain[r->num - 1 - beg] = loop_chain->at(i);
+				for (auto && r : l->loop) {
+                //for (res *r = l->head; r != NULL; r = r->next) {
+                    if (r.type != '&') {
+                        chain[r.num - 1 - beg] = loop_chain->at(i);
                         i++;
                     }
                 }
                 LOGI << std::endl;
             }
             if (l->has_helix()) {
-                int len = l->s.len();
+                int len = size(l->helix);
                 Chain *helix_chain = helix_templates->at(l);
                 if (helix_chain == NULL) {
                     throw "chain_from_template error! no helix chain";
                 }
-                HELIX_EACH(l->s,
-                    LOGI << BP->res1.num - 1 - beg << '-' << N_BP << ' ';
-                    LOGI << BP->res2.num - 1 - beg << '-' << 2*len-1-N_BP << std::endl;
-                    chain[BP->res1.num - 1 - beg] = (*helix_chain)[N_BP];
-                    chain[BP->res2.num - 1 - beg] = (*helix_chain)[2*len-1-N_BP];
-                );
+				int n_bp = 0;
+				for (auto && bp : l->helix) {
+					//HELIX_EACH(l->s,
+					LOGI << bp.res1.num - 1 - beg << '-' << n_bp << ' ';
+					LOGI << bp.res2.num - 1 - beg << '-' << 2 * len - 1 - n_bp << std::endl;
+					chain[bp.res1.num - 1 - beg] = (*helix_chain)[n_bp];
+					chain[bp.res2.num - 1 - beg] = (*helix_chain)[2 * len - 1 - n_bp];
+					n_bp++;
+				}
             }
         }
     }
 
     void find_records(SSE *l) {
         if (l != NULL) {
-            l->print();
+            //l->print();
             nuc3d::find_loop_records(l, _loop_records[l]);
             nuc3d::find_helix_records(l, _helix_records[l]);
             for (SSE *t = l->son; t != NULL; t = t->brother) {
@@ -386,7 +390,7 @@ public:
 
     void pred() {
         LOGI << "# constructing ss tree..." << std::endl;
-        SSE *l = ss_tree(_seq, _ss);
+        SSE *l = SSTree(_seq, _ss).head;
         LOGI << "# initializing templates..." << std::endl;
         init_templates(l);
         LOGI << "# searching for records..." << std::endl;
@@ -416,7 +420,7 @@ public:
         }
         mol_write(*chain, _out);
         LOGI << "# free ss tree..." << std::endl;
-        free_ss_tree(l);
+        //free_ss_tree(l);
     }
 };
 

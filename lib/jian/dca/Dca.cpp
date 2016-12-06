@@ -24,7 +24,7 @@ BEGIN_JN
 		void Dca::trim_seqs(Dca::seqs_t &seqs, int n) {
 			int i = 0;
 			int a = -1, b = -1;
-			char c_old;
+			char c_old = '-';
 			int l = seqs[n].size();
 			for (auto && c : seqs[n]) {
 				if (a == -1 && c != '-') {
