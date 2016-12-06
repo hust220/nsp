@@ -74,7 +74,7 @@ public:
 
 };
 
-class Hairpin {
+class SSE {
 public:
     Helix _helix;
     Loop _loop;
@@ -103,7 +103,7 @@ public:
 
 };
 
-typedef Tree<Hairpin> SST;
+typedef Tree<SSE> SST;
 
 template<typename T, std::enable_if_t<std::is_same<std::decay_t<T>, Frag>::value, int> = 42>
 std::ostream &operator <<(std::ostream &out, T &&frag) {
@@ -112,9 +112,9 @@ std::ostream &operator <<(std::ostream &out, T &&frag) {
     return out;
 }
 
-template<typename T, std::enable_if_t<std::is_same<std::decay_t<T>, Hairpin>::value, int> = 42>
+template<typename T, std::enable_if_t<std::is_same<std::decay_t<T>, SSE>::value, int> = 42>
 std::ostream &operator <<(std::ostream &out, T &&hairpin) {
-    out << "Hairpin:\n";
+    out << "SSE:\n";
     out << "helix:\n" << hairpin._helix[0] << "\n" << hairpin._helix[1] << "\n";
     out << "loop:\n";
     for (auto &&frag: hairpin._loop) out << frag << "\n";

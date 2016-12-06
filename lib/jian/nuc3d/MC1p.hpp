@@ -153,17 +153,19 @@ public:
         };
 
         auto it = m_trees.begin();
-        LOOP_TRAVERSE((*it)->head(), 
-            if (_l->has_helix() && _l->s.len() == 1) {
-                set_pseudo_knots_helix(_l->s);
-            }
-        );
+		for (auto &&sse : pretree((*it)->head())) {
+			SSE *_l = &sse;
+			if (_l->has_helix() && _l->s.len() == 1) {
+				set_pseudo_knots_helix(_l->s);
+			}
+		}
         for (it = m_trees.begin() + 1; it != m_trees.end(); it++) {
-            LOOP_TRAVERSE((*it)->head(), 
-                if (_l->has_helix()) {
-                    set_pseudo_knots_helix(_l->s);
-                }
-            );
+			for (auto &&sse : pretree((*it)->head())) {
+				SSE *_l = &sse;
+				if (_l->has_helix()) {
+					set_pseudo_knots_helix(_l->s);
+				}
+			}
         }
     }
 
@@ -199,7 +201,7 @@ public:
     void set_ranges() {
         std::vector<int> v(_seq.size(), 0);
 
-        auto is_hp = [&](Hairpin *l) {
+        auto is_hp = [&](SSE *l) {
             if (l->has_loop() && l->has_helix() && l->num_sons() == 0) {
                 int flag = 0, n = 0;
                 LOOP_EACH(l,
@@ -221,7 +223,7 @@ public:
             }
         };
 
-        auto is_il = [&](Hairpin *l) {
+        auto is_il = [&](SSE *l) {
             if (l->has_loop() && l->has_helix() && l->num_sons() == 1) {
                 int flag = 0, n = 0;
                 LOOP_EACH(l,
@@ -249,16 +251,19 @@ public:
             m_range.push_back(range);
         };
 
-        auto set_res_module_types_ss = [&](Hairpin *l, bool is_first){
-            LOOP_TRAVERSE(l,
-                if (!_sample_hp && is_first && is_hp(_l)) {
-                    update_range(make_hp_range(_l));
-                } else if (is_first && is_il(_l)) {
-                    update_range(make_il_range(_l));
-                } else if (_l->has_helix()) {
-                    update_range(make_helix_range(_l->s));
-                }
-            );
+        auto set_res_module_types_ss = [&](SSE *l, bool is_first){
+			for (auto &&sse : pretree(l)) {
+				SSE *_l = &sse;
+				if (!_sample_hp && is_first && is_hp(_l)) {
+					update_range(make_hp_range(_l));
+				}
+				else if (is_first && is_il(_l)) {
+					update_range(make_il_range(_l));
+				}
+				else if (_l->has_helix()) {
+					update_range(make_helix_range(_l->s));
+				}
+			}
         };
 
         for (auto it = m_trees.begin(); it != m_trees.end(); it++) {

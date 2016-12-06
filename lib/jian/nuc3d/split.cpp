@@ -48,23 +48,23 @@ public:
     void run() {
         SSTree ss_tree;
         ss_tree.make(_seq, _ss, _hinge);
-        LOOP_TRAVERSE(ss_tree.head(),
-            parse_helix(_l);
-            parse_loop(_l);
-        );
+		for (auto &&sse : ss_tree) {
+			parse_helix(&sse);
+			parse_loop(&sse);
+		}
     }
 
-    void parse_helix(Hairpin *l) {
+    void parse_helix(SSE *l) {
         if (l->has_helix()) {
             _helix_num++;
 
             // write to pdb file
-            int len = l->s.len();
+            int len = size(l->helix);
             S pdb_path = _lib + "/RNA/templates/";
             S helix_name = _name + "-" + std::to_string(_helix_num) + "-helix-" + std::to_string(len);
             std::vector<int> nums(len * 2);
             int index = 0;
-            for (auto b = l->s.head; b != NULL; b = b->next) {
+            for (auto b = l->helix.head; b != NULL; b = b->next) {
                 nums[index] = b->res1.num - 1;
                 nums[2 * len - 1 - index] = b->res2.num - 1;
                 index++;
@@ -74,43 +74,43 @@ public:
             // write to records file
             S helix_info_file = _lib + "/RNA/records/helix";
             std::ofstream ofile(helix_info_file.c_str(), std::ios::app);
-            ofile << helix_name << ' ' << l->s.len() << ' ' << l->s.seq() << ' ' << l->s.ss() << ' ' << _family << std::endl;
+            ofile << helix_name << ' ' << size(l->helix) << ' ' << l->helix.seq() << ' ' << l->helix.ss() << ' ' << _family << std::endl;
             ofile.close();
         } else {
             // pass
         }
     }
 
-    S get_loop_name(Hairpin *l, S name, int loop_num) {
+    S get_loop_name(SSE *l, S name, int loop_num) {
         auto type = l->hinges.size();
         std::ostringstream stream;
         stream << name << '-' << loop_num << '-' << (l->is_open() ? "open_" : "") << "loop-" << type;
         return stream.str();
     }
 
-    nums_t get_loop_nums(Hairpin *l) {
+    nums_t get_loop_nums(SSE *l) {
         nums_t nums;
-        LOOP_EACH(l,
-            nums.push_back(RES->num-1);
-        );
+		for (auto && res : l->loop) {
+			nums.push_back(res.num - 1);
+		}
         return nums;
     }
 
-    void parse_loop(Hairpin *l) {
+    void parse_loop(SSE *l) {
         if (l->has_loop()) {
             _loop_num++;
 
-            int len = l->len();
+            //int len = size(l->loop);
             S pdb_path = _lib + "/RNA/templates/";
             S loop_name = get_loop_name(l, _name, _loop_num);
             mol_write(sub(_mol, get_loop_nums(l)), pdb_path + loop_name + ".pdb");
 
             // write to info file
-            S l_ss = l->ss();
+            S l_ss = l->loop.ss();
             S loop_info_file = _lib + "/RNA/records/" + (l->is_open() ? "open_" : "") + "loop";
 
             std::ofstream ofile(loop_info_file.c_str(), std::ios::app);
-            ofile << loop_name << ' ' << l->num_sons() << ' ' << l->seq() << ' ' << l->ss() << ' ' << _family << std::endl;
+            ofile << loop_name << ' ' << l->num_sons() << ' ' << l->loop.seq() << ' ' << l->loop.ss() << ' ' << _family << std::endl;
             ofile.close();
         }
     }

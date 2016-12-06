@@ -39,10 +39,10 @@ BEGIN_JN
 		init_dist_bound(_dist_bound, len);
 		SSTree ss_tree;
 		ss_tree.make(seq, ss);
-		BEGIN_LOOP_TRAVERSE(ss_tree.head()) {
-			set_bound_loop(_dist_bound, _dih_bound, _l);
-			set_bound_helix(_dist_bound, _dih_bound, _l->s);
-		} END_LOOP_TRAVERSE;
+		for (auto &&sse : ss_tree) {
+			set_bound_loop(_dist_bound, _dih_bound, &sse);
+			set_bound_helix(_dist_bound, _dih_bound, sse.helix);
+		}
 		return *this;
 	}
 
@@ -74,27 +74,27 @@ BEGIN_JN
 		return m_cg->to_aa(c, 0, c.rows() - 1);
 	}
 
-	void BuildLoopDG::set_bound_loop(Mat &b, DihBound &d, Hairpin *l) {
-		BEGIN_LOOP_EACH(l) {
-			if (RES->next != NULL) {
-				if (RES->type == '(' && RES->next->type == ')') {
-					b(RES->num - 1, RES->next->num - 1) = b(RES->next->num - 1, RES->num - 1) = helix_par.dist_bp;
+	void BuildLoopDG::set_bound_loop(Mat &b, DihBound &d, SSE *l) {
+		for (auto && res : l->loop) {
+			if (res.next != NULL) {
+				if (res.type == '(' && res.next->type == ')') {
+					b(res.num - 1, res.next->num - 1) = b(res.next->num - 1, res.num - 1) = helix_par.dist_bp;
 				}
 				else {
-					b(RES->num - 1, RES->next->num - 1) = b(RES->next->num - 1, RES->num - 1) = helix_par.dist_bond;
+					b(res.num - 1, res.next->num - 1) = b(res.next->num - 1, res.num - 1) = helix_par.dist_bond;
 				}
 			}
-		} END_LOOP_EACH;
+		}
 	}
 
-	void BuildLoopDG::set_bound_helix(Mat &b, DihBound &d, const helix &h) {
+	void BuildLoopDG::set_bound_helix(Mat &b, DihBound &d, const Helix &h) {
 		int len = 0;
 		std::deque<int> s1, s2;
-		BEGIN_HELIX_EACH(h) {
+		for (auto && bp : h) {
 			len++;
-			s1.push_back(BP->res1.num - 1);
-			s2.push_back(BP->res2.num - 1);
-		} END_HELIX_EACH;
+			s1.push_back(bp.res1.num - 1);
+			s2.push_back(bp.res2.num - 1);
+		}
 		for (int i = 0; i < len; i++) for (int j = i + 1; j < len; j++) {
 			b(s1[i], s1[j]) = b(s1[j], s1[i]) = helix_par.dist_a(j - i);
 			b(s2[i], s2[j]) = b(s2[j], s2[i]) = helix_par.dist_b(j - i);

@@ -7,98 +7,62 @@
 #include <sstream>
 #include "bp.hpp"
 #include "../utils/string.hpp"
-
-#define JN_BREAK_INIT bool is_break = false
-#define JN_BREAK is_break = true; break
-
-#define BEGIN_HELIX_EACH(h) \
-	do { \
-		int N_BP = 0; \
-		TYPEOF((h).head) BP = (h).head; \
-		for (; BP != NULL; BP = BP->next, N_BP++)  
-
-#define END_HELIX_EACH \
-	} while(0)
-
-
-#define HELIX_EACH(h, c) \
-	BEGIN_HELIX_EACH(h) {\
-		c;\
-	} END_HELIX_EACH
+#include "../utils/ListRange.hpp"
 
 BEGIN_JN
 
-class helix {
+class HelixRange;
+using Helix = ListEntity<HelixRange>;
+
+class HelixRange : public ListRange<bp> {
 public:
-    bp *head = NULL;
+	using Self = HelixRange;
+	using Base = ListRange<bp>;
+	using Node = Base::Node;
+	using It = Base::It;
 
-    bool empty() const { return head == NULL; }
-
-    helix() {head = NULL;}
-
-    helix(const helix &h) : head(bp::copy(h.head)) { }
-
-    helix &operator =(const helix &h) {
-        bp::del(head);
-        head = bp::copy(h.head);
-    }
-
-    ~helix() {
-        bp::del(head);
-    }
-
-    void push_back(bp *m) {
-        if (head == NULL) head = m;
-        else HELIX_EACH(*this, if (BP->next == NULL) {BP->next = m; m->prev = BP; break;});
-    }
-
-    void push_front(bp *m) {
-        if (head == NULL) head = m;
-        else {head->prev = m; m->next = head; head = m;}
-    }
-
-    int len() const {
-		int l = 0;
-		HELIX_EACH(*this, l++);
-		return l;
-    }
+	HelixRange(Node *node = NULL) : Base(node) {}
 
     Str ss() const {
-        Str str;
-        HELIX_EACH(*this, str += '(');
-        HELIX_EACH(*this, str += ')');
-        return str;
+		STD_ ostringstream stream;
+		for (auto &&node : *this) stream << '(';
+		for (auto &&node : *this) stream << ')';
+		return stream.str();
     }
 
     Str seq() const {
-        Str str;
-        HELIX_EACH(*this, str.insert(N_BP, {BP->res1.name, BP->res2.name}));
+		int l = 2*size();
+		Str str(l, 'X');
+		int n = 0;
+		for (auto && bp : *this) {
+			str[n] = bp.res1.name;
+			str[l - 1 - n] = bp.res2.name;
+			n++;
+		}
         return str;
     }
 
-    std::list<int> nums() const {
-        std::list<int> nums;
-        HELIX_EACH(*this, 
-            nums.insert(std::next(nums.begin(), N_BP), {BP->res1.num-1, BP->res2.num-1})
-        );
+    Li nums() const {
+        Li nums;
+		int n = 0;
+		for (auto &&bp : *this) {
+			nums.insert(std::next(nums.begin(), n), { bp.res1.num - 1, bp.res2.num - 1 });
+			n++;
+		}
         return nums;
     }
 
     operator Str() const {
-//        Str str;
-        std::ostringstream stream;
+        STD_ ostringstream stream;
         stream << seq() << ' ' << ss();
         for (auto && i : nums()) {
             stream << ' ' << i+1;
         }
         return stream.str();
-//        stream >> str;
-//        std::cout << "helix: " << str << std::endl;
-//        return str;
     }
 
-    friend std::ostream &operator <<(std::ostream &out, const helix &h) {
-        out << "Helix: " << ' ' << (Str)h;
+    friend STD_ ostream &operator <<(STD_ ostream &stream, Helix h) {
+        stream << "Helix: " << ' ' << (Str)h;
     }
 
 };

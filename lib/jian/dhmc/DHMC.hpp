@@ -25,7 +25,7 @@ public:
 	using range_t = Ai<4>;
 
 	Q<SP<SSTree>> m_trees;
-	M<helix *, Chain *> m_saved_helices;
+	M<SSE *, Chain *> m_saved_helices;
 	I m_frag_size;
 	Frags *m_frags;
 	B m_sample_frag;
@@ -55,9 +55,9 @@ public:
 
 	void bps_to_constraints();
 
-	bool is_hp(Hairpin *l);
+	bool is_hp(SSE *l);
 
-	bool is_il(Hairpin *l);
+	bool is_il(SSE *l);
 
 	void set_base_mvels();
 
@@ -73,13 +73,13 @@ public:
 
 	void translate_pseudo_knots_helix(Model & m, const Li & nums);
 
-	//void set_pseudo_knots_helix(const helix & h);
+	//void set_pseudo_knots_helix(const Helix & h);
 
 	void set_pseudo_knots();
 
 	void transform_saved_helix(Chain *h, const Li & nums);
 
-	void restore_helix(helix *h);
+	void restore_helix(SSE *sse);
 
 	virtual void restore_fixed_ranges();
 
@@ -93,7 +93,7 @@ public:
 
 	void mc_sample_frag();
 
-	void save_helix(helix *h);
+	void save_helix(SSE *sse);
 
 	virtual void save_fixed_ranges();
 
@@ -108,7 +108,7 @@ public:
 };
 
 template<typename T>
-void chain_refine(Chain &chain, Hairpin *l, const fixed_ranges_t &fixed_ranges = {}, S traj = "") {
+void chain_refine(Chain &chain, SSE *l, const fixed_ranges_t &fixed_ranges = {}, S traj = "") {
 	Par par;
 	par._orig_pars = { "nsp", "" };
 	S seq, ss;

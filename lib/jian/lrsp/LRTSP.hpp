@@ -3,7 +3,7 @@
 #include <thread>
 #include <list>
 #include <string>
-#include "../nuc2d/loop.hpp"
+#include "../nuc2d/SSE.hpp"
 #include "../nuc2d/SSTree.hpp"
 #include "../nuc3d/Assemble.hpp"
 #include "../nuc2d/NASS.hpp"
@@ -15,11 +15,11 @@ namespace lrsp {
 
 class LRTSP {
 public:
-    using pts_t = std::list<Hairpin *>;
+    using pts_t = std::list<SSE *>;
     using record_t = nuc3d::record_t;
     using records_t = nuc3d::records_t;
-    using map_records_t = std::map<Hairpin *, records_t>;
-    using map_templates_t = std::map<Hairpin *, Chain *>;
+    using map_records_t = std::map<SSE *, records_t>;
+    using map_templates_t = std::map<SSE *, Chain *>;
 
     map_records_t    _helix_records;
     map_templates_t  _helix_templates;
@@ -57,7 +57,7 @@ public:
         }
     }
 
-    int loop_length(Hairpin *l) {
+    int loop_length(SSE *l) {
         if (l != NULL) {
             auto p = loop_head_tail(l);
             return p.second - p.first + 1;
@@ -66,7 +66,7 @@ public:
         }
     }
 
-    void set_templates(Hairpin *l, bool &b_NR) {
+    void set_templates(SSE *l, bool &b_NR) {
         if (l != NULL) {
 			auto p = loop_head_tail(l);
             if (l->has_loop() && p.second - p.first < _max_len) {
@@ -78,21 +78,21 @@ public:
                 if (l->has_loop()) {
                     set_loop_templates(l, b_NR);
                 }
-                for (Hairpin *t = l->son; t != NULL; t = t->brother) {
+                for (SSE *t = l->son; t != NULL; t = t->brother) {
                     set_templates(t, b_NR);
                 }
             }
         }
     }
 
-    void set_fixed_ranges(Hairpin *l, fixed_ranges_t &fixed_ranges) {
+    void set_fixed_ranges(SSE *l, fixed_ranges_t &fixed_ranges) {
         if (l != NULL) {
             if (l->has_loop()) {
                 auto p = loop_head_tail(l);
                 if (p.second - p.first < _max_len) {
                     fixed_ranges.push_back({p.first, p.second});
                 } else {
-                    for (Hairpin *t = l->son; t != NULL; t = t->brother) {
+                    for (SSE *t = l->son; t != NULL; t = t->brother) {
                         set_fixed_ranges(t, fixed_ranges);
                     }
                 }
@@ -100,12 +100,12 @@ public:
         }
     }
 
-    static void lrtsp_chain_refine(Chain *chain, Hairpin *l, S log) {
+    static void lrtsp_chain_refine(Chain *chain, SSE *l, S log) {
         log_file(log);
         chain_refine<CGpsb>(*chain, l, {});
     }
 
-    void set_templates_all(Hairpin *l) {
+    void set_templates_all(SSE *l) {
         LOGI << "set templates all..." << std::endl;
         bool b_NR = false; // NR: need_refining
         set_templates_mc(l, b_NR);
@@ -125,7 +125,7 @@ public:
         LOGI << l << ' ' << chain->size() << std::endl;
     }
 
-    void set_templates_mc(Hairpin *l, bool &b_NR) {
+    void set_templates_mc(SSE *l, bool &b_NR) {
         if (l != NULL) {
             if (l->has_helix()) {
                 set_helix_templates_mc(l, b_NR);
@@ -133,7 +133,7 @@ public:
             if (l->has_loop()) {
                 set_loop_templates_mc(l, b_NR);
             }
-            for (Hairpin *t = l->son; t != NULL; t = t->brother) {
+            for (SSE *t = l->son; t != NULL; t = t->brother) {
                 set_templates_mc(t, b_NR);
             }
         }
@@ -145,7 +145,7 @@ public:
         return chain;
     }
 
-    void set_helix_templates(Hairpin *l, bool &b_NR) {
+    void set_helix_templates(SSE *l, bool &b_NR) {
         if (_helix_records[l].empty()) {
             _helix_templates[l] = NULL;
         } else {
@@ -154,7 +154,7 @@ public:
         }
     }
 
-    void set_loop_templates(Hairpin *l, bool &b_NR) {
+    void set_loop_templates(SSE *l, bool &b_NR) {
         if (_loop_records[l].empty()) {
             b_NR = true;
             _loop_templates[l] = build_chain_dg(l->seq(), NASS::lower_ss(l->ss()));
@@ -164,7 +164,7 @@ public:
         }
     }
 
-    void set_helix_templates_mc(Hairpin *l, bool &b_NR) {
+    void set_helix_templates_mc(SSE *l, bool &b_NR) {
         if (_helix_records[l].empty()) {
             _helix_templates_mc[l] = NULL;
         } else {
@@ -173,7 +173,7 @@ public:
         }
     }
 
-    void set_loop_templates_mc(Hairpin *l, bool &b_NR) {
+    void set_loop_templates_mc(SSE *l, bool &b_NR) {
         if (_loop_records[l].empty()) {
             b_NR = true;
             _loop_templates_mc[l] = build_chain_dg(l->seq(), NASS::lower_ss(l->ss()));
@@ -183,7 +183,7 @@ public:
         }
     }
 
-    void position_templates(Mat *m, Hairpin *l) {
+    void position_templates(Mat *m, SSE *l) {
         if (l != NULL) {
             position_hairpin(m, _helix_templates[l], _loop_templates[l]);
 			auto p = loop_head_tail(l);
@@ -191,7 +191,7 @@ public:
                 // pass
             } else if (_loop_templates[l] != NULL) {
                 auto it = l->hinges.begin();
-                for (Hairpin *t = l->son; t != NULL; t = t->brother) {
+                for (SSE *t = l->son; t != NULL; t = t->brother) {
                     m = chain_mat(*(_loop_templates[l]), {it->first-1, it->first, it->second, it->second+1});
                     position_templates(m, t);
                     it++;
@@ -200,12 +200,12 @@ public:
         }
     }
 
-    void position_templates_mc(Mat *m, Hairpin *l) {
+    void position_templates_mc(Mat *m, SSE *l) {
         if (l != NULL) {
             position_hairpin(m, _helix_templates_mc[l], _loop_templates_mc[l]);
             if (_loop_templates_mc[l] != NULL) {
                 auto it = l->hinges.begin();
-                for (Hairpin *t = l->son; t != NULL; t = t->brother) {
+                for (SSE *t = l->son; t != NULL; t = t->brother) {
                     m = chain_mat(*(_loop_templates_mc[l]), {it->first-1, it->first, it->second, it->second+1});
                     position_templates_mc(m, t);
                     it++;
@@ -265,7 +265,7 @@ public:
         return mat;
     }
 
-    void assemble_templates(Chain &chain, Hairpin *l) {
+    void assemble_templates(Chain &chain, SSE *l) {
         LOGI << "assemble loop " << l << std::endl;
         if (l != NULL) {
 			auto p = loop_head_tail(l);
@@ -274,26 +274,26 @@ public:
                 chain_from_template(chain, l, _loop_templates[l]);
             } else {
                 chain_from_template(chain, l, &_helix_templates, &_loop_templates, 0);
-                for (Hairpin *t = l->son; t != NULL; t = t->brother) {
+                for (SSE *t = l->son; t != NULL; t = t->brother) {
                     assemble_templates(chain, t);
                 }
             }
         }
     }
 
-    void assemble_templates_mc(Chain &chain, Hairpin *l, int beg) {
+    void assemble_templates_mc(Chain &chain, SSE *l, int beg) {
         LOGI << "assembling templates mc..." << std::endl;
         if (l != NULL) {
             chain_from_template(chain, l, &_helix_templates_mc, &_loop_templates_mc, beg);
             if (l->has_loop()) {
-                for (Hairpin *t = l->son; t != NULL; t = t->brother) {
+                for (SSE *t = l->son; t != NULL; t = t->brother) {
                     assemble_templates_mc(chain, t, beg);
                 }
             }
         }
     }
 
-    void chain_from_template(Chain &chain, Hairpin *l, Chain *chain_loop) {
+    void chain_from_template(Chain &chain, SSE *l, Chain *chain_loop) {
         auto p = loop_head_tail(l);
         int n = 0;
         for (int i = p.first; i <= p.second; i++) {
@@ -302,7 +302,7 @@ public:
         }
     }
 
-    void chain_from_template(Chain &chain, Hairpin *l, map_templates_t *helix_templates, map_templates_t *loop_templates, int beg) {
+    void chain_from_template(Chain &chain, SSE *l, map_templates_t *helix_templates, map_templates_t *loop_templates, int beg) {
         if (l != NULL) {
             std::cout << "beg: " << beg << std::endl;
             l->print();
@@ -336,12 +336,12 @@ public:
         }
     }
 
-    void find_records(Hairpin *l) {
+    void find_records(SSE *l) {
         if (l != NULL) {
             l->print();
             nuc3d::find_loop_records(l, _loop_records[l]);
             nuc3d::find_helix_records(l, _helix_records[l]);
-            for (Hairpin *t = l->son; t != NULL; t = t->brother) {
+            for (SSE *t = l->son; t != NULL; t = t->brother) {
                 find_records(t);
             }
         }
@@ -374,18 +374,19 @@ public:
         }
     }
 
-    void init_templates(Hairpin *l) {
-        LOOP_TRAVERSE(l,
-            _helix_templates[_l] = NULL;
-            _loop_templates[_l] = NULL;
-            _helix_templates_mc[_l] = NULL;
-            _loop_templates_mc[_l] = NULL;
-        );
+    void init_templates(SSE *l) {
+		for (auto &&sse : pretree(l)) {
+			SSE *_l = &sse;
+			_helix_templates[_l] = NULL;
+			_loop_templates[_l] = NULL;
+			_helix_templates_mc[_l] = NULL;
+			_loop_templates_mc[_l] = NULL;
+		}
     }
 
     void pred() {
         LOGI << "# constructing ss tree..." << std::endl;
-        Hairpin *l = ss_tree(_seq, _ss);
+        SSE *l = ss_tree(_seq, _ss);
         LOGI << "# initializing templates..." << std::endl;
         init_templates(l);
         LOGI << "# searching for records..." << std::endl;

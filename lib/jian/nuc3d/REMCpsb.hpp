@@ -165,11 +165,12 @@ public:
             if (std::any_of(ss.begin(), ss.end(), [](auto &&c){return c != '.';})) {
                 SSTree ss_tree; 
                 ss_tree.make(_seq, ss);
-                LOOP_TRAVERSE(ss_tree.head(), 
-                    if (_l->has_helix()) {
-                        set_pseudo_knots_helix(_l->s);
-                    }
-                );
+				for (auto &&sse : pretree(ss_tree.head())) {
+					SSE *_l = &sse;
+					if (_l->has_helix()) {
+						set_pseudo_knots_helix(_l->s);
+					}
+				}
             } else {
                 break;
             }
@@ -179,7 +180,7 @@ public:
     void set_res_module_types() {
         std::vector<int> v(_seq.size(), 0);
 
-        auto is_hairpin = [&](Hairpin *l) {
+        auto is_hairpin = [&](SSE *l) {
             if (l->has_loop() && l->has_helix()) {
                 int flag = 0, n = 0;
                 LOOP_EACH(l,
@@ -223,21 +224,23 @@ public:
             return p;
         };
 
-        auto set_res_module_types_ss = [&](Hairpin *l, bool is_first){
-            LOOP_TRAVERSE(l,
-                if (!_sample_hp && is_first && is_hairpin(_l)) {
-                    m_range.push_back(make_hairpin_range(_l));
-                    for (int i = _l->s.head->res1.num - 1; i <= _l->s.head->res2.num - 1; i++) {
-                        v[i] = 1;
-                    }
-                } else if (_l->has_helix()) {
-                    m_range.push_back(make_helix_range(_l->s));
-                    HELIX_EACH(_l->s,
-                        v[BP->res1.num - 1] = 1;
-                        v[BP->res2.num - 1] = 1;
-                    );
-                }
-            );
+        auto set_res_module_types_ss = [&](SSE *l, bool is_first){
+			for (auto &&sse : pretree(l)) {
+				SSE *_l = &sse;
+				if (!_sample_hp && is_first && is_hairpin(_l)) {
+					m_range.push_back(make_hairpin_range(_l));
+					for (int i = _l->s.head->res1.num - 1; i <= _l->s.head->res2.num - 1; i++) {
+						v[i] = 1;
+					}
+				}
+				else if (_l->has_helix()) {
+					m_range.push_back(make_helix_range(_l->s));
+					HELIX_EACH(_l->s,
+						v[BP->res1.num - 1] = 1;
+					v[BP->res2.num - 1] = 1;
+					);
+				}
+			}
         };
 
         auto & keys = NASS::instance().paired_keys;

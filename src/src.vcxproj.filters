@@ -597,9 +597,6 @@
     <ClInclude Include="..\lib\jian\nuc2d\ss_pred.hpp">
       <Filter>jian\nuc2d</Filter>
     </ClInclude>
-    <ClInclude Include="..\lib\jian\nuc2d\Tree.hpp">
-      <Filter>jian\nuc2d</Filter>
-    </ClInclude>
     <ClInclude Include="..\lib\jian\nuc3d\AddPhos.hpp">
       <Filter>jian\nuc3d</Filter>
     </ClInclude>
@@ -996,7 +993,19 @@
     <ClInclude Include="..\lib\jian\nuc3d\SampleLoop.hpp">
       <Filter>jian\nuc3d</Filter>
     </ClInclude>
-    <ClInclude Include="..\lib\jian\nuc2d\Hairpin.hpp">
+    <ClInclude Include="..\lib\jian\utils\Tree.hpp">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc2d\SSE.hpp">
+      <Filter>jian\nuc2d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\Range.hpp">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\ListRange.hpp">
+      <Filter>jian\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\nuc2d\Loop.hpp">
       <Filter>jian\nuc2d</Filter>
     </ClInclude>
   </ItemGroup>

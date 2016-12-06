@@ -26,7 +26,7 @@ public:
     using en_t = struct {double len = 0, ang = 0, dih = 0, crash = 0, cons = 0, stacking = 0, pairing = 0;};
 
     std::vector<res_module_t> _res_module_types;
-    std::vector<Hairpin *> _res_module;
+    std::vector<SSE *> _res_module;
     int _mc_index;
     std::deque<Atom> _moved_atoms;
     std::vector<int> _moved_residues;
@@ -133,11 +133,12 @@ public:
             if (std::any_of(ss.begin(), ss.end(), [](auto &&c){return c != '.';})) {
                 SSTree ss_tree; 
                 ss_tree.make(_seq, ss);
-                LOOP_TRAVERSE(ss_tree.head(), 
-                    if (_l->has_helix()) {
-                        set_pseudo_knots_helix(_l->s);
-                    }
-                );
+				for (auto &&sse : pretree(ss_tree.head())) {
+					SSE *_l = &sse;
+					if (_l->has_helix()) {
+						set_pseudo_knots_helix(_l->s);
+					}
+				}
             } else {
                 break;
             }
@@ -148,7 +149,7 @@ public:
         _res_module_types.resize(_seq.size(), RES_LOOP);
         _res_module.resize(_seq.size(), NULL);
 
-        auto is_hairpin = [&](Hairpin *l) {
+        auto is_hairpin = [&](SSE *l) {
             if (l->has_loop() && l->has_helix()) {
                 int flag = 0, n = 0;
                 LOOP_EACH(l,
@@ -171,24 +172,26 @@ public:
             }
         };
 
-        auto set_res_module_types_ss = [&](Hairpin *l, bool is_first){
-            LOOP_TRAVERSE(l,
-//                _l->print();
+        auto set_res_module_types_ss = [&](SSE *l, bool is_first){
+			for (auto &&sse : pretree(l)) {
+				SSE *_l = &sse;
+				//                _l->print();
 //                LOG << "is_hairpin: " << is_hairpin(_l) << std::endl;
-                if (!_sample_hp && is_first && is_hairpin(_l)) {
-                    for (int i = _l->s.head->res1.num - 1; i <= _l->s.head->res2.num - 1; i++) {
-                        _res_module_types[i] = RES_HAIRPIN;
-                        _res_module[i] = _l;
-                    }
-                } else if (_l->has_helix()) {
-                    HELIX_EACH(_l->s,
-                        _res_module_types[BP->res1.num - 1] = RES_HELIX;
-                        _res_module[BP->res1.num - 1] = _l;
-                        _res_module_types[BP->res2.num - 1] = RES_HELIX;
-                        _res_module[BP->res2.num - 1] = _l;
-                    );
-                }
-            );
+				if (!_sample_hp && is_first && is_hairpin(_l)) {
+					for (int i = _l->s.head->res1.num - 1; i <= _l->s.head->res2.num - 1; i++) {
+						_res_module_types[i] = RES_HAIRPIN;
+						_res_module[i] = _l;
+					}
+				}
+				else if (_l->has_helix()) {
+					HELIX_EACH(_l->s,
+						_res_module_types[BP->res1.num - 1] = RES_HELIX;
+					_res_module[BP->res1.num - 1] = _l;
+					_res_module_types[BP->res2.num - 1] = RES_HELIX;
+					_res_module[BP->res2.num - 1] = _l;
+					);
+				}
+			}
         };
 
         auto & keys = NASS::instance().paired_keys;
@@ -508,13 +511,13 @@ public:
         _mc_index = _free_atoms[int(rand() * len)];
         _moved_residues.resize(4);
         if (_res_module_types[_mc_index] == RES_HAIRPIN) {
-            Hairpin *l = _res_module[_mc_index];
+            SSE *l = _res_module[_mc_index];
             _moved_residues[0] = l->s.head->res1.num - 1;
             _moved_residues[1] = l->s.head->res2.num - 1;
             _moved_residues[2] = l->s.head->res1.num - 1;
             _moved_residues[3] = l->s.head->res2.num - 1;
         } else if (_res_module_types[_mc_index] == RES_HELIX) {
-            Hairpin *l = _res_module[_mc_index];
+            SSE *l = _res_module[_mc_index];
             _moved_residues[0] = l->s.head->res1.num - 1;
             _moved_residues[3] = l->s.head->res2.num - 1;
             HELIX_EACH(l->s,

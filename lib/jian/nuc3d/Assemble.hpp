@@ -26,12 +26,12 @@ namespace nuc3d {
 	void chain_read_record(Chain &chain, const record_t &templ_res);
 
 	void find_loop_records(
-		Hairpin *l, records_t &records, S name = "",
+		SSE *l, records_t &records, S name = "",
 		const pdbs_t &used_pdbs = {}, const pdbs_t &disused_pdbs = {}, family_t family = ""
 	);
 
 	void find_helix_records(
-		Hairpin *l, records_t &records, Str name = "", Str family = ""
+		SSE *l, records_t &records, Str name = "", Str family = ""
 	);
 
 	class Assemble : public TSP {
@@ -39,15 +39,15 @@ namespace nuc3d {
 		//using Mat = Eigen::MatrixXd;
 		using RecordsPair = Pair<records_t, records_t>;
 
-		M<Hairpin *, RecordsPair> m_records;
-		M<Hairpin *, Pair<Chain *, Chain *>> m_templates;
-		M<Hairpin *, Pair<Q<record_t *>, Q<record_t *>>> m_records_cache;
-		M<Hairpin *, Pair<Q<Chain *>, Q<Chain *>>> m_templates_cache;
-		M<Hairpin *, Pair<TemplRec, TemplRec>> m_selected_record;
+		M<SSE *, RecordsPair> m_records;
+		M<SSE *, Pair<Chain, Chain>> m_templates;
+		M<SSE *, Pair<Q<record_t *>, Q<record_t *>>> m_records_cache;
+		M<SSE *, Pair<Q<Chain *>, Q<Chain *>>> m_templates_cache;
+		M<SSE *, Pair<TemplRec, TemplRec>> m_selected_record;
 		I _it_num = 0;
-		M<Hairpin *, B> _is_virtual;
-		M<Hairpin *, B> _is_sampled;
-		M<Hairpin *, B> _find_self;
+		M<SSE *, B> _is_virtual;
+		M<SSE *, B> _is_sampled;
+		M<SSE *, B> _find_self;
 		Set<Str> _suppos_atoms{ "C5*", "O3*", "C1*" };
 		B m_sample = false;
 		S m_sample_mode = "sample_one";
@@ -59,8 +59,6 @@ namespace nuc3d {
 		SampleLoop sample_loop;
 
 		Assemble(const Par &par);
-
-		void set_virtual_loops();
 
 		virtual void run();
 
@@ -78,31 +76,31 @@ namespace nuc3d {
 
 		void select_templates();
 
-		void set_loop_template(Hairpin *l, bool is_first);
+		void set_loop_template(SSE *l, bool is_first);
 
 		void sample_one_template();
 
 		void sample_all_templates();
 
-		void sample_loop_template(Hairpin *l);
+		void sample_loop_template(SSE *l);
 
 		void sample_helix_template();
 
-		Hairpin *select_loop();
+		SSE *select_loop();
 
 		Chain load_pdb(const TemplRec &templ_res, S type = "");
 
-		void assemble_templates(Hairpin *l);
+		void assemble_templates(SSE *l);
 
 		void position_templates();
 
-		void position_templates(Hairpin *l, L<Mat> mats);
+		void position_templates(SSE *l, L<Mat> mats);
 
 		void position_model(Chain &chain, const Mat &mat);
 
 		Mat model_mat(const Chain &chain, const Li &list);
 
-		std::list<Mat> loop_mats(const Chain &chain, Hairpin *l);
+		std::list<Mat> loop_mats(const Chain &chain, SSE *l);
 
 		void find_records();
 
@@ -110,9 +108,9 @@ namespace nuc3d {
 
 		void print_records();
 
-		void find_loop_records(Hairpin *l);
+		void find_loop_records(SSE *l);
 
-		void find_helix_records(Hairpin *l);
+		void find_helix_records(SSE *l);
 
 	};
 

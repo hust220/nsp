@@ -197,7 +197,7 @@ void DHMC::set_pseudo_knots() {
 
 		auto it = m_trees.begin();
 
-		auto foo = [this](const helix &h) {
+		auto foo = [this](const Helix &h) {
 			auto && seq = h.seq();
 			auto && m = build_helix(seq);
 			auto && nums = h.nums();
@@ -213,19 +213,19 @@ void DHMC::set_pseudo_knots() {
 		};
 
 		// 设置第一个二级结构树中长度为1的helix
-		LOOP_TRAVERSE((*it)->head(),
-			if (_l->has_helix() && _l->s.len() == 1) {
-				foo(_l->s);
+		for (auto &&sse : **it) {
+			if (sse.has_helix() && size(sse.helix) == 1) {
+				foo(sse.helix);
 			}
-		);
+		}
 
 		// 设置除了第一个二级结构树以外的其它的树中的helix
 		for (it = m_trees.begin() + 1; it != m_trees.end(); it++) {
-			LOOP_TRAVERSE((*it)->head(),
-				if (_l->has_helix()) {
-					foo(_l->s);
+			for (auto &&sse : **it) {
+				if (sse.has_helix()) {
+					foo(sse.helix);
 				}
-			);
+			}
 		}
 	}
 }
@@ -260,10 +260,10 @@ void DHMC::transform_saved_helix(Chain *h, const Li & nums) {
 	}
 }
 
-void DHMC::restore_helix(helix *h) {
-	auto && seq = h->seq();
-	auto && nums = h->nums();
-	Chain *saved = m_saved_helices[h];
+void DHMC::restore_helix(SSE *sse) {
+	auto && seq = sse->helix.seq();
+	auto && nums = sse->helix.nums();
+	Chain *saved = m_saved_helices[sse];
 
 	transform_saved_helix(saved, nums);
 
@@ -280,20 +280,20 @@ void DHMC::restore_fixed_ranges() {
 
 		auto end = (m_pk_ahead ? m_trees.end() : std::next(m_trees.begin()));
 		for (auto it = m_trees.begin(); it != end; it++) {
-			LOOP_TRAVERSE((*it)->head(),
-				if (_l->has_helix()) {
-					restore_helix(&(_l->s));
+			for (auto &&sse : **it) {
+				if (sse.has_helix()) {
+					restore_helix(&sse);
 				}
-			);
+			}
 		}
 	}
 }
 
-bool DHMC::is_hp(Hairpin *l) {
+bool DHMC::is_hp(SSE *l) {
 	if (l->has_loop() && l->has_helix() && l->num_sons() == 0) {
 		int flag = 0, n = 0;
-		LOOP_EACH(l,
-			char &c = _ss[RES->num - 1];
+		for (auto && res : l->loop) {
+			char &c = _ss[res.num - 1];
 			if (c != '.'  && c != '(' && c != ')') {
 				flag = 1;
 				break;
@@ -301,7 +301,7 @@ bool DHMC::is_hp(Hairpin *l) {
 			else {
 				n++;
 			}
-		);
+		}
 		return flag == 0 && n <= 14;
 	}
 	else {
@@ -309,11 +309,11 @@ bool DHMC::is_hp(Hairpin *l) {
 	}
 };
 
-bool DHMC::is_il(Hairpin *l) {
+bool DHMC::is_il(SSE *l) {
 	if (l->has_loop() && l->has_helix() && l->num_sons() == 1) {
 		int flag = 0, n = 0;
-		LOOP_EACH(l,
-			char &c = _ss[RES->num - 1];
+		for (auto && res : l->loop) {
+			char &c = _ss[res.num - 1];
 			if (c != '.'  && c != '(' && c != ')') {
 				flag = 1;
 				break;
@@ -321,7 +321,7 @@ bool DHMC::is_il(Hairpin *l) {
 			else {
 				n++;
 			}
-		);
+		}
 		return flag == 0 && n <= 20;
 	}
 	else {
@@ -342,7 +342,7 @@ void DHMC::set_mvels() {
 	//	m_mvels.push_back(el);
 	//};
 
-	//auto set_res_module_types_ss = [&](Hairpin *l, bool is_first) {
+	//auto set_res_module_types_ss = [&](SSE *l, bool is_first) {
 	//	LOOP_TRAVERSE(l,
 	//		if (m_not_sample_hp && is_first && is_hp(L)) {
 	//			add_el(new MvEl(L, MvEl::MVEL_HP));
@@ -525,8 +525,8 @@ void DHMC::mc_sample_frag() {
 	}
 }
 
-void DHMC::save_helix(helix *h) {
-	auto && nums = h->nums();
+void DHMC::save_helix(SSE *sse) {
+	auto && nums = sse->helix.nums();
 
 	Chain *c = new Chain;
 
@@ -534,7 +534,7 @@ void DHMC::save_helix(helix *h) {
 		c->push_back(_pred_chain[n]);
 	}
 
-	m_saved_helices[h] = c;
+	m_saved_helices[sse] = c;
 }
 
 void DHMC::save_fixed_ranges() {
@@ -543,11 +543,11 @@ void DHMC::save_fixed_ranges() {
 
 		auto end = (m_pk_ahead ? m_trees.end() : std::next(m_trees.begin()));
 		for (auto it = m_trees.begin(); it != end; it++) {
-			LOOP_TRAVERSE((*it)->head(),
-				if (_l->has_helix()) {
-					save_helix(&(_l->s));
+			for (auto &&sse : **it) {
+				if (sse.has_helix()) {
+					save_helix(&sse);
 				}
-			);
+			}
 		}
 	}
 }

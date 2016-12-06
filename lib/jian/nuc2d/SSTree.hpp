@@ -2,108 +2,65 @@
 
 #include <list>
 #include "../utils/string.hpp"
-#include "loop.hpp"
+#include "SSE.hpp"
 
 BEGIN_JN
 
-	class Hairpin;
+class SSTreeRange : 
+	public TreeRange<SSE>
+{
+public:
+	using Base = TreeRange<SSE>;
 
-	std::pair<int, int> loop_head_tail(Hairpin *l);
-	Hairpin *ss_tree(Str seq, Str ss, int hinge = 2);
-	void ss_read_tree(Str &ss, Hairpin *l);
-	void seq_read_tree(Str &seq, Hairpin *l);
-	void free_ss_tree(Hairpin *l);
-	void print_ss_tree(Hairpin *l);
+	SSTreeRange(SSE *node = NULL) : Base(node) {}
 
-	class SSTree {
-	public:
-		using Path = std::list<Hairpin *>;
-
-        Hairpin *m_head;
-
-		SSTree();
-		~SSTree();
-		Hairpin *&head();
-		const Hairpin *head() const;
-		bool empty() const;
-		// make tree with no broken tag
-		void make(const Str &seq, const Str &ss, int hinge = 2);
-		// make tree with broken tag
-		void make_b(const Str &seq, const Str &ss, int hinge = 2);
-
-        template<typename _Fn>
-        Hairpin *find(_Fn &&fn) const {
-            Hairpin *p = NULL;
-            traverse([&p, &fn](auto &&q, auto &&path){
-                if (fn(q, path)) {
-                    p = q;
-                    return true;
-                }
-                return false;
-            });
-            return p;
-        }
-
-		template<typename _Fn>
-		void traverse(_Fn &&fn) const {
-			Path ls;
-			Hairpin * L = m_head;
-			while (true) {
-				if (L == NULL) break;
-				ls.push_back(L);
-				if (fn(L, ls)) return;
-				if (L->son != NULL) {
-					L = L->son;
-				}
-				else if (L->brother != NULL) {
-					L = L->brother;
-					ls.pop_back();
-				}
-				else {
-					while (true) {
-						ls.pop_back();
-						if (!ls.empty()) {
-							L = ls.back()->brother;
-							if (L == NULL) continue;
-							else { ls.pop_back(); break; }
-						}
-						else { L = NULL; break; }
-					}
-				}
+	Str ss() const {
+		Str ss;
+		auto p = head->head_tail();
+		ss.resize(p.second - p.first + 1);
+		for (auto &&sse : *this) {
+			for (auto && bp : sse.helix) {
+				ss[bp.res1.num - 1] = bp.res1.type;
+				ss[bp.res2.num - 1] = bp.res2.type;
+			}
+			for (auto && res : sse.loop) {
+				ss[res.num - 1] = res.type;
 			}
 		}
+		return ss;
+	}
 
-		template<typename _Fn>
-		Path path(_Fn &&fn) const {
-			Path ls;
-			Hairpin * L = m_head;
-			while (true) {
-				if (L == NULL) break;
-				ls.push_back(L);
-				if (fn(L)) return ls;
-				if (L->son != NULL) {
-					L = L->son;
-				}
-				else if (L->brother != NULL) {
-					L = L->brother;
-					ls.pop_back();
-				}
-				else {
-					while (true) {
-						ls.pop_back();
-						if (!ls.empty()) {
-							L = ls.back()->brother;
-							if (L == NULL) continue;
-							else { ls.pop_back(); break; }
-						}
-						else { L = NULL; break; }
-					}
-				}
+	Str seq() const {
+		Str seq;
+		auto p = head->head_tail();
+		seq.resize(p.second - p.first + 1);
+		for (auto &&sse : *this) {
+			for (auto &&bp : sse.helix) {
+				seq[bp.res1.num - 1] = bp.res1.name;
+				seq[bp.res2.num - 1] = bp.res2.name;
 			}
-			return ls;
+			for (auto &&res : sse.loop) {
+				seq[res.num - 1] = res.name;
+			}
 		}
+		return seq;
+	}
 
-	};
+};
+
+class SSTree : public Tree<SSTreeRange> {
+public:
+	SSTree() = default;
+
+	SSTree(const Str &seq, const Str &ss, int hinge = 2);
+
+	// make tree with no broken tag
+	void make(const Str &seq, const Str &ss, int hinge = 2);
+
+	// make tree with broken tag
+	void make_b(const Str &seq, const Str &ss, int hinge = 2);
+
+};
 
 END_JN
 

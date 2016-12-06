@@ -484,7 +484,8 @@
     <ClInclude Include="..\lib\jian\nuc2d\BuildSST.hpp" />
     <ClInclude Include="..\lib\jian\nuc2d\GetSS.hpp" />
     <ClInclude Include="..\lib\jian\nuc2d\helix.hpp" />
-    <ClInclude Include="..\lib\jian\nuc2d\Hairpin.hpp" />
+    <ClInclude Include="..\lib\jian\nuc2d\Loop.hpp" />
+    <ClInclude Include="..\lib\jian\nuc2d\SSE.hpp" />
     <ClInclude Include="..\lib\jian\nuc2d\MergeRings.hpp" />
     <ClInclude Include="..\lib\jian\nuc2d\NASS.hpp" />
     <ClInclude Include="..\lib\jian\nuc2d\PredQuaSS.hpp" />
@@ -493,7 +494,6 @@
     <ClInclude Include="..\lib\jian\nuc2d\SST.hpp" />
     <ClInclude Include="..\lib\jian\nuc2d\SSTree.hpp" />
     <ClInclude Include="..\lib\jian\nuc2d\ss_pred.hpp" />
-    <ClInclude Include="..\lib\jian\nuc2d\Tree.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\AddPhos.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\Assemble.hpp" />
@@ -585,6 +585,7 @@
     <ClInclude Include="..\lib\jian\utils\KMeans.hpp" />
     <ClInclude Include="..\lib\jian\utils\lexical_cast.hpp" />
     <ClInclude Include="..\lib\jian\utils\Lib.hpp" />
+    <ClInclude Include="..\lib\jian\utils\ListRange.hpp" />
     <ClInclude Include="..\lib\jian\utils\log.hpp" />
     <ClInclude Include="..\lib\jian\utils\ls.hpp" />
     <ClInclude Include="..\lib\jian\utils\math.hpp" />
@@ -592,12 +593,14 @@
     <ClInclude Include="..\lib\jian\utils\platform.hpp" />
     <ClInclude Include="..\lib\jian\utils\queue.h" />
     <ClInclude Include="..\lib\jian\utils\rand.hpp" />
+    <ClInclude Include="..\lib\jian\utils\Range.hpp" />
     <ClInclude Include="..\lib\jian\utils\Serial.hpp" />
     <ClInclude Include="..\lib\jian\utils\string.hpp" />
     <ClInclude Include="..\lib\jian\utils\Time.hpp" />
     <ClInclude Include="..\lib\jian\utils\Trace.hpp" />
     <ClInclude Include="..\lib\jian\utils\traits.hpp" />
     <ClInclude Include="..\lib\jian\utils\tree.h" />
+    <ClInclude Include="..\lib\jian\utils\Tree.hpp" />
     <ClInclude Include="nsp.hpp" />
   </ItemGroup>
   <ItemGroup>

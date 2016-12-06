@@ -51,9 +51,9 @@ BEGIN_JN
 
 		MvEl(int a, int b, int c, int d, mvel_t t);
 
-		MvEl(const helix &h);
+		MvEl(const Helix &h);
 
-		MvEl(Hairpin *l, mvel_t t);
+		MvEl(SSE *l, mvel_t t);
 
 		int min() const;
 

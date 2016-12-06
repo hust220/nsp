@@ -51,10 +51,10 @@ public:
             if (std::any_of(ss.begin(), ss.end(), [](auto &&c){return c != '.';})) {
                 SSTree ss_tree; 
                 ss_tree.make(_seq, ss);
-                LOOP_TRAVERSE(ss_tree.head(), 
-                    set_bound_loop(_dist_bound, _dih_bound, _l); 
-                    set_bound_helix(_dist_bound, _dih_bound, _l->s)
-                );
+				for (auto &&sse : ss_tree) {
+					set_bound_loop(_dist_bound, _dih_bound, &sse);
+					set_bound_helix(_dist_bound, _dih_bound, sse.helix);
+				}
             } else {
                 break;
             }
@@ -117,26 +117,27 @@ public:
         return m;
     }
 
-    void set_bound_loop(Eigen::MatrixXd &b, DihBound &d, Hairpin *l) {
-        LOOP_EACH(l, 
-            if (RES->next != NULL) {
-                if (RES->type == '(' && RES->next->type == ')') {
-                    b(RES->num-1, RES->next->num-1) = b(RES->next->num-1, RES->num-1) = helix_par.dist_bp;
-                } else {
-                    b(RES->num-1, RES->next->num-1) = b(RES->next->num-1, RES->num-1) = helix_par.dist_bond;
-                }
-            }
-        );
+    void set_bound_loop(Eigen::MatrixXd &b, DihBound &d, SSE *l) {
+		for (auto && res : l->loop) {
+			if (res.next != NULL) {
+				if (res.type == '(' && res.next->type == ')') {
+					b(res.num - 1, res.next->num - 1) = b(res.next->num - 1, res.num - 1) = helix_par.dist_bp;
+				}
+				else {
+					b(res.num - 1, res.next->num - 1) = b(res.next->num - 1, res.num - 1) = helix_par.dist_bond;
+				}
+			}
+		}
     }
 
-    void set_bound_helix(Eigen::MatrixXd &b, DihBound &d, const helix &h) {
+    void set_bound_helix(Eigen::MatrixXd &b, DihBound &d, const Helix &h) {
         int len = 0; 
         std::deque<int> s1, s2; 
-        HELIX_EACH(h, 
-            len++; 
-            s1.push_back(BP->res1.num-1); 
-            s2.push_back(BP->res2.num-1)
-        );
+		for (auto && bp : h) {
+			len++;
+			s1.push_back(bp.res1.num - 1);
+			s2.push_back(bp.res2.num - 1);
+		}
         for (int i = 0; i < len; i++) for (int j = 0; j < i + 1; j++) {
             b(s1[i], s1[j]) = b(s1[j], s1[i]) = helix_par.dist_a(j-i);
             b(s2[i], s2[j]) = b(s2[j], s2[i]) = helix_par.dist_b(j-i);

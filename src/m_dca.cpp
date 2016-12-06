@@ -1,15 +1,15 @@
 #include <jian/dca/Dca.hpp>
 #include <jian/dca/ss_pairs.hpp>
 #include <jian/nuc2d/SSTree.hpp>
-#include <jian/nuc2d/loop.hpp>
+#include <jian/nuc2d/SSE.hpp>
 #include "nsp.hpp"
 
 BEGIN_JN
 	namespace dca {
 
 		SSTree::Path direct_path(const SSTree::Path &p1, const SSTree::Path &p2) {
-			auto pos = std::adjacent_find(p1.begin(), p1.end(), [&p2](const Hairpin *a1, const Hairpin *a2) {
-				return std::adjacent_find(p2.begin(), p2.end(), [&a1, &a2](const Hairpin *b1, const Hairpin *b2) {
+			auto pos = std::adjacent_find(p1.begin(), p1.end(), [&p2](const SSE *a1, const SSE *a2) {
+				return std::adjacent_find(p2.begin(), p2.end(), [&a1, &a2](const SSE *b1, const SSE *b2) {
 					return a1 == b1 && a2 != b2;
 				}) != p2.end() || size(p2) == 1;
 			});
@@ -43,14 +43,14 @@ BEGIN_JN
 		}
 
 		bool connect_by_ml(int a, int b, const SSTree &sst) {
-			auto path_a = sst.path([&a](const Hairpin *l) {return l->has(a+1); });
-			auto path_b = sst.path([&b](const Hairpin *l) {return l->has(b+1); });
+			auto path_a = sst.path([&a](const SSE *l) {return l->has(a+1); });
+			auto path_b = sst.path([&b](const SSE *l) {return l->has(b+1); });
 			auto path = direct_path(path_a, path_b);
 			LOG << a << ' ' << b << std::endl;
 			print_path(path_a);
 			print_path(path_b);
 			print_path(path);
-			return std::any_of(path.begin(), path.end(), [](const Hairpin *l) {return l->is_ml(); });
+			return std::any_of(path.begin(), path.end(), [](const SSE *l) {return l->is_ml(); });
 		}
 
 		void trim_di(const Par &par) {
@@ -65,7 +65,7 @@ BEGIN_JN
 			sst.make(seq, ss, 1);
 			sst.head()->print_tree();
 			//print_tuples(tuples);
-            std::vector<Hairpin *> v;
+            std::vector<SSE *> v;
             v.resize(l);
             for (int i = 0; i < l; i++) v[i] = sst.find([&i](auto &&l, auto &&path){return l->has(i+1);});
             for (auto && l : v) LOG << l << ' '; LOG << std::endl;

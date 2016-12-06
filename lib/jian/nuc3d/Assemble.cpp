@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "../utils/Par.hpp"
 #include "../utils/Env.hpp"
 #include "../utils/file.hpp"
@@ -13,13 +14,13 @@ void chain_read_record(Chain &chain, const record_t &templ_res) {
     chain_read_model(chain, stream.str());
 }
 
-void find_loop_records(Hairpin *l, records_t &records, S name, 
+void find_loop_records(SSE *l, records_t &records, S name, 
 	const pdbs_t &used_pdbs, const pdbs_t &disused_pdbs, family_t family)
 {
-    if (l->empty()) return;
+    if (l->loop.empty()) return;
 
-    S seq = l->seq(),
-    ss = l->ss(),
+    S seq = l->loop.seq(),
+    ss = l->loop.ss(),
     p_ss = NASS::pure_ss(ss),
     lower_ss = NASS::lower_ss(p_ss, 1);
 
@@ -69,13 +70,13 @@ void find_loop_records(Hairpin *l, records_t &records, S name,
     });
 }
 
-void find_helix_records(Hairpin *l, records_t &records, S name, S family) {
-    if (l->s.empty()) return;
+void find_helix_records(SSE *l, records_t &records, S name, S family) {
+    if (l->helix.empty()) return;
 
-    S seq = l->s.seq(),
-                ss = l->s.ss();
+	S seq = l->helix.seq();
+	S ss = l->helix.ss();
 
-    int len = l->s.len();
+    int len = size(l->helix);
 
 	STD_ ostringstream stream;
     stream << Env::lib() << "/RNA/records/helix";
@@ -128,9 +129,6 @@ void find_helix_records(Hairpin *l, records_t &records, S name, S family) {
         LOG << "# Construct 2D Structure Tree" << std::endl;
         _ss_tree.make(_seq, _ss, _hinge);
 
-        LOG << "# Set Virtual Loops" << std::endl;
-        set_virtual_loops();
-
 		LOG << "# Searching Templates..." << std::endl;
 		find_records();
 
@@ -140,20 +138,6 @@ void find_helix_records(Hairpin *l, records_t &records, S name, S family) {
 		LOG << "# Printing records..." << std::endl;
         print_records();
 
-    }
-
-    void Assemble::set_virtual_loops() {
-        LOOP_TRAVERSE(_ss_tree.head(), 
-            if (_l->has_loop()) {
-                if (_method == "FADG") {
-                    _is_virtual[_l] = false;
-//                } else if (_strategy == "loose" && (_l->is_open() || _l->num_sons() >= 2)) {
-//                    _is_virtual[_l] = true;
-                } else {
-                    _is_virtual[_l] = false;
-                }
-            }
-        );
     }
 
     void Assemble::run() {
@@ -210,7 +194,7 @@ void find_helix_records(Hairpin *l, records_t &records, S name, S family) {
     }
 
     bool Assemble::lack_templates() {
-        Hairpin *l;
+        SSE *l;
         for (auto && pair : m_templates) {
             l = pair.first;
             if (l->has_loop()) {
@@ -221,9 +205,9 @@ void find_helix_records(Hairpin *l, records_t &records, S name, S family) {
     }
 
 	void Assemble::print_templates() {
-		LOOP_TRAVERSE(_ss_tree.head(),
-			LOG << _l << " : " << m_templates[_l].first.model_name << ' ' << m_templates[_l].second.model_name << std::endl;
-		);
+		for (auto &&sse : _ss_tree) {
+			LOG << &sse << " : " << m_templates[&sse].first.model_name << ' ' << m_templates[&sse].second.model_name << std::endl;
+		}
 	}
 
     void Assemble::assemble() {
@@ -236,7 +220,7 @@ void find_helix_records(Hairpin *l, records_t &records, S name, S family) {
         position_templates();
 
         LOG << "## Assemble Templates." << std::endl;
-        assemble_templates(_ss_tree.head());
+        assemble_templates(_ss_tree.head);
 
         LOG << "## Transform." << std::endl;
         this->transform();
@@ -248,24 +232,24 @@ void find_helix_records(Hairpin *l, records_t &records, S name, S family) {
         _pred_chain = std::move(jian::transform(m, _seq, _type)[0]);
     }
 
-	void Assemble::set_loop_template(Hairpin *l, B is_first) {
+	void Assemble::set_loop_template(SSE *l, B is_first) {
 		if (l != NULL && l->has_loop()) {
 			if (m_loop_building_method == "all_dg" ||
 				(m_loop_building_method == "partial_dg" && m_records[l].first.empty())) {
-				build_loop_dg.init(l->seq(), NASS::lower_ss(l->ss()));
+				build_loop_dg.init(l->loop.seq(), NASS::lower_ss(l->loop.ss()));
 				m_templates[l].first = build_loop_dg();
 				m_selected_record[l].first = TemplRec{};
 			}
 			else if (m_loop_building_method == "all_raw" ||
 				(m_loop_building_method == "partial_raw" && m_records[l].first.empty())) {
-				build_loop_raw.init(l->seq(), NASS::lower_ss(l->ss()));
+				build_loop_raw.init(l->loop.seq(), NASS::lower_ss(l->loop.ss()));
 				m_templates[l].first = build_loop_raw();
 				m_selected_record[l].first = TemplRec{};
 			}
 			else if (m_loop_building_method == "all_mc" ||
 				(m_loop_building_method == "partial_mc" && m_records[l].first.empty())) {
-				build_loop_raw.init(l->seq(), NASS::lower_ss(l->ss()));
-				sample_loop.init(build_loop_raw(), l->ss());
+				build_loop_raw.init(l->loop.seq(), NASS::lower_ss(l->loop.ss()));
+				sample_loop.init(build_loop_raw(), l->loop.ss());
 				m_templates[l].first = sample_loop();
 				m_selected_record[l].first = TemplRec{};
 			}
@@ -278,7 +262,7 @@ void find_helix_records(Hairpin *l, records_t &records, S name, S family) {
 	}
 
     void Assemble::select_templates() {
-		BEGIN_LOOP_TRAVERSE(_ss_tree.head()) {
+		for (auto && sse : _ss_tree) {
 			//if (L->has_loop()) {
 			//	if (m_records[L].first.empty()) {
 			//		build_loop_dg.init(L->seq(), NASS::lower_ss(L->ss()));
@@ -290,12 +274,12 @@ void find_helix_records(Hairpin *l, records_t &records, S name, S family) {
 			//		m_selected_record[L].first = m_records[L].first[0];
 			//	}
 			//}
-			set_loop_template(_l, true);
-			if (_l->has_helix()) {
-				m_templates[_l].second = load_pdb(m_records[_l].second[0]);
-				m_selected_record[_l].second = m_records[_l].second[0];
+			set_loop_template(&sse, true);
+			if (sse.has_helix()) {
+				m_templates[&sse].second = load_pdb(m_records[&sse].second[0]);
+				m_selected_record[&sse].second = m_records[&sse].second[0];
 			}
-		} END_LOOP_TRAVERSE;
+		}
     }
 
 	void Assemble::sample_helix_template() {
@@ -307,7 +291,7 @@ void find_helix_records(Hairpin *l, records_t &records, S name, S family) {
 	}
 
     void Assemble::sample_one_template() {
-		Hairpin * l = select_loop();
+		SSE * l = select_loop();
 		if (l == NULL) {
 			sample_helix_template();
 		}
@@ -318,19 +302,19 @@ void find_helix_records(Hairpin *l, records_t &records, S name, S family) {
 
     void Assemble::sample_all_templates() {
         for (auto && pair : m_templates) {
-            Hairpin *l = pair.first;
+            SSE *l = pair.first;
             if (l->has_loop()) {
                 sample_loop_template(l);
             }
         }
     }
 
-    void Assemble::sample_loop_template(Hairpin *l) {
+    void Assemble::sample_loop_template(SSE *l) {
 		set_loop_template(l, false);
     }
 
-    Hairpin *Assemble::select_loop() {
-        std::deque<Hairpin *> ls;
+    SSE *Assemble::select_loop() {
+        std::deque<SSE *> ls;
         for (auto && pair : m_records) {
             auto &l = pair.first;
             if (l->has_loop()) {
@@ -346,38 +330,37 @@ void find_helix_records(Hairpin *l, records_t &records, S name, S family) {
         return chain;
     }
 
-    void Assemble::assemble_templates(Hairpin *l) {
+    void Assemble::assemble_templates(SSE *l) {
         _pred_chain.resize(_seq.size());
-        LOOP_TRAVERSE(l,
-//_l->print();
-            if (_l->has_loop()) {
-                auto &temp_residues = m_templates[_l].first;
-//                LOGI << "Hairpin: \n" << temp_residues << std::endl;
-                int i = 0;
-                LOOP_EACH(_l,
-                    if (RES->type != '&') {
-                        _pred_chain[RES->num - 1] = temp_residues[i];
-                        i++;
-                    }
-                );
-            }
-            if (_l->has_helix()) {
-                int len = _l->s.len();
-                auto &temp_residues = m_templates[_l].second;
-//                LOGI << "helix: \n" << temp_residues << std::endl;
-                HELIX_EACH(_l->s,
-                    _pred_chain[BP->res1.num - 1] = temp_residues[N_BP];
-                    _pred_chain[BP->res2.num - 1] = temp_residues[2*len-1-N_BP];
-                );
-            }
-        );
+		for (auto &&sse : _ss_tree) {
+			if (sse.has_loop()) {
+				auto &temp_residues = m_templates[&sse].first;
+				int i = 0;
+				for (auto && res : sse.loop) {
+					if (res.type != '&') {
+						_pred_chain[res.num - 1] = temp_residues[i];
+						i++;
+					}
+				}
+			}
+			if (sse.has_helix()) {
+				int len = size(sse.helix);
+				auto &temp_residues = m_templates[&sse].second;
+				int n_bp = 0;
+				for (auto && bp : sse.helix) {
+					_pred_chain[bp.res1.num - 1] = temp_residues[n_bp];
+					_pred_chain[bp.res2.num - 1] = temp_residues[2 * len - 1 - n_bp];
+					n_bp++;
+				}
+			}
+		}
     }
 
     void Assemble::position_templates() {
-        position_templates(_ss_tree.head(), L<Mat>());
+        position_templates(_ss_tree.head, L<Mat>());
     }
 
-    void Assemble::position_templates(Hairpin *l, L<Mat> mats) {
+    void Assemble::position_templates(SSE *l, L<Mat> mats) {
         if (l == NULL) return;
         auto &loop = m_templates[l].first;
         auto &helix = m_templates[l].second;
@@ -388,7 +371,7 @@ void find_helix_records(Hairpin *l, records_t &records, S name, S family) {
                 position_model(helix, mat1);
             }
             if (l->has_loop()) {
-                // position Hairpin
+                // position SSE
                 int len = helix.size();
                 auto mat2 = model_mat(helix, std::list<int>{len/2-2, len/2-1, len/2, len/2+1});
                 position_model(loop, mat2);
@@ -451,7 +434,7 @@ void find_helix_records(Hairpin *l, records_t &records, S name, S family) {
         return mat;
     }
 
-    std::list<Mat> Assemble::loop_mats(const Chain &chain, Hairpin *l) {
+    std::list<Mat> Assemble::loop_mats(const Chain &chain, SSE *l) {
         std::list<Mat> mats;
         if (l->num_sons() == 0) {
             return mats;
@@ -466,46 +449,45 @@ void find_helix_records(Hairpin *l, records_t &records, S name, S family) {
     }
 
     void Assemble::find_records() {
-        LOOP_TRAVERSE(_ss_tree.head(), 
-            _find_self[_l] = false;
-            find_loop_records(_l);
-			find_helix_records(_l);
-        );
+		for (auto &&sse : _ss_tree) {
+			_find_self[&sse] = false;
+			find_loop_records(&sse);
+			find_helix_records(&sse);
+		}
     }
 
 	void Assemble::complete_records() {
-		auto path = _ss_tree.m_head->tree_path();
-		Int l = STD_ count_if(path.begin(), path.end(), [](auto &&node) {return node.val->has_loop(); });
-		Num m = STD_ exp(_num, 1.0 / l);
-		BEGIN_LOOP_TRAVERSE(_ss_tree.m_head) {
-			if (_l->has_loop()) {
-				m_templates_cache[_l].first.resize();
+		Int l = STD_ count_if(_ss_tree.begin(), _ss_tree.end(), [](const SSE &sse)->bool {return sse.has_loop(); });
+		Int m = Int(STD_ ceil(STD_ pow(_num, 1.0 / l)));
+		for (auto && hp : _ss_tree) {
+			if (hp.has_loop()) {
+				m_templates_cache[&hp].first.resize(m);
+				records_t &records = m_records[&hp].first;
+				Int d = _num - size(records);
+				if (d > 0) {
+					sample_loop();
+				}
 			}
-			records_t &records = m_records[_l].first;
-			Int d = _num - size(records);
-			if (d > 0) {
-
-			}
-		} END_LOOP_TRAVERSE;
+		}
 	}
 
     void Assemble::print_records() {
         LOG << "Records searching results:" << std::endl;
-        LOOP_TRAVERSE(_ss_tree.head(),
-            LOG << "Hairpin(" << _l << "):" << std::endl;
-            if (_l->has_helix()) {
-                LOG << "  Helix " << Str(_l->s) << " (" << m_records[_l].second.size() << ")" << std::endl;
-            }
-            if (_l->has_loop()) {
-                LOG << "  Loop " << std::string(*_l) << " (" << m_records[_l].first.size() << ")" << std::endl;
-            }
-        );
+		for (auto &&sse : _ss_tree) {
+			LOG << "SSE(" << &sse << "):" << std::endl;
+			if (sse.has_helix()) {
+				LOG << "  Helix " << Str(sse.helix) << " (" << m_records[&sse].second.size() << ")" << std::endl;
+			}
+			if (sse.has_loop()) {
+				LOG << "  Loop " << Str(sse.loop) << " (" << m_records[&sse].first.size() << ")" << std::endl;
+			}
+		}
     }
 
-    void Assemble::find_loop_records(Hairpin *l) {
-        if (l->empty()) return;
+    void Assemble::find_loop_records(SSE *l) {
+        if (l->loop.empty()) return;
 
-        S seq = l->seq(), ss = l->ss(), p_ss = NASS::pure_ss(ss), lower_ss = NASS::lower_ss(p_ss, 1), family = _family;
+        S seq = l->loop.seq(), ss = l->loop.ss(), p_ss = NASS::pure_ss(ss), lower_ss = NASS::lower_ss(p_ss, 1), family = _family;
         int num_sons = l->num_sons();
 
         S info_file = _lib + "/RNA/records/" + (l->is_open() ? "open_" : "") + "loop";
@@ -553,11 +535,11 @@ void find_helix_records(Hairpin *l, records_t &records, S name, S family) {
             return loop1._score > loop2._score; });
     }
 
-    void Assemble::find_helix_records(Hairpin *l) {
-        if (l->s.empty()) return;
+    void Assemble::find_helix_records(SSE *l) {
+        if (l->helix.empty()) return;
 
-        S seq = l->s.seq(), ss = l->s.ss(), family = _family;
-        int len = l->s.len();
+        S seq = l->helix.seq(), ss = l->helix.ss(), family = _family;
+        int len = size(l->helix);
 
         S info_file = _lib + "/RNA/records/helix";
         std::ifstream ifile(info_file.c_str());

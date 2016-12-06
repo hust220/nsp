@@ -41,7 +41,7 @@ public:
     }
     
     void extract_hairpins(Frag &frag, std::list<SST> &ssts) {
-        Hairpin hairpin;
+        SSE hairpin;
         int num_sons;
         std::tie(hairpin, num_sons) = extract_first_hairpin(frag, first_hairpin_index(frag));
         if (hairpin._loop.size() == 2 && hairpin._loop.front().empty() && hairpin._loop.back().empty()) return;
@@ -54,11 +54,11 @@ public:
         extract_hairpins(frag, ssts);
     }
 
-    std::pair<Hairpin, int> extract_first_hairpin(Frag &frag, const std::tuple<int, int, int> &tuple) {
+    std::pair<SSE, int> extract_first_hairpin(Frag &frag, const std::tuple<int, int, int> &tuple) {
         auto &left_index = std::get<0>(tuple);
         auto &right_index = std::get<1>(tuple);
         auto &len = std::get<2>(tuple);
-        Hairpin hairpin;
+        SSE hairpin;
         hairpin._helix[0].reserve(len);
         hairpin._helix[1].reserve(len);
         std::copy(std::next(frag.begin(), left_index - len + 1), std::next(frag.begin(), left_index + 1), std::back_inserter(hairpin._helix[0]));
@@ -95,7 +95,7 @@ public:
                 right_index = index;
                 break;
             } else if (new_state == error_state) {
-                throw "jian::BuildSST::extract_hairpins(Frag &, std::vector<Hairpin> &) error!";
+                throw "jian::BuildSST::extract_hairpins(Frag &, std::vector<SSE> &) error!";
             }
             state = new_state;
             index++;

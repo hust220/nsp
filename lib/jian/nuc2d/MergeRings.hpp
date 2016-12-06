@@ -26,7 +26,7 @@ public:
 
     std::pair<std::string, std::string> get_seq_ss(const SST &sst) {
         S seq, ss;
-        int size = sst.fold([](const Hairpin &hairpin){return hairpin.size();}, std::plus<int>());
+        int size = sst.fold([](const SSE &hairpin){return hairpin.size();}, std::plus<int>());
         (seq.reserve(size), ss.reserve(size));
         seq += sst._data._helix[0].seq() + sst._data._loop.front().seq();
         ss += sst._data._helix[0].ss() + sst._data._loop.front().ss();
@@ -53,7 +53,7 @@ public:
         return list;
     }
 
-    void merge_ring(SST &sst, const Hairpin &hairpin) {
+    void merge_ring(SST &sst, const SSE &hairpin) {
         if (hairpin._helix[0].empty()) return;
         SST *left, *right;
         std::tie(left, right) = find_left_right(sst, hairpin);
@@ -62,7 +62,7 @@ public:
         auto pseudo_knot = make_pseudo_knot(ring);
     }
 
-    std::pair<SST *, SST *> find_left_right(SST &sst, const Hairpin &hairpin) {
+    std::pair<SST *, SST *> find_left_right(SST &sst, const SSE &hairpin) {
         std::pair<SST *, SST *> pair;
         sst.apply([&](SST &temp_sst){
             for (auto &&frag: temp_sst._data._loop) {
@@ -78,7 +78,7 @@ public:
         return false;
     }
 
-    Tree<SST *> find_ring(const SST &sst, const Hairpin &hairpin) {}
+    Tree<SST *> find_ring(const SST &sst, const SSE &hairpin) {}
 
     SST make_pseudo_knot(const Tree<SST *> &rint) {
         return SST();

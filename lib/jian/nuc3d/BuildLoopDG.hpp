@@ -30,9 +30,9 @@ BEGIN_JN
 
 		Chain operator ()();
 
-		void set_bound_loop(Mat &b, DihBound &d, Hairpin *l);
+		void set_bound_loop(Mat &b, DihBound &d, SSE *l);
 
-		void set_bound_helix(Mat &b, DihBound &d, const helix &h);
+		void set_bound_helix(Mat &b, DihBound &d, const Helix &h);
 	};
 
 END_JN
