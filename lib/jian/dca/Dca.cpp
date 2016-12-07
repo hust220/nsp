@@ -13,15 +13,15 @@ BEGIN_JN
 
 		void Dca::fastaread(Str fastafile, Dca::seqs_t &seqs) {
 			Str tmp;
-			BEGIN_READ_FILE(fastafile, " ") {
-				if (L[0] == '>') {
+			for (auto &&it : FileLines(fastafile)) {
+				if (it.line[0] == '>') {
 					seqs.push_back(tmp);
 					tmp = "";
 				}
 				else {
-					tmp += jian::trim_copy(L);
+					tmp += jian::trim_copy(it.line);
 				}
-			} END_READ_FILE;
+			}
 			seqs.push_back(tmp);
 			seqs.pop_front();
 		}

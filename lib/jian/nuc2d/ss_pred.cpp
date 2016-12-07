@@ -90,10 +90,11 @@ BEGIN_JN
 			void read_loop_dg() {
 				LOGV << "### Read loop.dg" << std::endl;
 				int n; std::vector<std::string> v;
-				BEGIN_READ_FILE(_lib + "/loop.dg", " ") {
-					if (N + 1 >= 5) {
-						jian::trim(L);
-						tokenize(L, v, " ");
+				for (auto &&it : FileLines(to_str(_lib, "/loop.dg"))) {
+				//BEGIN_READ_FILE(_lib + "/loop.dg", " ") {
+					if (it.n + 1 >= 5) {
+						jian::trim(it.line);
+						tokenize(it.line, v, " ");
 						if (v.size() == 4) {
 							n = std::stoi(v[0]) - 1;
 							_en_internal[n] = (v[1] == "." ? 0 : std::stof(v[1]));
@@ -101,7 +102,7 @@ BEGIN_JN
 							_en_hairpin[n] = (v[3] == "." ? 0 : std::stof(v[3]));
 						}
 					}
-				} END_READ_FILE;
+				}
 			}
 
 			void read_stack_dg() {
@@ -115,32 +116,34 @@ BEGIN_JN
 						}
 					}
 				};
-				BEGIN_READ_FILE(_lib + "/stack.dg", " ") {
-					int n = N + 1;
-					if (27 <= n && n <= 30) foo(L, 0, n - 27);
-					else if (41 <= n && n <= 44) foo(L, 1, n - 41);
-					else if (56 <= n && n <= 59) foo(L, 2, n - 56);
-					else if (70 <= n && n <= 73) foo(L, 3, n - 70);
-				} END_READ_FILE;
+				for (auto &&it : FileLines(to_str(_lib, "/stack.dg"))) {
+					//BEGIN_READ_FILE(_lib + "/stack.dg", " ") {
+					int n = it.n + 1;
+					if (27 <= n && n <= 30) foo(it.line, 0, n - 27);
+					else if (41 <= n && n <= 44) foo(it.line, 1, n - 41);
+					else if (56 <= n && n <= 59) foo(it.line, 2, n - 56);
+					else if (70 <= n && n <= 73) foo(it.line, 3, n - 70);
+				}
 			}
 
 			void read_miscloop_dg() {
 				LOGV << "### Read miscloop.dg" << std::endl;
 				int n = 0;
 				std::vector<std::string> v;
-				BEGIN_READ_FILE(_lib + "/miscloop.dg", " ") {
-					if (std::regex_search(L, std::regex("offset,  free base penalty,  helix penalty"))) {
+				for (auto &&it : FileLines(to_str(_lib, "/miscloop.dg"))) {
+					//BEGIN_READ_FILE(_lib + "/miscloop.dg", " ") {
+					if (std::regex_search(it.line, std::regex("offset,  free base penalty,  helix penalty"))) {
 						n++;
 					}
 					else if (n == 1) {
-						jian::trim(L);
-						tokenize(L, v, " ");
+						jian::trim(it.line);
+						tokenize(it.line, v, " ");
 						_offset = std::stod(v[0]);
 						_free_base_penalty = std::stod(v[1]);
 						_helix_penalty = std::stod(v[2]);
 						n++;
 					}
-				} END_READ_FILE;
+				}
 			}
 
 			void init() {

@@ -8,6 +8,7 @@
 #include "../utils/file.hpp"
 #include "../nuc2d.hpp"
 #include "ss_pairs.hpp"
+#include "../utils/file.hpp"
 
 BEGIN_JN
 namespace dca {
@@ -31,12 +32,11 @@ pairs_t pairs_from_file(const Str &file_name, int size) {
 
 tuples_t tuples_from_file(const Str &file_name, int size) {
     tuples_t tuples;
-	BEGIN_READ_FILE(file_name, " ") {
-		//        if (N >= size) return pairs;
-		if (F.size() >= 3) {
-			int a = std::stoi(F[0]) - 1;
-			int b = std::stoi(F[1]) - 1;
-			double c = std::stod(F[2]);
+	for (auto &&l : FileLines(file_name)) {
+		if (JN_ size(l.arr) >= 3) {
+			int a = std::stoi(l.arr[0]) - 1;
+			int b = std::stoi(l.arr[1]) - 1;
+			double c = std::stod(l.arr[2]);
 			if (a >= 0 && b - a - 1 >= 4) {
 				auto p = std::minmax(a, b);
 				if (c < tuples.back().c) {
@@ -64,7 +64,7 @@ tuples_t tuples_from_file(const Str &file_name, int size) {
 				}
 			}
 		}
-	} END_READ_FILE;
+	}
     return tuples;
 }
 

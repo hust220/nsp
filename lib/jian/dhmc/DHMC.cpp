@@ -16,13 +16,13 @@ void DHMC::init(const Par &par) {
 	m_all_free = par.has("all_free");
 
 	log << "# Load  bp distances..." << std::endl;
-	BEGIN_READ_FILE(to_str(Env::lib(), "/RNA/pars/nuc3d/bp_distances.txt"), " ") {
-		if (size(F) == 7) {
+	for (auto &&it : FileLines(to_str(Env::lib(), "/RNA/pars/nuc3d/bp_distances.txt"))) {
+		if (size(it.arr) == 7) {
 			for (int i = 0; i < 6; i++) {
-				m_bp_distances[F[0]][i] = lexical_cast<Num>(F[i+1]);
+				m_bp_distances[it.arr[0]][i] = lexical_cast<Num>(it.arr[i+1]);
 			}
 		}
-	} END_READ_FILE;
+	}
 
 	log << "# Set bps" << std::endl;
 	set_bps();

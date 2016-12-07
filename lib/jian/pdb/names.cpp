@@ -30,49 +30,50 @@ BEGIN_JN
 			int i;
 			jian::tokenize_v v;
 
-			BEGIN_READ_FILE(filename, "#: []") {
-				if (F.size() > 0) {
+			for (auto &&it : FileLines(filename, "#: []")) {
+				int l = size(it.arr);
+				if (l > 0) {
 					//std::cout << F[0] << std::endl;
-					if (F[0] == "mol_type") {
+					if (it.arr[0] == "mol_type") {
 						//map_names[F[1]] = Names{};
-						p = map_names[F[1]];
+						p = map_names[it.arr[1]];
 					}
-					else if (F[0] == "phos") {
-						for (i = 1; i < F.size(); i++) {
-							p->atoms_phos.push_back(F[i]);
-							p->atoms_bb.push_back(F[i]);
+					else if (it.arr[0] == "phos") {
+						for (i = 1; i < l; i++) {
+							p->atoms_phos.push_back(it.arr[i]);
+							p->atoms_bb.push_back(it.arr[i]);
 						}
 					}
-					else if (F[0] == "sugar") {
-						for (i = 1; i < F.size(); i++) {
-							p->atoms_sugar.push_back(F[i]);
-							p->atoms_bb.push_back(F[i]);
+					else if (it.arr[0] == "sugar") {
+						for (i = 1; i < l; i++) {
+							p->atoms_sugar.push_back(it.arr[i]);
+							p->atoms_bb.push_back(it.arr[i]);
 						}
 					}
-					else if (F[0] == "bb") {
-						for (i = 1; i < F.size(); i++) {
-							p->atoms_bb.push_back(F[i]);
+					else if (it.arr[0] == "bb") {
+						for (i = 1; i < l; i++) {
+							p->atoms_bb.push_back(it.arr[i]);
 						}
 					}
 					else {
-						jian::tokenize(L, v, ":");
+						jian::tokenize(it.line, v, ":");
 						//for (auto && i : v) std::cout << i << ' '; std::cout << std::endl;
 						jian::tokenize(std::string(v[0]), v, " []");
-						for (i = 1; i < v.size(); i++) p->alias[F[0]].push_back(v[i]);
+						for (i = 1; i < v.size(); i++) p->alias[it.arr[0]].push_back(v[i]);
 
-						p->res.push_back(F[0]);
-						for (auto && s : p->atoms_phos) p->atoms_res[F[0]].push_back(s);
-						for (auto && s : p->atoms_sugar) p->atoms_res[F[0]].push_back(s);
-						for (i = v.size(); i < F.size(); i++) {
-							p->atoms_base[F[0]].push_back(F[i]);
-							p->atoms_res[F[0]].push_back(F[i]);
+						p->res.push_back(it.arr[0]);
+						for (auto && s : p->atoms_phos) p->atoms_res[it.arr[0]].push_back(s);
+						for (auto && s : p->atoms_sugar) p->atoms_res[it.arr[0]].push_back(s);
+						for (i = v.size(); i < it.arr.size(); i++) {
+							p->atoms_base[it.arr[0]].push_back(it.arr[i]);
+							p->atoms_res[it.arr[0]].push_back(it.arr[i]);
 						}
 					}
 				}
 				else {
 					// pass
 				}
-			} END_READ_FILE;
+			}
 		}
 
 		const Names & Names::instance(S mol_type) {

@@ -45,31 +45,29 @@ BEGIN_JN
 
 	NASS::NASS() {
 		Str name = Env::lib() + "/RNA/pars/nuc2d/dbn.symbols";
-		BEGIN_READ_FILE(name, " ") {
-			if (F.size() > 1) {
-				if (F[1] == "paired_keys") {
-					std::getline(ifile, L);
-					jian::tokenize(L, F, " ");
-					for (int i = 0; i < F.size() / 2; i++) {
-						paired_keys.push_back({ F[2 * i][0], F[2 * i + 1][0] });
+		FileLines lines(name);
+		for (auto it = lines.begin(); it != lines.end(); it++) {
+			if (it->arr.size() > 1) {
+				if (it->arr[1] == "paired_keys") {
+					it++;
+					for (int i = 0; i < it->arr.size() / 2; i++) {
+						paired_keys.push_back({ it->arr[2 * i][0], it->arr[2 * i + 1][0] });
 					}
 				}
-				else if (F[1] == "unpaired_keys") {
-					std::getline(ifile, L);
-					jian::tokenize(L, F, " ");
-					for (auto && s : F) {
+				else if (it->arr[1] == "unpaired_keys") {
+					it++;
+					for (auto && s : it->arr) {
 						unpaired_keys.push_back(s[0]);
 					}
 				}
-				else if (F[1] == "break_keys") {
-					std::getline(ifile, L);
-					jian::tokenize(L, F, " ");
-					for (auto && s : F) {
+				else if (it->arr[1] == "break_keys") {
+					it++;
+					for (auto && s : it->arr) {
 						break_keys.push_back(s[0]);
 					}
 				}
 			}
-		} END_READ_FILE;
+		}
 	}
 
 	std::vector<int> NASS::get_bps(const Str &ss) {

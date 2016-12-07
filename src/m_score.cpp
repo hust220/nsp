@@ -76,9 +76,9 @@ BEGIN_JN
 		}
 
 		void score_l(ScoreBase * scoring, S filename) {
-			BEGIN_READ_FILE(filename, " ") {
-				score_s(scoring, F[0]);
-			} END_READ_FILE;
+			for (auto &&it : FileLines(filename)) {
+				score_s(scoring, it.arr[0]);
+			}
 		}
 
 		void train_s(ScoreBase * scoring, S filename) {
@@ -90,9 +90,9 @@ BEGIN_JN
 		}
 
 		void train_l(ScoreBase * scoring, S filename) {
-			BEGIN_READ_FILE(filename, " ") {
-				train_s(scoring, F[0]);
-			} END_READ_FILE;
+			for (auto &&it : FileLines(filename)) {
+				train_s(scoring, it.arr[0]);
+			}
 		}
 
 		double en_crash(const Residue &r1, const Residue &r2) {

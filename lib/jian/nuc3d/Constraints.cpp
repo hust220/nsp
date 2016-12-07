@@ -80,19 +80,19 @@ BEGIN_JN
 
 	void Constraints::read_contacts(const S &f) {
 		if (!f.empty()) {
-			BEGIN_READ_FILE(f, " ") {
-				if (F.size() == 3) add_contact(JN_INT(F[0]) - 1, JN_INT(F[1]) - 1, JN_DBL(F[2]));
-				else if (F.size() == 2) add_contact(JN_INT(F[0]) - 1, JN_INT(F[1]) - 1, 1.0);
-			} END_READ_FILE;
+			for (auto &&it : FileLines(f)) {
+				if (size(it.arr) == 3) add_contact(JN_INT(it.arr[0]) - 1, JN_INT(it.arr[1]) - 1, JN_DBL(it.arr[2]));
+				else if (size(it.arr) == 2) add_contact(JN_INT(it.arr[0]) - 1, JN_INT(it.arr[1]) - 1, 1.0);
+			}
 		}
 	}
 
 	void Constraints::read_distances(const S &f) {
 		if (!f.empty()) {
-			BEGIN_READ_FILE(f, " ") {
-				if (F.size() == 3) add_distance(JN_INT(F[0]) - 1, JN_INT(F[1]) - 1, JN_DBL(F[2]));
-				else if (F.size() == 2) add_distance(JN_INT(F[0]) - 1, JN_INT(F[1]) - 1, 10.0);
-			} END_READ_FILE;
+			for (auto &&it : FileLines(f)) {
+				if (size(it.arr) == 3) add_distance(JN_INT(it.arr[0]) - 1, JN_INT(it.arr[1]) - 1, JN_DBL(it.arr[2]));
+				else if (size(it.arr) == 2) add_distance(JN_INT(it.arr[0]) - 1, JN_INT(it.arr[1]) - 1, 10.0);
+			}
 		}
 	}
 

@@ -35,18 +35,6 @@ struct file {
 
 #define FCLOSE(fstream) (fstream).close()
 
-#define BEGIN_READ_FILE(f, t) do {\
-	int N = 0;\
-	std::ifstream ifile;\
-	FOPEN(ifile, f);\
-	S L;\
-	tokenize_v F;\
-	while (std::getline(ifile, L)) {\
-		::jian::tokenize(L, F, t); \
-		do
-
-#define END_READ_FILE while(0);N++;}FCLOSE(ifile);}while(0)
-
 struct FileLine
 {
 	using Data = FileLine;

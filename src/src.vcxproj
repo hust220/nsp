@@ -393,7 +393,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="m_mcc.cpp" />
     <ClCompile Include="m_md.cpp" />
-    <ClCompile Include="min_dist.cpp" />
+    <ClCompile Include="m_min_dist.cpp" />
     <ClCompile Include="m_new_score.cpp" />
     <ClCompile Include="m_pdb2jn.cpp" />
     <ClCompile Include="m_server.cpp" />
@@ -569,6 +569,7 @@
     <ClInclude Include="..\lib\jian\utils\control.hpp" />
     <ClInclude Include="..\lib\jian\utils\DBSCAN.hpp" />
     <ClInclude Include="..\lib\jian\utils\Debug.hpp" />
+    <ClInclude Include="..\lib\jian\utils\Entity.hpp" />
     <ClInclude Include="..\lib\jian\utils\Env.hpp" />
     <ClInclude Include="..\lib\jian\utils\exception.hpp" />
     <ClInclude Include="..\lib\jian\utils\Factory.hpp" />

@@ -6,11 +6,11 @@ BEGIN_JN
 
 REGISTER_NSP_COMPONENT(new_score) {
 	if (par.has("l")) {
-		BEGIN_READ_FILE(par["l"][0], " ") {
-			std::cout << scoring::new_score(mol_read_to<Model>(F[0])) << std::endl;
-		} END_READ_FILE;
+		for (auto &&it : FileLines(par.get("l"))) {
+			JN_OUT << scoring::new_score(mol_read_to<Model>(it.arr[0])) << std::endl;
+		}
     } else {
-        std::cout << scoring::new_score(mol_read_to<Model>(par["s"][0])) << std::endl;
+		JN_OUT << scoring::new_score(mol_read_to<Model>(par.get("s"))) << std::endl;
     }
 }
 
