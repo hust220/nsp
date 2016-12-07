@@ -21,7 +21,7 @@ public:
 
 	static El *deep_copy(El *other) {
 		if (other == NULL) return NULL;
-		El *el = make(other->data);
+		El *el = Base::make(other->data);
 		el->son = deep_copy(other->son);
 		el->brother = deep_copy(other->brother);
 		return el;
