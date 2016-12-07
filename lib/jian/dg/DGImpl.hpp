@@ -26,18 +26,18 @@ public:
     }
 
     Mat operator ()() {
-        LOG << "### Start DG..." << std::endl;
-        LOG << "### DG b2d..." << std::endl;
+        //LOG << "### Start DG..." << std::endl;
+        //LOG << "### DG b2d..." << std::endl;
         b2d();
-        LOG << "### DG metric..." << std::endl;
+        //LOG << "### DG metric..." << std::endl;
         metric();
-        LOG << "### DG d2c..." << std::endl;
+        //LOG << "### DG d2c..." << std::endl;
         d2c();
-        LOG << "### DG cg..." << std::endl;
+        //LOG << "### DG cg..." << std::endl;
         cg();
-        LOG << "### DG mc..." << std::endl;
+        //LOG << "### DG mc..." << std::endl;
         if (_dist_en > 20 || _dih_en > 20) mc();
-        LOG << "DG Energy (" << _dist_en << ' ' << _dih_en << ")." << std::endl;
+        //LOG << "DG Energy (" << _dist_en << ' ' << _dih_en << ")." << std::endl;
         return c;
     }
 

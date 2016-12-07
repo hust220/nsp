@@ -69,7 +69,7 @@ BEGIN_JN
 	}
 
 	Chain BuildLoopDG::operator ()() {
-		LOG << "## Build Loop By DG" << std::endl;
+		//LOG << "## Build Loop By DG" << std::endl;
 		Mat &&c = m_dg(_dist_bound);
 		return m_cg->to_aa(c, 0, c.rows() - 1);
 	}
