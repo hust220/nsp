@@ -75,11 +75,11 @@ public:
 	using El = _El;
 	using Data = typename El::Data;
 
-	El *el;
+	El *el = NULL;
 	TreePath<El> path;
 	//L<Rg> path;
 
-	BasicTreeIt() {}
+	BasicTreeIt() = default;
 
 	virtual Data &operator *() const
 	{
@@ -92,7 +92,7 @@ public:
 	}
 
 	virtual It &operator ++() {
-		if (el == NULL) throw "ListRangeIt operator ++ error!";
+		if (el == NULL) throw "BasicTreeIt operator ++ error!";
 		path.push_back(el);
 		if (el->son != NULL) {
 			el = el->son;
