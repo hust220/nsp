@@ -867,4 +867,9 @@
       <Filter>jian\pp</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt">
+      <Filter>test</Filter>
+    </Text>
+  </ItemGroup>
 </Project>
