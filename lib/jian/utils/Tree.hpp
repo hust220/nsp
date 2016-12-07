@@ -14,6 +14,7 @@ class BasicTreeEl :
 public:
 	using El = _Derived;
 	using Data = _Data;
+	using Base = BasicEl<El, Data>;
 
 	El *son = NULL;
 	El *brother = NULL;
@@ -43,12 +44,12 @@ public:
 	}
 
 	El *set_son(Data data) {
-		son = make(data);
+		son = Base::make(data);
 		return son;
 	}
 
 	El *set_brother(Data data) {
-		brother = make(data);
+		brother = Base::make(data);
 		return brother;
 	}
 
