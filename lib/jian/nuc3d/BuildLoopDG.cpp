@@ -75,14 +75,16 @@ BEGIN_JN
 	}
 
 	void BuildLoopDG::set_bound_loop(Mat &b, DihBound &d, SSE *l) {
-		auto it1 = l->loop.begin();
-		auto it2 = STD_ next(it1);
-		for (; it2 != l->loop.end(); it1++, it2++) {
-			if (it1->type == '(' && it2->type == ')') {
-				b(it1->num - 1, it2->num - 1) = b(it2->num - 1, it1->num - 1) = helix_par.dist_bp;
-			}
-			else {
-				b(it1->num - 1, it2->num - 1) = b(it2->num - 1, it1->num - 1) = helix_par.dist_bond;
+		if (!l->loop.empty()) {
+			auto it1 = l->loop.begin();
+			auto it2 = STD_ next(it1);
+			for (; it2 != l->loop.end(); it1++, it2++) {
+				if (it1->type == '(' && it2->type == ')') {
+					b(it1->num - 1, it2->num - 1) = b(it2->num - 1, it1->num - 1) = helix_par.dist_bp;
+				}
+				else {
+					b(it1->num - 1, it2->num - 1) = b(it2->num - 1, it1->num - 1) = helix_par.dist_bond;
+				}
 			}
 		}
 	}
