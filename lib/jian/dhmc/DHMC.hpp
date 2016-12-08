@@ -108,12 +108,12 @@ public:
 };
 
 template<typename T>
-void chain_refine(Chain &chain, SSE *l, const fixed_ranges_t &fixed_ranges = {}, S traj = "") {
+void chain_refine(Chain &chain, SSTree::El *l, const fixed_ranges_t &fixed_ranges = {}, S traj = "") {
 	Par par;
 	par._orig_pars = { "nsp", "" };
 	//S seq, ss;
-	Str seq = SSTreeRange(l).seq();
-	Str ss = SSTreeRange(l).ss();
+	Str seq = SSTree::make_range(l).seq();
+	Str ss = SSTree::make_range(l).ss();
 	//seq_read_tree(seq, l);
 	//ss_read_tree(ss, l);
 	par._pars["traj"].push_front(traj);
