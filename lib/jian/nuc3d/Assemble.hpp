@@ -94,7 +94,7 @@ namespace nuc3d {
 
 		void position_templates();
 
-		void position_templates(SSE *l, L<Mat> mats);
+		void position_templates(SSTree::El *l, L<Mat> mats);
 
 		void position_model(Chain &chain, const Mat &mat);
 

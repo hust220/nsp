@@ -6,19 +6,12 @@
 
 BEGIN_JN
 
-class LoopRange;
-using Loop = ListEntity<LoopRange>;
-
-class LoopRange :
-	public ListRange<res>
+class Loop :
+	public SList<res>
 {
 public:
-	using Self = LoopRange;
-	using Base = ListRange<res>;
-	using Node = Base::Node;
-	using It = Base::It;
-
-	LoopRange(Node *node = NULL) : Base(node) {}
+	using Self = Loop;
+	using Base = SList<res>;
 
 	Str ss() const {
 		STD_ ostringstream stream;
@@ -30,7 +23,7 @@ public:
 		STD_ ostringstream stream;
 		for (auto &&res : *this) {
 			if (res.type != '&') {
-				stream << res.type;
+				stream << res.name;
 			}
 		}
 		return stream.str();
@@ -45,6 +38,7 @@ public:
 
 	friend STD_ ostream &operator <<(STD_ ostream &stream, Loop l) {
 		stream << "Loop: " << ' ' << (Str)l;
+		return stream;
 	}
 
 };

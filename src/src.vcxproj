@@ -157,6 +157,7 @@
       <AdditionalIncludeDirectories>C:\Users\Jian\Desktop\项目\nsp\include;C:\Users\Jian\Desktop\项目\nsp\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions> /wd4018 /wd4305 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -332,7 +333,6 @@
     <ClCompile Include="..\lib\jian\nuc3d\SampleLoop.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\TSP.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\ParseHelix.cpp" />
-    <ClCompile Include="..\lib\jian\nuc3d\Predict3DG.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\split.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\TemplRec.cpp" />
     <ClCompile Include="..\lib\jian\nuc3d\transform.cpp" />
@@ -390,7 +390,6 @@
     <ClCompile Include="m_helix_par.cpp" />
     <ClCompile Include="m_joint.cpp" />
     <ClCompile Include="m_len.cpp" />
-    <ClCompile Include="m_lrtsp.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="m_mcc.cpp" />
     <ClCompile Include="m_md.cpp" />
@@ -457,11 +456,9 @@
     <ClInclude Include="..\lib\jian\geom\rotate.hpp" />
     <ClInclude Include="..\lib\jian\geom\suppos.hpp" />
     <ClInclude Include="..\lib\jian\jian.hpp" />
-    <ClInclude Include="..\lib\jian\lrsp.hpp" />
     <ClInclude Include="..\lib\jian\lrsp\ss_complete.hpp" />
     <ClInclude Include="..\lib\jian\lrsp\ss_del_sm_hp.hpp" />
     <ClInclude Include="..\lib\jian\lrsp\ss_hp_pred.hpp" />
-    <ClInclude Include="..\lib\jian\lrsp\LRTSP.hpp" />
     <ClInclude Include="..\lib\jian\matrix.hpp" />
     <ClInclude Include="..\lib\jian\matrix\traits.hpp" />
     <ClInclude Include="..\lib\jian\matrix\util.hpp" />
@@ -512,11 +509,7 @@
     <ClInclude Include="..\lib\jian\nuc3d\SampleLoop.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\TSP.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\JointHelix.hpp" />
-    <ClInclude Include="..\lib\jian\nuc3d\MC1p.hpp" />
-    <ClInclude Include="..\lib\jian\nuc3d\MC3p.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\ParseHelix.hpp" />
-    <ClInclude Include="..\lib\jian\nuc3d\Predict3DG.hpp" />
-    <ClInclude Include="..\lib\jian\nuc3d\Predict3DGImpl.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\REMCpsb.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\split.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\SplitModel.hpp" />

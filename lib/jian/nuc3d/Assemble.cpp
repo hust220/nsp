@@ -121,21 +121,21 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
 		par.set(m_loop_building_method, "loop_building", "lb");
 		to_lower(m_loop_building_method);
 
-        LOG << "# Check input" << std::endl;
+        log << "# Check input" << std::endl;
 		S info_errors;
 		auto b = NASS::check_ss(_ss, info_errors);
         if (!b) throw info_errors;
 
-        LOG << "# Construct 2D Structure Tree" << std::endl;
+        log << "# Construct 2D Structure Tree" << std::endl;
         _ss_tree.make(_seq, _ss, _hinge);
 
-		LOG << "# Searching Templates..." << std::endl;
+		log << "# Searching Templates..." << std::endl;
 		find_records();
 
-		LOG << "# Completing Templates..." << std::endl;
+		log << "# Completing Templates..." << std::endl;
 		complete_records();
 
-		LOG << "# Printing records..." << std::endl;
+		log << "# Printing records..." << std::endl;
         print_records();
 
     }
@@ -147,7 +147,7 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
         predict_one();
         if (m_sample) {
             n = 1;
-            LOG << "# Writing sampling structure " << n << std::endl;
+            log << "# Writing sampling structure " << n << std::endl;
             stream.str("");
             stream << _name << ".assemble." << n << ".pdb";
             mol_write(_pred_chain, stream.str());
@@ -160,7 +160,7 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
                     throw "Illegal sampling mode!";
                 }
                 assemble();
-                LOG << "# Writing sampling structure " << n << std::endl;
+                log << "# Writing sampling structure " << n << std::endl;
                 stream.str("");
                 stream << _name << ".assemble." << n << ".pdb";
                 mol_write(_pred_chain, stream.str());
@@ -169,13 +169,13 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
     }
 
     void Assemble::predict_one() {
-        LOG << "# Select Templates" << std::endl;
+        log << "# Select Templates" << std::endl;
         select_templates(); 
 
-        LOG << "# Print Templates" << std::endl;
+        log << "# Print Templates" << std::endl;
         print_templates();
 
-        LOG << "# Assemble" << std::endl;
+        log << "# Assemble" << std::endl;
         assemble();
     }
 
@@ -206,23 +206,23 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
 
 	void Assemble::print_templates() {
 		for (auto &&sse : _ss_tree) {
-			LOG << &sse << " : " << m_templates[&sse].first.model_name << ' ' << m_templates[&sse].second.model_name << std::endl;
+			log << &sse << " : " << m_templates[&sse].first.model_name << ' ' << m_templates[&sse].second.model_name << std::endl;
 		}
 	}
 
     void Assemble::assemble() {
-        LOG << "## Score of Templates: " << score_templates() << std::endl;
+        log << "## Score of Templates: " << score_templates() << std::endl;
 
-        LOG << "## Print Templates." << std::endl;
+        log << "## Print Templates." << std::endl;
         print_templates();
 
-        LOG << "## Position Templates." << std::endl;
+        log << "## Position Templates." << std::endl;
         position_templates();
 
-        LOG << "## Assemble Templates." << std::endl;
-        assemble_templates(_ss_tree.head);
+        log << "## Assemble Templates." << std::endl;
+        assemble_templates(&_ss_tree.front());
 
-        LOG << "## Transform." << std::endl;
+        log << "## Transform." << std::endl;
         this->transform();
     }
 
@@ -357,27 +357,27 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
     }
 
     void Assemble::position_templates() {
-        position_templates(_ss_tree.head, L<Mat>());
+        position_templates(_ss_tree.root(), L<Mat>());
     }
 
-    void Assemble::position_templates(SSE *l, L<Mat> mats) {
+    void Assemble::position_templates(SSTree::El *l, L<Mat> mats) {
         if (l == NULL) return;
-        auto &loop = m_templates[l].first;
-        auto &helix = m_templates[l].second;
-        if (l->has_helix()) {
+        auto &loop = m_templates[&l->data].first;
+        auto &helix = m_templates[&l->data].second;
+        if (l->data.has_helix()) {
             // position helix
             if (!mats.empty()) {
                 auto mat1 = mats.front();
                 position_model(helix, mat1);
             }
-            if (l->has_loop()) {
+            if (l->data.has_loop()) {
                 // position SSE
                 int len = helix.size();
                 auto mat2 = model_mat(helix, std::list<int>{len/2-2, len/2-1, len/2, len/2+1});
                 position_model(loop, mat2);
                 // position son
                 if (l->has_son()) {
-                    auto son_mats = loop_mats(loop, l);
+                    auto son_mats = loop_mats(loop, &l->data);
                     position_templates(l->son, son_mats);
                 }
                 // position brother
@@ -395,7 +395,7 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
         } else {
             // position son
             if (l->has_son()) {
-                auto son_mats = loop_mats(loop, l);
+                auto son_mats = loop_mats(loop, &l->data);
                 position_templates(l->son, son_mats);
             }
         }
@@ -472,14 +472,14 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
 	}
 
     void Assemble::print_records() {
-        LOG << "Records searching results:" << std::endl;
+        log << "Records searching results:" << std::endl;
 		for (auto &&sse : _ss_tree) {
-			LOG << "SSE(" << &sse << "):" << std::endl;
+			log << "SSE(" << &sse << "):" << std::endl;
 			if (sse.has_helix()) {
-				LOG << "  Helix " << Str(sse.helix) << " (" << m_records[&sse].second.size() << ")" << std::endl;
+				log << "  Helix " << Str(sse.helix) << " (" << m_records[&sse].second.size() << ")" << std::endl;
 			}
 			if (sse.has_loop()) {
-				LOG << "  Loop " << Str(sse.loop) << " (" << m_records[&sse].first.size() << ")" << std::endl;
+				log << "  Loop " << Str(sse.loop) << " (" << m_records[&sse].first.size() << ")" << std::endl;
 			}
 		}
     }

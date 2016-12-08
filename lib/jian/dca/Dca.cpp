@@ -1,6 +1,11 @@
 #include "../utils/file.hpp"
 #include "Dca.hpp"
 
+#ifdef JN_OS_WIN
+#  pragma warning(push)
+#  pragma warning(disable: 4244) // 'this' : used in base member initializer list
+#endif
+
 BEGIN_JN
 	namespace dca {
 
@@ -187,7 +192,6 @@ BEGIN_JN
 			std::ofstream ofile(out_file.c_str());
 			int i, j, a, b;
 			DI = Matf::Zero(M, M);
-			float d;
 			for (i = 0; i < M; i++) {
 				a = m_indices[i];
 				if (a != -1) {
@@ -222,5 +226,9 @@ BEGIN_JN
 
 	} // namespace dca
 END_JN
+
+#ifdef JN_OS_WIN
+#  pragma warning(pop)
+#endif
 
 

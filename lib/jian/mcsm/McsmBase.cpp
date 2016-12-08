@@ -20,8 +20,8 @@ MvEl::MvEl(int a, int b, int c, int d, MvEl::mvel_t t) : type(t) {
 MvEl::MvEl(const Helix &h) : type(MvEl::MVEL_HL) {
 	int a, b, c, d;
 
-	a = h.head->res1.num - 1;
-	d = h.head->res2.num - 1;
+	a = h.front().res1.num - 1;
+	d = h.front().res2.num - 1;
 	for (auto && bp : h) {
 		if (bp.next == NULL) {
 			b = bp.res1.num - 1;
@@ -32,19 +32,19 @@ MvEl::MvEl(const Helix &h) : type(MvEl::MVEL_HL) {
 	range.push_back({ c, d });
 }
 
-MvEl::MvEl(SSE *l, MvEl::mvel_t t) : type(t) {
+MvEl::MvEl(SSTree::El *l, MvEl::mvel_t t) : type(t) {
 	int a, b, c, d;
 
 	if (t == MVEL_HP) {
-		a = l->helix.head->res1.num - 1;
-		b = l->helix.head->res2.num - 1;
+		a = l->data.helix.front().res1.num - 1;
+		b = l->data.helix.front().res2.num - 1;
 		range.push_back({ a, b });
 	}
 	else if (t == MVEL_IL) {
-		a = l->helix.head->res1.num - 1;
-		b = l->son->helix.head->res1.num - 2;
-		c = l->son->helix.head->res2.num;
-		d = l->helix.head->res2.num - 1;
+		a = l->data.helix.front().res1.num - 1;
+		b = l->son->data.helix.front().res1.num - 2;
+		c = l->son->data.helix.front().res2.num;
+		d = l->data.helix.front().res2.num - 1;
 		range.push_back({ a, b });
 		range.push_back({ c, d });
 	}

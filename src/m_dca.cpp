@@ -67,10 +67,10 @@ BEGIN_JN
 			SSTree sst(seq, ss, 1);
 			//sst.head()->print_tree();
 			//print_tuples(tuples);
-            V<SSE *> v;
+            V<SSTree::El *> v;
             v.resize(l);
 			for (Int i = 0; i < l; i++) {
-				v[i] = STD_ find_if(sst.begin(), sst.end(), [&i](auto &&sse) {return sse.has(i+1); }).val;
+				v[i] = STD_ find_if(sst.begin(), sst.end(), [&i](auto &&sse) {return sse.has(i+1); }).el;
 			}
             for (auto && l : v) LOG << l << ' '; LOG << std::endl;
 			for (auto && tuple : tuples) {

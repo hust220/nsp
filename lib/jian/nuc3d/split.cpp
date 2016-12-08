@@ -64,9 +64,10 @@ public:
             S helix_name = _name + "-" + std::to_string(_helix_num) + "-helix-" + std::to_string(len);
             std::vector<int> nums(len * 2);
             int index = 0;
-            for (auto b = l->helix.head; b != NULL; b = b->next) {
-                nums[index] = b->res1.num - 1;
-                nums[2 * len - 1 - index] = b->res2.num - 1;
+			for (auto && b : l->helix) {
+            //for (auto b = l->helix.head; b != NULL; b = b->next) {
+                nums[index] = b.res1.num - 1;
+                nums[2 * len - 1 - index] = b.res2.num - 1;
                 index++;
             }
             mol_write(sub(_mol, nums), pdb_path + helix_name + ".pdb");

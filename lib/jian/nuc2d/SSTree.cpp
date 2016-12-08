@@ -16,10 +16,12 @@ BEGIN_JN
 
 namespace sstree_detail {
 
-	void set_tree_relation(V<SSE *> &s, SSE *l) {
-		int num = l->num_sons();
-		int i = s.size() - num;
-		if (s.size() != 0 && num != 0) { l->son = s[i]; }
+	void set_tree_relation(V<SSTree::El *> &s, SSTree::El *l) {
+		int num = l->data.num_sons();
+		//LOG << num << Endl;
+		int i = size(s) - num;
+		//LOG << i << Endl;
+		if (size(s) != 0 && num != 0) { l->son = s[i]; }
 		for (; i < (int)s.size(); i++) {
 			if (i + 1 == s.size()) s[i]->brother = NULL; else s[i]->brother = s[i + 1];
 		}
@@ -77,7 +79,7 @@ namespace sstree_detail {
 		return l;
 	}
 
-	bool find_hairpin(Q<res> &v, V<SSE *> &ls, int hinge) {
+	bool find_hairpin(Q<res> &v, V<SSTree::El *> &ls, int hinge) {
 		int left, right;
 		SSE *l;
 
@@ -89,7 +91,6 @@ namespace sstree_detail {
 				for (int i = left - len + 1; i < right + len; i++) if (v[i].type == '(' || v[i].type == ')') {
 					v[i].type = '.';
 				}
-				//FOR((i, left-len+1, right+len), if (HAS(('(', ')'), v[i].type)) v[i].type = '.';);
 				return true;
 			}
 			else {
@@ -104,34 +105,41 @@ namespace sstree_detail {
 		}
 
 		int n_res = 0;
-		for (auto &&res : l->loop) {
-			if (res.type == 'Z' && res.next->type == 'z') {
+		for (auto it = l->loop.begin(); it != l->loop.end() /*&&*/ /*STD_ next(it) != l->loop.end()*/; it++) {
+			if (it->type == 'Z' && STD_ next(it)->type == 'z') {
 				l->hinges.push_back({ n_res, n_res + 1 });
 			}
 			n_res++;
 		}
+		//for (auto &&res : l->loop) {
+		//	if (res.type == 'Z' && res.next->type == 'z') {
+		//		l->hinges.push_back({ n_res, n_res + 1 });
+		//	}
+		//	n_res++;
+		//}
 
 		for (auto && res : l->loop) {
 			if (res.type == 'Z') res.type = '('; else if (res.type == 'z') res.type = ')';
 		}
 
-		set_tree_relation(ls, l);
+		set_tree_relation(ls, SSTree::El::make(STD_ move(*l)));
 		return true;
 	}
 
-	SSE *set_tree(const Str &ss, int hinge) {
+	SSTree::El *set_tree(const Str &ss, int hinge) {
 		std::deque<res> v;
 		int i = 0;
 		for (auto && c : ss) {
 			v.push_back(res(c, i + 1));
 			i++;
 		}
-		std::vector<SSE *> ls;
+		std::vector<SSTree::El *> ls;
 		while (find_hairpin(v, ls, hinge));
+		//STD_ cout << size(ls) << STD_ endl;
 		return ls.back();
 	}
 
-	void read_seq(SSE *l, const Str &seq, const Str &ss) {
+	void read_seq(SSTree::El *l, const Str &seq, const Str &ss) {
 		std::vector<int> v(ss.size());
 		int f = 1;
 		int i = 0;
@@ -145,7 +153,7 @@ namespace sstree_detail {
 			}
 			i++;
 		}
-		for (auto && sse : SSTreeRange(l)) {
+		for (auto && sse : SSTree::make_range(l)) {
 			if (sse.has_loop()) {
 				for (auto && res : sse.loop) {
 					res.num = v[res.num - 1];
@@ -172,14 +180,15 @@ SSTree::SSTree(const Str &seq, const Str &ss, int hinge) {
 }
 
 void SSTree::make(const Str &seq, const Str &ss, int hinge) {
-	LOG << "## Make secondary structure tree with no broken tag" << std::endl;
-	LOG << seq << std::endl;
-	LOG << ss << std::endl;
+	free();
+	//LOG << "## Make secondary structure tree with no broken tag" << std::endl;
+	//LOG << seq << std::endl;
+	//LOG << ss << std::endl;
 	if (NASS::seq_match_ss(seq, ss)) {
 		Str ss_nbt;
 		std::copy_if(ss.begin(), ss.end(), std::back_inserter(ss_nbt), [](auto &&c) {return c != '&'; });
-		head = sstree_detail::set_tree(ss_nbt, hinge);
-		sstree_detail::read_seq(head, seq, ss_nbt);
+		m_beg.el = sstree_detail::set_tree(ss_nbt, hinge);
+		sstree_detail::read_seq(m_beg.el, seq, ss_nbt);
 	}
 	else {
 		LOG << "Error:" << std::endl;
@@ -191,12 +200,13 @@ void SSTree::make(const Str &seq, const Str &ss, int hinge) {
 }
 
 void SSTree::make_b(const Str &seq, const Str &ss, int hinge) {
-	LOG << "## Make secondary structure tree with broken tag" << std::endl;
-	LOG << seq << std::endl;
-	LOG << ss << std::endl;
+	free();
+	//LOG << "## Make secondary structure tree with broken tag" << std::endl;
+	//LOG << seq << std::endl;
+	//LOG << ss << std::endl;
 	if (NASS::seq_match_ss(seq, ss)) {
-		head = sstree_detail::set_tree(ss, hinge);
-		sstree_detail::read_seq(head, seq, ss);
+		m_beg.el = sstree_detail::set_tree(ss, hinge);
+		sstree_detail::read_seq(m_beg.el, seq, ss);
 	}
 	else {
 		LOG << "Error:" << std::endl;

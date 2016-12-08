@@ -3,7 +3,7 @@
 #include "string.hpp"
 #include <regex>
 #include <fstream>
-#include "Range.hpp"
+#include "Entity.hpp"
 
 BEGIN_JN
 
@@ -47,97 +47,127 @@ struct file {
 
 #define END_READ_FILE while(0);N++;}FCLOSE(ifile);}while(0)
 
-struct FileLine {
+struct FileLine
+{
+	using Data = FileLine;
+
 	Str line;
 	tokenize_v arr;
-	int n;
+	int n = -2;
 };
 
-class FileRangeIt :
-	public RangeIt<FileRangeIt, FileLine>
+class FileLinesIt :
+	//protected member_from_base<FileLine>,
+	public BasicIt<FileLinesIt, FileLine>
 {
 public:
-	using Val = FileLine;
-	using Self = FileRangeIt;
-	using Base = RangeIt<Self, Val>;
+	using It = FileLinesIt;
+	using Data = FileLine;
+	using El = FileLine;
+	//using ElMember = member_from_base<El>;
 
+	//El *el;
+	SP<El> el;
 	STD_ ifstream *stream;
-	Val file_line;
-	Str delimiters = " ";
-	Val *val;
+	Str delimiters;
 
-	FileRangeIt() 
+	FileLinesIt() :
+		stream(NULL), delimiters(" "), el(STD_ make_shared<El>())
 	{
-		val = NULL;
+		el->n = -2;
 	}
 
-	void next_line() {
-		if (STD_ getline(*stream, file_line.line)) {
-			tokenize(file_line.line, file_line.arr, delimiters);
-			file_line.n++;
-			val = &file_line;
+	FileLinesIt(STD_ ifstream *stream_, Str delimiters_ = " ") :
+		stream(stream_), delimiters(delimiters_), el(STD_ make_shared<El>())
+	{
+		if (stream != NULL) {
+			el->n = -1;
+			next_line();
 		}
 		else {
-			val = NULL;
+			el->n = -2;
 		}
 	}
 
-	Self &operator ++() {
-		if (val == NULL) throw "ListRangeIt operator ++ error!";
+	virtual Data &operator *() const {
+		return *el;
+	}
+
+	virtual bool operator ==(It other) const {
+		return el->n == other.el->n;
+	}
+
+	void next_line()
+	{
+		if (stream == NULL || el->n == -2) throw "next_line error!";
+		STD_ getline(*stream, el->line);
+		if (!stream->eof()) {
+			tokenize(el->line, el->arr, delimiters);
+			el->n++;
+		}
+		else {
+			el->n = -2;
+		}
+	}
+
+	It &operator ++()
+	{
 		next_line();
 		return *this;
 	}
 };
 
-class FileRange :
-	public Range<FileRangeIt>
+class FileLinesRg :
+	public BasicRg<FileLinesRg, FileLinesIt>
 {
 public:
-	using It = FileRangeIt;
+	using Data = Str;
+	using El = FileLine;
+	using It = FileLinesIt;
+	using Rg = FileLinesRg;
 
-	STD_ ifstream *stream;
+	STD_ ifstream *stream = NULL;
 	Str delimiters;
 
-	FileRange(STD_ ifstream &stream_, Str delimiters_ = " ") :
-		stream(&stream_), delimiters(delimiters_)
+protected:
+	void free()
+	{
+		if (stream != NULL) delete stream;
+		stream = NULL;
+	}
+};
+
+class FileLines :
+	public Entity<FileLinesRg>
+{
+public:
+	using Data = Str;
+	using El = FileLine;
+	using It = FileLinesIt;
+	using Rg = FileLinesRg;
+	using Nt = FileLines;
+
+	Str filename;
+
+	FileLines() :
+		filename("")
 	{}
 
-	virtual It begin() const {
-		It it;
-		it.stream = stream;
-		it.delimiters = delimiters;
-		it.next_line();
-		return it;
-	}
-
-	virtual It end() const {
-		return It{};
-	}
-
-};
-
-class File :
-	public Entity<FileRange>
-{
-public:
-	Str filename;
-	Str delimiters;
-	STD_ ifstream stream;
-
-	File() = delete;
-
-	File(Str filename_, Str delimiters_) :
-		filename(filename_), delimiters(delimiters_), FileRange(&stream, delimiters)
+	FileLines(Str filename_, Str delimiters_ = " ")
 	{
-		stream.open(filename);
+		bind(filename_, delimiters_);
 	}
 
-	~File() {
-
+	FileLines &bind(Str filename_, Str delimiters_ = " ")
+	{
+		free();
+		filename = filename_;
+		stream = new STD_ ifstream(filename.c_str());
+		delimiters = delimiters_;
+		m_beg = It(stream, delimiters);
+		return *this;
 	}
 };
-
-
 
 END_JN
 

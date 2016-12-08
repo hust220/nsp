@@ -11,17 +11,10 @@
 
 BEGIN_JN
 
-class HelixRange;
-using Helix = ListEntity<HelixRange>;
-
-class HelixRange : public ListRange<bp> {
+class Helix : public SList<bp> {
 public:
-	using Self = HelixRange;
-	using Base = ListRange<bp>;
-	using Node = Base::Node;
-	using It = Base::It;
-
-	HelixRange(Node *node = NULL) : Base(node) {}
+	using Self = Helix;
+	using Base = SList<bp>;
 
     Str ss() const {
 		STD_ ostringstream stream;
@@ -63,6 +56,7 @@ public:
 
     friend STD_ ostream &operator <<(STD_ ostream &stream, Helix h) {
         stream << "Helix: " << ' ' << (Str)h;
+		return stream;
     }
 
 };

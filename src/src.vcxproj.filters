@@ -151,9 +151,6 @@
     <ClCompile Include="..\lib\jian\nuc3d\ParseHelix.cpp">
       <Filter>jian\nuc3d</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\jian\nuc3d\Predict3DG.cpp">
-      <Filter>jian\nuc3d</Filter>
-    </ClCompile>
     <ClCompile Include="..\lib\jian\nuc3d\split.cpp">
       <Filter>jian\nuc3d</Filter>
     </ClCompile>
@@ -421,9 +418,6 @@
     <ClCompile Include="m_tri2d.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="m_lrtsp.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="m_joint.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -630,19 +624,7 @@
     <ClInclude Include="..\lib\jian\nuc3d\JointHelix.hpp">
       <Filter>jian\nuc3d</Filter>
     </ClInclude>
-    <ClInclude Include="..\lib\jian\nuc3d\MC1p.hpp">
-      <Filter>jian\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\nuc3d\MC3p.hpp">
-      <Filter>jian\nuc3d</Filter>
-    </ClInclude>
     <ClInclude Include="..\lib\jian\nuc3d\ParseHelix.hpp">
-      <Filter>jian\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\nuc3d\Predict3DG.hpp">
-      <Filter>jian\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\nuc3d\Predict3DGImpl.hpp">
       <Filter>jian\nuc3d</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jian\nuc3d\REMCpsb.hpp">
@@ -828,9 +810,6 @@
     <ClInclude Include="..\lib\jian\geom.hpp">
       <Filter>jian</Filter>
     </ClInclude>
-    <ClInclude Include="..\lib\jian\lrsp.hpp">
-      <Filter>jian</Filter>
-    </ClInclude>
     <ClInclude Include="..\lib\jian\matrix.hpp">
       <Filter>jian</Filter>
     </ClInclude>
@@ -890,9 +869,6 @@
     </ClInclude>
     <ClInclude Include="..\lib\jian\nuc3d\Assemble.hpp">
       <Filter>jian\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\lrsp\LRTSP.hpp">
-      <Filter>jian\lrsp</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jian\cg\CG.hpp">
       <Filter>jian\cg</Filter>

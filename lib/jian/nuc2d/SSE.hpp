@@ -16,49 +16,29 @@
 
 BEGIN_JN
 
-class SSE {
-public:
+struct SSE {
 	Loop loop;
-    Helix helix;
-    V<Pair<int, int>> hinges;
-
-    SSE *son = NULL;
-    SSE *brother = NULL;
-
-    //SSE() = default;
-
-    //SSE(const SSE &l) {
-    //    head = res::copy(l.head);
-    //    s = l.s;
-    //    hinges = l.hinges;
-    //}
-
-    //~SSE() {
-    //    res::del(head);
-    //}
+	Helix helix;
+	V<Pair<int, int>> hinges;
 
 	Pair<int, int> head_tail() const {
 		int left, right;
 		if (has_helix()) {
-			left = helix.head->res1.num - 1;
-			right = helix.head->res2.num - 1;
-			return { left, right };
+			left = helix.front().res1.num - 1;
+			right = helix.front().res2.num - 1;
+			return{ left, right };
 		}
 		else if (has_loop()) {
-			left = loop.head->num - 1;
-			for (auto &&res : loop) {
-				if (res.next == NULL) {
-					right = res.num - 1;
-				}
-			}
-			return { left, right };
+			left = loop.front().num - 1;
+			right = loop.back().num - 1;
+			return{ left, right };
 		}
 		else {
 			throw "SSE head_tail error";
 		}
 
 	}
-	
+
 	bool has(int i) const {
 		return STD_ find_if(loop.begin(), loop.end(), [&i](auto &&res) {
 			return res.type != '(' && res.type != ')' && res.num == i;
@@ -68,21 +48,55 @@ public:
 		}) != helix.end();
 	}
 
-    bool has_helix() const {
+	bool has_helix() const {
 		return !helix.empty();
 	}
 
-    bool has_loop() const {
+	bool has_loop() const {
 		return !loop.empty();
 	}
 
-    bool has_son() const {
-		return son != NULL;
+	bool has_son() const {
+		return !hinges.empty();
 	}
 
-    bool has_brother() const {
-		return brother != NULL; 
+	//bool has_brother() const {
+	//	return brother != NULL;
+	//}
+
+	int num_branches() const {
+		return STD_ count_if(loop.begin(), loop.end(), [](auto &&res) {return res.type == ')'; }) / 2;
 	}
+
+	int num_sons() const {
+		return hinges.size();
+	}
+
+	bool is_open() const {
+		return num_branches() == num_sons();
+	}
+
+	bool is_hp() const {
+		return !is_open() && num_sons() == 0;
+	}
+
+	bool is_il() const {
+		return !is_open() && num_sons() == 1;
+	}
+
+	bool is_ml() const {
+		return !is_open() && num_sons() > 1;
+	}
+
+	friend STD_ ostream &operator <<(STD_ ostream &stream, const SSE &sse) {
+		stream << "SSE (" << &sse << ") : " << STD_ endl;
+		stream << sse.helix << STD_ endl;
+		stream << sse.loop;
+		return stream;
+	}
+
+
+};
 
     //res &at(int n) {
     //    int index = 0;
@@ -167,36 +181,6 @@ public:
   //      return;
   //  }
 
-    int num_branches() const {
-		return STD_ count_if(loop.begin(), loop.end(), [](auto &&res) {return res.type == ')'; }) / 2;
-    }
-
-    int num_sons() const {
-        return hinges.size();
-    }
-
-    bool is_open() const {
-        return num_branches() == num_sons();
-    }
-
-	bool is_hp() const {
-		return !is_open() && num_sons() == 0;
-	}
-
-	bool is_il() const {
-		return !is_open() && num_sons() == 1;
-	}
-
-	bool is_ml() const {
-		return !is_open() && num_sons() > 1;
-	}
-
-    friend STD_ ostream &operator <<(STD_ ostream &stream, const SSE &sse) {
-		stream << "SSE (" << &sse << ") : " << STD_ endl;
-		stream << sse.helix << STD_ endl;
-		stream << sse.loop;
-    }
-
    // operator Str() const {
    //     std::ostringstream stream;
    //     stream << seq() << ' ' << ss() << ' ';
@@ -226,7 +210,6 @@ public:
    //     LOGI << std::endl;
    // }
 
-};
 
 END_JN
 

@@ -62,13 +62,6 @@ protected:
 typedef basic_nullbuf<char>      nullbuf;
 typedef basic_nullbuf<wchar_t>  wnullbuf;
 
-template<typename T>
-struct member_from_base
-{
-	using type = T;
-	T member;
-};
-
 template< typename _CharType, class _CharTraits = STD_ char_traits<_CharType> >
 class basic_onullstream : 
 	protected member_from_base<basic_nullbuf<_CharType, _CharTraits>>,

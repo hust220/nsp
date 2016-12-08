@@ -6,17 +6,19 @@
 
 BEGIN_JN
 
-class SSTreeRange : 
-	public TreeRange<SSE>
+class SSTreeRg : 
+	public BasicTreeRg<SSTreeRg, PlainTreeIt<PlainTreeEl<SSE>>>
 {
 public:
-	using Base = TreeRange<SSE>;
-
-	SSTreeRange(SSE *node = NULL) : Base(node) {}
+	using El = PlainTreeEl<SSE>;
+	using Rg = SSTreeRg;
+	using Data = SSE;
+	using It = PlainTreeIt<El>;
+	using Base = BasicTreeRg<Rg, It>;
 
 	Str ss() const {
 		Str ss;
-		auto p = head->head_tail();
+		auto p = begin()->head_tail();
 		ss.resize(p.second - p.first + 1);
 		for (auto &&sse : *this) {
 			for (auto && bp : sse.helix) {
@@ -32,7 +34,7 @@ public:
 
 	Str seq() const {
 		Str seq;
-		auto p = head->head_tail();
+		auto p = begin()->head_tail();
 		seq.resize(p.second - p.first + 1);
 		for (auto &&sse : *this) {
 			for (auto &&bp : sse.helix) {
@@ -46,15 +48,19 @@ public:
 		return seq;
 	}
 
-	friend STD_ ostream &operator <<(STD_ ostream &stream, SSTreeRange sst) {
+	friend STD_ ostream &operator <<(STD_ ostream &stream, SSTreeRg sst) {
+		stream << "SST (Secondary Structure Tree) : " << &sst << STD_ endl;
 		for (auto && sse : sst) {
 			stream << sse << STD_ endl;
 		}
+		return stream;
 	}
 
 };
 
-class SSTree : public Tree<SSTreeRange> {
+class SSTree : 
+	public TreeNt<SSTreeRg> 
+{
 public:
 	SSTree() = default;
 

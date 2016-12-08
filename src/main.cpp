@@ -14,6 +14,7 @@ int main(int argc, char **argv) {
 	JN_ g_argc = argc;
 	JN_ g_argv = argv;
 	JN_INIT_MPI;
+#ifdef NDEBUG
 	try {
 		JN_ NSP::run(argc, argv);
 	}
@@ -26,5 +27,8 @@ int main(int argc, char **argv) {
 	catch (const jian::Str &s) {
 		Err << s << Endl;
 	}
+#else
+	JN_ NSP::run(argc, argv);
+#endif
 }
 

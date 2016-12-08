@@ -1,127 +1,224 @@
 #include <iterator>
-#include "Range.hpp"
+#include "Entity.hpp"
 #include "traits.hpp"
 
 BEGIN_JN
 
-template<typename Val>
-using TreePath = L<Val *>;
+template<typename _Data>
+using TreePath = L<_Data *>;
 
-template<typename _Node>
-class PreTreeIt : 
-	public RangeIt<PreTreeIt<_Node>, _Node>
+template<typename _Derived, typename _Data>
+class BasicTreeEl :
+	public BasicEl<_Derived, _Data>
 {
 public:
-	using Val = _Node;
-	using Self = PreTreeIt<Val>;
-	using Base = RangeIt<Self, Val>;
+	using El = _Derived;
+	using Data = _Data;
 
-	Val *val;
-	TreePath<Val> path;
+	El *son = NULL;
+	El *brother = NULL;
 
-	PreTreeIt(Val *v = NULL) : val(v) {}
+	static El *deep_copy(El *other) {
+		if (other == NULL) return NULL;
+		El *el = make(other->data);
+		el->son = deep_copy(other->son);
+		el->brother = deep_copy(other->brother);
+		return el;
+	}
 
-	Self &operator ++() {
-		if (val->son != NULL) {
-			val = val->son;
+	bool has_son() const {
+		return son != NULL;
+	}
+
+	bool has_brother() const {
+		return brother != NULL;
+	}
+
+	int num_brothers() const {
+		return (has_brother() ? brother->num_brothers() + 1 : 0);
+	}
+
+	int num_sons() const {
+		return (has_son() ? son->num_brothers() + 1 : 0);
+	}
+
+	El *set_son(Data data) {
+		son = make(data);
+		return son;
+	}
+
+	El *set_brother(Data data) {
+		brother = make(data);
+		return brother;
+	}
+
+	El *last_brother() const {
+		El *it = this;
+		for (; it->brother != NULL; it = it->brother);
+		return it;
+	}
+
+};
+
+template<typename _Data>
+class PlainTreeEl :
+	public BasicTreeEl<PlainTreeEl<_Data>, _Data>
+{};
+
+template<typename _Derived, typename _El>
+class BasicTreeIt : 
+	public BasicIt<_Derived, _El>
+{
+public:
+	using It = _Derived;
+	using El = _El;
+	using Data = typename El::Data;
+
+	El *el;
+	TreePath<El> path;
+	//L<Rg> path;
+
+	BasicTreeIt() {}
+
+	virtual Data &operator *() const
+	{
+		return el->data;
+	}
+
+	virtual bool operator ==(It other) const
+	{
+		return el == other.el;
+	}
+
+	virtual It &operator ++() {
+		if (el == NULL) throw "ListRangeIt operator ++ error!";
+		path.push_back(el);
+		if (el->son != NULL) {
+			el = el->son;
 		}
-		else if (val->brother != NULL) {
-			val = val->brother;
+		else if (el->brother != NULL) {
+			el = el->brother;
 			path.pop_back();
 		}
 		else {
 			while (true) {
 				path.pop_back();
 				if (!path.empty()) {
-					val = path.back()->brother;
-					if (val == NULL) continue;
+					if (path.back()->brother == NULL) continue;
 					else {
+						el = path.back()->brother;
 						path.pop_back();
 						break;
 					}
 				}
 				else {
-					val = NULL;
+					el = NULL;
 					break;
 				}
 			}
 		}
 
-		if (val == NULL) return *this;
-		path.push_back(val);
-		return *this;
+		return *(It *)this;
 	}
 
 };
 
-template<typename _Node>
-class TreeRange :
-	public Range<PreTreeIt<_Node>>
+template<typename _El>
+class PlainTreeIt :
+	public BasicTreeIt<PlainTreeIt<_El>, _El>
+{};
+
+template<typename _Derived, typename _It>
+class BasicTreeRg :
+	public BasicRg<_Derived, _It>
 {
 public:
-	using Node   = _Node;
-	using PreIt = PreTreeIt<Node>;
+	using Rg = _Derived;
+	using It = _It;
+	using El = typename It::El;
+	using Data = typename It::Data;
 
-	Node *head = NULL;
-
-	TreeRange(Node *node = NULL) : head(node) {}
-
-	virtual PreIt begin() const {
-		PreIt it(head);
-		if (head != NULL) {
-			it.path.push_back(head);
-		}
-		return it;
+	El *root() const {
+		return m_beg.el;
 	}
 
-	PreIt pre_begin() const {
-		return begin();
-	}
-
-	virtual PreIt end() const {
-		return PreIt(NULL);
-	}
-
-	PreIt pre_end() const {
-		return end();
-	}
-
-	TreePath<Node> path() const {
-		TreePath<Node> path;
-		for (auto && node : *this) {
-			path.push_back(&node);
+	TreePath<El> path() const {
+		TreePath<El> path;
+		for (auto it = begin(); it != end(); it++) {
+			path.push_back(it.el);
 		}
 		return path;
 	}
 
-};
-
-template<typename _Range>
-class Tree :
-	public Entity<_Range>
-{
-public:
-	using Node = typename _Range::Node;
-	using Range = _Range;
-
-	Tree() = default;
-
-	~Tree() {
-		free(Range::head);
-	}
-
-	static void free(Node *node) {
-		if (node != NULL) {
-			free(node->son);
-			free(node->brother);
-			delete node;
+protected:
+	void free(El *el) {
+		if (el != NULL) {
+			free(el->son);
+			free(el->brother);
+			delete el;
 		}
 	}
+	void free() {
+		free(m_beg.el);
+		m_beg.el = NULL;
+	}
+
 };
 
-template<typename _Node>
-TreeRange<_Node> pretree(_Node *node) {
-	return TreeRange<_Node>{node};
-}
+template<typename _It>
+class PlainTreeRg :
+	public BasicTreeRg<PlainTreeRg<_It>, _It>
+{};
+
+template<typename _Rg>
+class TreeNt :
+	public Entity<_Rg>
+{
+public:
+	using Rg = _Rg;
+	using It = typename Rg::It;
+	using El = typename Rg::El;
+	using Data = typename Rg::Data;
+	using Nt = TreeNt<Rg>;
+
+	TreeNt() = default;
+
+	TreeNt(const Nt &nt) {
+		free();
+		m_beg.el = El::deep_copy(nt.m_beg.el);
+	}
+
+	TreeNt(Nt &&nt) {
+		free();
+		m_beg = nt.m_beg;
+		m_end = nt.m_end;
+		nt.m_beg = It();
+		nt.m_end = It();
+	}
+
+	Nt &operator =(const Nt &nt) {
+		free();
+		m_beg.el = El::deep_copy(nt.m_beg.el);
+		return *this;
+	}
+
+	Nt &operator =(Nt &&nt) {
+		free();
+		m_beg = nt.m_beg;
+		m_end = nt.m_end;
+		nt.m_beg = It();
+		nt.m_end = It();
+		return *this;
+	}
+
+	template<typename _Data>
+	El *set_root(_Data &&data) {
+		m_beg.el = El::make(STD_ forward<_Data>(data));
+		return root();
+	}
+};
+
+template<typename _Data>
+using Tree = TreeNt<PlainTreeRg<PlainTreeIt<PlainTreeEl<_Data>>>>;
 
 END_JN

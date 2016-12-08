@@ -53,7 +53,7 @@ BEGIN_JN
 
 		MvEl(const Helix &h);
 
-		MvEl(SSE *l, mvel_t t);
+		MvEl(SSTree::El *l, mvel_t t);
 
 		int min() const;
 

@@ -184,6 +184,13 @@ inline int size(T &&t) {
 	return int(t.size());
 }
 
+template<typename T>
+struct member_from_base
+{
+	using type = T;
+	T member;
+};
+
 template<typename _ValType>
 class refs : public std::vector<std::reference_wrapper<_ValType>> {
 public:
