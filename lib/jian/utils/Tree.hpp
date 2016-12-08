@@ -180,6 +180,7 @@ public:
 	using El = typename Rg::El;
 	using Data = typename Rg::Data;
 	using Nt = TreeNt<Rg>;
+	using Base = Entity<Rg>;
 
 	TreeNt() = default;
 
@@ -203,9 +204,9 @@ public:
 	}
 
 	Nt &operator =(Nt &&nt) {
-		free();
-		m_beg = nt.m_beg;
-		m_end = nt.m_end;
+		this->free();
+		this->m_beg = nt.m_beg;
+		this->m_end = nt.m_end;
 		nt.m_beg = It();
 		nt.m_end = It();
 		return *this;

@@ -68,10 +68,11 @@ public:
 	using It = _It;
 	using El = typename It::El;
 	using Data = typename It::Data;
+	using Base = BasicRg<Rg, It>;
 
 	It last() const {
-		auto it = m_beg;
-		for (; STD_ next(it) != m_end; ++it);
+		auto it = Base::m_beg;
+		for (; STD_ next(it) != Base::m_end; ++it);
 		return it;
 	}
 
@@ -87,8 +88,8 @@ protected:
 		}
 	}
 	void free() {
-		free(m_beg.el);
-		m_beg.el = NULL;
+		free(Base::m_beg.el);
+		Base::m_beg.el = NULL;
 	}
 
 };
