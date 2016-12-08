@@ -151,7 +151,7 @@ public:
 			this->m_beg.el = el;
 		}
 		else {
-			last().el->next = el;
+			this->last().el->next = el;
 		}
 	}
 
@@ -171,7 +171,7 @@ public:
 	template<typename _First, typename _Second, typename... _Rest>
 	void push_front(_First &&first, _Second &&second, _Rest &&...rest) {
 		push_front(STD_ forward<_First>(first));
-		push_front(STD_ forward<_Second>(second), STD_ forward<_Rest>(rest)...)
+		push_front(STD_ forward<_Second>(second), STD_ forward<_Rest>(rest)...);
 	}
 
 };

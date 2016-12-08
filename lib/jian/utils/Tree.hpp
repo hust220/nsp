@@ -139,12 +139,12 @@ public:
 	using Data = typename It::Data;
 
 	El *root() const {
-		return m_beg.el;
+		return this->m_beg.el;
 	}
 
 	TreePath<El> path() const {
 		TreePath<El> path;
-		for (auto it = begin(); it != end(); it++) {
+		for (auto it = this->begin(); it != this->end(); it++) {
 			path.push_back(it.el);
 		}
 		return path;
@@ -159,8 +159,8 @@ protected:
 		}
 	}
 	void free() {
-		free(m_beg.el);
-		m_beg.el = NULL;
+		free(this->m_beg.el);
+		this->m_beg.el = NULL;
 	}
 
 };
@@ -185,21 +185,21 @@ public:
 	TreeNt() = default;
 
 	TreeNt(const Nt &nt) {
-		free();
-		m_beg.el = El::deep_copy(nt.m_beg.el);
+		this->free();
+		this->m_beg.el = El::deep_copy(nt.m_beg.el);
 	}
 
 	TreeNt(Nt &&nt) {
-		free();
-		m_beg = nt.m_beg;
-		m_end = nt.m_end;
+		this->free();
+		this->m_beg = nt.m_beg;
+		this->m_end = nt.m_end;
 		nt.m_beg = It();
 		nt.m_end = It();
 	}
 
 	Nt &operator =(const Nt &nt) {
-		free();
-		m_beg.el = El::deep_copy(nt.m_beg.el);
+		this->free();
+		this->m_beg.el = El::deep_copy(nt.m_beg.el);
 		return *this;
 	}
 
@@ -214,7 +214,7 @@ public:
 
 	template<typename _Data>
 	El *set_root(_Data &&data) {
-		m_beg.el = El::make(STD_ forward<_Data>(data));
+		this->m_beg.el = El::make(STD_ forward<_Data>(data));
 		return root();
 	}
 };
