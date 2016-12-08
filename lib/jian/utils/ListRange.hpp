@@ -113,22 +113,22 @@ public:
 	BasicListNt() = default;
 
 	BasicListNt(const Nt &nt) {
-		free();
+		this->free();
 		for (auto && i : nt) {
 			push_back(i);
 		}
 	}
 
 	BasicListNt(Nt &&nt) {
-		free();
-		m_beg = nt.m_beg;
-		m_end = nt.m_end;
+		this->free();
+		this->m_beg = nt.m_beg;
+		this->m_end = nt.m_end;
 		nt.m_beg = It();
 		nt.m_end = It();
 	}
 
 	BasicListNt &operator =(const Nt &nt) {
-		free();
+		this->free();
 		for (auto && i : nt) {
 			push_back(i);
 		}
@@ -136,9 +136,9 @@ public:
 	}
 
 	BasicListNt &operator =(Nt &&nt) {
-		free();
-		m_beg = nt.m_beg;
-		m_end = nt.m_end;
+		this->free();
+		this->m_beg = nt.m_beg;
+		this->m_end = nt.m_end;
 		nt.m_beg = It();
 		nt.m_end = It();
 		return *this;
@@ -147,8 +147,8 @@ public:
 	template<typename _Data>
 	void push_back(_Data &&data) {
 		El *el = El::make(std::forward<_Data>(data));
-		if (empty()) {
-			m_beg.el = el;
+		if (this->empty()) {
+			this->m_beg.el = el;
 		}
 		else {
 			last().el->next = el;
@@ -164,8 +164,8 @@ public:
 	template<typename _Data>
 	void push_front(_Data &&data) {
 		El *el = make(std::forward<_Data>(data));
-		el->next = m_beg.el;
-		m_beg.el = el;
+		el->next = this->m_beg.el;
+		this->m_beg.el = el;
 	}
 
 	template<typename _First, typename _Second, typename... _Rest>
