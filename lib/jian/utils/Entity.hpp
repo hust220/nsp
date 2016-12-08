@@ -14,10 +14,10 @@ public:
 
 	Data data;
 
-	template<typename _Data>
-	static El *make(_Data &&data) {
+	template<typename _Ty>
+	static El *make(_Ty &&data) {
 		El *el = new El;
-		el->data = STD_ forward<_Data>(data);
+		el->data = STD_ forward<_Ty>(data);
 		return el;
 	}
 
@@ -126,7 +126,7 @@ public:
 	Entity() = default;
 
 	~Entity() {
-		free();
+		Rg::free();
 	}
 
 };
