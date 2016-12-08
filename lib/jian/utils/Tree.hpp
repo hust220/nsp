@@ -215,7 +215,7 @@ public:
 	template<typename _Data>
 	El *set_root(_Data &&data) {
 		this->m_beg.el = El::make(STD_ forward<_Data>(data));
-		return root();
+		return this->root();
 	}
 };
 
