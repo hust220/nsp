@@ -50,7 +50,7 @@ namespace jian {
 		tokenize_v v, w, u;
 		int steps;
 
-		LOG << __FUNCTION__ << "..." << std::endl;
+		//LOG << __FUNCTION__ << "..." << std::endl;
 		tokenize(_mc_queue, v, "+");
 		for (auto && s : v) {
 			tokenize(s, w, ":");
