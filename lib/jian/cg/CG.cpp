@@ -90,7 +90,7 @@ BEGIN_JN
 			int i, j, k, num_atoms, len, index;
 			Chain residues;
 
-			LOG << "## CG2AA\n" << std::endl;
+			//LOG << "## CG2AA\n" << std::endl;
 			num_atoms = m_frag_size * m_res_size;
 			len = frag[1] - frag[0] + 1;
 			Chain chain;

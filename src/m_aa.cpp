@@ -52,8 +52,8 @@ namespace {
 
 		n = 0;
 		ParBp par_bp;
-		BEGIN_READ_FILE(list_file, " ") {
-			chain_read_model(chain, F[0]);
+		for (auto &&it : FileLines(list_file)) {
+			chain_read_model(chain, it.arr[0]);
 			chain = cg->to_cg(chain);
 			l = chain.size();
 			for (i = 0; i < l; i++) {
@@ -71,7 +71,7 @@ namespace {
 					n++;
 				}
 			}
-		} END_READ_FILE;
+		}
 	}
 
 	REGISTER_NSP_COMPONENT(aa) {
@@ -100,8 +100,8 @@ namespace {
 
 		n = 0;
 		ParBp par_bp;
-		BEGIN_READ_FILE(list_file, " ") {
-			chain_read_model(chain, F[0]);
+		for (auto &&it : FileLines(list_file)) {
+			chain_read_model(chain, it.arr[0]);
 			chain = cg->to_cg(chain);
 			l = chain.size();
 			for (i = 0; i < l; i++) {
@@ -148,7 +148,7 @@ namespace {
 					n++;
 				}
 			}
-		} END_READ_FILE;
+		}
 	}
 }
 

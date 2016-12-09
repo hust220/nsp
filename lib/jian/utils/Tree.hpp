@@ -14,13 +14,14 @@ class BasicTreeEl :
 public:
 	using El = _Derived;
 	using Data = _Data;
+	using Base = BasicEl<El, Data>;
 
 	El *son = NULL;
 	El *brother = NULL;
 
 	static El *deep_copy(El *other) {
 		if (other == NULL) return NULL;
-		El *el = make(other->data);
+		El *el = Base::make(other->data);
 		el->son = deep_copy(other->son);
 		el->brother = deep_copy(other->brother);
 		return el;
@@ -43,12 +44,12 @@ public:
 	}
 
 	El *set_son(Data data) {
-		son = make(data);
+		son = Base::make(data);
 		return son;
 	}
 
 	El *set_brother(Data data) {
-		brother = make(data);
+		brother = Base::make(data);
 		return brother;
 	}
 
@@ -74,11 +75,11 @@ public:
 	using El = _El;
 	using Data = typename El::Data;
 
-	El *el;
+	El *el = NULL;
 	TreePath<El> path;
 	//L<Rg> path;
 
-	BasicTreeIt() {}
+	BasicTreeIt() = default;
 
 	virtual Data &operator *() const
 	{
@@ -91,7 +92,7 @@ public:
 	}
 
 	virtual It &operator ++() {
-		if (el == NULL) throw "ListRangeIt operator ++ error!";
+		if (el == NULL) throw "BasicTreeIt operator ++ error!";
 		path.push_back(el);
 		if (el->son != NULL) {
 			el = el->son;

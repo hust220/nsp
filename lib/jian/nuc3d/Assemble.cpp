@@ -263,17 +263,6 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
 
     void Assemble::select_templates() {
 		for (auto && sse : _ss_tree) {
-			//if (L->has_loop()) {
-			//	if (m_records[L].first.empty()) {
-			//		build_loop_dg.init(L->seq(), NASS::lower_ss(L->ss()));
-			//		m_templates[L].first = build_loop_dg();
-			//		m_selected_record[L].first = TemplRec{};
-			//	}
-			//	else {
-			//		m_templates[L].first = load_pdb(m_records[L].first[0]);
-			//		m_selected_record[L].first = m_records[L].first[0];
-			//	}
-			//}
 			set_loop_template(&sse, true);
 			if (sse.has_helix()) {
 				m_templates[&sse].second = load_pdb(m_records[&sse].second[0]);
@@ -457,18 +446,19 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
     }
 
 	void Assemble::complete_records() {
-		Int l = STD_ count_if(_ss_tree.begin(), _ss_tree.end(), [](const SSE &sse)->bool {return sse.has_loop(); });
-		Int m = Int(STD_ ceil(STD_ pow(_num, 1.0 / l)));
-		for (auto && hp : _ss_tree) {
-			if (hp.has_loop()) {
-				m_templates_cache[&hp].first.resize(m);
-				records_t &records = m_records[&hp].first;
-				Int d = _num - size(records);
-				if (d > 0) {
-					sample_loop();
-				}
-			}
-		}
+		//Int l = STD_ count_if(_ss_tree.begin(), _ss_tree.end(), [](const SSE &sse)->bool {return sse.has_loop(); });
+		//Int m = Int(STD_ ceil(STD_ pow(_num, 1.0 / l)));
+		//for (auto && sse : _ss_tree) {
+		//	if (sse.has_loop()) {
+		//		m_templates_cache[&sse].first.resize(m);
+		//		m_templates_cache[&sse].first.resize(m);
+		//		records_t &records = m_records[&sse].first;
+		//		Int d = m - size(records);
+		//		if (d > 0) {
+		//			sample_loop();
+		//		}
+		//	}
+		//}
 	}
 
     void Assemble::print_records() {

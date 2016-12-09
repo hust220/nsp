@@ -45,14 +45,14 @@ public:
             list_name = path + str + "/list";
             std::deque<int> lens;
             std::deque<std::string> names;
-			BEGIN_READ_FILE(list_name, " ") {
-				if (F.size() == 2) {
-					n = std::stoi(F[0]);
+			for (auto &&it : FileLines(list_name)) {
+				if (size(it.arr) == 2) {
+					n = std::stoi(it.arr[0]);
 					sum += n;
 					lens.push_back(n);
-					names.push_back(F[1]);
+					names.push_back(it.arr[1]);
 				}
-			} END_READ_FILE;
+			}
             int len = lens.size();
             clusters.resize(len);
             for (int j = 0; j < len; j++) {

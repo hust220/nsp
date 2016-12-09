@@ -85,9 +85,6 @@
     <ClCompile Include="main.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="min_dist.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="nsp.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -450,6 +447,9 @@
     </ClCompile>
     <ClCompile Include="..\lib\jian\nuc3d\SampleLoop.cpp">
       <Filter>jian\nuc3d</Filter>
+    </ClCompile>
+    <ClCompile Include="m_min_dist.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -983,6 +983,9 @@
     </ClInclude>
     <ClInclude Include="..\lib\jian\nuc2d\Loop.hpp">
       <Filter>jian\nuc2d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\jian\utils\Entity.hpp">
+      <Filter>jian\utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

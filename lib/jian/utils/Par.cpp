@@ -15,19 +15,19 @@ Par::Par(Str str) {
 }
 
 void Par::read(Str par_file) {
-	BEGIN_READ_FILE(par_file, " ") {
-		if (!(F.empty())) {
-			_pars[F[0]] = pars_t();
-			for (auto it = std::next(F.begin()); it != F.end(); it++) {
-				_pars[F[0]].push_back(*it);
+	for (auto &&it : FileLines(par_file)) {
+		if (!(it.arr.empty())) {
+			_pars[it.arr[0]] = pars_t();
+			for (auto it2 = std::next(it.arr.begin()); it2 != it.arr.end(); it2++) {
+				_pars[it.arr[0]].push_back(*it2);
 			}
-			if (F[0] == "par") {
+			if (it.arr[0] == "par") {
 				for (auto && p : _pars["par"]) {
 					read(p);
 				}
 			}
 		}
-	} END_READ_FILE;
+	}
 }
 
 void Par::read(int argc, char **argv) {

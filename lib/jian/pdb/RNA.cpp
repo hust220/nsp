@@ -20,18 +20,18 @@ static all_res_t *load_rna_all_res() {
     all_res_t *all_res = new all_res_t;
     S file_name = Env::lib() + "/RNA/pars/pdb/RNA/atoms";
     S name;
-	BEGIN_READ_FILE(file_name, " ") {
-		if (N < 8) {
-			if (N % 2 == 0) {
-				all_res->at(N / 2).name = F[0];
+	for (auto &&it : FileLines(file_name)) {
+		if (it.n < 8) {
+			if (it.n % 2 == 0) {
+				all_res->at(it.n / 2).name = it.arr[0];
 			}
 			else {
-				for (auto && s : F) {
-					all_res->at(N / 2).atoms.push_back(s);
+				for (auto && s : it.arr) {
+					all_res->at(it.n / 2).atoms.push_back(s);
 				}
 			}
 		}
-	} END_READ_FILE;
+	}
     return all_res;
 }
 
