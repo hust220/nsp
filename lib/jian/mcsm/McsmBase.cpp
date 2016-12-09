@@ -228,7 +228,7 @@ void MCBase::init(const Par &par) {
 			_pred_chain = BuildChain()(_seq.size()).m_chain;
 		}
 		else if (par.has("init:raw")) {
-			nuc3d::Assemble assemble(Par("seq", _seq)("ss", _ss)("loop_building", "partial_raw")("name", ""));
+			nuc3d::Assemble assemble(Par(par)("seq", _seq)("ss", _ss)("loop_building", "partial_raw")("name", ""));
 			assemble.predict_one();
 			_pred_chain = assemble._pred_chain;
 		}
