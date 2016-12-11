@@ -40,7 +40,7 @@ public:
             if (i % cycle_steps == cycle_steps - 1) {
                 double local_succ_rate = double(local_succ_num) / cycle_steps;
                 local_succ_num = 0;
-                LOG << i + 1 << ": " << total_dist_energy(c) << "(dist energy) " << total_dih_energy() << "(dih energy) " << 
+                log << i + 1 << ": " << total_dist_energy(c) << "(dist energy) " << total_dih_energy() << "(dih energy) " << 
                     _mc_tempr << "(temprature) " << local_succ_rate << "(success rate)" << std::endl;
                 if (! ctrl_tempr(local_succ_rate)) break;
             }
@@ -50,12 +50,12 @@ public:
     }
 
     void heat() {
-        LOG << "Step 1: heating..." << std::endl;
+        log << "Step 1: heating..." << std::endl;
         base_mc(50, [&](double rate){if (rate < 0.8) {_mc_tempr *= 2; return true;} else return false;});
     }
 
     void cool() {
-        LOG << "Step 2: cooling..." << std::endl;
+        log << "Step 2: cooling..." << std::endl;
         base_mc(_num_mc_steps, [&](double rate){
             if (rate > 0.5) {
                 _mc_tempr *= 0.9; 
@@ -70,14 +70,14 @@ public:
 
     void mc() {
         init_dihs();
-        LOG << "Start MC...\n" <<
+        log << "Start MC...\n" <<
             "Energy: " << total_dist_energy(c) << "(dist) " << total_dih_energy() << "(dih)\n" <<
             "Temprature: " << _mc_tempr << std::endl;
 
         heat();
         cool();
 
-        LOG << "Finish MC.\nDistance energy: " << total_dist_energy(c) << " Chirality energy: " << total_dih_energy() << '\n';
+        log << "Finish MC.\nDistance energy: " << total_dist_energy(c) << " Chirality energy: " << total_dih_energy() << '\n';
     }
 
 };

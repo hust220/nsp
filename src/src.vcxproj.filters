@@ -642,13 +642,7 @@
     <ClInclude Include="..\lib\jian\nuc3d\transform.hpp">
       <Filter>jian\nuc3d</Filter>
     </ClInclude>
-    <ClInclude Include="..\lib\jian\dg\CG-dev.hpp">
-      <Filter>jian\dg</Filter>
-    </ClInclude>
     <ClInclude Include="..\lib\jian\dg\CG.hpp">
-      <Filter>jian\dg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\dg\Constraints.hpp">
       <Filter>jian\dg</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jian\dg\DG.hpp">
@@ -673,15 +667,6 @@
       <Filter>jian\dg</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jian\dg\smooth.hpp">
-      <Filter>jian\dg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\dg\Sys.hpp">
-      <Filter>jian\dg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\dg\TestMC.hpp">
-      <Filter>jian\dg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\dg\_DG.hpp">
       <Filter>jian\dg</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jian\qhmc\HeadHairpin.hpp">

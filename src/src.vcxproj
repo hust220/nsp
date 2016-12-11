@@ -435,9 +435,7 @@
     <ClInclude Include="..\lib\jian\dca\MpDca.hpp" />
     <ClInclude Include="..\lib\jian\dca\ss_pairs.hpp" />
     <ClInclude Include="..\lib\jian\dg.hpp" />
-    <ClInclude Include="..\lib\jian\dg\CG-dev.hpp" />
     <ClInclude Include="..\lib\jian\dg\CG.hpp" />
-    <ClInclude Include="..\lib\jian\dg\Constraints.hpp" />
     <ClInclude Include="..\lib\jian\dg\DG.hpp" />
     <ClInclude Include="..\lib\jian\dg\DGImpl.hpp" />
     <ClInclude Include="..\lib\jian\dg\DihBound.hpp" />
@@ -446,9 +444,6 @@
     <ClInclude Include="..\lib\jian\dg\MC.hpp" />
     <ClInclude Include="..\lib\jian\dg\Move.hpp" />
     <ClInclude Include="..\lib\jian\dg\smooth.hpp" />
-    <ClInclude Include="..\lib\jian\dg\Sys.hpp" />
-    <ClInclude Include="..\lib\jian\dg\TestMC.hpp" />
-    <ClInclude Include="..\lib\jian\dg\_DG.hpp" />
     <ClInclude Include="..\lib\jian\dhmc.hpp" />
     <ClInclude Include="..\lib\jian\dhmc\DHMC.hpp" />
     <ClInclude Include="..\lib\jian\geom.hpp" />

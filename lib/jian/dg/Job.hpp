@@ -8,14 +8,16 @@
 BEGIN_JN
 namespace dg {
 
-struct Job {
+struct Job
+{
 //    using Mat = Eigen::MatrixXd;
-    using DihEntry = std::vector<int>;
+    using DihEntry = Vi;
     using DistBoundType = Mat;
     using DihBoundType = DihBound;
 
     int len = 0;
 
+	Log log;
     Mat bound;
     double _min_dist = 5;
     DihBound _dih_bound;
