@@ -65,8 +65,6 @@ BEGIN_JN
 			tuples_t tuples = tuples_from_file(difile, ss.size());
 			tuples_t ls;
 			SSTree sst(seq, ss, 1);
-			//sst.head()->print_tree();
-			//print_tuples(tuples);
             V<SSTree::El *> v;
             v.resize(l);
 			for (Int i = 0; i < l; i++) {
@@ -74,13 +72,27 @@ BEGIN_JN
 			}
             for (auto && l : v) LOG << l << ' '; LOG << std::endl;
 			for (auto && tuple : tuples) {
-				//if (connect_by_ml(tuple.a, tuple.b, sst)) {
-				//if (v[tuple.a] != v[tuple.b] && ss[tuple.a] == '.' && ss[tuple.b] == '.') {
 				if (v[tuple.a] != v[tuple.b]) {
 					ls.push_back(tuple);
 				}
 			}
 			print_tuples(ls);
+		}
+
+		void sort_di(const Par &par) {
+			S seq = par.get("seq");
+			Num k = 0.2;
+			S di_file = par.get("di");
+
+			par.set(k, "k");
+
+			LOG << "Sequence:" << std::endl;
+			LOG << seq << std::endl;
+
+			int l = int(size(seq) * k);
+			LOG << "Read first " << l << " pairs:" << std::endl;
+			dca::pairs_t &&pairs = dca::pairs_from_file(di_file, l);
+			dca::print_pairs(pairs);
 		}
 
 		REGISTER_NSP_COMPONENT(dca) {
@@ -90,9 +102,15 @@ BEGIN_JN
 			S mol_type = "RNA";
 			S method = "mf";
 			Par::pars_t global = par.getv("global");
-			if (size(global) == 2 && global[1] == "trim_di") {
-				trim_di(par);
-				return;
+			if (size(global) == 2) {
+				if (global[1] == "trim_di") {
+					trim_di(par);
+					return;
+				}
+				else if (global[1] == "sort_di") {
+					sort_di(par);
+					return;
+				}
 			}
 
 			S out_file = par.get("o", "out");
