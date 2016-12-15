@@ -136,6 +136,7 @@ namespace dca {
 		par.set(k, "k");
 		l = int(size(seq) * k);
 
+		JN_OUT << di_file << STD_ endl;
 		pairs = pairs_from_file(di_file, l);
 		dca::print_pairs(pairs);
 		v.resize(l, false);
