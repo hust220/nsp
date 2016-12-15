@@ -48,7 +48,7 @@ tuples_t tuples_from_file(const Str &file_name, int size) {
 		}
 		if (a >= 0 && b - a - 1 >= 4) {
 			auto p = std::minmax(a, b);
-			if (c < tuples.back().c) {
+			if (c <= tuples.back().c) {
 				if (tuples.size() >= size) {
 				}
 				else {
