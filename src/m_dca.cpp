@@ -136,11 +136,7 @@ namespace dca {
 		par.set(k, "k");
 		l = int(size(seq) * k);
 
-		JN_OUT << k << STD_ endl;
-		JN_OUT << l << STD_ endl;
-		JN_OUT << di_file << STD_ endl;
 		pairs = pairs_from_file(di_file, l);
-		dca::print_pairs(pairs);
 		v.resize(l, false);
 		for (it1 = pairs.begin(), i = 0; it1 != pairs.end(); it1++, i++) {
 			for (it2 = STD_ next(it1), j = i + 1; it2 != pairs.end(); it2++, j++) {

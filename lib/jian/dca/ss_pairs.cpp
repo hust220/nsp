@@ -32,36 +32,44 @@ pairs_t pairs_from_file(const Str &file_name, int size) {
 
 tuples_t tuples_from_file(const Str &file_name, int size) {
     tuples_t tuples;
+	int a, b;
+	Num c;
+
 	for (auto &&l : FileLines(file_name)) {
-		if (JN_ size(l.arr) >= 3) {
-			int a = std::stoi(l.arr[0]) - 1;
-			int b = std::stoi(l.arr[1]) - 1;
-			double c = std::stod(l.arr[2]);
-			if (a >= 0 && b - a - 1 >= 4) {
-				auto p = std::minmax(a, b);
-				if (c < tuples.back().c) {
-					if (tuples.size() >= size) {
-					}
-					else {
-						tuples.push_back({ p.first, p.second, c });
-					}
-				}
-				else if (c > tuples.front().c) {
-					tuples.push_front({ p.first, p.second, c });
+		if (JN_ size(l.arr) == 2) {
+			a = JN_INT(l.arr[0]) - 1;
+			b = JN_INT(l.arr[1]) - 1;
+			c = 1;
+		}
+		else if (JN_ size(l.arr) >= 3) {
+			a = JN_INT(l.arr[0]) - 1;
+			b = JN_INT(l.arr[1]) - 1;
+			c = JN_NUM(l.arr[2]);
+		}
+		if (a >= 0 && b - a - 1 >= 4) {
+			auto p = std::minmax(a, b);
+			if (c < tuples.back().c) {
+				if (tuples.size() >= size) {
 				}
 				else {
-					auto it_p = tuples.begin();
-					for (auto it = std::next(it_p); it != tuples.end(); it = std::next(it)) {
-						if (c > it->c && c < it_p->c) {
-							tuples.insert(it, { p.first, p.second, c });
-							break;
-						}
-						it_p = it;
+					tuples.push_back({ p.first, p.second, c });
+				}
+			}
+			else if (c > tuples.front().c) {
+				tuples.push_front({ p.first, p.second, c });
+			}
+			else {
+				auto it_p = tuples.begin();
+				for (auto it = std::next(it_p); it != tuples.end(); it = std::next(it)) {
+					if (c > it->c && c < it_p->c) {
+						tuples.insert(it, { p.first, p.second, c });
+						break;
 					}
+					it_p = it;
 				}
-				if (tuples.size() > size) {
-					tuples.pop_back();
-				}
+			}
+			if (tuples.size() > size) {
+				tuples.pop_back();
 			}
 		}
 	}
