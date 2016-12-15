@@ -119,7 +119,7 @@ namespace dca {
 	void rm_fp(const Par &par) {
 		Str di_file;
 		Str seq;
-		int k = 0.8;
+		Num k = 0.8;
 		int i, j, l;
 		Vb v;
 		pairs_t::iterator it, it1, it2;
@@ -136,6 +136,8 @@ namespace dca {
 		par.set(k, "k");
 		l = int(size(seq) * k);
 
+		JN_OUT << k << STD_ endl;
+		JN_OUT << l << STD_ endl;
 		JN_OUT << di_file << STD_ endl;
 		pairs = pairs_from_file(di_file, l);
 		dca::print_pairs(pairs);
