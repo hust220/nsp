@@ -11,6 +11,7 @@ if(V MATCHES "debug")
     SET(CMAKE_BUILD_TYPE "Debug")
 endif()
 
+
 if(V MATCHES "para")
     add_definitions(-DJN_PARA)
     set(CMAKE_CXX_COMPILER "$ENV{MPI_HOME}/bin/mpicxx")

@@ -10,6 +10,7 @@
 #define JN_INT(n) jian::lexical_cast<int>(n)
 #define JN_FLT(n) jian::lexical_cast<float>(n)
 #define JN_DBL(n) jian::lexical_cast<double>(n)
+#define JN_NUM(n) jian::lexical_cast<Num>(n)
 #define JN_STR(n) jian::lexical_cast<S>(n)
 #define JINT JN_INT
 #define JSTR JN_STR
