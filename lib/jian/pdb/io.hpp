@@ -113,7 +113,7 @@ BEGIN_JN
 			{}
 
 			ModelIt(MolParser *parser_) :
-				n(-1), parser(parser_)
+				el(STD_ make_shared<El>()), n(-1), parser(parser_)
 			{
 				(*this)++;
 			}
