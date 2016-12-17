@@ -23,8 +23,11 @@ BEGIN_JN
 			bool m_loose;
 			Mat m_mat_ref;
 			Mat m_mat_tgt;
+			Par m_par;
 
 			TrajComponent(const Par &par) {
+				m_par = par;
+
 				auto v = par.getv("global");
 				assert(v.size() >= 3);
 				m_func = v[1];
@@ -43,38 +46,10 @@ BEGIN_JN
 				par.set(m_align, "align");
 				set_common();
 
-				//set_mat(m_mat_ref, m_ref, m_common_ref);
 			}
 
-			//void set_mat(Mat &mat, const Chain &chain, const std::deque<int> &common) {
-			//	int i, j, n, l, rows;
-
-			//	l = size(chain);
-			//	rows = size(common);
-			//	mat.resize(rows, 3);
-			//	n = 0;
-			//	for (i = 0; i < l; i++) {
-			//		if (std::find(common.begin(), common.end(), i) != common.end()) {
-			//			const Atom &atom = chain[i]["C4*"];
-			//			for (j = 0; j < 3; j++) {
-			//				mat(n, j) = atom[j];
-			//			}
-			//			n++;
-			//		}
-			//	}
-			//}
-
-			Chain model_to_chain(const Model &m) {
-				Chain c;
-				for (auto && chain : m) {
-					for (auto && res : chain) {
-						c.push_back(res);
-					}
-				}
-				return c;
-			}
-
-			val_t rmsd(const Chain &tgt) {
+			template<typename _Chain>
+			Num rmsd(const _Chain &tgt) {
 				std::deque<std::array<double, 3>> l1, l2;
 				int i, l;
 
@@ -147,7 +122,7 @@ BEGIN_JN
 			void rmsd() {
 				for_each_model(m_traj, [this](const Model &model, int i) {
 					if (i % m_bin == 0) {
-						JN_OUT << i+1 << ' ' << rmsd(model_to_chain(model)) << std::endl;
+						JN_OUT << i+1 << ' ' << rmsd(model.residues()) << std::endl;
 					}
 				});
 			}
@@ -162,12 +137,29 @@ BEGIN_JN
 				});
 			}
 
+			void extract() {
+				Num rmsd_target = -1;
+				Num num_target = -1;
+				m_par.set(rmsd_target, "rmsd");
+				m_par.set(num_target, "n");
+				MolReader mol_reader(m_traj);
+				for (auto it = mol_reader.model_begin(); it != mol_reader.model_end(); it++) {
+					if (num_target != -1 && it.n + 1 == num_target || rmsd_target == rmsd(it->residues())) {
+						JN_OUT << *it;
+						break;
+					}
+				}
+			}
+
 			void run() {
 				if (m_func == "rmsd") {
 					rmsd();
 				}
 				else if (m_func == "compress") {
 					compress();
+				}
+				else if (m_func == "extract") {
+					extract();
 				}
 			}
 		};

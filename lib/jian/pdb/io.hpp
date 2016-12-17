@@ -90,6 +90,67 @@ BEGIN_JN
 	std::ostream &operator <<(std::ostream &output, const Model &model);
 	std::ostream &operator <<(std::ostream &output, const Molecule &mol);
 
+	class MolReader {
+	public:
+		class ModelEl : public BasicEl<ModelEl, Model> {
+		public:
+			using Data = Model;
+			using El = ModelEl;
+		};
+
+		class ModelIt : public BasicIt<ModelIt, ModelEl> {
+		public:
+			using Data = Model;
+			using El = ModelEl;
+			using It = ModelIt;
+
+			SP<El> el;
+			int n;
+			MolParser *parser;
+
+			ModelIt() : 
+				n(-1), parser(NULL)
+			{}
+
+			ModelIt(MolParser *parser_) :
+				n(-1), parser(parser_)
+			{
+				(*this)++;
+			}
+
+			virtual Data &operator *() const {
+				return el->data;
+			}
+
+			virtual bool operator ==(It other) const {
+				return n == other.n;
+			}
+
+			It &operator ++()
+			{
+				if (parser == NULL || parser->eof()) throw "";
+				(*parser) >> el->data;
+				n = (parser->eof() ? -1 : n + 1);
+				return *this;
+			}
+
+		};
+
+		SP<MolParser> parser;
+
+		MolReader(Str filename, Str mol_type = "") {
+			parser.reset(MolParser::make(jian::file::type(filename), filename, mol_type));
+		}
+
+		ModelIt model_begin() const {
+			return ModelIt(parser.get());
+		}
+
+		ModelIt model_end() const {
+			return ModelIt{};
+		}
+	};
+
 	template<typename F>
 	void for_each_model(S filename, F && f, S mol_type = "") {
 		int i = 0;
