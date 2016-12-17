@@ -98,7 +98,8 @@ BEGIN_JN
 			using El = ModelEl;
 		};
 
-		class ModelIt : public BasicIt<ModelIt, ModelEl> {
+		class ModelIt : public BasicIt<ModelIt, ModelEl>
+		{
 		public:
 			using Data = Model;
 			using El = ModelEl;
@@ -113,22 +114,25 @@ BEGIN_JN
 			{}
 
 			ModelIt(MolParser *parser_) :
-				el(STD_ make_shared<El>()), n(-1), parser(parser_)
+				n(-1), parser(parser_)
 			{
 				(*this)++;
 			}
 
-			virtual Data &operator *() const {
+			virtual Data &operator *() const
+			{
 				return el->data;
 			}
 
-			virtual bool operator ==(It other) const {
+			virtual bool operator ==(It other) const
+			{
 				return n == other.n;
 			}
 
 			It &operator ++()
 			{
 				if (parser == NULL || parser->eof()) throw "";
+				el = STD_ make_shared<El>();
 				(*parser) >> el->data;
 				n = (parser->eof() ? -1 : n + 1);
 				return *this;

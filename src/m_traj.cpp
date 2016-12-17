@@ -140,19 +140,34 @@ BEGIN_JN
 			void extract() {
 				Num rmsd_target = -1;
 				Num num_target = -1;
-				Num max_diff_rmsd = 0.2;
 				m_par.set(rmsd_target, "rmsd");
 				m_par.set(num_target, "n");
 				MolReader mol_reader(m_traj);
-				for (auto it = mol_reader.model_begin(); it != mol_reader.model_end(); it++)
+				auto it = mol_reader.model_begin();
+				auto it_target = it;
+				Num min = 999;
+				for (; it != mol_reader.model_end(); it++)
 				{
-					if (num_target != -1 && it.n + 1 == num_target || 
-						square(rmsd_target - rmsd(it->residues())) < square(max_diff_rmsd))
+					if (num_target != -1)
 					{
-						JN_OUT << *it;
-						break;
+						if (it.n + 1 == num_target)
+						{
+							it_target = it;
+							JN_OUT << *it;
+							break;
+						}
+					}
+					else
+					{
+						Num d = STD_ fabs(rmsd_target - rmsd(it->residues()));
+						if (d < min)
+						{
+							it_target = it;
+							min = d;
+						}
 					}
 				}
+				JN_OUT << *it_target;
 			}
 
 			void run() {
