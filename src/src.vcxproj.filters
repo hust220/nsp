@@ -451,6 +451,9 @@
     <ClCompile Include="m_min_dist.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="m_cg_to_aa.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="nsp.hpp">

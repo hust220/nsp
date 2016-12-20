@@ -5,6 +5,7 @@
 #include "../utils/Env.hpp"
 #include "../utils/log.hpp"
 #include "../geom.hpp"
+#include "../nuc3d/Convert.hpp"
 
 BEGIN_JN
 	Chain CG::to_cg(const Chain &chain) const {
@@ -151,6 +152,31 @@ BEGIN_JN
 	};
 
 	std::map<std::string, CG2AA> CG2AA::m_instances;
+
+	Mat CG::chain_to_coords(const Chain &chain) const {
+		int n_atoms = num_atoms(chain);
+		Mat c(n_atoms, 3);
+		int n_atom = 0;
+		for (int i = 0; i < size(chain); i++) {
+			for (auto && atom : chain[i]) {
+				mat_set_rows(c, n_atom, atom);
+				n_atom++;
+			}
+		}
+		return c;
+	}
+
+	Chain CG::to_aa(const Chain &chain) const {
+		Mat &&mat = chain_to_coords(chain);
+		Str s = seq(chain);
+		Chain &&c = to_aa(mat, 0, mat.rows() - 1);
+		int i = 0;
+		for (Residue &res : c) {
+			res = convert_res(res, to_str(s[i]));
+			i++;
+		}
+		return c;
+	}
 
 	Chain CG::to_aa(const Mat &c, int beg, int end) const {
 		return CG2AA::instance(m_cg).run(c, std::vector<int>{beg, end});

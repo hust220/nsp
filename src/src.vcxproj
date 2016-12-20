@@ -378,6 +378,7 @@
     <ClCompile Include="m_assemble.cpp" />
     <ClCompile Include="m_build_loop.cpp" />
     <ClCompile Include="m_build_loop_dg.cpp" />
+    <ClCompile Include="m_cg_to_aa.cpp" />
     <ClCompile Include="m_check.cpp" />
     <ClCompile Include="m_client.cpp" />
     <ClCompile Include="m_cluster.cpp" />

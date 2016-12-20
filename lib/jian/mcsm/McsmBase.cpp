@@ -1,5 +1,6 @@
 #include <functional>
 #include "../nuc3d/Assemble.hpp"
+#include "../nuc3d/Convert.hpp"
 #include "McsmBase.hpp"
 
 #define JN_MCXP_TEMPPAR_SET(a) temp_par.set(PP_CAT(_mc_, a), PP_STRING3(PP_CAT(mc_, a)));
@@ -573,35 +574,22 @@ void MCBase::run() {
 	finish_run();
 
 	log << "# Coarsed Grained To All Atom..." << std::endl;
-	cg_to_aa(chain_to_coords());
+	_pred_chain = m_cg->to_aa(_pred_chain);
 
 	log << "# Restore helix..." << std::endl;
 	restore_fixed_ranges();
 
 	log << "# Transform..." << std::endl;
-	this->transform();
+	transform();
 
 }
 
 void MCBase::transform() {
-	Model m;
-	m.push_back(_pred_chain);
-	_pred_chain = std::move(jian::transform(m, _seq, _type)[0]);
-}
-
-Mat MCBase::chain_to_coords() {
-	int n_atoms = num_atoms(_pred_chain);
-	Mat c(n_atoms, 3);
-	int n_atom = 0;
-	for (int i = 0; i < _pred_chain.size(); i++) {
-		for (auto && atom : _pred_chain[i]) {
-			for (int j = 0; j < 3; j++) {
-				c(n_atom, j) = atom[j];
-			}
-			n_atom++;
-		}
+	int i = 0;
+	for (Residue &r : _pred_chain) {
+		r = convert_res(r, to_str(_seq[i]));
+		i++;
 	}
-	return c;
 }
 
 void MCBase::print_final_constraints() {
@@ -621,10 +609,6 @@ void MCBase::print_final_constraints() {
 		d = dist_two_res(_pred_chain[i], _pred_chain[j]);
 		log << i << ' ' << j << " value:" << c.value << " weight:" << c.weight << " dist:" << d << std::endl;
 	}
-}
-
-void MCBase::cg_to_aa(const Mat &c) {
-	_pred_chain = m_cg->to_aa(c, 0, c.rows() - 1);
 }
 
 void MCBase::before_run() {}

@@ -32,6 +32,10 @@ BEGIN_JN
 
 		Molecule to_cg(const Molecule &molecule) const;
 
+		Mat chain_to_coords(const Chain &chain) const;
+
+		Chain to_aa(const Chain &chain) const;
+
 		Chain to_aa(const Mat &c, int beg, int end) const;
 
 	};
