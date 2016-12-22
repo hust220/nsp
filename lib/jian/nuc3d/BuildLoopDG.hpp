@@ -35,18 +35,17 @@ void dg_dist_read_chain(Mat &dist, const Chain &chain);
 template<typename _Ls>
 void dg_dist_read_chain(Mat &dist, const Chain &c, _Ls &&indices) {
 	Num d;
-	int i, j, l, a, b;
+	int i, j, l;
 	l = size(c);
 	for (i = 0; i < l; i++) {
-		a = indices[i];
-		if (a == -1) continue;
+		if (indices[i] == -1 || !has_atom(c[i], "C4*")) continue;
+		const Atom &atom1 = c[i]["C4*"];
 		for (j = i + 1; j < l; j++) {
-			b = indices[j];
-			if (b == -1) continue;
-			if (c[i].empty() || c[j].empty()) continue;
-			d = geom::distance(c[i]["C4*"], c[j]["C4*"]);
-			dist(a, b) = d;
-			dist(b, a) = d;
+			if (indices[j] == -1 || !has_atom(c[j], "C4*")) continue;
+			const Atom &atom2 = c[j]["C4*"];
+			d = geom::distance(atom1, atom2);
+			dist(indices[i], indices[j]) = d;
+			dist(indices[j], indices[i]) = d;
 		}
 	}
 }

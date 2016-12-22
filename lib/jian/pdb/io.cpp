@@ -217,7 +217,7 @@ BEGIN_JN
 			if (i == 0 || !diff_chain(parser)) {
 				Residue residue;
 				parser >> residue;
-				if (res_is_type(residue, parser.mol_type)) {
+				if (is_mol_type(residue, parser.mol_type)) {
 					chain.push_back(residue);
 				}
 			}

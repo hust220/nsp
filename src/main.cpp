@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
 		JN_ NSP::run(argc, argv);
 	}
 	catch (const jian::Error &inf) {
-		Out << inf.what() << Endl;
+		Err << inf.what() << Endl;
 	}
 	catch (const char * inf) {
 		Err << inf << Endl;

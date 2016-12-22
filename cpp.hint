@@ -5,3 +5,5 @@
 #define BEGIN_JN
 
 #define END_JN
+
+#define JN_DEFAULT_CONSTRUCTORS

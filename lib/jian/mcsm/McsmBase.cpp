@@ -190,11 +190,14 @@ void MCBase::init(const Par &par) {
 	m_will_write_traj = !_name.empty();
 
 	log << "# Extract residue conformations..." << std::endl;
-	MolReader reader(to_str(Env::lib(), "/RNA/pars/cg/CG2AA/templates.pdb"));
-	Int n = 0;
-	for (auto it = reader.model_begin(); it != reader.model_end(); it++, n++) {
-		ResConf::extract(m_res_confs, it->residues());
-	}
+	for_each_model(to_str(Env::lib(), "/RNA/pars/cg/CG2AA/templates.pdb"), [this](const Model &m, int n) {
+		ResConf::extract(m_res_confs, m.residues());
+	});
+	//MolReader reader(to_str(Env::lib(), "/RNA/pars/cg/CG2AA/templates.pdb"));
+	//for (auto it = reader.model_begin(); it != reader.model_end(); it++) {
+	//	STD_ cerr << *it << STD_ endl;
+	//	ResConf::extract(m_res_confs, it->residues());
+	//}
 	for (auto && pair : m_res_confs) {
 		for (auto && conf : pair.second) {
 			conf.res = m_cg->to_cg(conf.res);
@@ -268,6 +271,12 @@ void MCBase::set_align() {
 			if (seq2[i] != '-') n2++;
 		}
 	}
+#ifndef NDEBUG
+	log << "# Print align" << STD_ endl;
+	for (auto && pair : m_align) {
+		log << pair[0] << ' ' << pair[1] << STD_ endl;
+	}
+#endif
 }
 
 void MCBase::align_to_fixed_areas() {
@@ -407,7 +416,7 @@ void MCBase::mc_sample_res() {
 				}
 				Residue r = confs[n].res;
 				for (auto && atom : r) sp.apply(atom);
-				_pred_chain[min].set_atoms(r);
+				set_atoms(_pred_chain[min], r);
 			}
 			else {
 				Num d1 = -1;
@@ -584,7 +593,7 @@ void MCBase::restore_raw() {
 	Mat dist;
 	Int l = size(_seq);
 	dg_dist_init(dist, l);
-	dg_dist_read_ss(dist, _seq, _ss);
+	//dg_dist_read_ss(dist, _seq, _ss);
 	Vector<Int> v(l);
 	for (Int i = 0; i < l; i++) {
 		auto it = STD_ find_if(m_align.begin(), m_align.end(), [i](auto &&p) {return p[0] == i; });

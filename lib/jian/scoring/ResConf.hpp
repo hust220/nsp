@@ -31,7 +31,7 @@ BEGIN_JN
 			int l = size(residues);
 			Num d;
 			for (int i = 0; i < l - 1; i++) {
-				if (residues[i].has_atom("P", "C4*") && residues[i+1].has_atom("P")) {
+				if (has_atom(residues[i], "P", "C4*") && has_atom(residues[i+1], "P")) {
 					const Residue &r1 = residues[i];
 					const Residue &r2 = residues[i+1];
 					//LOG << residues[i] << std::endl;
