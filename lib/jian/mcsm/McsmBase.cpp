@@ -609,7 +609,7 @@ void MCBase::restore_raw() {
 void MCBase::run() {
 	log << "# Check initial structure..." << std::endl;
 	if (_pred_chain.empty()) die("Please give me an initial structure for optimizing!");
-	restore_raw();
+	if (!m_alignfile.empty()) restore_raw();
 
 	log << "# Initializing running..." << std::endl;
 	before_run();
