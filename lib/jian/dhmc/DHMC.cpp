@@ -138,7 +138,7 @@ void DHMC::bps_to_constraints() {
 	int i, j;
 
 	auto foo = [this](int n1, int n2) {
-		auto &dists = m_bp_distances[to_str(_pred_chain[n1].name, _pred_chain[n2].name)];
+		auto &dists = m_bp_distances[to_str(_seq[n1], _seq[n2])];
 		for (int i = 0; i < 6; i++) {
 			m_distance_constraints.push_back({ { n1, i },{ n2, i }, dists[i], dists[i] });
 		}
