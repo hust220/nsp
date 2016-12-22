@@ -146,22 +146,17 @@ BEGIN_JN
 				auto it = mol_reader.model_begin();
 				auto it_target = it;
 				Num min = 999;
-				for (; it != mol_reader.model_end(); it++)
-				{
-					if (num_target != -1)
-					{
-						if (it.n + 1 == num_target)
-						{
+				for (; it != mol_reader.model_end(); it++) {
+					if (num_target != -1) {
+						if (it.n + 1 == num_target) {
 							it_target = it;
 							JN_OUT << *it;
 							break;
 						}
 					}
-					else
-					{
+					else {
 						Num d = STD_ fabs(rmsd_target - rmsd(it->residues()));
-						if (d < min)
-						{
+						if (d < min) {
 							it_target = it;
 							min = d;
 						}

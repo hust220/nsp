@@ -21,14 +21,6 @@ using tokenize_v = std::vector<Str>;
 void tokenize(const Str &str, tokenize_v &tokens, const Str &delimiters = " ");
 void tokenize(const Str &str, tokenize_v &tokens, const Str &delimiters, const Str &temp);
 
-inline void stream_push(std::ostream &stream) {}
-
-template<typename _First, typename... _Tail>
-inline void stream_push(std::ostream &stream, _First &&first, _Tail && ...tail) {
-    stream << first;
-    stream_push(stream, tail...);
-}
-
 template<typename... _Args>
 inline Str to_str(_Args && ...args) {
     std::ostringstream stream;

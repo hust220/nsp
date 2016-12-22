@@ -9,11 +9,11 @@
 
 BEGIN_JN
 
-MvEl::MvEl(int a, int b, MvEl::mvel_t t) : type(t) {
+MvEl::MvEl(int a, int b, MvEl::Type t) : type(t) {
 	range.push_back({ a, b });
 }
 
-MvEl::MvEl(int a, int b, int c, int d, MvEl::mvel_t t) : type(t) {
+MvEl::MvEl(int a, int b, int c, int d, MvEl::Type t) : type(t) {
 	range.push_back({ a, b });
 	range.push_back({ c, d });
 }
@@ -33,7 +33,7 @@ MvEl::MvEl(const Helix &h) : type(MvEl::MVEL_HL) {
 	range.push_back({ c, d });
 }
 
-MvEl::MvEl(SSTree::El *l, MvEl::mvel_t t) : type(t) {
+MvEl::MvEl(SSTree::El *l, MvEl::Type t) : type(t) {
 	int a, b, c, d;
 
 	if (t == MVEL_HP) {
@@ -87,20 +87,20 @@ std::ostream &operator <<(std::ostream &stream, const MvEl &el) {
 }
 
 int MvEl::min() const {
-	return std::min_element(range.begin(), range.end(), [](const frag_t &f1, const frag_t &f2) {
+	return std::min_element(range.begin(), range.end(), [](const Frag &f1, const Frag &f2) {
 		return f1[0] <= f2[0];
 	})->at(0);
 }
 
 int MvEl::max() const {
-	return std::max_element(range.begin(), range.end(), [](const frag_t &f1, const frag_t &f2) {
+	return std::max_element(range.begin(), range.end(), [](const Frag &f1, const Frag &f2) {
 		return f1[1] <= f2[1];
 	})->at(1);
 }
 
 bool MvEl::contains(const MvEl &el) const {
-	return std::all_of(el.range.begin(), el.range.end(), [this](const frag_t &f1) {
-		return std::any_of(this->range.begin(), this->range.end(), [&f1](const frag_t &f) {
+	return std::all_of(el.range.begin(), el.range.end(), [this](const Frag &f1) {
+		return std::any_of(this->range.begin(), this->range.end(), [&f1](const Frag &f) {
 			return f[0] <= f1[0] && f[1] >= f1[1];
 		});
 	});
@@ -110,11 +110,11 @@ bool MvEl::nips(const MvEl &el) const {
 	return range.size() == 2 && range[0][1] + 1 == el.min() && range[1][0] - 1 == el.max();
 }
 
-void MvEl::merge(std::deque<MvEl *> &dq) {
+void MvEl::merge(Deque<MvEl *> &dq) {
 	//log << "# Merge ranges..." << std::endl;
-	std::deque<MvEl *> els;
+	Deque<MvEl *> els;
 	int flag = 1;
-	std::map<MvEl *, bool> m;
+	Map<MvEl *, Bool> m;
 
 	if (dq.empty()) return;
 
@@ -190,9 +190,11 @@ void MCBase::init(const Par &par) {
 	m_will_write_traj = !_name.empty();
 
 	log << "# Extract residue conformations..." << std::endl;
-	for_each_model(to_str(Env::lib(), "/RNA/pars/cg/CG2AA/templates.pdb"), [this](const Model &model, int n) {
-		ResConf::extract(m_res_confs, model.residues());
-	});
+	MolReader reader(to_str(Env::lib(), "/RNA/pars/cg/CG2AA/templates.pdb"));
+	Int n = 0;
+	for (auto it = reader.model_begin(); it != reader.model_end(); it++, n++) {
+		ResConf::extract(m_res_confs, it->residues());
+	}
 	for (auto && pair : m_res_confs) {
 		for (auto && conf : pair.second) {
 			conf.res = m_cg->to_cg(conf.res);
@@ -238,11 +240,42 @@ void MCBase::init(const Par &par) {
 		chain_read_model(_pred_chain, m_init_sfile);
 	}
 
+	log << "# Read alignment file" << STD_ endl;
+	par.set(m_alignfile, "align");
+	set_align();
+	align_to_fixed_areas();
+
 	log << "# Check constraints" << std::endl;
 	validate_constraints();
 
 	//_mc_queue = "heat:30000:20+cool:1000000";
 	par.set(_mc_queue, "queue");
+}
+
+void MCBase::set_align() {
+	Str seq1, seq2;
+	Int i, n1, n2, l;
+	if (!m_alignfile.empty()) {
+		for (auto &&it : FileLines(m_alignfile)) {
+			if (it.n == 0) seq1 = it.line;
+			else if (it.n == 1) seq2 = it.line;
+		}
+		if (size(seq1) != size(seq2)) die("Bad align file! The lengths of the two aligned sequences should be equal!");
+		l = size(seq1);
+		for (i = 0, n1 = 0, n2 = 0; i < l; i++) {
+			if (seq1[i] != '-' && seq2[i] != '-') m_align.push_back({ n1, n2 });
+			if (seq1[i] != '-') n1++;
+			if (seq2[i] != '-') n2++;
+		}
+	}
+}
+
+void MCBase::align_to_fixed_areas() {
+	Vector<Bool> v(_seq.size(), false);
+	for (auto && pair : m_align) {
+		v[pair[1]] = true;
+	}
+	m_fixed_areas.push_back(STD_ move(v));
 }
 
 void MCBase::mc_next_step() {
@@ -516,7 +549,7 @@ void MCBase::backup() {
 void MCBase::init_space() {
 	m_item_space.resize(_seq.size());
 	for (int i = 0; i < _seq.size(); i++) {
-		space_val_t &s = space_val(i);
+		SpaceVal &s = space_val(i);
 		s.push_back(i);
 		m_item_space[i] = &s;
 	}
@@ -526,20 +559,20 @@ int MCBase::space_index(double n) const {
 	return int((n + 1000) / m_box_size);
 }
 
-MCBase::item_t &MCBase::item(int i) {
+MCBase::SpaceItem &MCBase::item(int i) {
 	return _pred_chain[i][2];
 }
 
-MCBase::space_val_t &MCBase::space_val(int i) {
-	item_t &a = item(i);
+MCBase::SpaceVal &MCBase::space_val(int i) {
+	SpaceItem &a = item(i);
 	//std::cout << a << std::endl;
 	//std::cout << space_index(a[0]) << ' ' << space_index(a[1]) << ' ' << space_index(a[2]) << std::endl;
 	return m_space[space_index(a[0])][space_index(a[1])][space_index(a[2])];
 }
 
 void MCBase::space_update_item(int i) {
-	space_val_t &n = space_val(i);
-	space_val_t &o = *(m_item_space[i]);
+	SpaceVal &n = space_val(i);
+	SpaceVal &o = *(m_item_space[i]);
 	if (&o != &n) {
 		o.erase(std::find(o.begin(), o.end(), i));
 		m_item_space[i] = &n;
@@ -547,11 +580,27 @@ void MCBase::space_update_item(int i) {
 	}
 }
 
+void MCBase::restore_raw() {
+	Mat dist;
+	Int l = size(_seq);
+	dg_dist_init(dist, l);
+	dg_dist_read_ss(dist, _seq, _ss);
+	Vector<Int> v(l);
+	for (Int i = 0; i < l; i++) {
+		auto it = STD_ find_if(m_align.begin(), m_align.end(), [i](auto &&p) {return p[0] == i; });
+		if (it == m_align.end()) v[i] = -1;
+		else v[i] = it->at(1);
+	}
+	dg_dist_read_chain(dist, _pred_chain, v);
+	Mat && c = DG(dist)();
+	auto cg = CG::fac_t::make("1p");
+	_pred_chain = cg->to_aa(c, 0, c.rows() - 1);
+}
+
 void MCBase::run() {
 	log << "# Check initial structure..." << std::endl;
-	if (_pred_chain.empty()) {
-		throw "Please give an initial structure before the optimization procedure!";
-	}
+	if (_pred_chain.empty()) die("Please give me an initial structure for optimizing!");
+	restore_raw();
 
 	log << "# Initializing running..." << std::endl;
 	before_run();

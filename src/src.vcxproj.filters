@@ -316,9 +316,6 @@
     <ClCompile Include="..\lib\jian\scoring\ScorePsb.cpp">
       <Filter>jian\scoring</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\jian\cg\Frags.cpp">
-      <Filter>jian\cg</Filter>
-    </ClCompile>
     <ClCompile Include="..\lib\jian\dhmc\DHMC.cpp">
       <Filter>jian\dhmc</Filter>
     </ClCompile>
@@ -453,6 +450,9 @@
     </ClCompile>
     <ClCompile Include="m_cg_to_aa.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\jian\cg\ResFrags.cpp">
+      <Filter>jian\cg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -628,9 +628,6 @@
       <Filter>jian\nuc3d</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jian\nuc3d\ParseHelix.hpp">
-      <Filter>jian\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\jian\nuc3d\REMCpsb.hpp">
       <Filter>jian\nuc3d</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\jian\nuc3d\split.hpp">
@@ -888,9 +885,6 @@
     <ClInclude Include="..\lib\jian\scoring\ScorePsb.hpp">
       <Filter>jian\scoring</Filter>
     </ClInclude>
-    <ClInclude Include="..\lib\jian\cg\Frags.hpp">
-      <Filter>jian\cg</Filter>
-    </ClInclude>
     <ClInclude Include="..\lib\jian\scoring\ParBp.hpp">
       <Filter>jian\scoring</Filter>
     </ClInclude>
@@ -975,6 +969,9 @@
     <ClInclude Include="..\lib\jian\utils\Entity.hpp">
       <Filter>jian\utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\lib\jian\cg\ResFrags.hpp">
+      <Filter>jian\cg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\CMakeLists.txt" />
@@ -982,5 +979,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md" />
+    <None Include="..\cpp.hint" />
   </ItemGroup>
 </Project>

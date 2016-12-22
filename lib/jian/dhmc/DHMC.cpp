@@ -15,7 +15,7 @@ void DHMC::init(const Par &par) {
 	m_not_sample_il = par.has("not_sample_il");
 	m_all_free = par.has("all_free");
 
-	log << "# Load  bp distances..." << std::endl;
+	log << "# Load bp distances..." << std::endl;
 	for (auto &&it : FileLines(to_str(Env::lib(), "/RNA/pars/nuc3d/bp_distances.txt"))) {
 		if (size(it.arr) == 7) {
 			for (int i = 0; i < 6; i++) {
@@ -30,22 +30,6 @@ void DHMC::init(const Par &par) {
 	log << "# Transform bps to constraints..." << std::endl;
 	bps_to_constraints();
 
-	//if (m_pk_ahead) {
-	//	// no operation
-	//}
-	//else if (m_sample_all_res) {
-	//	for (auto && c : _ss) {
-	//		c = '.';
-	//	}
-	//}
-	//else {
-	//	for (auto && c : _ss) {
-	//		if (c != '.' && c != '(' && c != ')') {
-	//			c = '.';
-	//		}
-	//	}
-	//}
-
 	log << "# Set 2D trees" << std::endl;
 	set_trees();
 
@@ -53,7 +37,7 @@ void DHMC::init(const Par &par) {
 		log << "# Set fragments" << std::endl;
 		m_frag_size = 3;
 		par.set(m_frag_size, "frag_size");
-		m_frags = &(Frags::instance(m_cg->m_cg, m_frag_size));
+		m_frags = &(ResFrags::instance(m_cg->m_cg, m_frag_size));
 	}
 	else {
 		m_frag_size = 1;
@@ -67,8 +51,6 @@ void DHMC::init(const Par &par) {
 
 	log << "# Print moving elements" << std::endl;
 	print_mvels();
-
-	//throw "debugging...";
 
 	log << "# Remove useless constraints" << std::endl;
 	remove_useless_constraints();
@@ -126,6 +108,13 @@ void DHMC::print_mvels() {
 }
 
 void DHMC::set_trees() {
+	auto partial_ss = [](S ss, const Pair<Char, Char> &pair) {
+		for (auto && c : ss) {
+			c = (c == pair.first ? '(' : (c == pair.second ? ')' : '.'));
+		}
+		return ss;
+	};
+
 	m_trees.push_back(std::make_shared<SSTree>());
 	m_trees.back()->make_b(_seq, _ss, 2);
 	const NASS::PairedKeys & keys = NASS::instance().paired_keys;
@@ -163,54 +152,53 @@ void DHMC::bps_to_constraints() {
 	}
 }
 
-void DHMC::translate_pseudo_knots_helix(Model &m, const Li &nums) {
-	int n = m_cg->res_size() * nums.size() / 2;
-	Mat x(n, 3), y(n, 3);
-	int i = 0;
-	int l = 0;
-	for (auto && j : nums) {
-		if (i < nums.size() / 2) {
-			Residue && res1 = m_cg->to_cg(m[0][i]);
-			Residue && res2 = m_cg->to_cg(_pred_chain[j]);
-			for (int k = 0; k < m_cg->res_size(); k++) {
-				for (int t = 0; t < 3; t++) {
-					x(l, t) = res1[k][t];
-					y(l, t) = res2[k][t];
+void DHMC::set_pseudo_knots() {
+	auto translate_pseudo_knots_helix = [this](Model &m, const List<Int> &nums) {
+		int n = m_cg->res_size() * nums.size() / 2;
+		Mat x(n, 3), y(n, 3);
+		int i = 0;
+		int l = 0;
+		for (auto && j : nums) {
+			if (i < nums.size() / 2) {
+				Residue && res1 = m_cg->to_cg(m[0][i]);
+				Residue && res2 = m_cg->to_cg(_pred_chain[j]);
+				for (int k = 0; k < m_cg->res_size(); k++) {
+					for (int t = 0; t < 3; t++) {
+						x(l, t) = res1[k][t];
+						y(l, t) = res2[k][t];
+					}
+					l++;
 				}
-				l++;
+			}
+			i++;
+		}
+		geom::Superposition<Num> sp(x, y);
+		for (auto && res : m[0]) {
+			for (auto && atom : res) {
+				sp.apply(atom);
 			}
 		}
-		i++;
-	}
-	auto sp = geom::suppos(x, y);
-	INIT_SUPPOS(sp);
-	for (auto && res : m[0]) {
-		for (auto && atom : res) {
-			APPLY_SUPPOS(atom, sp);
-		}
-	}
-}
+	};
 
-void DHMC::set_pseudo_knots() {
+	auto foo = [this, &translate_pseudo_knots_helix](const Helix &h) {
+		auto && seq = h.seq();
+		auto && m = build_helix(seq);
+		auto && nums = h.nums();
+
+		assert(nums.size() >= 2 && nums.size() % 2 == 0);
+		translate_pseudo_knots_helix(m, nums);
+
+		int i = 0;
+		for (auto && n : nums) {
+			_pred_chain[n] = std::move(m[0][i]);
+			i++;
+		}
+	};
+
 	if (m_pk_ahead) {
 		log << "# Set pseudo-knots" << std::endl;
 
 		auto it = m_trees.begin();
-
-		auto foo = [this](const Helix &h) {
-			auto && seq = h.seq();
-			auto && m = build_helix(seq);
-			auto && nums = h.nums();
-
-			assert(nums.size() >= 2 && nums.size() % 2 == 0);
-			translate_pseudo_knots_helix(m, nums);
-
-			int i = 0;
-			for (auto && n : nums) {
-				_pred_chain[n] = std::move(m[0][i]);
-				i++;
-			}
-		};
 
 		// 设置第一个二级结构树中长度为1的helix
 		for (auto &&sse : **it) {
@@ -241,21 +229,14 @@ void DHMC::transform_saved_helix(Chain *h, const Li & nums) {
 		for (int k = 0; k < m_cg->res_size(); k++) {
 			mat_set_rows(x, l, res1[k]);
 			mat_set_rows(y, l, res2[k]);
-			//for (int t = 0; t < 3; t++) {
-			//	x(l, t) = res1[k][t];
-			//	y(l, t) = res2[k][t];
-			//}
 			l++;
 		}
 		i++;
 	}
 	geom::Superposition<Num> sp(x, y);
-	//auto sp = geom::suppos(x, y);
-	//INIT_SUPPOS(sp);
 	for (auto && res : *h) {
 		for (auto && atom : res) {
 			sp.apply(atom);
-			//APPLY_SUPPOS(atom, sp);
 		}
 	}
 }
@@ -289,129 +270,17 @@ void DHMC::restore_fixed_ranges() {
 	}
 }
 
-bool DHMC::is_hp(SSE *l) {
-	if (l->has_loop() && l->has_helix() && l->num_sons() == 0) {
-		int flag = 0, n = 0;
-		for (auto && res : l->loop) {
-			char &c = _ss[res.num - 1];
-			if (c != '.'  && c != '(' && c != ')') {
-				flag = 1;
-				break;
-			}
-			else {
-				n++;
-			}
-		}
-		return flag == 0 && n <= 14;
-	}
-	else {
-		return false;
-	}
-};
-
-bool DHMC::is_il(SSE *l) {
-	if (l->has_loop() && l->has_helix() && l->num_sons() == 1) {
-		int flag = 0, n = 0;
-		for (auto && res : l->loop) {
-			char &c = _ss[res.num - 1];
-			if (c != '.'  && c != '(' && c != ')') {
-				flag = 1;
-				break;
-			}
-			else {
-				n++;
-			}
-		}
-		return flag == 0 && n <= 20;
-	}
-	else {
-		return false;
-	}
-};
-
 void DHMC::set_mvels() {
-	//int i;
-	//m_is_free.resize(_seq.size(), true);
-
-	//auto add_el = [this](MvEl *el) {
-	//	for (auto && frag : el->range) {
-	//		for (int i = frag[0]; i <= frag[1]; i++) {
-	//			this->m_is_free[i] = false;
-	//		}
-	//	}
-	//	m_mvels.push_back(el);
-	//};
-
-	//auto set_res_module_types_ss = [&](SSE *l, bool is_first) {
-	//	LOOP_TRAVERSE(l,
-	//		if (m_not_sample_hp && is_first && is_hp(L)) {
-	//			add_el(new MvEl(L, MvEl::MVEL_HP));
-	//		}
-	//		else if (m_not_sample_il && is_first && is_il(L)) {
-	//			add_el(new MvEl(L, MvEl::MVEL_IL));
-	//		}
-	//		else if (L->has_helix()) {
-	//			add_el(new MvEl(L->s));
-	//		}
-	//	);
-	//};
-
-	//if (m_sample_all_res) {
-	//	// pass
-	//}
-	//else if (m_set_mvel_pk) {
-	//	for (auto it = m_trees.begin(); it != m_trees.end(); it++) {
-	//		set_res_module_types_ss((*it)->head(), it == m_trees.begin());
-	//	}
-	//}
-	//else {
-	//	set_res_module_types_ss(m_trees.front()->head(), true);
-	//}
-
-	//MvEl::merge(m_mvels);
-
-	//int max_extend_len = 5;
-	//for (auto && el : m_mvels) {
-	//	int min = el->min();
-	//	int max = el->max();
-	//	for (int i = 1; i <= max_extend_len; i++) {
-	//		if (min - i >= 0 && m_is_free[min - i]) {
-	//			m_mvels.push_back(new MvEl(min - i, max, MvEl::MVEL_FG));
-	//		}
-	//		else {
-	//			break;
-	//		}
-	//	}
-	//	for (int i = 1; i <= max_extend_len; i++) {
-	//		if (max + i < _seq.size() && m_is_free[max + i]) {
-	//			m_mvels.push_back(new MvEl(min, max + i, MvEl::MVEL_FG));
-	//		}
-	//		else {
-	//			break;
-	//		}
-	//	}
-	//}
-
-	//for (int frag_size = 1; frag_size <= 10; frag_size++) {
-	//	std::vector<int> w(frag_size);
-	//	for (i = 0; i + frag_size - 1 < _seq.size(); i++) {
-	//		std::iota(w.begin(), w.end(), i);
-	//		if (std::all_of(w.begin(), w.end(), [this](int i) {
-	//			return this->m_is_free[i];
-	//		})) {
-	//			m_mvels.push_back(new MvEl(i, i + frag_size - 1, MvEl::MVEL_FG));
-	//		}
-	//	}
-	//}
-
 	const NASS::PairedKeys &keys = NASS::instance().paired_keys;
-	auto is_paired = [this](int i, int j) {return m_bps[i] == j && (_ss[i] == '(' || m_pk_ahead); };
-	auto foo = [this, &is_paired, &keys](int i, int j) {
+
+	auto is_paired = [this](int i, int j) {
+		return m_bps[i] == j && (_ss[i] == '(' || m_pk_ahead);
+	};
+
+	auto not_in_helix_ranges = [this, &is_paired, &keys](int i, int j) {
 		if (is_paired(i, j) && i > 0 && j < size(_seq) - 1 && is_paired(i-1, j+1)) return false;
 		auto end = std::next(keys.begin(), 1);
-		//auto end = (m_pk_ahead ? keys.end() : std::next(keys.begin(), 1));
 		std::vector<int> v(std::distance(keys.begin(), end));
-		//int s = 0;
 		int m;
 		for (int n = i; n <= j; n++) {
 			char c = _ss[n];
@@ -424,38 +293,55 @@ void DHMC::set_mvels() {
 			if (it1 != end) {
 				m = std::distance(keys.begin(), it1);
 				v[m]++;
-				//s++;
 			}
 			else if (it2 != end) {
 				m = std::distance(keys.begin(), it2);
 				v[m]--;
-				//s--;
 				if (v[m] < 0) return false;
 			}
 		}
 		return std::all_of(v.begin(), v.end(), [](int s) {return s == 0; });
-		//return s == 0;
 	};
 
-	for (int i = 0; i < _seq.size(); i++) {
-		for (int j = i; j < _seq.size(); j++) {
-			if (m_all_free || foo(i, j)) {
+	auto area_min = [](const auto &area) {
+		Int i = 0;
+		for (; i < size(area); i++) if (area[i]) break;
+		return i;
+	};
+
+	auto area_max = [](const auto &area) {
+		Int i = size(area) - 1;
+		for (; i >= 0; i--) if (area[i]) break;
+		return i;
+	};
+
+	auto not_in_fixed_areas = [this, &area_min, &area_max](Int i, Int j) {
+		for (auto && area : m_fixed_areas) {
+			Int min = area_min(area);
+			Int max = area_max(area);
+			if (i <= min && j >= max) return true;
+			for (Int n = i; n <= j; n++) if (area[n]) return false;
+			return true;
+		}
+	};
+
+	Int i, j, l = size(_seq);
+	for (i = 0; i < l; i++) {
+		for (j = i; j < l; j++) {
+			if (not_in_fixed_areas(i, j) && (m_all_free || not_in_helix_ranges(i, j))) {
 				m_mvels.push_back(new MvEl(i, j, MvEl::MVEL_FG));
 			}
 		}
 	}
-
 }
 
 // MC related methods
 
 void DHMC::mc_sample() {
 	if (m_selected_mvel->type == MvEl::MVEL_FG && m_sample_frag) {
-		//log << "sample frag" << std::endl;
 		mc_sample_frag();
 	}
 	else {
-		//log << "sample res" << std::endl;
 		mc_sample_res();
 	}
 }
@@ -471,7 +357,7 @@ void DHMC::mc_sample_frag() {
 	backup();
 
 	std::ostringstream stream;
-	MvEl::frag_t &f = m_selected_mvel->range[0];
+	Frag &f = m_selected_mvel->range[0];
 	for (i = f[0]; i <= f[1]; i++) {
 		stream << _seq[i];
 	}
@@ -479,25 +365,10 @@ void DHMC::mc_sample_frag() {
 	auto &ids = m_frags->m_ids[stream.str()];
 	id = ids[int(ids.size() * rand())];
 	mat = m_frags->m_mats[id];
-	//Chain *c1 = m_frags->m_chains_aa[id];
-	//Chain *c2 = m_frags->m_chains_cg[id];
-	//static int n = 0;
-	//if (n < 10) {
-	//	mol_write(*c1, "aa.frag.aa." + JN_STR(n + 1) + ".pdb");
-	//	mol_write(*c2, "aa.frag.cg." + JN_STR(n + 1) + ".pdb");
-	//	std::ostringstream str;
-	//	str << "aa.mat." << n + 1 << ".txt";
-	//	std::ofstream ofile(str.str().c_str());
-	//	ofile << *m << std::endl;
-	//	ofile.close();
-	//}
-	//n++;
 
 	m = *mat;
 	m1.resize(2 * m_cg->res_size(), 3);
 	m2.resize(2 * m_cg->res_size(), 3);
-	//Chain c;
-		//c.push_back(_pred_chain[f[0] + i]);
 	for (j = 0; j < m_cg->res_size(); j++) {
 		for (k = 0; k < 3; k++) {
 			m1(j, k) = m(j, k);
@@ -506,13 +377,8 @@ void DHMC::mc_sample_frag() {
 			m2(m_cg->res_size() + j, k) = _pred_chain[f[0] + (m_frag_size - 1)][j][k];
 		}
 	}
-	//static int n = 0;
-	//if (n < 10) mol_write(c, "aa.frag." + JN_STR(n + 1) + ".pdb");
-	//n++;
-	geom::Superposition<double> sp(m1, m2);
-	//std::cout << "before sp: " << sp.rmsd << std::endl;
+	geom::Superposition<Num> sp(m1, m2);
 	sp.apply_m(m);
-	//std::cout << "after sp: " << geom::rmsd(m1, m2) << std::endl;
 	for (i = 0; i < m_frag_size; i++) {
 		if (m_is_free[f[0] + i]) {
 			for (j = 0; j < m_cg->res_size(); j++) {

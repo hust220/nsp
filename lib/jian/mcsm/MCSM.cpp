@@ -73,11 +73,11 @@ BEGIN_JN
 		for (n = 0; n < _seq.size(); n++) {
 			if (is_total || is_selected(n)) {
 				for (i = -m_box; i <= m_box; i++) for (j = -m_box; j <= m_box; j++) for (k = -m_box; k <= m_box; k++) {
-					item_t &it = item(n);
+					SpaceItem &it = item(n);
 					a = space_index(it[0]) + i;
 					b = space_index(it[1]) + j;
 					c = space_index(it[2]) + k;
-					space_val_t &s = m_space[a][b][c];
+					SpaceVal &s = m_space[a][b][c];
 					for (auto && t : s) {
 						if ((is_total && t - n > 0) || (!is_total && !is_selected(t))) {
 							auto p = std::minmax(n, t);

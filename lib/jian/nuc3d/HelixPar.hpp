@@ -5,19 +5,24 @@
 
 BEGIN_JN
 
-	struct HelixPar {
-		double dih_backbone;
-		double dist_bp;
-		double dist_bond;
-		std::deque<double> dihs;
+struct HelixPar {
+	double dih_backbone;
+	double dist_bp;
+	double dist_bond;
+	std::deque<double> dihs;
 
-		HelixPar();
-		double dist_a(int n);
-		double dist_b(int n);
-		double dist_c(int n);
-		double dist_d(int n);
-		double dih(int n);
-	};
+	HelixPar();
+
+	static const HelixPar &instance() {
+		static HelixPar par;
+		return par;
+	}
+	double dist_a(int n) const;
+	double dist_b(int n) const;
+	double dist_c(int n) const;
+	double dist_d(int n) const;
+	double dih(int n) const;
+};
 
 END_JN
 

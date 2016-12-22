@@ -9,14 +9,16 @@
 #include <jian/utils/log.hpp>
 #include <string>
 #include <jian/pp.hpp>
-//#include <boost/preprocessor.hpp>
 
 BEGIN_JN
 
 #define REGISTER_NSP_COMPONENT(i)\
     void PP_CAT(nsp_, i)(JN_ Par par);\
-    NSPComponent  PP_CAT(component_, i)(PP_STRING(i), PP_CAT(nsp_, i));\
+    NSPComponent PP_CAT(component_, i)(PP_STRING(i), PP_CAT(nsp_, i));\
     void PP_CAT(nsp_, i)(JN_ Par par)
+
+#define ALIAS_NSP_COMPONENT(i, j)\
+	NSPComponent PP_CAT(component_, j)(PP_STRING(j), PP_CAT(nsp_, i))
 
 class NSP {
 public:

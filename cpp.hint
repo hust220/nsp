@@ -1,0 +1,7 @@
+#define ALIAS_NSP_COMPONENT
+
+#define JN_MAP
+
+#define BEGIN_JN
+
+#define END_JN

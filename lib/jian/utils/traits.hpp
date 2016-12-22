@@ -22,6 +22,20 @@
 
 BEGIN_JN
 
+inline void stream_push(std::ostream &stream) {}
+
+template<typename _First, typename... _Tail>
+inline void stream_push(std::ostream &stream, _First &&first, _Tail && ...tail) {
+	stream << first;
+	stream_push(stream, tail...);
+}
+
+template<typename... _Args>
+void die(_Args &&...args) {
+	stream_push(STD_ cerr, args...);
+	exit(1);
+}
+
 #ifdef JN_PRECISION
 using Num = JN_PRECISION;
 #else

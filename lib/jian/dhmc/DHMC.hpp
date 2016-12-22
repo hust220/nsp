@@ -5,59 +5,52 @@
 #include <memory>
 #include <sstream>
 #include "../mc.hpp"
-#include "../utils/file.hpp"
 #include "../pdb.hpp"
 #include "../geom.hpp"
 #include "../nuc2d.hpp"
 #include "../cg.hpp"
 #include "../pp.hpp"
+#include "../mcsm.hpp"
+#include "../cg/ResFrags.hpp"
+#include "../utils/file.hpp"
 #include "../nuc3d/BuildHelix.hpp"
 #include "../nuc3d/transform.hpp"
 #include "../nuc3d/TemplRec.hpp"
 #include "../nuc3d/TSP.hpp"
-#include "../mcsm.hpp"
-#include "../cg/Frags.hpp"
 
 BEGIN_JN
 
 class DHMC : public MCSM {
 public:
-	using range_t = Ai<4>;
+	using Range = Ai<4>;
 
-	Q<SP<SSTree>> m_trees;
-	M<SSE *, Chain *> m_saved_helices;
-	I m_frag_size;
-	Frags *m_frags;
-	B m_sample_frag;
-	B m_pk_ahead;
-	B m_sample_all_res;
-	B m_not_sample_hp;
-	B m_not_sample_il;
-	B m_set_mvel_pk;
-	B m_all_free;
-	Ms<An<6>> m_bp_distances;
-	Vb m_is_free;
-
-	template<typename T>
-	S partial_ss(S ss, T &&pair) {
-		for (auto && c : ss) {
-			c = (c == pair.first ? '(' : (c == pair.second ? ')' : '.'));
-			//c = (c == pair.first ? '(' : (c == pair.second ? ')' : (c == '&' ? '.' : c)));
-		}
-		return ss;
-	}
+	Deque<SP<SSTree>> m_trees;
+	Map<SSE *, Chain *> m_saved_helices;
+	Int m_frag_size;
+	ResFrags *m_frags;
+	Bool m_sample_frag;
+	Bool m_pk_ahead;
+	Bool m_sample_all_res;
+	Bool m_not_sample_hp;
+	Bool m_not_sample_il;
+	Bool m_set_mvel_pk;
+	Bool m_all_free;
+	Map<Str, Array<Num, 6>> m_bp_distances;
+	Vector<Bool> m_is_free;
 
 	DHMC() = default;
 
 	~DHMC();
 
+	static SP<DHMC> make(const Par &par) {
+		SP<DHMC> dhmc = STD_ make_shared<DHMC>();
+		dhmc->init(par);
+		return dhmc;
+	}
+
 	void init(const Par &par);
 
 	void bps_to_constraints();
-
-	bool is_hp(SSE *l);
-
-	bool is_il(SSE *l);
 
 	void set_base_mvels();
 
@@ -71,10 +64,6 @@ public:
 
 	void set_bps();
 
-	void translate_pseudo_knots_helix(Model & m, const Li & nums);
-
-	//void set_pseudo_knots_helix(const Helix & h);
-
 	void set_pseudo_knots();
 
 	void transform_saved_helix(Chain *h, const Li & nums);
@@ -84,8 +73,6 @@ public:
 	virtual void restore_fixed_ranges();
 
 	void set_mvels();
-
-	//bool in_fixed_mvels(const MvEl &el);
 
 	// MC related methods
 
@@ -107,25 +94,21 @@ public:
 
 };
 
-template<typename T>
-void chain_refine(Chain &chain, SSTree::El *l, const fixed_ranges_t &fixed_ranges = {}, S traj = "") {
-	Par par;
-	par._orig_pars = { "nsp", "" };
-	//S seq, ss;
-	Str seq = SSTree::make_range(l).seq();
-	Str ss = SSTree::make_range(l).ss();
-	//seq_read_tree(seq, l);
-	//ss_read_tree(ss, l);
-	par._pars["traj"].push_front(traj);
-	par._pars["seq"].push_front(seq);
-	par._pars["ss"].push_front(ss);
-	DHMC mc;
-	mc.init(par);
-	mc._pred_chain = chain;
-	//mc.m_fixed_ranges = fixed_ranges;
-	mc.run();
-	chain = mc._pred_chain;
-}
-
+//template<typename T>
+//void chain_refine(Chain &chain, SSTree::El *l, const Frags &fixed_ranges = {}, S traj = "") {
+//	Par par;
+//	par._orig_pars = { "nsp", "" };
+//	Str seq = SSTree::make_range(l).seq();
+//	Str ss = SSTree::make_range(l).ss();
+//	par._pars["traj"].push_front(traj);
+//	par._pars["seq"].push_front(seq);
+//	par._pars["ss"].push_front(ss);
+//	DHMC mc;
+//	mc.init(par);
+//	mc._pred_chain = chain;
+//	mc.run();
+//	chain = mc._pred_chain;
+//}
+//
 END_JN
 

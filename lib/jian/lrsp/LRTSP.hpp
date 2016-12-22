@@ -85,7 +85,7 @@ public:
         }
     }
 
-    void set_fixed_ranges(SSE *l, fixed_ranges_t &fixed_ranges) {
+    void set_fixed_ranges(SSE *l, Frags &fixed_ranges) {
         if (l != NULL) {
             if (l->has_loop()) {
                 auto p = l->head_tail();
@@ -414,7 +414,7 @@ public:
         assemble_templates(*chain, l);
         if (b_NR) {
             LOGI << "# refining..." << std::endl;
-            fixed_ranges_t fixed_ranges;
+            Frags fixed_ranges;
             set_fixed_ranges(l, fixed_ranges);
             chain_refine<CGpsb>(*chain, l, fixed_ranges, _traj);
         }

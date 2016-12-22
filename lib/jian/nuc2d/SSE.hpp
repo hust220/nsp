@@ -8,18 +8,18 @@
 #include <algorithm>
 #include <list>
 #include <type_traits>
-#include "../utils/log.hpp"
 #include "Loop.hpp"
 #include "helix.hpp"
 #include "../pp.hpp"
 #include "../utils/Tree.hpp"
+#include "../utils/log.hpp"
 
 BEGIN_JN
 
 struct SSE {
 	Loop loop;
 	Helix helix;
-	V<Pair<int, int>> hinges;
+	Vector<Pair<Int, Int>> hinges;
 
 	Pair<int, int> head_tail() const {
 		int left, right;
@@ -60,10 +60,6 @@ struct SSE {
 		return !hinges.empty();
 	}
 
-	//bool has_brother() const {
-	//	return brother != NULL;
-	//}
-
 	int num_branches() const {
 		return STD_ count_if(loop.begin(), loop.end(), [](auto &&res) {return res.type == ')'; }) / 2;
 	}
@@ -98,118 +94,4 @@ struct SSE {
 
 };
 
-    //res &at(int n) {
-    //    int index = 0;
-    //    for (auto r = head; r != NULL; r = r->next) {
-    //        if (r->type == '&') continue;
-    //        if (index == n) return *r;
-    //        index++;
-    //    }
-    //    throw "jian::at error! out of range.";
-    //}
-
-    //const res &at(int n) const {
-    //    int index = 0;
-    //    for (auto r = head; r != NULL; r = r->next) {
-    //        if (r->type == '&') continue;
-    //        if (index == n) return *r;
-    //        index++;
-    //    }
-    //    throw "jian::at error! out of range.";
-    //}
-
-  //  void push_front(res *r) {
-  //      if (head == NULL) head = r;
-  //      else { head->prev = r; r->next = head; head = r; }
-  //  }
-
-  //  void push_back(res *r) {
-  //      if (head == NULL) head = r;
-		//else {
-		//	BEGIN_LOOP_EACH(this) {
-		//		if (RES->next == NULL) {
-		//			RES->next = r; 
-		//			r->prev = RES; 
-		//			break; 
-		//		}
-		//	} END_LOOP_EACH;
-		//}
-  //  }
-
-  //  void del(res *r) {
-  //      if (r->prev != NULL) r->prev->next = r->next; 
-  //      if (r->next != NULL) r->next->prev = r->prev;
-  //      delete r;
-  //  }
-
-  //  void insert_after(res *p, res *r) {
-  //      r->prev = p; r->next = p->next; p->next = r; 
-  //      if (p->next != NULL) r->next->prev = r;
-  //  }
-
-  //  void insert_before(res *p, res *r) {
-  //      r->prev = p->prev; r->next = p; p->prev = r; 
-  //      if (p->prev != NULL) r->prev->next = r;
-  //  }
-
-  //  void del_head() {
-  //      if (head != NULL) {
-  //          res *r = head; head = head->next; delete r;
-  //          if (head != NULL) head->prev = NULL;
-  //      }
-  //  }
-
-  //  void del_tail() {
-  //      LOOP_EACH(this, if (RES->next == NULL) {RES->prev->next = NULL; delete RES; break;});
-  //  }
-
-  //  SSE *copy(SSE *l) {
-  //      if (l == NULL) { return NULL; }
-
-  //      SSE *p = new SSE(*l);
-  //      p->son = copy(l->son);
-  //      p->brother = copy(l->brother);
-  //      return p;
-  //  }
-
-  //  void del(SSE *l) {
-  //      if (l == NULL) { return; }
-
-  //      del(l->son);
-  //      del(l->brother);
-  //      delete l;
-  //      return;
-  //  }
-
-   // operator Str() const {
-   //     std::ostringstream stream;
-   //     stream << seq() << ' ' << ss() << ' ';
-   //     LOOP_EACH(this, stream << RES->num << ' ');
-   //     return stream.str();
-   // }
-
-   // void print() const {
-   //     LOGI << "SSE (" << this << ", son: " << son << ", brother: " << brother << ")" << std::endl;
-   //     if (has_loop()) {
-   //         LOGI << "  Loop: " << seq() << ' ' << ss() << ' ';
-   //         LOOP_EACH(this,
-   //             LOGI << RES->num << ' ';
-   //         );
-   //         LOGI << std::endl;
-   //     }
-   //     if (has_helix()) {
-   //         LOGI << "  Helix: " << s.seq() << ' ' << s.ss() << ' ';
-   //         std::list<int> d; 
-   //         HELIX_EACH(s,
-   //             d.insert(std::next(d.begin(), N_BP), {BP->res1.num, BP->res2.num});
-   //         );
-			//for (auto && i : d) LOGI << i << ' ';
-   //         //EACH(i, d, LOGI << i << ' ');
-   //         LOGI << std::endl;
-   //     }
-   //     LOGI << std::endl;
-   // }
-
-
 END_JN
-

@@ -5,94 +5,48 @@
 
 BEGIN_JN
 
-	BuildLoopDG::BuildLoopDG() {
-		m_cg.reset(CG::fac_t::create("1p"));
+void dg_dist_init(Mat &b, int l) {
+	const HelixPar &helix_par = HelixPar::instance();
+	b.resize(l, l);
+	for (int i = 0; i < l; i++) for (int j = i; j < l; j++) {
+		if (j - i == 1) {
+			b(i, j) = helix_par.dist_bond;
+			b(j, i) = helix_par.dist_bond;
+		}
+		else if (i != j) {
+			b(j, i) = 5;
+			b(i, j) = 999;
+		}
+		else {
+			b(i, j) = 0;
+		}
 	}
+}
 
-	Chain *build_chain_dg(S seq, S ss) {
-		static BuildLoopDG builder;
-		builder.init(seq, ss);
-		Chain *chain = new Chain(std::move(builder()));
-		return chain;
-	}
-
-	void BuildLoopDG::init_dist_bound(Mat &b, int l) {
-		b.resize(l, l);
-		for (int i = 0; i < l; i++) for (int j = i; j < l; j++) {
-			if (j - i == 1) {
-				b(i, j) = helix_par.dist_bond;
-				b(j, i) = helix_par.dist_bond;
-			}
-			else if (i != j) {
-				b(j, i) = 5;
-				b(i, j) = 999;
+void dg_dist_read_loop(Mat &b, const SSE &sse) {
+	const HelixPar &helix_par = HelixPar::instance();
+	if (sse.has_loop()) {
+		auto &loop = sse.loop;
+		auto it1 = loop.begin();
+		auto it2 = STD_ next(it1);
+		for (; it2 != loop.end(); it1++, it2++) {
+			if (it1->type == '(' && it2->type == ')') {
+				b(it1->num - 1, it2->num - 1) = b(it2->num - 1, it1->num - 1) = helix_par.dist_bp;
 			}
 			else {
-				b(i, j) = 0;
+				b(it1->num - 1, it2->num - 1) = b(it2->num - 1, it1->num - 1) = helix_par.dist_bond;
 			}
 		}
 	}
+}
 
-
-	BuildLoopDG &BuildLoopDG::init(const S &seq, const S &ss) {
-		int len = seq.size(); 
-		init_dist_bound(_dist_bound, len);
-		SSTree ss_tree;
-		ss_tree.make(seq, ss);
-		for (auto &&sse : ss_tree) {
-			set_bound_loop(_dist_bound, _dih_bound, &sse);
-			set_bound_helix(_dist_bound, _dih_bound, sse.helix);
-		}
-		return *this;
-	}
-
-	BuildLoopDG &BuildLoopDG::init(const Chain &c, const std::vector<int> &brokens) {
-		int i, j, l;
-		Num d;
-
-		l = c.size();
-		init_dist_bound(_dist_bound, l);
-		for (auto && i : brokens) {
-			if (i + 1 < l) {
-				_dist_bound(i, i + 1) = 999;
-			}
-		}
-		for (i = 0; i < l; i++) {
-			for (j = i + 1; j < l; j++) {
-				if (c[i].empty() || c[j].empty()) continue;
-				d = geom::distance(c[i]["C4*"], c[j]["C4*"]);
-				_dist_bound(i, j) = d;
-				_dist_bound(j, i) = d;
-			}
-		}
-		return *this;
-	}
-
-	Chain BuildLoopDG::operator ()() {
-		//LOG << "## Build Loop By DG" << std::endl;
-		Mat &&c = m_dg(_dist_bound);
-		return m_cg->to_aa(c, 0, c.rows() - 1);
-	}
-
-	void BuildLoopDG::set_bound_loop(Mat &b, DihBound &d, SSE *l) {
-		if (!l->loop.empty()) {
-			auto it1 = l->loop.begin();
-			auto it2 = STD_ next(it1);
-			for (; it2 != l->loop.end(); it1++, it2++) {
-				if (it1->type == '(' && it2->type == ')') {
-					b(it1->num - 1, it2->num - 1) = b(it2->num - 1, it1->num - 1) = helix_par.dist_bp;
-				}
-				else {
-					b(it1->num - 1, it2->num - 1) = b(it2->num - 1, it1->num - 1) = helix_par.dist_bond;
-				}
-			}
-		}
-	}
-
-	void BuildLoopDG::set_bound_helix(Mat &b, DihBound &d, const Helix &h) {
+void dg_dist_read_helix(Mat &b, const SSE &sse) {
+	const HelixPar &helix_par = HelixPar::instance();
+	if (sse.has_helix()) {
+		auto &helix = sse.helix;
 		int len = 0;
 		std::deque<int> s1, s2;
-		for (auto && bp : h) {
+		for (auto && bp : helix) {
 			len++;
 			s1.push_back(bp.res1.num - 1);
 			s2.push_back(bp.res2.num - 1);
@@ -105,6 +59,54 @@ BEGIN_JN
 		}
 		for (int i = 0; i < len; i++) b(s1[i], s2[i]) = b(s2[i], s1[i]) = helix_par.dist_bp;
 	}
+}
+
+void dg_dist_read_ss(Mat &dist, Str seq, Str ss) {
+	for (auto &&sse : SSTree(seq, ss)) {
+		dg_dist_read_loop(dist, sse);
+		dg_dist_read_helix(dist, sse);
+	}
+}
+
+void dg_dist_read_chain(Mat &dist, const Chain &c) {
+	int l = size(c);
+	Vector<Int> v(l);
+	STD_ iota(v.begin(), v.end(), 0);
+	dg_dist_read_chain(dist, c, v);
+}
+
+BuildLoopDG::BuildLoopDG() {
+	m_cg.reset(CG::fac_t::create("1p"));
+}
+
+Chain *build_chain_dg(Str seq, Str ss) {
+	static BuildLoopDG builder;
+	builder.init(seq, ss);
+	Chain *chain = new Chain(std::move(builder()));
+	return chain;
+}
+
+BuildLoopDG &BuildLoopDG::init(const Str &seq, const Str &ss) {
+	dg_dist_init(_dist_bound, size(seq));
+	dg_dist_read_ss(_dist_bound, seq, ss);
+	return *this;
+}
+
+BuildLoopDG &BuildLoopDG::init(const Chain &c, const std::vector<int> &brokens) {
+	int i, j, l;
+	Num d;
+
+	l = c.size();
+	dg_dist_init(_dist_bound, l);
+	dg_dist_read_brokens(_dist_bound, brokens);
+	dg_dist_read_chain(_dist_bound, c);
+	return *this;
+}
+
+Chain BuildLoopDG::operator ()() {
+	Mat &&c = m_dg(_dist_bound);
+	return m_cg->to_aa(c, 0, c.rows() - 1);
+}
 
 END_JN
 

@@ -299,7 +299,7 @@
     <ClCompile Include="..\lib\jian\cg\CGaa.cpp" />
     <ClCompile Include="..\lib\jian\cg\CGpsb.cpp" />
     <ClCompile Include="..\lib\jian\cg\CompleteResidue.cpp" />
-    <ClCompile Include="..\lib\jian\cg\Frags.cpp" />
+    <ClCompile Include="..\lib\jian\cg\ResFrags.cpp" />
     <ClCompile Include="..\lib\jian\dca\Dca.cpp" />
     <ClCompile Include="..\lib\jian\matrix\Mat4.cpp" />
     <ClCompile Include="..\lib\jian\matrix\Mat5.cpp" />
@@ -426,7 +426,7 @@
     <ClInclude Include="..\lib\jian\cg\CGaa.hpp" />
     <ClInclude Include="..\lib\jian\cg\CGpsb.hpp" />
     <ClInclude Include="..\lib\jian\cg\CompleteResidue.hpp" />
-    <ClInclude Include="..\lib\jian\cg\Frags.hpp" />
+    <ClInclude Include="..\lib\jian\cg\ResFrags.hpp" />
     <ClInclude Include="..\lib\jian\dca.hpp" />
     <ClInclude Include="..\lib\jian\dca\Dca.hpp" />
     <ClInclude Include="..\lib\jian\matrix\Mat3.hpp" />
@@ -506,7 +506,6 @@
     <ClInclude Include="..\lib\jian\nuc3d\TSP.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\JointHelix.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\ParseHelix.hpp" />
-    <ClInclude Include="..\lib\jian\nuc3d\REMCpsb.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\split.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\SplitModel.hpp" />
     <ClInclude Include="..\lib\jian\nuc3d\TemplRec.hpp" />
@@ -598,6 +597,7 @@
     <Text Include="..\说明.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\cpp.hint" />
     <None Include="..\README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
