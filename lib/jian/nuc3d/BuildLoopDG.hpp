@@ -5,6 +5,7 @@
 #include "../nuc2d.hpp"
 #include "../dg.hpp"
 #include "../cg.hpp"
+#include "../geom.hpp"
 #include "HelixPar.hpp"
 
 BEGIN_JN
