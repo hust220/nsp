@@ -245,8 +245,10 @@ void MCBase::init(const Par &par) {
 
 	log << "# Read alignment file" << STD_ endl;
 	par.set(m_alignfile, "align");
-	set_align();
-	align_to_fixed_areas();
+	if (!m_alignfile.empty()) {
+		set_align();
+		align_to_fixed_areas();
+	}
 
 	log << "# Check constraints" << std::endl;
 	validate_constraints();
