@@ -278,7 +278,11 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
 
     void Assemble::select_templates() {
 		for (auto && sse : _ss_tree) {
+			log << "# SSE: " << &sse << STD_ endl;
+			log << sse << STD_ endl;
+			log << "# Select template of loop of SSE: " << &sse << STD_ endl;
 			set_loop_template(&sse, true);
+			log << "# Select template of helix of SSE: " << &sse << STD_ endl;
 			set_helix_template(&sse, true);
 		}
     }
