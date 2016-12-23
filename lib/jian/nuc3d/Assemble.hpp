@@ -76,7 +76,9 @@ namespace nuc3d {
 
 		void select_templates();
 
-		void set_loop_template(SSE *l, bool is_first);
+		void set_loop_template(SSE *l, Bool is_first);
+
+		void set_helix_template(SSE *l, Bool is_first);
 
 		void sample_one_template();
 
@@ -103,8 +105,6 @@ namespace nuc3d {
 		std::list<Mat> loop_mats(const Chain &chain, SSE *l);
 
 		void find_records();
-
-		void complete_records();
 
 		void print_records();
 

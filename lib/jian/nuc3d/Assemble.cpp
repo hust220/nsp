@@ -4,6 +4,7 @@
 #include "../utils/file.hpp"
 #include "../jian.hpp"
 #include "Assemble.hpp"
+#include "BuildHelix.hpp"
 
 BEGIN_JN
 namespace nuc3d {
@@ -126,14 +127,14 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
 		auto b = NASS::check_ss(_ss, info_errors);
         if (!b) throw info_errors;
 
-        log << "# Construct 2D Structure Tree" << std::endl;
+        log << "# Constructing 2D Structure Tree" << std::endl;
         _ss_tree.make(_seq, _ss, _hinge);
 
-		log << "# Searching Templates..." << std::endl;
+		log << "# Searching records..." << std::endl;
 		find_records();
 
-		log << "# Completing Templates..." << std::endl;
-		complete_records();
+		//log << "# Completing records..." << std::endl;
+		//complete_records();
 
 		log << "# Printing records..." << std::endl;
         print_records();
@@ -232,7 +233,7 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
         _pred_chain = std::move(jian::transform(m, _seq, _type)[0]);
     }
 
-	void Assemble::set_loop_template(SSE *l, B is_first) {
+	void Assemble::set_loop_template(SSE *l, Bool is_first) {
 		if (l != NULL && l->has_loop()) {
 			if (m_loop_building_method == "all_dg" ||
 				(m_loop_building_method == "partial_dg" && m_records[l].first.empty())) {
@@ -261,13 +262,24 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
 		}
 	}
 
+	void Assemble::set_helix_template(SSE *sse, Bool is_first) {
+		if (sse->has_helix()) {
+			auto &records = m_records[sse].second;
+			if (records.empty()) {
+				chain_append(m_templates[sse].second, build_helix(sse->helix.seq()));
+				m_selected_record[sse].second = TemplRec{};
+			}
+			else {
+				m_templates[sse].second = load_pdb(m_records[sse].second[0]);
+				m_selected_record[sse].second = m_records[sse].second[0];
+			}
+		}
+	}
+
     void Assemble::select_templates() {
 		for (auto && sse : _ss_tree) {
 			set_loop_template(&sse, true);
-			if (sse.has_helix()) {
-				m_templates[&sse].second = load_pdb(m_records[&sse].second[0]);
-				m_selected_record[&sse].second = m_records[&sse].second[0];
-			}
+			set_helix_template(&sse, true);
 		}
     }
 
@@ -444,22 +456,6 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
 			find_helix_records(&sse);
 		}
     }
-
-	void Assemble::complete_records() {
-		//Int l = STD_ count_if(_ss_tree.begin(), _ss_tree.end(), [](const SSE &sse)->bool {return sse.has_loop(); });
-		//Int m = Int(STD_ ceil(STD_ pow(_num, 1.0 / l)));
-		//for (auto && sse : _ss_tree) {
-		//	if (sse.has_loop()) {
-		//		m_templates_cache[&sse].first.resize(m);
-		//		m_templates_cache[&sse].first.resize(m);
-		//		records_t &records = m_records[&sse].first;
-		//		Int d = m - size(records);
-		//		if (d > 0) {
-		//			sample_loop();
-		//		}
-		//	}
-		//}
-	}
 
     void Assemble::print_records() {
         log << "Records searching results:" << std::endl;
