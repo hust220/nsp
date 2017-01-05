@@ -76,7 +76,7 @@ namespace dca {
 				ls.push_back(tuple);
 			}
 		}
-		print_tuples(ls);
+		print_tuples(JN_OUT, ls);
 	}
 
 	void sort_di(const Par &par) {
@@ -92,7 +92,7 @@ namespace dca {
 		int l = int(size(seq) * k);
 		LOG << "Read first " << l << " pairs:" << std::endl;
 		dca::pairs_t &&pairs = dca::pairs_from_file(di_file, l);
-		dca::print_pairs(pairs);
+		dca::print_pairs(JN_OUT, pairs);
 	}
 
 	void pred_di(const Par &par) {
@@ -149,7 +149,7 @@ namespace dca {
 		for (i = 0, it = pairs.begin(); it != pairs.end(); i++, it++) {
 			if (v[i]) new_pairs.push_back(*it);
 		}
-		dca::print_pairs(new_pairs);
+		dca::print_pairs(JN_OUT, new_pairs);
 	}
 
 	REGISTER_NSP_COMPONENT(dca) {

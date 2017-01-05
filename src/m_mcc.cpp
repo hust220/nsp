@@ -105,7 +105,7 @@ REGISTER_NSP_COMPONENT(sort_dis) {
     S di_file = par["di"][0];
     int size = std::stoi(par["size"][0]);
 
-    print_tuples(tuples_from_file(di_file, size));
+    print_tuples(JN_OUT, tuples_from_file(di_file, size));
 }
 
 END_JN

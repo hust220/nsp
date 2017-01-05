@@ -22,7 +22,7 @@ REGISTER_NSP_COMPONENT(ssp_dca) {
     auto && pairs = dca::pairs_from_file(di_file, size);
 
     LOGI << "Print pairs:" << std::endl;
-    dca::print_pairs(pairs);
+    dca::print_pairs(JN_OUT, pairs);
 
     LOGI << "Converting DI to ss: " << std::endl;
     dca::ss_t ss = dca::pairs_to_ss(pairs, seq.size());

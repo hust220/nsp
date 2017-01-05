@@ -13,6 +13,11 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include "platform.hpp"
+
+#ifdef JN_OS_WIN
+#  pragma warning(disable: 4018)
+#endif
 
 #define STD_ ::std::
 #define JN_  ::jian::

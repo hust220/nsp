@@ -101,15 +101,15 @@ pairs_t pairs_from_ss(const ss_t &ss) {
     return pairs;
 }
 
-void print_pairs(const pairs_t & pairs) {
+void print_pairs(STD_ ostream &stream, const pairs_t & pairs) {
     for (auto && pair : pairs) {
-        std::cout << pair[0]+1 << ' ' << pair[1]+1 << std::endl;
+        stream << pair[0]+1 << ' ' << pair[1]+1 << std::endl;
     }
 }
 
-void print_tuples(const tuples_t & tuples) {
+void print_tuples(STD_ ostream &stream, const tuples_t & tuples) {
     for (auto && tuple : tuples) {
-        std::cout << tuple.a+1 << ' ' << tuple.b+1 << ' ' << tuple.c << std::endl;
+		stream << tuple.a+1 << ' ' << tuple.b+1 << ' ' << tuple.c << std::endl;
     }
 }
 
