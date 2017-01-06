@@ -86,11 +86,11 @@ namespace dca {
 
 		par.set(k, "k");
 
-		LOG << "Sequence:" << std::endl;
-		LOG << seq << std::endl;
+		//LOG << "Sequence:" << std::endl;
+		//LOG << seq << std::endl;
 
 		int l = int(size(seq) * k);
-		LOG << "Read first " << l << " pairs:" << std::endl;
+		//LOG << "Read first " << l << " pairs:" << std::endl;
 		dca::pairs_t &&pairs = dca::pairs_from_file(di_file, l);
 		dca::print_pairs(JN_OUT, pairs);
 	}
