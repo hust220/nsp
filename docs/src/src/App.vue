@@ -1,19 +1,37 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <hello></hello>
+    <!-- Top -->
+    <el-row>
+      <el-col :span="18" :offset="3">
+        <top></top>
+      </el-col>
+    </el-row>
+
+    <!-- TopNav-->
+    <top-nav></top-nav>
+
+    <!-- Page -->
+    <el-row>
+      <el-col :span="18" :offset="3">
+        <router-view></router-view>
+      </el-col>
+    </el-row>
+
   </div>
 </template>
 
 <script>
-import Hello from './components/Hello'
+  import Top from './components/Top'
+  import TopNav from './components/TopNav'
+  import { bus } from './bus.js'
 
-export default {
-  name: 'app',
-  components: {
-    Hello
+  export default {
+    name: 'app',
+    components: {
+      'top-nav': TopNav,
+      'top': Top,
+    }
   }
-}
 </script>
 
 <style>
@@ -23,6 +41,8 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+}
+body {
+  margin: 0px;
 }
 </style>
