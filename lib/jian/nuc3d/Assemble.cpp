@@ -115,6 +115,10 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
     Assemble::Assemble(const Par &par) {
         TSP::init(par);
 
+        log << "# Set disused pdbs..." << STD_ endl;
+        par.setv(m_disused_pdbs, "disused_pdbs");
+        //for (Str & pdb : m_disused_pdbs) STD_ cout << pdb << STD_ endl;
+
         m_sample = par.has("sample");
         par.set(m_sample_mode, "sample_mode");
 
@@ -489,7 +493,7 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
         S line;
         int num = 0;
         while (std::getline(ifile, line) && set_loop_rec(templ_rec, line)) {
-            if (std::find(_disused_pdbs.begin(), _disused_pdbs.end(), templ_rec._src) != _disused_pdbs.end()) {
+            if (std::find(m_disused_pdbs.begin(), m_disused_pdbs.end(), templ_rec._src) != m_disused_pdbs.end()) {
                 continue;
             } else if (NASS::pure_ss(NASS::lower_ss(templ_rec._ss, 1)) == lower_ss) {
                 templ_rec._score = (templ_rec._ss == ss ? 5 : 0);

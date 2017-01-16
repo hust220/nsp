@@ -54,7 +54,6 @@ void TSP::init(const Par &pars) {
 	seed(int(_seed));
 	pars.set(m_mode, "mode");
 	set_constraints();
-	set_disused_pdbs();
 	pars.set(_method, "method");
 	pars.set(_is_test, "test");
 	pars.set(_native, "native");
@@ -65,13 +64,6 @@ void TSP::init(const Par &pars) {
 TSP::~TSP() {
 	delete _par;
 	//log_pop();
-}
-
-void TSP::set_disused_pdbs() {
-	if (_par->has("disused_pdbs")) {
-		_disused_pdbs = (*_par)["disused_pdbs"];
-	}
-	for (auto && s : _disused_pdbs) jian::to_upper(s);
 }
 
 void TSP::set_constraints() {

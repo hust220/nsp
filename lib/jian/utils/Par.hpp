@@ -87,10 +87,10 @@ public:
 	template<typename T>
 	void setv(T &&v) const {}
 
-	template<typename T, typename K, typename... V>
-	void setv(T &&t, K &&k, V && ...rest) const {
-		if (_pars.find(k) != _pars.end()) {
-			auto && l = _pars.at(k);
+	template<typename T, typename _First, typename... _Rest>
+	void setv(T &&t, _First &&first, _Rest && ...rest) const {
+		if (_pars.find(first) != _pars.end()) {
+			auto && l = _pars.at(first);
 			t.resize(l.size());
 			std::copy(l.begin(), l.end(), t.begin());
 		}

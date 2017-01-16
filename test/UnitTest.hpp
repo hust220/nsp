@@ -88,8 +88,8 @@ public:
 
 	void run() override
 	{
-		//try
-		//{
+		try
+		{
 			UnitTest::getInstance().checkFile(defined_file_);
 			UnitTest::getInstance().checkLine(defined_line_);
 			size_t old_failure_num = UnitTest::getInstance().getFailureNum();
@@ -100,19 +100,19 @@ public:
 				std::cout << ">>> ";
 				std::cout << failures << " failures are detected in the test case \"" << case_name_ << "\"" << std::endl;
 			}
-		//}
-		//catch (std::exception& e)
-		//{
-		//	UnitTest::getInstance().incFailure();
-		//	std::cout << ">>> fatal error: in \"" << case_name_ << "\": " << typeid(e).name() << ": " << e.what() << std::endl;
-		//	UnitTest::getInstance().printLastCheckedPoint();
-		//}
-		//catch (...)
-		//{
-		//	UnitTest::getInstance().incFailure();
-		//	std::cout << ">>> fatal error: in \"" << case_name_ << "\": unknown type exception" << std::endl;
-		//	UnitTest::getInstance().printLastCheckedPoint();
-		//}
+		}
+		catch (std::exception& e)
+		{
+			UnitTest::getInstance().incFailure();
+			std::cout << ">>> fatal error: in \"" << case_name_ << "\": " << typeid(e).name() << ": " << e.what() << std::endl;
+			UnitTest::getInstance().printLastCheckedPoint();
+		}
+		catch (...)
+		{
+			UnitTest::getInstance().incFailure();
+			std::cout << ">>> fatal error: in \"" << case_name_ << "\": unknown type exception" << std::endl;
+			UnitTest::getInstance().printLastCheckedPoint();
+		}
 	}
 
 	~TestCase() override = default;

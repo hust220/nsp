@@ -29,7 +29,6 @@ public:
 	S m_cg_type;
 	SP<CG> m_cg;
     Constraints _constraints;
-    Qs _disused_pdbs;
 	S m_out_pdb;
 	Chain _pred_chain;
     std::time_t _start_time, _end_time;
@@ -55,7 +54,6 @@ public:
 	void set_logfile_name();
     void init(const Par &pars);
     void set_constraints();
-	void set_disused_pdbs();
 	void predict();
 	void write_final_model();
     void display_start_information();
