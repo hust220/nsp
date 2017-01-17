@@ -52,7 +52,7 @@ def update_cmake():
     f.write('set(jnpacks_sources %s PARENT_SCOPE)' % (' '.join(ls),))
     f.close()
 
-def update():
+def install():
     depends = read_depends('.')
 
     if not os.path.exists('jnpacks'):
@@ -63,16 +63,11 @@ def update():
     update_cmake()
     os.chdir('..')
 
-def install():
-    print 'install'
-
 if __name__ == '__main__':
     if len(sys.argv) == 1:
         print 'jnpack.py'
     else:
         func = sys.argv[1]
-        if func == 'update':
-            update()
-        elif func == 'install':
+        if func == 'install':
             install()
 
