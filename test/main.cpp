@@ -1,2 +1,2 @@
-#define TEST_MAIN
-#include "UnitTest.hpp"
+#define JN_TEST_MAIN
+#include <jntest/UnitTest.hpp>

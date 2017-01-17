@@ -14,6 +14,9 @@
 .*.swp
 *.bak
 
+# jnpacks
+jnpacks
+
 # Build results
 para-release
 para-debug

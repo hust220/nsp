@@ -1,5 +1,5 @@
-#include "UnitTest.hpp"
-#include "jian/nuc3d/Assemble.hpp"
+#include <jntest/UnitTest.hpp>
+#include <jnbio/nuc3d/Assemble.hpp>
 
 BEGIN_JN
 
@@ -17,5 +17,4 @@ TEST_CASE(test_assemble)
 }
 
 END_JN
-
 
