@@ -168,11 +168,11 @@ The list_file file contains the name of the structure to cluster:
 
 ## RNA tertiary structure scoring
 
-1.  score on a single structure
+1.  score a single structure
 
         nsp score -s <PDB_FILE>
 
-2.  score on multiple structure
+2.  score multiple structures
 
         nsp score -s:l <LIST_FILE>
 
