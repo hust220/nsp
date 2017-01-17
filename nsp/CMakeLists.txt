@@ -1,10 +1,9 @@
 file(GLOB_RECURSE NSP_SOURCES *.cpp)
 
-LINK_DIRECTORIES(${CMAKE_SOURCE_DIR}/lib) 
-ADD_EXECUTABLE(nsp ${NSP_SOURCES})
-TARGET_LINK_LIBRARIES(nsp ${EXTRA_LIBS})
-TARGET_LINK_LIBRARIES(nsp jian)
+#link_directories(${CMAKE_BINARY_DIR}/jnpacks) 
+add_executable(nsp ${NSP_SOURCES} ${jnpacks_sources})
+target_link_libraries(nsp ${EXTRA_LIBS})
+#target_link_libraries(nsp libjnpacks.a)
 
-INSTALL(TARGETS nsp DESTINATION bin)
-
+install(TARGETS nsp DESTINATION bin)
 

@@ -1,8 +1,5 @@
 {
   "depends": [
-    "Eigen",
-    "jian",
-    "jnbio",
-    "jntest"
+    "jnbio", "jntest"
   ]
 }

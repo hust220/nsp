@@ -1,0 +1,78 @@
+#! /bin/env python
+
+import json
+import os
+import sys
+import glob
+import fnmatch
+
+def read_depends(dir):
+    path = dir + '/jnpack.json'
+    if not os.path.exists(path): return []
+
+    f = open(path)
+    content = f.read()
+    f.close()
+
+    config = json.loads(content)
+    depends = config['depends']
+    return depends
+
+def add_packs(ls, n):
+    if len(ls) == 0: return
+
+    packs = []
+    for pack in ls:
+        if not os.path.exists(pack) or n == 0:
+            packs.append(pack)
+        if not os.path.exists(pack):
+            os.system('git clone https://github.com/hust220/%s.git' % (pack,))
+
+    ls = []
+    for pack in packs:
+        ls.extend(read_depends(pack))
+
+    add_packs(ls, n + 1)
+
+def find_cpps(prefix, dir):
+    matches = []
+    for root, dirnames, filenames in os.walk(dir):
+        for filename in fnmatch.filter(filenames, '*.cpp'):
+            matches.append(os.path.join(prefix, root, filename))
+    return matches
+
+def update_cmake():
+    prefix = os.getcwd()
+    ls = []
+    for it in glob.glob('*'):
+        if it != "CMakeLists.txt":
+            ls.extend(find_cpps(prefix, it + '/' + it))
+    f = open('CMakeLists.txt', 'w')
+    #f.write('add_library(jnpacks STATIC %s)' % (' '.join(ls),))
+    f.write('set(jnpacks_sources %s PARENT_SCOPE)' % (' '.join(ls),))
+    f.close()
+
+def update():
+    depends = read_depends('.')
+
+    if not os.path.exists('jnpacks'):
+        os.mkdir('jnpacks')
+
+    os.chdir('jnpacks')
+    add_packs(depends, 0)
+    update_cmake()
+    os.chdir('..')
+
+def install():
+    print 'install'
+
+if __name__ == '__main__':
+    if len(sys.argv) == 1:
+        print 'jnpack.py'
+    else:
+        func = sys.argv[1]
+        if func == 'update':
+            update()
+        elif func == 'install':
+            install()
+

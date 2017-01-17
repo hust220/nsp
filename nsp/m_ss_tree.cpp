@@ -19,6 +19,7 @@ REGISTER_NSP_COMPONENT(ss_tree) {
         } else {
             ss_tree.make(seq, ss);
         }
+        std::cout << ss_tree << std::endl;
         //ss_tree.head()->print_tree();
     } catch(const Error &e) {
         std::cout << e.what() << std::endl;
