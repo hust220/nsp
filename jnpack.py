@@ -1,4 +1,9 @@
-#! /bin/env python
+"""========================================
+jnpack     A C++ package manager
+Author:    Jian Wang
+Email:     wj_hust08@hust.edu.cn
+Usage:     python jnpack.py <install|update>
+========================================"""
 
 import json
 import os
@@ -63,11 +68,29 @@ def install():
     update_cmake()
     os.chdir('..')
 
+def update():
+    os.chdir('jnpacks')
+    for it in os.listdir('.'):
+        if it != 'CMakeLists.txt':
+            print it
+            os.chdir(it)
+            os.system('git pull')
+            os.chdir('..')
+    os.chdir('..')
+    os.system('git pull')
+
+def help():
+    print __doc__
+
 if __name__ == '__main__':
     if len(sys.argv) == 1:
-        print 'jnpack.py'
+        help()
     else:
         func = sys.argv[1]
         if func == 'install':
             install()
+        elif func == 'update':
+            update()
+        else:
+            help()
 

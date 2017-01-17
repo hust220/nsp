@@ -124,11 +124,11 @@ Before use,you need to set the environment variable NSP to the folder where the 
 *   Assembly
     1.  assemble 
 
-            nsp assemble -name <JOB_NAME> -seq <SEQUENCE> -ss "<SECONDARY_STRUCTURE>"
+            nsp assemble -name <JOB_NAME> -seq <SEQUENCE> -ss "<SECONDARY_STRUCTURE>" -n <NUMBER_OF_PREDICTIONS>
 
     2.  assemble and sampling
     
-            nsp assemble -name <JOB_NAME> -seq <SEQUENCE> -ss "<SECONDARY_STRUCTURE>" -sample -num <NUMBER_OF_PREDICTIONS>
+            nsp sample -name <JOB_NAME> -seq <SEQUENCE> -ss "<SECONDARY_STRUCTURE>" -n <NUMBER_OF_PREDICTIONS>
 
 *   Optimization
 
