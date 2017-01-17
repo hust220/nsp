@@ -1,0 +1,426 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{0E5599D3-047C-4587-B806-0D0A5DD9C942}</ProjectGuid>
+    <RootNamespace>nsp</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)\jnpacks\jian;$(SolutionDir)\jnpacks\jnbio;$(SolutionDir)\jnpacks\eigen;$(SolutionDir)\jnpacks\jntest</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="nsp\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="jnpacks\jian\jian\matrix\Mat4.cpp" />
+    <ClCompile Include="jnpacks\jian\jian\matrix\Mat5.cpp" />
+    <ClCompile Include="jnpacks\jian\jian\mpi\MPI.cpp" />
+    <ClCompile Include="jnpacks\jian\jian\utils\DBSCAN.cpp" />
+    <ClCompile Include="jnpacks\jian\jian\utils\Env.cpp" />
+    <ClCompile Include="jnpacks\jian\jian\utils\file.cpp" />
+    <ClCompile Include="jnpacks\jian\jian\utils\KMeans.cpp" />
+    <ClCompile Include="jnpacks\jian\jian\utils\Par.cpp" />
+    <ClCompile Include="jnpacks\jian\jian\utils\rand.cpp" />
+    <ClCompile Include="jnpacks\jian\jian\utils\string.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\cg\CG.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\cg\CG1p.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\cg\CG6p.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\cg\CGaa.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\cg\CGpsb.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\cg\CompleteResidue.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\cg\ResFrags.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\dca\Dca.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\dca\MfDca.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\dca\MpDca.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\dca\ss_pairs.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\dg\DG.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\dg\DihBound.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\dg\Gradient.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\dg\smooth.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\dhmc\DHMC.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\lrsp\ss_complete.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\lrsp\ss_del_sm_hp.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\lrsp\ss_hp_pred.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\mcsm\EnPsb.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\mcsm\MCSM.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\mcsm\McsmBase.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\mc\MC.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\nuc2d\NASS.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\nuc2d\SSTree.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\nuc2d\ss_pred.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\Assemble.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\BuildHelix.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\BuildLoopDG.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\BuildLoopRaw.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\Constraints.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\Convert.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\Format.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\HelixPar.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\ParseHelix.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\SampleLoop.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\split.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\TemplRec.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\transform.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\TSP.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\pdb\Atom.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\pdb\CifFileParser.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\pdb\io.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\pdb\MolParser.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\pdb\names.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\pdb\PdbFileParser.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\pdb\Residue.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\pdb\RNA.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\pdb\utils\cluster_chains.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\qhmc\HeadHairpin.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\qhmc\Helix.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\qhmc\Loop.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\qhmc\Module.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\qhmc\TailHairpin.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\scoring\DihAnal.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\scoring\DistAnal.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\scoring\new_score.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\scoring\ParBp.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\scoring\Score.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\scoring\Score1p.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\scoring\Score6p.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\scoring\ScoreAa.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\scoring\ScorePsb.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\thmc\THeadHairpin.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\thmc\THelix.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\thmc\TLoop.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\thmc\TModule.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\thmc\TTailHairpin.cpp" />
+    <ClCompile Include="nsp\main.cpp" />
+    <ClCompile Include="nsp\m_3drna.cpp" />
+    <ClCompile Include="nsp\m_aa.cpp" />
+    <ClCompile Include="nsp\m_align.cpp" />
+    <ClCompile Include="nsp\m_anal.cpp" />
+    <ClCompile Include="nsp\m_assemble.cpp" />
+    <ClCompile Include="nsp\m_build_loop.cpp" />
+    <ClCompile Include="nsp\m_build_loop_dg.cpp" />
+    <ClCompile Include="nsp\m_cg_to_aa.cpp" />
+    <ClCompile Include="nsp\m_check.cpp" />
+    <ClCompile Include="nsp\m_client.cpp" />
+    <ClCompile Include="nsp\m_cluster.cpp" />
+    <ClCompile Include="nsp\m_contacts.cpp" />
+    <ClCompile Include="nsp\m_dca.cpp" />
+    <ClCompile Include="nsp\m_dist_frequencies.cpp" />
+    <ClCompile Include="nsp\m_dist_weighted_frequencies.cpp" />
+    <ClCompile Include="nsp\m_dist_weights.cpp" />
+    <ClCompile Include="nsp\m_format.cpp" />
+    <ClCompile Include="nsp\m_get_all_residues.cpp" />
+    <ClCompile Include="nsp\m_helix_par.cpp" />
+    <ClCompile Include="nsp\m_joint.cpp" />
+    <ClCompile Include="nsp\m_len.cpp" />
+    <ClCompile Include="nsp\m_mcc.cpp" />
+    <ClCompile Include="nsp\m_md.cpp" />
+    <ClCompile Include="nsp\m_min_dist.cpp" />
+    <ClCompile Include="nsp\m_new_score.cpp" />
+    <ClCompile Include="nsp\m_opt.cpp" />
+    <ClCompile Include="nsp\m_parse_helix.cpp" />
+    <ClCompile Include="nsp\m_pdb2jn.cpp" />
+    <ClCompile Include="nsp\m_rebuild_chain.cpp" />
+    <ClCompile Include="nsp\m_rmsd.cpp" />
+    <ClCompile Include="nsp\m_score.cpp" />
+    <ClCompile Include="nsp\m_seq.cpp" />
+    <ClCompile Include="nsp\m_server.cpp" />
+    <ClCompile Include="nsp\m_split.cpp" />
+    <ClCompile Include="nsp\m_ss.cpp" />
+    <ClCompile Include="nsp\m_ssa.cpp" />
+    <ClCompile Include="nsp\m_ssp_dca.cpp" />
+    <ClCompile Include="nsp\m_ssp_fe.cpp" />
+    <ClCompile Include="nsp\m_ss_tree.cpp" />
+    <ClCompile Include="nsp\m_sub.cpp" />
+    <ClCompile Include="nsp\m_traj.cpp" />
+    <ClCompile Include="nsp\m_transform.cpp" />
+    <ClCompile Include="nsp\m_tri2d.cpp" />
+    <ClCompile Include="nsp\m_view_mol_constraints.cpp" />
+    <ClCompile Include="nsp\nsp.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="jnpacks\jian\jian\geom.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\geom\core.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\geom\rotate.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\geom\suppos.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\jian.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\matrix.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\matrix\Mat3.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\matrix\Mat4.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\matrix\Mat5.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\matrix\MatBase.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\matrix\traits.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\matrix\util.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\mpi.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\mpi\MPI.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\mpl.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\mpl\algorithm.h" />
+    <ClInclude Include="jnpacks\jian\jian\mpl\arithmetic.h" />
+    <ClInclude Include="jnpacks\jian\jian\mpl\list.h" />
+    <ClInclude Include="jnpacks\jian\jian\mpl\mpl.h" />
+    <ClInclude Include="jnpacks\jian\jian\pp.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\pp\core.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\pp\map.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\script.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\script\Script.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\socket.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\socket\Socket.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\Cluster.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\control.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\DBSCAN.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\Debug.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\Entity.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\Env.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\exception.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\Factory.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\file.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\FSM.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\fun.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\KMeans.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\lexical_cast.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\Lib.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\ListRange.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\log.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\ls.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\math.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\Par.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\platform.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\queue.h" />
+    <ClInclude Include="jnpacks\jian\jian\utils\rand.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\Serial.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\string.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\Time.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\Trace.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\traits.hpp" />
+    <ClInclude Include="jnpacks\jian\jian\utils\tree.h" />
+    <ClInclude Include="jnpacks\jian\jian\utils\Tree.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\cg.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\cg\CG.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\cg\CG1p.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\cg\CG6p.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\cg\CGaa.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\cg\CGpsb.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\cg\CompleteResidue.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\cg\ResFrags.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\dca.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\dca\Dca.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\dca\MfDca.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\dca\MpDca.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\dca\ss_pairs.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\dg.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\dg\CG-dev.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\dg\CG.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\dg\Constraints.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\dg\DG.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\dg\DGImpl.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\dg\DihBound.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\dg\Gradient.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\dg\Job.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\dg\MC.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\dg\Move.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\dg\smooth.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\dg\Sys.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\dg\TestMC.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\dg\_DG.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\dhmc.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\dhmc\DHMC.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\lrsp.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\lrsp\LRTSP.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\lrsp\ss_complete.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\lrsp\ss_del_sm_hp.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\lrsp\ss_hp_pred.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\mc.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\mcsm.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\mcsm\EnPsb.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\mcsm\MCSM.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\mcsm\McsmBase.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\mc\MC.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\bp.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\BuildSST.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\GetSS.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\helix.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\Loop.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\MergeRings.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\NASS.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\PredQuaSS.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\PredTriSS.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\res.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\SSE.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\SST.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\SSTree.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\ss_pred.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\Tree.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\AddPhos.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\Assemble.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\BasicPredict3D.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\BuildChain.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\BuildHelix.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\BuildLoopDG.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\BuildLoopRaw.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\BuildNuc.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\BuildStrand.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\Connect.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\Constraints.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\Convert.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\Format.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\HelixPar.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\JointHelix.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\ParseHelix.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\SampleLoop.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\split.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\SplitModel.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\TemplRec.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\transform.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\TSP.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\pdb.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\Atom.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\Chain.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\CifFileParser.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\io.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\Model.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\Molecule.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\molmanip.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\MolParser.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\MolSerial.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\names.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\PdbFileParser.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\Residue.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\RNA.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\utils\cluster_chains.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\qhmc.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\qhmc\HeadHairpin.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\qhmc\Helix.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\qhmc\Loop.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\qhmc\Module.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\qhmc\QHMC.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\qhmc\TailHairpin.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\scoring.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\DihAnal.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\DistAnal.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\new_score.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\ParBp.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\ResConf.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\Score.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\Score1p.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\Score6p.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\ScoreAa.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\ScoreBase.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\ScorePsb.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\thmc.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\thmc\THeadHairpin.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\thmc\THelix.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\thmc\THMC.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\thmc\TLoop.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\thmc\TModule.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\thmc\TTailHairpin.hpp" />
+    <ClInclude Include="jnpacks\jntest\jntest\UnitTest.hpp" />
+    <ClInclude Include="nsp\nsp.hpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
