@@ -143,6 +143,9 @@ BEGIN_JN
 					for (int i = 0; i < mat->rows(); i++) names.push_back(JN_STR(i+1));
 					LOG << "Clustering..." << std::endl;
 				}
+				else {
+					throw "m_cluster.cpp error";
+				}
 
 				(*cluster)(*mat);
 				print_clusters(*cluster, names);

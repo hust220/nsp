@@ -22,6 +22,8 @@ para-release
 para-debug
 serial-release
 serial-debug
+DebugP
+ReleaseP
 p[Dd]ebug/
 p[Rr]elease/
 [Dd]ebug/
