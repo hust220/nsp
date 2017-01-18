@@ -62,24 +62,24 @@ REGISTER_NSP_COMPONENT(sample) {
 	auto clusters = pdb::cluster_chains(chains, num);
 
 	ass.log << "# Scoring..." << std::endl;
-	auto scorer = ScoreBase::fac_t::make("aa");
+	auto scorer = Score::fac_t::make("aa");
 	scorer->init();
 	Int n_cluster = 0;
 	for (auto && cluster : clusters) {
-		Deque<Double> ls;
+		Deque<Double> scores;
 
 		ass.log << "# Scores of cluster " << n_cluster + 1 << ":";
 		for (auto && i : cluster) {
 			scorer->run(chains[i]);
 			Double d = scorer->m_score;
 			ass.log << " " << i << "(" << d << ")";
-			ls.push_back(d);
+			scores.push_back(d);
 		}
 		ass.log << std::endl;
 
-		auto it = std::min_element(ls.begin(), ls.end());
-		Int ind = std::distance(ls.begin(), it);
-		ass.log << "Minimum score: " << ls[ind] << ", " << ind << "th" << std::endl;
+		auto it = std::min_element(scores.begin(), scores.end());
+		Int ind = std::distance(scores.begin(), it);
+		ass.log << "Minimum score: " << cluster[ind] << "(" << scores[ind] << ")" << std::endl;
 
 		ass.log << "# Writing prediction " << n_cluster + 1 << std::endl;
 		mol_write(chains[cluster[ind]], to_str(ass._name, ".pred.", n_cluster + 1, ".pdb"));

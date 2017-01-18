@@ -37,7 +37,7 @@ BEGIN_JN
 			JN_OUT << std::endl;
 		}
 
-		void score_res(ScoreBase * scoring, S filename, S score_type = "pairing") {
+		void score_res(Score * scoring, S filename, S score_type = "pairing") {
 			Chain chain;
 			int i, j, l;
 
@@ -63,7 +63,7 @@ BEGIN_JN
 			}
 		}
 
-		void score_s(ScoreBase * scoring, S filename) {
+		void score_s(Score * scoring, S filename) {
 			Chain chain;
 			chain_read_model(chain, filename);
 			scoring->run(chain);
@@ -75,13 +75,13 @@ BEGIN_JN
 				std::endl;
 		}
 
-		void score_l(ScoreBase * scoring, S filename) {
+		void score_l(Score * scoring, S filename) {
 			for (auto &&it : FileLines(filename)) {
 				score_s(scoring, it.arr[0]);
 			}
 		}
 
-		void train_s(ScoreBase * scoring, S filename) {
+		void train_s(Score * scoring, S filename) {
 			Chain chain;
 
 			LOG << "Train " << filename << " ..." << std::endl;
@@ -89,7 +89,7 @@ BEGIN_JN
 			scoring->train(chain);
 		}
 
-		void train_l(ScoreBase * scoring, S filename) {
+		void train_l(Score * scoring, S filename) {
 			for (auto &&it : FileLines(filename)) {
 				train_s(scoring, it.arr[0]);
 			}
@@ -161,7 +161,7 @@ BEGIN_JN
 				sum_counts(filename, rows, cols);
 			}
 			else {
-				ScoreBase *scoring = ScoreBase::fac_t::create(method);
+				Score *scoring = Score::fac_t::create(method);
 				scoring->init();
 
 				if (par.has("print_freqs")) {

@@ -353,9 +353,6 @@
     <ClCompile Include="jnpacks\jnbio\jnbio\scoring\ParBp.cpp">
       <Filter>jnpacks\jnbio\scoring</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\scoring\Score.cpp">
-      <Filter>jnpacks\jnbio\scoring</Filter>
-    </ClCompile>
     <ClCompile Include="jnpacks\jnbio\jnbio\scoring\Score1p.cpp">
       <Filter>jnpacks\jnbio\scoring</Filter>
     </ClCompile>
@@ -460,6 +457,9 @@
     </ClCompile>
     <ClCompile Include="jnpacks\jnbio\jnbio\nuc2d\SSTree.cpp">
       <Filter>jnpacks\jnbio\nuc2d</Filter>
+    </ClCompile>
+    <ClCompile Include="jnpacks\jnbio\jnbio\scoring\ScoreCg.cpp">
+      <Filter>jnpacks\jnbio\scoring</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -769,9 +769,6 @@
     <ClInclude Include="jnpacks\jnbio\jnbio\scoring\ResConf.hpp">
       <Filter>jnpacks\jnbio\scoring</Filter>
     </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\Score.hpp">
-      <Filter>jnpacks\jnbio\scoring</Filter>
-    </ClInclude>
     <ClInclude Include="jnpacks\jnbio\jnbio\scoring\Score1p.hpp">
       <Filter>jnpacks\jnbio\scoring</Filter>
     </ClInclude>
@@ -779,9 +776,6 @@
       <Filter>jnpacks\jnbio\scoring</Filter>
     </ClInclude>
     <ClInclude Include="jnpacks\jnbio\jnbio\scoring\ScoreAa.hpp">
-      <Filter>jnpacks\jnbio\scoring</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\ScoreBase.hpp">
       <Filter>jnpacks\jnbio\scoring</Filter>
     </ClInclude>
     <ClInclude Include="jnpacks\jnbio\jnbio\scoring\ScorePsb.hpp">
@@ -999,6 +993,12 @@
     </ClInclude>
     <ClInclude Include="jnpacks\jntest\jntest\UnitTest.hpp">
       <Filter>jnpacks\jntest</Filter>
+    </ClInclude>
+    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\ScoreCg.hpp">
+      <Filter>jnpacks\jnbio\scoring</Filter>
+    </ClInclude>
+    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\Score.hpp">
+      <Filter>jnpacks\jnbio\scoring</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

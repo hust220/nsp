@@ -324,7 +324,7 @@
     <ClCompile Include="jnpacks\jnbio\jnbio\scoring\DistAnal.cpp" />
     <ClCompile Include="jnpacks\jnbio\jnbio\scoring\new_score.cpp" />
     <ClCompile Include="jnpacks\jnbio\jnbio\scoring\ParBp.cpp" />
-    <ClCompile Include="jnpacks\jnbio\jnbio\scoring\Score.cpp" />
+    <ClCompile Include="jnpacks\jnbio\jnbio\scoring\ScoreCg.cpp" />
     <ClCompile Include="jnpacks\jnbio\jnbio\scoring\Score1p.cpp" />
     <ClCompile Include="jnpacks\jnbio\jnbio\scoring\Score6p.cpp" />
     <ClCompile Include="jnpacks\jnbio\jnbio\scoring\ScoreAa.cpp" />
@@ -546,11 +546,11 @@
     <ClInclude Include="jnpacks\jnbio\jnbio\scoring\new_score.hpp" />
     <ClInclude Include="jnpacks\jnbio\jnbio\scoring\ParBp.hpp" />
     <ClInclude Include="jnpacks\jnbio\jnbio\scoring\ResConf.hpp" />
-    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\Score.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\ScoreCg.hpp" />
     <ClInclude Include="jnpacks\jnbio\jnbio\scoring\Score1p.hpp" />
     <ClInclude Include="jnpacks\jnbio\jnbio\scoring\Score6p.hpp" />
     <ClInclude Include="jnpacks\jnbio\jnbio\scoring\ScoreAa.hpp" />
-    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\ScoreBase.hpp" />
+    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\Score.hpp" />
     <ClInclude Include="jnpacks\jnbio\jnbio\scoring\ScorePsb.hpp" />
     <ClInclude Include="jnpacks\jnbio\jnbio\thmc.hpp" />
     <ClInclude Include="jnpacks\jnbio\jnbio\thmc\THeadHairpin.hpp" />
