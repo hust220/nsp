@@ -18,12 +18,12 @@ REGISTER_NSP_COMPONENT(assemble) {
     ass.assemble();
 
 	n = 1;
-	mol_write(ass._pred_chain, to_str(ass._name, ".pred.", n, ".pdb"));
+	mol_write(ass._pred_chain, to_str(ass._name, ".", n, ".pred.pdb"));
 	for (n = 2; n <= num; n++) {
 		ass.sample_all_templates();
 		ass.assemble();
 		ass.log << "# Writing sampling structure " << n << std::endl;
-		mol_write(ass._pred_chain, to_str(ass._name, ".pred.", n, ".pdb"));
+		mol_write(ass._pred_chain, to_str(ass._name, ".", n, ".pred.pdb"));
 	}
 
 }
@@ -49,13 +49,13 @@ REGISTER_NSP_COMPONENT(sample) {
 	std::deque<Chain> chains;
 	chains.push_back(std::move(ass._pred_chain));
 
-	if (write_samplings) mol_write(ass._pred_chain, to_str(ass._name, ".sample.", n, ".pdb"));
+	if (write_samplings) mol_write(ass._pred_chain, to_str(ass._name, ".", n, ".sample.pdb"));
 	for (n = 2; n <= num_samplings; n++) {
 		ass.sample_one_template();
 		ass.assemble();
 		chains.push_back(std::move(ass._pred_chain));
 		ass.log << "# Writing sampling structure " << n << std::endl;
-		if (write_samplings) mol_write(ass._pred_chain, to_str(ass._name, ".sample.", n, ".pdb"));
+		if (write_samplings) mol_write(ass._pred_chain, to_str(ass._name, ".", n, ".sample.pdb"));
 	}
 
 	ass.log << "# Clustering..." << std::endl;
@@ -82,7 +82,7 @@ REGISTER_NSP_COMPONENT(sample) {
 		ass.log << "Minimum score: " << cluster[ind] << "(" << scores[ind] << ")" << std::endl;
 
 		ass.log << "# Writing prediction " << n_cluster + 1 << std::endl;
-		mol_write(chains[cluster[ind]], to_str(ass._name, ".pred.", n_cluster + 1, ".pdb"));
+		mol_write(chains[cluster[ind]], to_str(ass._name, ".", n_cluster + 1, ".pred.pdb"));
 		n_cluster++;
 	}
 
