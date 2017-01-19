@@ -143,28 +143,19 @@ Before use,you need to set the environment variable NSP to the folder where the 
     <tr><td>SEQUENCE</td><td>sequence</td></tr>
     <tr><td>SECONDARY_STRUCTURE</td><td>secondary structure with dot-bracket notation</td></tr>
     <tr><td>INITIAL_PDB_FILE</td><td>initial structure file with 'pdb' or 'cif' format</td></tr>
-    <tr><td>CONSTRAINTS_FILE</td><td>constraints file</td></tr>
+    <tr>
+        <td>CONSTRAINTS_FILE</td>
+        <td>
+        constraints file<br>example:<br>
+        8 23 10<br>
+        9 22 10<br>
+        10 21 10<br>
+        The first two column represents the base sequence number, for example 8 represents the eighth base, 23 represents the twenty-third base, the last column is the minimum distance between the base.
+        </td></tr>
     <tr><td>DCA_FILE</td><td>dca file</td></tr>
     <tr><td>QUEUE</td><td>samc:1000000:100-10</td></tr>
+    <tr><td>SEED</td><td>default value of seed is 11</td></tr>
     </table>
-
-    Set the start structure with -init,the starting structure may be the structure after assembly, and the structure can be selected from the structure which is assemble with the sample.
-
-    Add constraints with -constranits or -c
-
-    \-seed can be omitted and the default seed is 11.
-
-    \-constraints or \-c also can be omitted on behalf of do not add constraint information.
-
-    Constraints_file file inside the information of  constraints, such as DCA analysis can be added to the file.
-
-        8 23 10
-        9 22 10
-        10 21 10
-
-    The first two column represents the base sequence number, for example 8 represents the eighth base, 23 represents the twenty-third base, the last column is the minimum distance between the base.
-
-    Therefore,8 23 10 represents the minimum distance between the eighth base and the twenty-third base is 10Å,9 22 10 represents the minimum distance between the ninth base and the twenty-two base is 10Å.
 
 ## Clustering
 
