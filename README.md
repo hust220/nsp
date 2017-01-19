@@ -170,7 +170,7 @@ Before use,you need to set the environment variable NSP to the folder where the 
 
 ## Clustering
 
-    nsp cluster -list <LIST_FILE> -k <NUMBER_OF_CLUSTERS>`
+    nsp cluster -list <LIST_FILE> -k <NUMBER_OF_CLUSTERS>
 
 Set the structures that need to cluster with -list and set the amount with -k.
 
