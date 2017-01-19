@@ -132,11 +132,21 @@ Before use,you need to set the environment variable NSP to the folder where the 
 
 *   Optimization
 
-        nsp opt -name <JOB_NAME> -seq <SEQUENCE> -ss "<SECONDARY_STRUCTURE>" -init <INITIAL_PDB_FILE> [-<constraints|c> <CONSTRAINTS_FILE>] [-seed <SEED>]
+        nsp opt -name <JOB_NAME> -seq <SEQUENCE> -ss "<SECONDARY_STRUCTURE>" -init <INITIAL_PDB_FILE> \
+        [-<constraints|c> <CONSTRAINTS_FILE>] \
+        [-dca <DCA_FILE>] \
+        [-queue <QUEUE>] \
+        [-seed <SEED>]
 
-    Set name with -name, set sequence with -seq,set secondary structure with -ss ,set seed with -seed.
-
-    Set file for storing the optimized structure with -out.
+    <table>
+    <tr><td>JOB_NAME</td><td>job name</td></tr>
+    <tr><td>SEQUENCE</td><td>sequence</td></tr>
+    <tr><td>SECONDARY_STRUCTURE</td><td>secondary structure with dot-bracket notation</td></tr>
+    <tr><td>INITIAL_PDB_FILE</td><td>initial structure file with 'pdb' or 'cif' format</td></tr>
+    <tr><td>CONSTRAINTS_FILE</td><td>constraints file</td></tr>
+    <tr><td>DCA_FILE</td><td>dca file</td></tr>
+    <tr><td>QUEUE</td><td>samc:1000000:100-10</td></tr>
+    </table>
 
     Set the start structure with -init,the starting structure may be the structure after assembly, and the structure can be selected from the structure which is assemble with the sample.
 

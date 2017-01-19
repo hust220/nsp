@@ -76,6 +76,7 @@ def update():
             os.chdir(it)
             os.system('git pull')
             os.chdir('..')
+    update_cmake()
     os.chdir('..')
     os.system('git pull')
 
