@@ -153,7 +153,18 @@ Before use,you need to set the environment variable NSP to the folder where the 
         The first two column represents the base sequence number, for example 8 represents the eighth base, 23 represents the twenty-third base, the last column is the minimum distance between the base.
         </td></tr>
     <tr><td>DCA_FILE</td><td>dca file</td></tr>
-    <tr><td>QUEUE</td><td>samc:1000000:100-10</td></tr>
+    <tr>
+        <td>QUEUE</td>
+        <td>
+            example:
+            <table>
+                <tr><td>simulated annealing Monte Carlo simulation</td><td>samc:1000000:100-10</td></tr>
+                <tr><td>heat</td><td>heat:1000000:10</td></tr>
+                <tr><td>cool</td><td>cool:1000000:10</td></tr>
+                <tr><td>warm</td><td>warm:1000000:10</td></tr>
+            </table>
+        </td>
+    </tr>
     <tr><td>SEED</td><td>default value of seed is 11</td></tr>
     </table>
 
