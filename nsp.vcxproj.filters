@@ -461,6 +461,9 @@
     <ClCompile Include="jnpacks\jnbio\jnbio\scoring\ScoreCg.cpp">
       <Filter>jnpacks\jnbio\scoring</Filter>
     </ClCompile>
+    <ClCompile Include="nsp\m_tsp.cpp">
+      <Filter>nsp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="nsp\nsp.hpp">

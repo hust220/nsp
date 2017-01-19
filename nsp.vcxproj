@@ -363,6 +363,7 @@
     <ClCompile Include="nsp\m_opt.cpp" />
     <ClCompile Include="nsp\m_parse_helix.cpp" />
     <ClCompile Include="nsp\m_pdb2jn.cpp" />
+    <ClCompile Include="nsp\m_tsp.cpp" />
     <ClCompile Include="nsp\m_rebuild_chain.cpp" />
     <ClCompile Include="nsp\m_rmsd.cpp" />
     <ClCompile Include="nsp\m_score.cpp" />
