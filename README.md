@@ -132,7 +132,10 @@ Before use,you need to set the environment variable NSP to the folder where the 
 
 *   Optimization
 
-        nsp opt -name <JOB_NAME> -seq <SEQUENCE> -ss "<SECONDARY_STRUCTURE>" -init <INITIAL_PDB_FILE> \
+        nsp opt -name <JOB_NAME> \
+        -seq <SEQUENCE> \
+        -ss "<SECONDARY_STRUCTURE>" \
+        -init <INITIAL_PDB_FILE> \
         [-<constraints|c> <CONSTRAINTS_FILE>] \
         [-dca <DCA_FILE>] \
         [-queue <QUEUE>] \
@@ -140,8 +143,8 @@ Before use,you need to set the environment variable NSP to the folder where the 
 
     <table>
     <tr><td>JOB_NAME</td><td>job name</td></tr>
-    <tr><td>SEQUENCE</td><td>sequence</td></tr>
-    <tr><td>SECONDARY_STRUCTURE</td><td>secondary structure with dot-bracket notation</td></tr>
+    <tr><td>SEQUENCE</td><td>sequence<br>example: AAAAACCCCUUUUU</td></tr>
+    <tr><td>SECONDARY_STRUCTURE</td><td>secondary structure with dot-bracket notation<br>example: (((((....)))))</td></tr>
     <tr><td>INITIAL_PDB_FILE</td><td>initial structure file with 'pdb' or 'cif' format</td></tr>
     <tr>
         <td>CONSTRAINTS_FILE</td>
@@ -156,7 +159,7 @@ Before use,you need to set the environment variable NSP to the folder where the 
     <tr>
         <td>QUEUE</td>
         <td>
-            Queue of optimization actions.
+            Queue of optimization actions.<br>
             Optimization action example:
             <table>
                 <tr><td>Simulated Annealing Monte Carlo simulation</td><td>samc:1000000:500-20</td></tr>
