@@ -1,14 +1,14 @@
 ## Tertiary structure prediction
 
-*   Assembly
+*   #### Assembly
         nsp assemble -name <JOB_NAME> -seq <SEQUENCE> -ss "<SECONDARY_STRUCTURE>" \
         -n <NUMBER_OF_PREDICTIONS>
 
-*   Sampling
+*   #### Sampling
         nsp sample -name <JOB_NAME> -seq <SEQUENCE> -ss "<SECONDARY_STRUCTURE>" \
         -n <NUMBER_OF_PREDICTIONS>
 
-*   Optimization
+*   #### Optimization
 
         nsp opt -name <JOB_NAME> \
         -seq <SEQUENCE> \
@@ -52,5 +52,3 @@
     </tr>
     <tr><td>SEED</td><td>default value of seed is 11</td></tr>
     </table>
-
-    

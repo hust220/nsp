@@ -4,11 +4,9 @@
     <top-nav class="layout-nav"></top-nav>
 
     <!-- Page -->
-    <el-row class="layout-page">
-      <el-col :span="22" :offset="1">
-        <router-view></router-view>
-      </el-col>
-    </el-row>
+    <div class="layout-page">
+      <router-view></router-view>
+    </div>
 
   </div>
 </template>

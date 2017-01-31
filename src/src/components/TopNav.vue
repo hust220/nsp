@@ -4,7 +4,6 @@
       <el-col :span="22" :offset="1">
         <el-menu-item index="1">
           <img class="nsp-logo" :src="'static/'+top.logo" />
-          <span>NSP</span>
         </el-menu-item>
         <el-menu-item index="1">
           <router-link to="/home">Home</router-link>
@@ -12,9 +11,9 @@
         <el-menu-item index="1">
           <router-link to="/doc">Documentation</router-link>
         </el-menu-item>
-        <el-menu-item index="1">
+        <!--<el-menu-item index="1">
           <router-link to="/api">API</router-link>
-        </el-menu-item>
+        </el-menu-item>-->
         <el-menu-item index="1">
           <router-link to="/download">Download</router-link>
         </el-menu-item>
@@ -62,9 +61,17 @@
     text-decoration: none;
   }
 
+  .top-nav {
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .el-menu {
+    background-color: #fff;
+  }
+
   .nsp-logo {
     vertical-align: middle;
-    height: 35px;
+    height: 50px;
   }
 
 </style>

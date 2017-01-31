@@ -20,10 +20,20 @@ const router = new VueRouter({
     { path: '/', component: Home },
     { path: '/home', component: Home },
     { path: '/doc', component: Doc },
-    { path: '/doc/:item', component: Doc },
+    { path: '/doc/:theme', component: Doc },
+    { path: '/doc/:theme/:item', component: Doc },
     { path: '/api', component: API },
     { path: '/download', component: Download },
-  ]
+  ],
+
+  // scrollBehavior(to, from, savedPosition) {
+  //   console.log('scrollBehavior')
+  //   if (to.hash) {
+  //     return {
+  //       selector: to.hash
+  //     }
+  //   }
+  // }
 })
 
 var bus = new Vue()
