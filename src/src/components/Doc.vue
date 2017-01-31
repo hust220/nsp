@@ -1,7 +1,20 @@
 <template>
   <el-row class="doc">
     <el-col :span="6" class="sidebar">
-      <div class="doc-nav" v-html="doc_nav"></div>
+      <div class="doc-nav">
+        <h2>Documentation</h2>
+        <p><a href="https://github.com/hust220/nsp">Github</a></p>
+        <ul>
+          <li v-for="theme in doc_nav">
+            <strong><a :href="theme.href" :class="[theme.href == '#' + $route.path ? 'active' : '']" v-text="theme.text"></a></strong>
+            <ul>
+              <li v-for="item in theme.items">
+                <a :href="item.href" :class="[item.href == '#' + $route.path ? 'active' : '']" v-text="item.text"></a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
     </el-col>
     <el-col :span="18" :offset="6" class="main">
       <div class="doc-content" v-html="content"></div>
@@ -33,9 +46,9 @@
       },
 
       fetch_doc_nav() {
-        var url = 'static/docs/nav.md'
+        var url = 'static/docs/nav.json'
         this.$http.get(url).then(response => {
-          this.doc_nav = marked(response.body)
+          this.doc_nav = response.body
         }, response => {
           //
         })
@@ -62,6 +75,7 @@
           docCache.theme = theme
         }
       }
+
     },
 
     created() {
@@ -131,6 +145,22 @@
   .doc-content td {
     padding: 6px 13px;
     border: 1px solid #ddd;
+  }
+
+  .sidebar a:visited.active {
+    color: blue;
+  }
+
+  .sidebar a {
+    text-decoration: none;
+  }
+
+  .sidebar a:visited {
+    color: black;
+  }
+
+  .sidebar a:hover {
+    color: blue;
   }
 
 </style>
