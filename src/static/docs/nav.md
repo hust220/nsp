@@ -2,9 +2,14 @@
 [Github](https://github.com/hust220/nsp)
 
 *   **[INSTALLATION](#/doc/install)**
-    * [Requirements](#/doc/install)
-    * [Install](#/doc/install)
+    * [Requirements](#/doc/install/requirements)
+    * [Install](#/doc/install/install)
 *   **USAGE**
+    * **[Web Server](#/doc/web)**
+        * [3dRNA](#/doc/web/assembly)
+        * [3dRNA with sampling](#/doc/web/sampling)
+        * [Optimization](#/doc/web/optimization)
+        * [3dRNAscore](#/doc/web/3drnascore)
     * **[Secondary structure prediction](#/doc/ssp)**
         * [Free energy minimization method](#/doc/ssp/fem)
         * [FEM+DCA](#/doc/ssp/fem_dca)

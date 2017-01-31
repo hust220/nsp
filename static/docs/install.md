@@ -1,10 +1,10 @@
-## Installation requirements
+## <b id="requirements">Installation requirements</b>
 
 *   g++ version is greater than 4.8
 *   cmake version is greater than 2.8.7
 *   git
 
-## Compile and install
+## <b id="install">Compile and install</b>
 
 1.  upgrade g++
     

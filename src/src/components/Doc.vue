@@ -11,78 +11,29 @@
 
 <script>
   import { bus } from '../bus.js'
+  import { ScrollToControl } from '../scroll.js'
+  import docCache from '../data.js'
   import marked from 'marked'
-
-  function elementPosition(obj) {
-    var curleft = 0
-    var curtop = 0
-    console.log(obj)
-    if (obj.offsetParent) {
-      curleft = obj.offsetLeft
-      curtop = obj.offsetTop
-      obj = obj.offsetParent
-      while (obj) {
-        curleft += obj.offsetLeft
-        curtop += obj.offsetTop
-        obj = obj.offsetParent
-      }
-    }
-    return { x: curleft, y: curtop }
-  }
-
-  function ScrollToControl(id) {
-    console.log(id)
-    var elem = document.getElementById(id)
-    if (elem) {
-      console.log(elem)
-      var scrollPos = elementPosition(elem).y
-      console.log(scrollPos)
-      console.log(document.body.scrollTop)
-      scrollPos = scrollPos - document.body.scrollTop - 60
-      console.log(scrollPos)
-      window.scrollBy(0, scrollPos)
-      // var remainder = scrollPos % 50
-      // var repeatTimes = (scrollPos - remainder) / 50
-      // ScrollSmoothly(scrollPos, repeatTimes)
-      // window.scrollBy(0, remainder)
-    }
-  }
-
-  // var repeatCount = 0
-  // var cTimeout
-  // var timeoutIntervals = []
-  // var timeoutIntervalSpeed
-
-  // function ScrollSmoothly(scrollPos, repeatTimes) {
-  //   if (repeatCount < repeatTimes) {
-  //     window.scrollBy(0, 50)
-  //   } else {
-  //     repeatCount = 0
-  //     clearTimeout(cTimeout)
-  //     return
-  //   }
-  //   repeatCount++
-  //   cTimeout = setTimeout(ScrollSmoothly(scrollPos, repeatTimes), 10)
-  // }
 
   export default {
     data() {
       return {
         doc_nav: '',
-        content: 'NSP'
+        content: ''
       }
     },
 
     methods: {
-      scrollTo(id) {
-        console.log(id)
-        if (id) {
-          ScrollToControl(id)
+      scroll(item) {
+        if (item) {
+          ScrollToControl(item)
+        } else {
+          window.scrollBy(0, -document.body.scrollTop)
         }
       },
 
       fetch_doc_nav() {
-        var url = '/static/docs/nav.md'
+        var url = 'static/docs/nav.md'
         this.$http.get(url).then(response => {
           this.doc_nav = marked(response.body)
         }, response => {
@@ -90,31 +41,43 @@
         })
       },
 
-      fetch_content(theme, item) {
-        var url = '/static/docs/' + theme + '.md'
-        this.$http.get(url).then(response => {
-          this.content = marked(response.body)
-          this.scrollTo(item)
-        }, response => {
-          //
-        })
+      fetch_doc_content() {
+        var params = this.$route.params
+        var theme = (params.theme ? params.theme : 'install')
+        var item = (params.item ? params.item : '')
+        if (docCache.theme && theme === docCache.theme) this.scroll(item)
+        else if (theme in docCache) {
+          this.content = docCache[theme]
+          docCache.theme = theme
+          this.scroll(item)
+        } else {
+          var url = 'static/docs/' + theme + '.md'
+          this.$http.get(url).then(response => {
+            this.content = marked(response.body)
+            docCache[theme] = this.content
+            this.scroll(item)
+          }, response => {
+            //
+          })
+          docCache.theme = theme
+        }
       }
     },
 
     created() {
       this.fetch_doc_nav()
-      var theme = (this.$route.params.theme ? this.$route.params.theme : 'install')
-      var item = (this.$route.params.item ? this.$route.params.item : '')
-      this.fetch_content(theme, item)
+      this.fetch_doc_content()
     },
 
     watch: {
       '$route'(to, from) {
-        var theme = (to.params.theme ? to.params.theme : 'install')
-        var item = (this.$route.params.item ? this.$route.params.item : '')
-        this.fetch_content(theme, item)
+        this.fetch_doc_content()
       }
     },
+
+    destroyed() {
+      docCache.theme = ''
+    }
 
   }
 </script>

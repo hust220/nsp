@@ -43,7 +43,7 @@
   }
 
   .layout-page {
-    margin-top: 60px;
+    padding-top: 60px;
   }
 
 </style>

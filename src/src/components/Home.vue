@@ -2,7 +2,7 @@
   <div class="home">
     <table>
       <tr>
-        <td rowspan="2"><img src="/static/logo.png"></img>
+        <td rowspan="2"><img src="static/logo.png"></img>
         </td>
         <td colspan="2" class="home-nsp-intro">Nucleic acids<br>Structure Prediction</td>
       </tr>
