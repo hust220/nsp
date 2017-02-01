@@ -1,4 +1,4 @@
-#include "UnitTest.hpp"
+#include <jntest/UnitTest.hpp>
 #include <jian/utils/Tree.hpp>
 
 BEGIN_JN

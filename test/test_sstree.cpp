@@ -1,5 +1,5 @@
-#include "UnitTest.hpp"
-#include <jian/nuc2d/SSTree.hpp>
+#include <jntest/UnitTest.hpp>
+#include <jnbio/nuc2d/SSTree.hpp>
 
 BEGIN_JN
 

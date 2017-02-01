@@ -1,5 +1,42 @@
 {
   "depends": [
     "jnbio", "jntest"
-  ]
+  ],
+
+  "projs": {
+    "default": {
+      "extends": "para-release"
+    },
+
+    "serial-release": {
+      "target": "nsp",
+      "cxx_flags": ["-std=c++14", "-pthread"],
+      "cxx_compiler": "$ENV{MPI_HOME}/bin/mpicxx",
+      "threads": 16,
+      "dirs": ["nsp"],
+      "install_prefix": "/home/wangjian"
+    },
+
+    "test": {
+      "extends": "para-release",
+      "target": "nsp-test",
+      "install_prefix": "/home/wangjian/work/nsp/.jnp",
+      "dirs": ["test"]
+    },
+
+    "serial-debug": {
+      "extends": "serial-release",
+      "build_type": "Debug"
+    },
+
+    "para-release": {
+      "extends": "serial-release",
+      "defs": ["JN_PARA"]
+    },
+
+    "para-debug": {
+      "extends": "para-release",
+      "build_type": "Debug"
+    }
+  }
 }
