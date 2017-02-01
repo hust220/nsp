@@ -1,6 +1,6 @@
 # Nucleic acids 2D and 3D Structure Prediction (NSP)
 
-Project:[https://github.com/hust220/nsp](https://github.com/hust220/nsp)
+Documentation:[https://hust220.github.io/nsp](https://hust220.github.io/nsp)
 
 ## Catalog
 1. INSTALLATION
