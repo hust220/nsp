@@ -1,17 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="nsp">
-      <UniqueIdentifier>{58588358-7d00-48c9-a629-961b9824b297}</UniqueIdentifier>
-    </Filter>
     <Filter Include="jnpacks">
       <UniqueIdentifier>{25fd75d9-949a-4dd7-8345-c9872d3a3925}</UniqueIdentifier>
     </Filter>
     <Filter Include="jnpacks\jian">
       <UniqueIdentifier>{26ed2dd3-f4ec-4167-b888-2321bf63d4d2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="jnpacks\jnbio">
-      <UniqueIdentifier>{e35bf80e-ac0d-41e5-ae85-52318a15115c}</UniqueIdentifier>
     </Filter>
     <Filter Include="jnpacks\jntest">
       <UniqueIdentifier>{14d11829-a590-4bdb-bae7-aa6e7a267ca5}</UniqueIdentifier>
@@ -40,193 +34,53 @@
     <Filter Include="jnpacks\jian\socket">
       <UniqueIdentifier>{defbab4a-27e0-48ea-915b-edb77de36a75}</UniqueIdentifier>
     </Filter>
-    <Filter Include="jnpacks\jnbio\cg">
-      <UniqueIdentifier>{d72c9b2e-5f34-4e09-930a-9bfa04ba5d20}</UniqueIdentifier>
+    <Filter Include="nsp">
+      <UniqueIdentifier>{ad3a2e99-e24c-4fb6-a3ee-85b182575f67}</UniqueIdentifier>
     </Filter>
-    <Filter Include="jnpacks\jnbio\dca">
-      <UniqueIdentifier>{6bc05b59-bb99-4cd8-9659-7902da1c4e9f}</UniqueIdentifier>
+    <Filter Include="src">
+      <UniqueIdentifier>{04dda5ab-3dd9-4718-aa55-65299c957936}</UniqueIdentifier>
     </Filter>
-    <Filter Include="jnpacks\jnbio\dg">
-      <UniqueIdentifier>{58991118-1535-4fab-aecb-b47bf8c41fb1}</UniqueIdentifier>
+    <Filter Include="nsp\cg">
+      <UniqueIdentifier>{6ea98a52-72a4-46cc-a193-c0b0d8c902c0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="jnpacks\jnbio\dhmc">
-      <UniqueIdentifier>{18319a6d-4cd5-42c4-9af9-1fdde5adeff6}</UniqueIdentifier>
+    <Filter Include="nsp\dca">
+      <UniqueIdentifier>{848987a9-c168-40be-96ad-a085fc22e106}</UniqueIdentifier>
     </Filter>
-    <Filter Include="jnpacks\jnbio\lrsp">
-      <UniqueIdentifier>{901415ef-05c7-4ed9-9299-db0cff1e92b5}</UniqueIdentifier>
+    <Filter Include="nsp\dg">
+      <UniqueIdentifier>{b1ecdeb3-ea1c-4d3c-b967-374367e766e8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="jnpacks\jnbio\mc">
-      <UniqueIdentifier>{be88d216-8ef8-4550-9083-45eb3a198817}</UniqueIdentifier>
+    <Filter Include="nsp\dhmc">
+      <UniqueIdentifier>{51c999eb-4d28-4fef-a545-fe465468021d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="jnpacks\jnbio\mcsm">
-      <UniqueIdentifier>{f22ece11-db50-48a4-ac2d-89efc592d1dc}</UniqueIdentifier>
+    <Filter Include="nsp\lrsp">
+      <UniqueIdentifier>{c9f46469-3da1-4804-a1c4-0c35a3b8035f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="jnpacks\jnbio\nuc2d">
-      <UniqueIdentifier>{03e1280d-0c4e-49a1-b549-d6a6b50da62d}</UniqueIdentifier>
+    <Filter Include="nsp\mc">
+      <UniqueIdentifier>{f7e423b0-acf6-4259-bf85-c2be173703df}</UniqueIdentifier>
     </Filter>
-    <Filter Include="jnpacks\jnbio\nuc3d">
-      <UniqueIdentifier>{db39983d-427a-4a4d-a249-937386c39f56}</UniqueIdentifier>
+    <Filter Include="nsp\mcsm">
+      <UniqueIdentifier>{d4982eb8-42d5-4242-af6e-07f44f89e8d4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="jnpacks\jnbio\pdb">
-      <UniqueIdentifier>{4261e3a3-4f53-4a08-ba58-fb8d7cfb7dab}</UniqueIdentifier>
+    <Filter Include="nsp\nuc2d">
+      <UniqueIdentifier>{3784b569-6c89-4f4c-9ec6-be947a0658d6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="jnpacks\jnbio\qhmc">
-      <UniqueIdentifier>{c4b7ea27-8305-4b45-a08b-31acd122a28c}</UniqueIdentifier>
+    <Filter Include="nsp\nuc3d">
+      <UniqueIdentifier>{b9470925-370f-4a56-8a6f-b51a84126568}</UniqueIdentifier>
     </Filter>
-    <Filter Include="jnpacks\jnbio\scoring">
-      <UniqueIdentifier>{ffe724bb-b547-490a-8c6d-9764f03a9716}</UniqueIdentifier>
+    <Filter Include="nsp\pdb">
+      <UniqueIdentifier>{0f6eecf8-46e3-43a5-b083-fd589fca475e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="jnpacks\jnbio\thmc">
-      <UniqueIdentifier>{e16581fb-faad-4727-9b9a-2d8588fc5dcb}</UniqueIdentifier>
+    <Filter Include="nsp\qhmc">
+      <UniqueIdentifier>{232c6691-dd63-4a1b-b6f3-b1314f2b8e3f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="jnpacks\jnbio\pdb\utils">
-      <UniqueIdentifier>{77a042d8-df85-4c51-9cd2-132b420b9642}</UniqueIdentifier>
+    <Filter Include="nsp\scoring">
+      <UniqueIdentifier>{8ad69f14-714e-4d46-9626-9055658cf8dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nsp\thmc">
+      <UniqueIdentifier>{d30a9149-f7d2-4241-9757-e9156ebba038}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="nsp\CMakeLists.txt">
-      <Filter>nsp</Filter>
-    </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="nsp\m_3drna.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_aa.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_align.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_anal.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_assemble.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_build_loop.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_build_loop_dg.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_cg_to_aa.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_check.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_client.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_cluster.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_contacts.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_dca.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_dist_frequencies.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_dist_weighted_frequencies.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_dist_weights.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_format.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_get_all_residues.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_helix_par.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_joint.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_len.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_mcc.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_md.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_min_dist.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_new_score.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_opt.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_parse_helix.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_pdb2jn.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_rebuild_chain.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_rmsd.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_score.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_seq.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_server.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_split.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_ss.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_ss_tree.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_ssa.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_ssp_dca.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_ssp_fe.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_sub.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_traj.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_transform.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_tri2d.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_view_mol_constraints.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\main.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\nsp.cpp">
-      <Filter>nsp</Filter>
-    </ClCompile>
     <ClCompile Include="jnpacks\jian\jian\matrix\Mat4.cpp">
       <Filter>jnpacks\jian\matrix</Filter>
     </ClCompile>
@@ -257,218 +111,176 @@
     <ClCompile Include="jnpacks\jian\jian\utils\string.cpp">
       <Filter>jnpacks\jian\utils</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\cg\CG.cpp">
-      <Filter>jnpacks\jnbio\cg</Filter>
+    <ClCompile Include="src\m_3drna.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\cg\CG1p.cpp">
-      <Filter>jnpacks\jnbio\cg</Filter>
+    <ClCompile Include="src\m_aa.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\cg\CG6p.cpp">
-      <Filter>jnpacks\jnbio\cg</Filter>
+    <ClCompile Include="src\m_align.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\cg\CGaa.cpp">
-      <Filter>jnpacks\jnbio\cg</Filter>
+    <ClCompile Include="src\m_anal.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\cg\CGpsb.cpp">
-      <Filter>jnpacks\jnbio\cg</Filter>
+    <ClCompile Include="src\m_assemble.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\cg\CompleteResidue.cpp">
-      <Filter>jnpacks\jnbio\cg</Filter>
+    <ClCompile Include="src\m_build_loop.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\cg\ResFrags.cpp">
-      <Filter>jnpacks\jnbio\cg</Filter>
+    <ClCompile Include="src\m_build_loop_dg.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\dca\Dca.cpp">
-      <Filter>jnpacks\jnbio\dca</Filter>
+    <ClCompile Include="src\m_cg_to_aa.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\dca\MfDca.cpp">
-      <Filter>jnpacks\jnbio\dca</Filter>
+    <ClCompile Include="src\m_check.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\dca\MpDca.cpp">
-      <Filter>jnpacks\jnbio\dca</Filter>
+    <ClCompile Include="src\m_client.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\dca\ss_pairs.cpp">
-      <Filter>jnpacks\jnbio\dca</Filter>
+    <ClCompile Include="src\m_cluster.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\dg\DG.cpp">
-      <Filter>jnpacks\jnbio\dg</Filter>
+    <ClCompile Include="src\m_contacts.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\dg\DihBound.cpp">
-      <Filter>jnpacks\jnbio\dg</Filter>
+    <ClCompile Include="src\m_dca.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\dg\Gradient.cpp">
-      <Filter>jnpacks\jnbio\dg</Filter>
+    <ClCompile Include="src\m_dist_frequencies.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\dg\smooth.cpp">
-      <Filter>jnpacks\jnbio\dg</Filter>
+    <ClCompile Include="src\m_dist_weighted_frequencies.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\dhmc\DHMC.cpp">
-      <Filter>jnpacks\jnbio\dhmc</Filter>
+    <ClCompile Include="src\m_dist_weights.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\lrsp\ss_complete.cpp">
-      <Filter>jnpacks\jnbio\lrsp</Filter>
+    <ClCompile Include="src\m_dtsp.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\lrsp\ss_del_sm_hp.cpp">
-      <Filter>jnpacks\jnbio\lrsp</Filter>
+    <ClCompile Include="src\m_format.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\lrsp\ss_hp_pred.cpp">
-      <Filter>jnpacks\jnbio\lrsp</Filter>
+    <ClCompile Include="src\m_get_all_residues.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\mc\MC.cpp">
-      <Filter>jnpacks\jnbio\mc</Filter>
+    <ClCompile Include="src\m_helix_par.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\mcsm\EnPsb.cpp">
-      <Filter>jnpacks\jnbio\mcsm</Filter>
+    <ClCompile Include="src\m_joint.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\mcsm\MCSM.cpp">
-      <Filter>jnpacks\jnbio\mcsm</Filter>
+    <ClCompile Include="src\m_len.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\mcsm\McsmBase.cpp">
-      <Filter>jnpacks\jnbio\mcsm</Filter>
+    <ClCompile Include="src\m_mcc.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\thmc\THeadHairpin.cpp">
-      <Filter>jnpacks\jnbio\thmc</Filter>
+    <ClCompile Include="src\m_md.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\thmc\THelix.cpp">
-      <Filter>jnpacks\jnbio\thmc</Filter>
+    <ClCompile Include="src\m_min_dist.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\thmc\TLoop.cpp">
-      <Filter>jnpacks\jnbio\thmc</Filter>
+    <ClCompile Include="src\m_new_score.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\thmc\TModule.cpp">
-      <Filter>jnpacks\jnbio\thmc</Filter>
+    <ClCompile Include="src\m_opt.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\thmc\TTailHairpin.cpp">
-      <Filter>jnpacks\jnbio\thmc</Filter>
+    <ClCompile Include="src\m_parse_helix.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\scoring\DihAnal.cpp">
-      <Filter>jnpacks\jnbio\scoring</Filter>
+    <ClCompile Include="src\m_pdb2jn.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\scoring\DistAnal.cpp">
-      <Filter>jnpacks\jnbio\scoring</Filter>
+    <ClCompile Include="src\m_rebuild_chain.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\scoring\new_score.cpp">
-      <Filter>jnpacks\jnbio\scoring</Filter>
+    <ClCompile Include="src\m_rmsd.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\scoring\ParBp.cpp">
-      <Filter>jnpacks\jnbio\scoring</Filter>
+    <ClCompile Include="src\m_sample.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\scoring\Score1p.cpp">
-      <Filter>jnpacks\jnbio\scoring</Filter>
+    <ClCompile Include="src\m_score.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\scoring\Score6p.cpp">
-      <Filter>jnpacks\jnbio\scoring</Filter>
+    <ClCompile Include="src\m_seq.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\scoring\ScoreAa.cpp">
-      <Filter>jnpacks\jnbio\scoring</Filter>
+    <ClCompile Include="src\m_server.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\scoring\ScorePsb.cpp">
-      <Filter>jnpacks\jnbio\scoring</Filter>
+    <ClCompile Include="src\m_split.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\qhmc\HeadHairpin.cpp">
-      <Filter>jnpacks\jnbio\qhmc</Filter>
+    <ClCompile Include="src\m_ss.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\qhmc\Helix.cpp">
-      <Filter>jnpacks\jnbio\qhmc</Filter>
+    <ClCompile Include="src\m_ss_tree.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\qhmc\Loop.cpp">
-      <Filter>jnpacks\jnbio\qhmc</Filter>
+    <ClCompile Include="src\m_ssa.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\qhmc\Module.cpp">
-      <Filter>jnpacks\jnbio\qhmc</Filter>
+    <ClCompile Include="src\m_ssp_dca.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\qhmc\TailHairpin.cpp">
-      <Filter>jnpacks\jnbio\qhmc</Filter>
+    <ClCompile Include="src\m_ssp_fe.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\pdb\Atom.cpp">
-      <Filter>jnpacks\jnbio\pdb</Filter>
+    <ClCompile Include="src\m_sub.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\pdb\CifFileParser.cpp">
-      <Filter>jnpacks\jnbio\pdb</Filter>
+    <ClCompile Include="src\m_traj.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\pdb\io.cpp">
-      <Filter>jnpacks\jnbio\pdb</Filter>
+    <ClCompile Include="src\m_transform.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\pdb\MolParser.cpp">
-      <Filter>jnpacks\jnbio\pdb</Filter>
+    <ClCompile Include="src\m_tri2d.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\pdb\names.cpp">
-      <Filter>jnpacks\jnbio\pdb</Filter>
+    <ClCompile Include="src\m_tsp.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\pdb\PdbFileParser.cpp">
-      <Filter>jnpacks\jnbio\pdb</Filter>
+    <ClCompile Include="src\m_view_mol_constraints.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\pdb\Residue.cpp">
-      <Filter>jnpacks\jnbio\pdb</Filter>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\pdb\RNA.cpp">
-      <Filter>jnpacks\jnbio\pdb</Filter>
+    <ClCompile Include="src\nsp.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\pdb\utils\cluster_chains.cpp">
-      <Filter>jnpacks\jnbio\pdb\utils</Filter>
+    <ClCompile Include="nsp\cg\CG.cpp">
+      <Filter>nsp\cg</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\Assemble.cpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
+    <ClCompile Include="nsp\cg\CG1p.cpp">
+      <Filter>nsp\cg</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\BuildHelix.cpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
+    <ClCompile Include="nsp\cg\CG6p.cpp">
+      <Filter>nsp\cg</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\BuildLoopDG.cpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
+    <ClCompile Include="nsp\cg\CGaa.cpp">
+      <Filter>nsp\cg</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\BuildLoopRaw.cpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
+    <ClCompile Include="nsp\cg\CGpsb.cpp">
+      <Filter>nsp\cg</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\Constraints.cpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
+    <ClCompile Include="nsp\cg\CompleteResidue.cpp">
+      <Filter>nsp\cg</Filter>
     </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\Convert.cpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\Format.cpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\HelixPar.cpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\ParseHelix.cpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\SampleLoop.cpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\split.cpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\TemplRec.cpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\transform.cpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\nuc3d\TSP.cpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\nuc2d\NASS.cpp">
-      <Filter>jnpacks\jnbio\nuc2d</Filter>
-    </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\nuc2d\ss_pred.cpp">
-      <Filter>jnpacks\jnbio\nuc2d</Filter>
-    </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\nuc2d\SSTree.cpp">
-      <Filter>jnpacks\jnbio\nuc2d</Filter>
-    </ClCompile>
-    <ClCompile Include="jnpacks\jnbio\jnbio\scoring\ScoreCg.cpp">
-      <Filter>jnpacks\jnbio\scoring</Filter>
-    </ClCompile>
-    <ClCompile Include="nsp\m_tsp.cpp">
-      <Filter>nsp</Filter>
+    <ClCompile Include="nsp\cg\ResFrags.cpp">
+      <Filter>nsp\cg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="nsp\nsp.hpp">
-      <Filter>nsp</Filter>
-    </ClInclude>
     <ClInclude Include="jnpacks\jian\jian\geom\core.hpp">
       <Filter>jnpacks\jian\geom</Filter>
     </ClInclude>
@@ -637,371 +449,71 @@
     <ClInclude Include="jnpacks\jian\jian\utils.hpp">
       <Filter>jnpacks\jian</Filter>
     </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\cg\CG.hpp">
-      <Filter>jnpacks\jnbio\cg</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\cg\CG1p.hpp">
-      <Filter>jnpacks\jnbio\cg</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\cg\CG6p.hpp">
-      <Filter>jnpacks\jnbio\cg</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\cg\CGaa.hpp">
-      <Filter>jnpacks\jnbio\cg</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\cg\CGpsb.hpp">
-      <Filter>jnpacks\jnbio\cg</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\cg\CompleteResidue.hpp">
-      <Filter>jnpacks\jnbio\cg</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\cg\ResFrags.hpp">
-      <Filter>jnpacks\jnbio\cg</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\dca\Dca.hpp">
-      <Filter>jnpacks\jnbio\dca</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\dca\MfDca.hpp">
-      <Filter>jnpacks\jnbio\dca</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\dca\MpDca.hpp">
-      <Filter>jnpacks\jnbio\dca</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\dca\ss_pairs.hpp">
-      <Filter>jnpacks\jnbio\dca</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\dg\_DG.hpp">
-      <Filter>jnpacks\jnbio\dg</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\dg\CG.hpp">
-      <Filter>jnpacks\jnbio\dg</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\dg\CG-dev.hpp">
-      <Filter>jnpacks\jnbio\dg</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\dg\Constraints.hpp">
-      <Filter>jnpacks\jnbio\dg</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\dg\DG.hpp">
-      <Filter>jnpacks\jnbio\dg</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\dg\DGImpl.hpp">
-      <Filter>jnpacks\jnbio\dg</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\dg\DihBound.hpp">
-      <Filter>jnpacks\jnbio\dg</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\dg\Gradient.hpp">
-      <Filter>jnpacks\jnbio\dg</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\dg\Job.hpp">
-      <Filter>jnpacks\jnbio\dg</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\dg\MC.hpp">
-      <Filter>jnpacks\jnbio\dg</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\dg\Move.hpp">
-      <Filter>jnpacks\jnbio\dg</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\dg\smooth.hpp">
-      <Filter>jnpacks\jnbio\dg</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\dg\Sys.hpp">
-      <Filter>jnpacks\jnbio\dg</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\dg\TestMC.hpp">
-      <Filter>jnpacks\jnbio\dg</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\dhmc\DHMC.hpp">
-      <Filter>jnpacks\jnbio\dhmc</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\lrsp\LRTSP.hpp">
-      <Filter>jnpacks\jnbio\lrsp</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\lrsp\ss_complete.hpp">
-      <Filter>jnpacks\jnbio\lrsp</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\lrsp\ss_del_sm_hp.hpp">
-      <Filter>jnpacks\jnbio\lrsp</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\lrsp\ss_hp_pred.hpp">
-      <Filter>jnpacks\jnbio\lrsp</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\mc\MC.hpp">
-      <Filter>jnpacks\jnbio\mc</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\mcsm\EnPsb.hpp">
-      <Filter>jnpacks\jnbio\mcsm</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\mcsm\MCSM.hpp">
-      <Filter>jnpacks\jnbio\mcsm</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\mcsm\McsmBase.hpp">
-      <Filter>jnpacks\jnbio\mcsm</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\thmc\THeadHairpin.hpp">
-      <Filter>jnpacks\jnbio\thmc</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\thmc\THelix.hpp">
-      <Filter>jnpacks\jnbio\thmc</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\thmc\THMC.hpp">
-      <Filter>jnpacks\jnbio\thmc</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\thmc\TLoop.hpp">
-      <Filter>jnpacks\jnbio\thmc</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\thmc\TModule.hpp">
-      <Filter>jnpacks\jnbio\thmc</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\thmc\TTailHairpin.hpp">
-      <Filter>jnpacks\jnbio\thmc</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\DihAnal.hpp">
-      <Filter>jnpacks\jnbio\scoring</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\DistAnal.hpp">
-      <Filter>jnpacks\jnbio\scoring</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\new_score.hpp">
-      <Filter>jnpacks\jnbio\scoring</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\ParBp.hpp">
-      <Filter>jnpacks\jnbio\scoring</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\ResConf.hpp">
-      <Filter>jnpacks\jnbio\scoring</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\Score1p.hpp">
-      <Filter>jnpacks\jnbio\scoring</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\Score6p.hpp">
-      <Filter>jnpacks\jnbio\scoring</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\ScoreAa.hpp">
-      <Filter>jnpacks\jnbio\scoring</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\ScorePsb.hpp">
-      <Filter>jnpacks\jnbio\scoring</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\qhmc\HeadHairpin.hpp">
-      <Filter>jnpacks\jnbio\qhmc</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\qhmc\Helix.hpp">
-      <Filter>jnpacks\jnbio\qhmc</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\qhmc\Loop.hpp">
-      <Filter>jnpacks\jnbio\qhmc</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\qhmc\Module.hpp">
-      <Filter>jnpacks\jnbio\qhmc</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\qhmc\QHMC.hpp">
-      <Filter>jnpacks\jnbio\qhmc</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\qhmc\TailHairpin.hpp">
-      <Filter>jnpacks\jnbio\qhmc</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\Atom.hpp">
-      <Filter>jnpacks\jnbio\pdb</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\Chain.hpp">
-      <Filter>jnpacks\jnbio\pdb</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\CifFileParser.hpp">
-      <Filter>jnpacks\jnbio\pdb</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\io.hpp">
-      <Filter>jnpacks\jnbio\pdb</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\Model.hpp">
-      <Filter>jnpacks\jnbio\pdb</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\Molecule.hpp">
-      <Filter>jnpacks\jnbio\pdb</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\molmanip.hpp">
-      <Filter>jnpacks\jnbio\pdb</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\MolParser.hpp">
-      <Filter>jnpacks\jnbio\pdb</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\MolSerial.hpp">
-      <Filter>jnpacks\jnbio\pdb</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\names.hpp">
-      <Filter>jnpacks\jnbio\pdb</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\PdbFileParser.hpp">
-      <Filter>jnpacks\jnbio\pdb</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\Residue.hpp">
-      <Filter>jnpacks\jnbio\pdb</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\RNA.hpp">
-      <Filter>jnpacks\jnbio\pdb</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\pdb\utils\cluster_chains.hpp">
-      <Filter>jnpacks\jnbio\pdb\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\AddPhos.hpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\Assemble.hpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\BasicPredict3D.hpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\BuildChain.hpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\BuildHelix.hpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\BuildLoopDG.hpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\BuildLoopRaw.hpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\BuildNuc.hpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\BuildStrand.hpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\Connect.hpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\Constraints.hpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\Convert.hpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\Format.hpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\HelixPar.hpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\JointHelix.hpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\ParseHelix.hpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\SampleLoop.hpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\split.hpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\SplitModel.hpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\TemplRec.hpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\transform.hpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d\TSP.hpp">
-      <Filter>jnpacks\jnbio\nuc3d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\bp.hpp">
-      <Filter>jnpacks\jnbio\nuc2d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\BuildSST.hpp">
-      <Filter>jnpacks\jnbio\nuc2d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\GetSS.hpp">
-      <Filter>jnpacks\jnbio\nuc2d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\helix.hpp">
-      <Filter>jnpacks\jnbio\nuc2d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\Loop.hpp">
-      <Filter>jnpacks\jnbio\nuc2d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\MergeRings.hpp">
-      <Filter>jnpacks\jnbio\nuc2d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\NASS.hpp">
-      <Filter>jnpacks\jnbio\nuc2d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\PredQuaSS.hpp">
-      <Filter>jnpacks\jnbio\nuc2d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\PredTriSS.hpp">
-      <Filter>jnpacks\jnbio\nuc2d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\res.hpp">
-      <Filter>jnpacks\jnbio\nuc2d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\ss_pred.hpp">
-      <Filter>jnpacks\jnbio\nuc2d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\SSE.hpp">
-      <Filter>jnpacks\jnbio\nuc2d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\SST.hpp">
-      <Filter>jnpacks\jnbio\nuc2d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\SSTree.hpp">
-      <Filter>jnpacks\jnbio\nuc2d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d\Tree.hpp">
-      <Filter>jnpacks\jnbio\nuc2d</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\cg.hpp">
-      <Filter>jnpacks\jnbio</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\dca.hpp">
-      <Filter>jnpacks\jnbio</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\dg.hpp">
-      <Filter>jnpacks\jnbio</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\dhmc.hpp">
-      <Filter>jnpacks\jnbio</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\lrsp.hpp">
-      <Filter>jnpacks\jnbio</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\mc.hpp">
-      <Filter>jnpacks\jnbio</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\mcsm.hpp">
-      <Filter>jnpacks\jnbio</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc2d.hpp">
-      <Filter>jnpacks\jnbio</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\nuc3d.hpp">
-      <Filter>jnpacks\jnbio</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\pdb.hpp">
-      <Filter>jnpacks\jnbio</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\qhmc.hpp">
-      <Filter>jnpacks\jnbio</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\scoring.hpp">
-      <Filter>jnpacks\jnbio</Filter>
-    </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\thmc.hpp">
-      <Filter>jnpacks\jnbio</Filter>
-    </ClInclude>
     <ClInclude Include="jnpacks\jntest\jntest\UnitTest.hpp">
       <Filter>jnpacks\jntest</Filter>
     </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\ScoreCg.hpp">
-      <Filter>jnpacks\jnbio\scoring</Filter>
+    <ClInclude Include="src\nsp.hpp">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="jnpacks\jnbio\jnbio\scoring\Score.hpp">
-      <Filter>jnpacks\jnbio\scoring</Filter>
+    <ClInclude Include="nsp\cg.hpp">
+      <Filter>nsp</Filter>
+    </ClInclude>
+    <ClInclude Include="nsp\dca.hpp">
+      <Filter>nsp</Filter>
+    </ClInclude>
+    <ClInclude Include="nsp\dg.hpp">
+      <Filter>nsp</Filter>
+    </ClInclude>
+    <ClInclude Include="nsp\dhmc.hpp">
+      <Filter>nsp</Filter>
+    </ClInclude>
+    <ClInclude Include="nsp\lrsp.hpp">
+      <Filter>nsp</Filter>
+    </ClInclude>
+    <ClInclude Include="nsp\mc.hpp">
+      <Filter>nsp</Filter>
+    </ClInclude>
+    <ClInclude Include="nsp\mcsm.hpp">
+      <Filter>nsp</Filter>
+    </ClInclude>
+    <ClInclude Include="nsp\nuc2d.hpp">
+      <Filter>nsp</Filter>
+    </ClInclude>
+    <ClInclude Include="nsp\nuc3d.hpp">
+      <Filter>nsp</Filter>
+    </ClInclude>
+    <ClInclude Include="nsp\pdb.hpp">
+      <Filter>nsp</Filter>
+    </ClInclude>
+    <ClInclude Include="nsp\qhmc.hpp">
+      <Filter>nsp</Filter>
+    </ClInclude>
+    <ClInclude Include="nsp\scoring.hpp">
+      <Filter>nsp</Filter>
+    </ClInclude>
+    <ClInclude Include="nsp\thmc.hpp">
+      <Filter>nsp</Filter>
+    </ClInclude>
+    <ClInclude Include="nsp\cg\CG.hpp">
+      <Filter>nsp\cg</Filter>
+    </ClInclude>
+    <ClInclude Include="nsp\cg\CG1p.hpp">
+      <Filter>nsp\cg</Filter>
+    </ClInclude>
+    <ClInclude Include="nsp\cg\CG6p.hpp">
+      <Filter>nsp\cg</Filter>
+    </ClInclude>
+    <ClInclude Include="nsp\cg\CGaa.hpp">
+      <Filter>nsp\cg</Filter>
+    </ClInclude>
+    <ClInclude Include="nsp\cg\CGpsb.hpp">
+      <Filter>nsp\cg</Filter>
+    </ClInclude>
+    <ClInclude Include="nsp\cg\CompleteResidue.hpp">
+      <Filter>nsp\cg</Filter>
+    </ClInclude>
+    <ClInclude Include="nsp\cg\ResFrags.hpp">
+      <Filter>nsp\cg</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
