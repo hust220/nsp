@@ -189,7 +189,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(MSMPI_INC);$(MSMPI_INC)\x86;$(SolutionDir)jnpacks\eigen;$(SolutionDir)jnpacks\jian;$(SolutionDir)jnpacks\jnbio;$(SolutionDir)jnpacks\jntest</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSMPI_INC);$(MSMPI_INC)\x86;$(SolutionDir)jnpacks\eigen;$(SolutionDir)jnpacks\jian;$(SolutionDir);$(SolutionDir)jnpacks\jntest</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;JN_PARA;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -233,6 +233,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Users\lei\Desktop\wj\projs\nsp;C:\Users\lei\Desktop\wj\projs\nsp\jnpacks\jian;C:\Users\lei\Desktop\wj\projs\nsp\jnpacks\eigen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -270,6 +271,67 @@
     <ClCompile Include="nsp\cg\CGpsb.cpp" />
     <ClCompile Include="nsp\cg\CompleteResidue.cpp" />
     <ClCompile Include="nsp\cg\ResFrags.cpp" />
+    <ClCompile Include="nsp\dca\Dca.cpp" />
+    <ClCompile Include="nsp\dca\MfDca.cpp" />
+    <ClCompile Include="nsp\dca\MpDca.cpp" />
+    <ClCompile Include="nsp\dca\ss_pairs.cpp" />
+    <ClCompile Include="nsp\dg\DG.cpp" />
+    <ClCompile Include="nsp\dg\DihBound.cpp" />
+    <ClCompile Include="nsp\dg\Gradient.cpp" />
+    <ClCompile Include="nsp\dg\smooth.cpp" />
+    <ClCompile Include="nsp\dhmc\DHMC.cpp" />
+    <ClCompile Include="nsp\lrsp\ss_complete.cpp" />
+    <ClCompile Include="nsp\lrsp\ss_del_sm_hp.cpp" />
+    <ClCompile Include="nsp\lrsp\ss_hp_pred.cpp" />
+    <ClCompile Include="nsp\mcsm\EnPsb.cpp" />
+    <ClCompile Include="nsp\mcsm\MCSM.cpp" />
+    <ClCompile Include="nsp\mcsm\McsmBase.cpp" />
+    <ClCompile Include="nsp\mc\MC.cpp" />
+    <ClCompile Include="nsp\nuc2d\NASS.cpp" />
+    <ClCompile Include="nsp\nuc2d\SSTree.cpp" />
+    <ClCompile Include="nsp\nuc2d\ss_pred.cpp" />
+    <ClCompile Include="nsp\nuc3d\Assemble.cpp" />
+    <ClCompile Include="nsp\nuc3d\BuildHelix.cpp" />
+    <ClCompile Include="nsp\nuc3d\BuildLoopDG.cpp" />
+    <ClCompile Include="nsp\nuc3d\BuildLoopRaw.cpp" />
+    <ClCompile Include="nsp\nuc3d\Constraints.cpp" />
+    <ClCompile Include="nsp\nuc3d\Convert.cpp" />
+    <ClCompile Include="nsp\nuc3d\Format.cpp" />
+    <ClCompile Include="nsp\nuc3d\HelixPar.cpp" />
+    <ClCompile Include="nsp\nuc3d\ParseHelix.cpp" />
+    <ClCompile Include="nsp\nuc3d\SampleLoop.cpp" />
+    <ClCompile Include="nsp\nuc3d\split.cpp" />
+    <ClCompile Include="nsp\nuc3d\TemplRec.cpp" />
+    <ClCompile Include="nsp\nuc3d\transform.cpp" />
+    <ClCompile Include="nsp\nuc3d\TSP.cpp" />
+    <ClCompile Include="nsp\pdb\Atom.cpp" />
+    <ClCompile Include="nsp\pdb\CifFileParser.cpp" />
+    <ClCompile Include="nsp\pdb\io.cpp" />
+    <ClCompile Include="nsp\pdb\MolParser.cpp" />
+    <ClCompile Include="nsp\pdb\names.cpp" />
+    <ClCompile Include="nsp\pdb\PdbFileParser.cpp" />
+    <ClCompile Include="nsp\pdb\Residue.cpp" />
+    <ClCompile Include="nsp\pdb\RNA.cpp" />
+    <ClCompile Include="nsp\pdb\utils\cluster_chains.cpp" />
+    <ClCompile Include="nsp\qhmc\HeadHairpin.cpp" />
+    <ClCompile Include="nsp\qhmc\Helix.cpp" />
+    <ClCompile Include="nsp\qhmc\Loop.cpp" />
+    <ClCompile Include="nsp\qhmc\Module.cpp" />
+    <ClCompile Include="nsp\qhmc\TailHairpin.cpp" />
+    <ClCompile Include="nsp\scoring\DihAnal.cpp" />
+    <ClCompile Include="nsp\scoring\DistAnal.cpp" />
+    <ClCompile Include="nsp\scoring\new_score.cpp" />
+    <ClCompile Include="nsp\scoring\ParBp.cpp" />
+    <ClCompile Include="nsp\scoring\Score1p.cpp" />
+    <ClCompile Include="nsp\scoring\Score6p.cpp" />
+    <ClCompile Include="nsp\scoring\ScoreAa.cpp" />
+    <ClCompile Include="nsp\scoring\ScoreCg.cpp" />
+    <ClCompile Include="nsp\scoring\ScorePsb.cpp" />
+    <ClCompile Include="nsp\thmc\THeadHairpin.cpp" />
+    <ClCompile Include="nsp\thmc\THelix.cpp" />
+    <ClCompile Include="nsp\thmc\TLoop.cpp" />
+    <ClCompile Include="nsp\thmc\TModule.cpp" />
+    <ClCompile Include="nsp\thmc\TTailHairpin.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\m_3drna.cpp" />
     <ClCompile Include="src\m_aa.cpp" />
@@ -387,17 +449,118 @@
     <ClInclude Include="nsp\cg\CompleteResidue.hpp" />
     <ClInclude Include="nsp\cg\ResFrags.hpp" />
     <ClInclude Include="nsp\dca.hpp" />
+    <ClInclude Include="nsp\dca\Dca.hpp" />
+    <ClInclude Include="nsp\dca\MfDca.hpp" />
+    <ClInclude Include="nsp\dca\MpDca.hpp" />
+    <ClInclude Include="nsp\dca\ss_pairs.hpp" />
     <ClInclude Include="nsp\dg.hpp" />
+    <ClInclude Include="nsp\dg\CG-dev.hpp" />
+    <ClInclude Include="nsp\dg\CG.hpp" />
+    <ClInclude Include="nsp\dg\Constraints.hpp" />
+    <ClInclude Include="nsp\dg\DG.hpp" />
+    <ClInclude Include="nsp\dg\DGImpl.hpp" />
+    <ClInclude Include="nsp\dg\DihBound.hpp" />
+    <ClInclude Include="nsp\dg\Gradient.hpp" />
+    <ClInclude Include="nsp\dg\Job.hpp" />
+    <ClInclude Include="nsp\dg\MC.hpp" />
+    <ClInclude Include="nsp\dg\Move.hpp" />
+    <ClInclude Include="nsp\dg\smooth.hpp" />
+    <ClInclude Include="nsp\dg\Sys.hpp" />
+    <ClInclude Include="nsp\dg\TestMC.hpp" />
+    <ClInclude Include="nsp\dg\_DG.hpp" />
     <ClInclude Include="nsp\dhmc.hpp" />
+    <ClInclude Include="nsp\dhmc\DHMC.hpp" />
     <ClInclude Include="nsp\lrsp.hpp" />
+    <ClInclude Include="nsp\lrsp\LRTSP.hpp" />
+    <ClInclude Include="nsp\lrsp\ss_complete.hpp" />
+    <ClInclude Include="nsp\lrsp\ss_del_sm_hp.hpp" />
+    <ClInclude Include="nsp\lrsp\ss_hp_pred.hpp" />
     <ClInclude Include="nsp\mc.hpp" />
     <ClInclude Include="nsp\mcsm.hpp" />
+    <ClInclude Include="nsp\mcsm\EnPsb.hpp" />
+    <ClInclude Include="nsp\mcsm\MCSM.hpp" />
+    <ClInclude Include="nsp\mcsm\McsmBase.hpp" />
+    <ClInclude Include="nsp\mc\MC.hpp" />
     <ClInclude Include="nsp\nuc2d.hpp" />
+    <ClInclude Include="nsp\nuc2d\bp.hpp" />
+    <ClInclude Include="nsp\nuc2d\BuildSST.hpp" />
+    <ClInclude Include="nsp\nuc2d\GetSS.hpp" />
+    <ClInclude Include="nsp\nuc2d\helix.hpp" />
+    <ClInclude Include="nsp\nuc2d\Loop.hpp" />
+    <ClInclude Include="nsp\nuc2d\MergeRings.hpp" />
+    <ClInclude Include="nsp\nuc2d\NASS.hpp" />
+    <ClInclude Include="nsp\nuc2d\PredQuaSS.hpp" />
+    <ClInclude Include="nsp\nuc2d\PredTriSS.hpp" />
+    <ClInclude Include="nsp\nuc2d\res.hpp" />
+    <ClInclude Include="nsp\nuc2d\SSE.hpp" />
+    <ClInclude Include="nsp\nuc2d\SST.hpp" />
+    <ClInclude Include="nsp\nuc2d\SSTree.hpp" />
+    <ClInclude Include="nsp\nuc2d\ss_pred.hpp" />
+    <ClInclude Include="nsp\nuc2d\Tree.hpp" />
     <ClInclude Include="nsp\nuc3d.hpp" />
+    <ClInclude Include="nsp\nuc3d\AddPhos.hpp" />
+    <ClInclude Include="nsp\nuc3d\Assemble.hpp" />
+    <ClInclude Include="nsp\nuc3d\BasicPredict3D.hpp" />
+    <ClInclude Include="nsp\nuc3d\BuildChain.hpp" />
+    <ClInclude Include="nsp\nuc3d\BuildHelix.hpp" />
+    <ClInclude Include="nsp\nuc3d\BuildLoopDG.hpp" />
+    <ClInclude Include="nsp\nuc3d\BuildLoopRaw.hpp" />
+    <ClInclude Include="nsp\nuc3d\BuildNuc.hpp" />
+    <ClInclude Include="nsp\nuc3d\BuildStrand.hpp" />
+    <ClInclude Include="nsp\nuc3d\Connect.hpp" />
+    <ClInclude Include="nsp\nuc3d\Constraints.hpp" />
+    <ClInclude Include="nsp\nuc3d\Convert.hpp" />
+    <ClInclude Include="nsp\nuc3d\Format.hpp" />
+    <ClInclude Include="nsp\nuc3d\HelixPar.hpp" />
+    <ClInclude Include="nsp\nuc3d\JointHelix.hpp" />
+    <ClInclude Include="nsp\nuc3d\ParseHelix.hpp" />
+    <ClInclude Include="nsp\nuc3d\SampleLoop.hpp" />
+    <ClInclude Include="nsp\nuc3d\split.hpp" />
+    <ClInclude Include="nsp\nuc3d\SplitModel.hpp" />
+    <ClInclude Include="nsp\nuc3d\TemplRec.hpp" />
+    <ClInclude Include="nsp\nuc3d\transform.hpp" />
+    <ClInclude Include="nsp\nuc3d\TSP.hpp" />
     <ClInclude Include="nsp\pdb.hpp" />
+    <ClInclude Include="nsp\pdb\Atom.hpp" />
+    <ClInclude Include="nsp\pdb\Chain.hpp" />
+    <ClInclude Include="nsp\pdb\CifFileParser.hpp" />
+    <ClInclude Include="nsp\pdb\io.hpp" />
+    <ClInclude Include="nsp\pdb\Model.hpp" />
+    <ClInclude Include="nsp\pdb\Molecule.hpp" />
+    <ClInclude Include="nsp\pdb\molmanip.hpp" />
+    <ClInclude Include="nsp\pdb\MolParser.hpp" />
+    <ClInclude Include="nsp\pdb\MolSerial.hpp" />
+    <ClInclude Include="nsp\pdb\names.hpp" />
+    <ClInclude Include="nsp\pdb\PdbFileParser.hpp" />
+    <ClInclude Include="nsp\pdb\Residue.hpp" />
+    <ClInclude Include="nsp\pdb\RNA.hpp" />
+    <ClInclude Include="nsp\pdb\utils\cluster_chains.hpp" />
     <ClInclude Include="nsp\qhmc.hpp" />
+    <ClInclude Include="nsp\qhmc\HeadHairpin.hpp" />
+    <ClInclude Include="nsp\qhmc\Helix.hpp" />
+    <ClInclude Include="nsp\qhmc\Loop.hpp" />
+    <ClInclude Include="nsp\qhmc\Module.hpp" />
+    <ClInclude Include="nsp\qhmc\QHMC.hpp" />
+    <ClInclude Include="nsp\qhmc\TailHairpin.hpp" />
     <ClInclude Include="nsp\scoring.hpp" />
+    <ClInclude Include="nsp\scoring\DihAnal.hpp" />
+    <ClInclude Include="nsp\scoring\DistAnal.hpp" />
+    <ClInclude Include="nsp\scoring\new_score.hpp" />
+    <ClInclude Include="nsp\scoring\ParBp.hpp" />
+    <ClInclude Include="nsp\scoring\ResConf.hpp" />
+    <ClInclude Include="nsp\scoring\Score.hpp" />
+    <ClInclude Include="nsp\scoring\Score1p.hpp" />
+    <ClInclude Include="nsp\scoring\Score6p.hpp" />
+    <ClInclude Include="nsp\scoring\ScoreAa.hpp" />
+    <ClInclude Include="nsp\scoring\ScoreCg.hpp" />
+    <ClInclude Include="nsp\scoring\ScorePsb.hpp" />
     <ClInclude Include="nsp\thmc.hpp" />
+    <ClInclude Include="nsp\thmc\THeadHairpin.hpp" />
+    <ClInclude Include="nsp\thmc\THelix.hpp" />
+    <ClInclude Include="nsp\thmc\THMC.hpp" />
+    <ClInclude Include="nsp\thmc\TLoop.hpp" />
+    <ClInclude Include="nsp\thmc\TModule.hpp" />
+    <ClInclude Include="nsp\thmc\TTailHairpin.hpp" />
     <ClInclude Include="src\nsp.hpp" />
   </ItemGroup>
   <ItemGroup>
