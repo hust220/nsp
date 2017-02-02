@@ -1,5 +1,5 @@
 #include "nsp.hpp"
-#include <jnbio/nuc3d/split.hpp>
+#include <nsp/nuc3d/split.hpp>
 
 BEGIN_JN
 

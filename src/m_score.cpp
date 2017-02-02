@@ -1,10 +1,10 @@
 #include "nsp.hpp"
 #include <jian/geom.hpp>
-#include <jnbio/pdb.hpp>
-#include <jnbio/scoring/ScoreAa.hpp>
-#include <jnbio/scoring/Score.hpp>
+#include <nsp/pdb.hpp>
+#include <nsp/scoring/ScoreAa.hpp>
+#include <nsp/scoring/Score.hpp>
 #include <jian/utils/file.hpp>
-#include <jnbio/nuc3d/Format.hpp>
+#include <nsp/nuc3d/Format.hpp>
 #include <jian/utils/log.hpp>
 
 BEGIN_JN

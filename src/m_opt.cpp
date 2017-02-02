@@ -1,7 +1,7 @@
 #include "nsp.hpp"
-#include <jnbio/dhmc/DHMC.hpp>
-#include <jnbio/thmc/THMC.hpp>
-#include <jnbio/qhmc/QHMC.hpp>
+#include <nsp/dhmc/DHMC.hpp>
+#include <nsp/thmc/THMC.hpp>
+#include <nsp/qhmc/QHMC.hpp>
 
 BEGIN_JN
 

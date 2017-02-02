@@ -1,6 +1,6 @@
 #include "nsp.hpp"
-#include <jnbio/nuc2d.hpp>
-#include <jnbio/dca.hpp>
+#include <nsp/nuc2d.hpp>
+#include <nsp/dca.hpp>
 
 BEGIN_JN
 

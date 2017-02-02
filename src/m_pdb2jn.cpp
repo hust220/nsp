@@ -1,5 +1,5 @@
 #include "nsp.hpp"
-#include <jnbio/pdb.hpp>
+#include <nsp/pdb.hpp>
 #include <jian/utils/log.hpp>
 
 BEGIN_JN

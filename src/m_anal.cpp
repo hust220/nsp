@@ -1,9 +1,9 @@
 #include "nsp.hpp"
-#include <jnbio/pdb/Model.hpp>
+#include <nsp/pdb/Model.hpp>
 #include <jian/geom.hpp>
 #include <jian/pp.hpp>
 #include <jian/utils/Debug.hpp>
-#include <jnbio/nuc3d/ParseHelix.hpp>
+#include <nsp/nuc3d/ParseHelix.hpp>
 
 BEGIN_JN
 

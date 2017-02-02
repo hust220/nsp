@@ -5,7 +5,7 @@
 #include <deque>
 #include <Eigen/Dense>
 #include "nsp.hpp"
-#include <jnbio/pdb.hpp>
+#include <nsp/pdb.hpp>
 #include <jian/utils/Cluster.hpp>
 #include <jian/geom/suppos.hpp>
 #include <jian/utils/file.hpp>

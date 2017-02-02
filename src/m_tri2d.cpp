@@ -1,5 +1,5 @@
 #include "nsp.hpp"
-#include <jnbio/nuc2d/PredTriSS.hpp>
+#include <nsp/nuc2d/PredTriSS.hpp>
 
 BEGIN_JN
 

@@ -1,5 +1,5 @@
 #include "nsp.hpp"
-#include <jnbio/nuc3d/BuildLoopDG.hpp>
+#include <nsp/nuc3d/BuildLoopDG.hpp>
 
 BEGIN_JN
 

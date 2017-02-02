@@ -1,6 +1,6 @@
 #include "nsp.hpp"
-#include <jnbio/nuc2d/SSTree.hpp>
-#include <jnbio/nuc2d/SSE.hpp>
+#include <nsp/nuc2d/SSTree.hpp>
+#include <nsp/nuc2d/SSE.hpp>
 #include <jian/utils/exception.hpp>
 
 BEGIN_JN

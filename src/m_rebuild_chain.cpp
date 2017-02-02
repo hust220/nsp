@@ -2,7 +2,7 @@
 #include <string>
 #include <iostream>
 #include "nsp.hpp"
-#include <jnbio/pdb.hpp>
+#include <nsp/pdb.hpp>
 #include <jian/geom/core.hpp>
 
 BEGIN_JN

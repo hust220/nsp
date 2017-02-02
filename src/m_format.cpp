@@ -1,6 +1,6 @@
 #include "nsp.hpp"
-#include <jnbio/pdb.hpp>
-#include <jnbio/nuc3d/Format.hpp>
+#include <nsp/pdb.hpp>
+#include <nsp/nuc3d/Format.hpp>
 
 BEGIN_JN
 	namespace {

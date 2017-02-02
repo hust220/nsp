@@ -1,10 +1,10 @@
 #include <memory>
-#include <jnbio/pdb.hpp>
-#include <jnbio/cg.hpp>
-#include <jnbio/scoring/ParBp.hpp>
+#include <nsp/pdb.hpp>
+#include <nsp/cg.hpp>
+#include <nsp/scoring/ParBp.hpp>
 #include <jian/geom.hpp>
 #include <jian/utils/Serial.hpp>
-#include <jnbio/nuc3d/BuildChain.hpp>
+#include <nsp/nuc3d/BuildChain.hpp>
 #include <jian/utils/file.hpp>
 //#include <jian/mpi.hpp>
 #include "nsp.hpp"

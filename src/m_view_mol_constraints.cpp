@@ -2,9 +2,9 @@
 #include <map>
 #include <functional>
 #include "nsp.hpp"
-#include <jnbio/pdb.hpp>
+#include <nsp/pdb.hpp>
 #include <jian/geom.hpp>
-#include <jnbio/nuc2d/SSTree.hpp>
+#include <nsp/nuc2d/SSTree.hpp>
 #include <jian/utils/exception.hpp>
 #include <jian/utils/file.hpp>
 #include <jian/utils/traits.hpp>

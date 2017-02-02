@@ -1,6 +1,6 @@
 #include <string>
 #include "nsp.hpp"
-#include <jnbio/nuc3d/transform.hpp>
+#include <nsp/nuc3d/transform.hpp>
 
 BEGIN_JN
 

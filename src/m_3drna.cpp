@@ -1,10 +1,10 @@
 #include "nsp.hpp"
 #include <thread>
-#include <jnbio/nuc3d/Assemble.hpp>
-#include <jnbio/dhmc/DHMC.hpp>
-#include <jnbio/thmc/THMC.hpp>
-#include <jnbio/qhmc/QHMC.hpp>
-#include <jnbio/pdb/utils/cluster_chains.hpp>
+#include <nsp/nuc3d/Assemble.hpp>
+#include <nsp/dhmc/DHMC.hpp>
+#include <nsp/thmc/THMC.hpp>
+#include <nsp/qhmc/QHMC.hpp>
+#include <nsp/pdb/utils/cluster_chains.hpp>
 
 BEGIN_JN
 

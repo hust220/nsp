@@ -1,6 +1,6 @@
 #include "nsp.hpp"
-#include <jnbio/nuc3d/JointHelix.hpp>
-#include <jnbio/pdb/Model.hpp>
+#include <nsp/nuc3d/JointHelix.hpp>
+#include <nsp/pdb/Model.hpp>
 #include <jian/geom.hpp>
 
 BEGIN_JN

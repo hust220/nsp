@@ -1,5 +1,5 @@
 #include "nsp.hpp"
-#include <jnbio/nuc2d/ss_pred.hpp>
+#include <nsp/nuc2d/ss_pred.hpp>
 
 BEGIN_JN
 

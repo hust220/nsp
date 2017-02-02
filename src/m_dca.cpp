@@ -1,7 +1,7 @@
-#include <jnbio/dca/Dca.hpp>
-#include <jnbio/dca/ss_pairs.hpp>
-#include <jnbio/nuc2d/SSTree.hpp>
-#include <jnbio/nuc2d/SSE.hpp>
+#include <nsp/dca/Dca.hpp>
+#include <nsp/dca/ss_pairs.hpp>
+#include <nsp/nuc2d/SSTree.hpp>
+#include <nsp/nuc2d/SSE.hpp>
 #include "nsp.hpp"
 
 BEGIN_JN

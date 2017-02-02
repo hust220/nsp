@@ -1,6 +1,6 @@
 #include <sstream>
 #include "nsp.hpp"
-#include <jnbio/pdb.hpp>
+#include <nsp/pdb.hpp>
 #include <jian/geom.hpp>
 
 BEGIN_JN

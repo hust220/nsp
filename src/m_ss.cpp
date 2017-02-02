@@ -1,6 +1,6 @@
 #include "nsp.hpp"
-#include <jnbio/scoring/ParBp.hpp>
-#include <jnbio/dca.hpp>
+#include <nsp/scoring/ParBp.hpp>
+#include <nsp/dca.hpp>
 
 BEGIN_JN
 	namespace {

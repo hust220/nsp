@@ -1,5 +1,5 @@
 #include "nsp.hpp"
-#include <jnbio/nuc3d/ParseHelix.hpp>
+#include <nsp/nuc3d/ParseHelix.hpp>
 
 BEGIN_JN
 

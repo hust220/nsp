@@ -1,7 +1,7 @@
 #include "nsp.hpp"
-#include <jnbio/nuc3d/Assemble.hpp>
-#include <jnbio/pdb/utils/cluster_chains.hpp>
-#include <jnbio/scoring/Score.hpp>
+#include <nsp/nuc3d/Assemble.hpp>
+#include <nsp/pdb/utils/cluster_chains.hpp>
+#include <nsp/scoring/Score.hpp>
 
 BEGIN_JN
 

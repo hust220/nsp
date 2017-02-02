@@ -1,5 +1,5 @@
 #include "nsp.hpp"
-#include <jnbio/cg.hpp>
+#include <nsp/cg.hpp>
 
 BEGIN_JN
 

@@ -1,5 +1,5 @@
-#include <jnbio/lrsp.hpp>
-#include <jnbio/dca.hpp>
+#include <nsp/lrsp.hpp>
+#include <nsp/dca.hpp>
 #include <jian/utils/log.hpp>
 #include "nsp.hpp"
 #include <jian/utils/traits.hpp>

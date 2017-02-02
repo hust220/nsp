@@ -1,7 +1,7 @@
 #include "nsp.hpp"
-#include <jnbio/pdb.hpp>
+#include <nsp/pdb.hpp>
 #include <jian/geom.hpp>
-#include <jnbio/cg.hpp>
+#include <nsp/cg.hpp>
 
 BEGIN_JN
 

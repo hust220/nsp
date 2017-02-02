@@ -3,7 +3,7 @@
 #include <array>
 #include <iostream>
 #include "nsp.hpp"
-#include <jnbio/pdb.hpp>
+#include <nsp/pdb.hpp>
 #include <jian/geom.hpp>
 #include <jian/utils/string.hpp>
 

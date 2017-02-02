@@ -1,5 +1,5 @@
 #include "nsp.hpp"
-#include <jnbio/scoring/new_score.hpp>
+#include <nsp/scoring/new_score.hpp>
 #include <jian/utils/file.hpp>
 
 BEGIN_JN
