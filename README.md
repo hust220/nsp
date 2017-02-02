@@ -55,20 +55,14 @@ Documentation:[https://hust220.github.io/nsp](https://hust220.github.io/nsp)
     *   root user
  
             cd nsp
+            python jnpack.py update
             python jnpack.py install
-            mkdir build
-            cd build
-            cmake ..
-            make install
 
     *   ordinary user
 
             cd nsp
+            python jnpack.py update
             python jnpack.py install
-            mkdir build
-            cd build
-            cmake -DP=<PATH> ..
-            make install
 
 4.  download and uncompress templates library
 

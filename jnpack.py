@@ -1,3 +1,5 @@
+#! /bin/env python
+
 """========================================
 jnpack     A C++ package manager
 Author:    Jian Wang
@@ -15,6 +17,24 @@ SOLUTION_PATH = os.getcwd()
 JNP_PATH = SOLUTION_PATH + '/.jnp'
 PROJS_PATH = JNP_PATH + '/projs'
 JNPACKS_PATH = SOLUTION_PATH + '/jnpacks'
+CONFIG_FILE = "jnpack.json"
+
+DEFAULT_CONFIG = """{
+  "depends": [
+  ],
+
+  "projs": {
+    "default": {
+      "target": "test",
+      "cxx_flags": ["-std=c++14", "-pthread"],
+      "cxx_compiler": "$ENV{MPI_HOME}/bin/mpicxx",
+      "threads": 1,
+      "defs": [],
+      "dirs": []
+    }
+  }
+}
+"""
 
 def pars_to_cmake(pars, src):
     print pars
@@ -28,6 +48,7 @@ def pars_to_cmake(pars, src):
     str += "set(CMAKE_CXX_COMPILER %s)\n" % pars['cxx_compiler']
     str += "set(CMAKE_VERBOSE_MAKEFILE on)\n"
     str += "set(CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} %s\")\n" % ' '.join(pars['cxx_flags'])
+    str += "include_directories(%s)\n" % SOLUTION_PATH
     for i in glob.glob('%s/*' % JNPACKS_PATH):
         basename = os.path.basename(i)
         if basename != 'CMakeLists.txt':
@@ -37,7 +58,7 @@ def pars_to_cmake(pars, src):
     return str
 
 def read_config(dir):
-    path = dir + '/jnpack.json'
+    path = dir + '/' + CONFIG_FILE
     if not os.path.exists(path): return {}
 
     f = open(path)
@@ -45,24 +66,6 @@ def read_config(dir):
     f.close()
 
     return json.loads(content)
-
-def add_packs(ls, n):
-    if len(ls) == 0: return
-
-    packs = []
-    for pack in ls:
-        pack_path = JNPACKS_PATH + '/' + pack
-        if not os.path.exists(pack_path) or n == 0:
-            packs.append(pack)
-        if not os.path.exists(pack_path):
-            os.system('git clone https://github.com/hust220/%s.git' % pack)
-
-    ls = []
-    for pack in packs:
-        pack_path = JNPACKS_PATH + '/' + pack
-        ls.extend(read_config(pack_path)['depends'])
-
-    add_packs(ls, n + 1)
 
 def find_cpps(dir):
     matches = []
@@ -73,16 +76,37 @@ def find_cpps(dir):
 
 class Jnpack(object):
     def __init__(self):
-        self.config = read_config(SOLUTION_PATH)
-        self.depends = self.config['depends']
-        init_pars = {\
-            "cmake_version": "2.8.7",\
-            "install_prefix": JNP_PATH,\
-            "build_type": "Release"\
-            }
-        self.projs = self.config['projs']
-        self.projs_elim_extends()
-        self.projs_merge(init_pars)
+        if os.path.exists(SOLUTION_PATH + '/' + CONFIG_FILE):
+            self.config = read_config(SOLUTION_PATH)
+            self.depends = self.config['depends']
+            init_pars = {\
+                "cmake_version": "2.8.7",\
+                "install_prefix": JNP_PATH,\
+                "build_type": "Release"\
+                }
+            self.projs = self.config['projs']
+            self.projs_elim_extends()
+            self.projs_merge(init_pars)
+
+    def add_packs(self, ls, n):
+        if len(ls) == 0: return
+
+        packs = []
+        for pack in ls:
+            pack_path = JNPACKS_PATH + '/' + pack
+            if not os.path.exists(pack_path) or n == 0:
+                packs.append(pack)
+            if not os.path.exists(pack_path):
+                os.system('git clone https://github.com/hust220/%s.git' % pack)
+
+        ls = []
+        for pack in packs:
+            pack_path = JNPACKS_PATH + '/' + pack
+            config = read_config(pack_path)
+            if 'depends' in config:
+                ls.extend(config['depends'])
+
+        self.add_packs(ls, n + 1)
 
     def projs_merge(self, init_pars):
         for proj_name, proj in self.projs.iteritems():
@@ -112,7 +136,6 @@ class Jnpack(object):
             if basename != "CMakeLists.txt":
                 ls.extend(find_cpps(it + '/' + basename))
         return ls
-        #return "set(jnpacks_sources %s)\n" % (' '.join(ls),)
 
     def get_dirs_cpps(self, dir):
         return find_cpps(SOLUTION_PATH + '/' + dir)
@@ -120,7 +143,6 @@ class Jnpack(object):
     def get_proj_src(self, proj_name):
         ls = []
         ls.extend(self.get_jnpacks_cpps())
-        #print self.projs[proj_name]
         for dir in self.projs[proj_name]['dirs']:
             ls.extend(self.get_dirs_cpps(dir))
         return ls
@@ -152,7 +174,7 @@ class Jnpack(object):
     def update(self):
         if not os.path.exists(JNPACKS_PATH): os.mkdir(JNPACKS_PATH)
         os.chdir(JNPACKS_PATH)
-        add_packs(self.depends, 0)
+        self.add_packs(self.depends, 0)
         os.chdir(SOLUTION_PATH)
 
     def upgrade(self):
@@ -171,8 +193,12 @@ class Jnpack(object):
     def help(self):
         print __doc__
 
-    def init(self):
-        print __doc__
+    def init(self, dir):
+        filename = dir + '/' + CONFIG_FILE
+        if not os.path.exists(filename):
+            f = open(filename, 'w')
+            f.write(DEFAULT_CONFIG)
+            f.close()
 
 if __name__ == '__main__':
     jnpack = Jnpack()
@@ -189,7 +215,8 @@ if __name__ == '__main__':
             if len(sys.argv) == 2: jnpack.install('default')
             else: jnpack.install(sys.argv[2])
         elif func == 'init':
-            jnpack.init()
+            if len(sys.argv) == 2: jnpack.init('.')
+            else: jnpack.init(sys.argv[2])
         elif func == 'upgrade':
             jnpack.upgrade()
         elif func == 'update':
