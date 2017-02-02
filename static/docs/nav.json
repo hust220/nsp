@@ -1,0 +1,108 @@
+[
+    {
+        "text": "INSTALLATION",
+        "href": "#/doc/install",
+        "items": [
+            {
+                "href": "#/doc/install/requirements",
+                "text": "Requirements"
+            }, {
+                "href": "#/doc/install/install",
+                "text": "Install"
+            }
+        ]
+    }, {
+        "text": "Web Server",
+        "href": "#/doc/web",
+        "items": [
+            {
+                "href": "#/doc/web/assembly",
+                "text": "3dRNA"
+            }, {
+                "href": "#/doc/web/sampling",
+                "text": "3dRNA with sampling"
+            }, {
+                "href": "#/doc/web/optimization",
+                "text": "Optimization"
+            }, {
+                "href": "#/doc/web/3drnascore",
+                "text": "3dRNAscore"
+            }
+        ]
+    }, {
+        "text": "Secondary structure prediction",
+        "href": "#/doc/ssp",
+        "items": [
+            {
+                "href": "#/doc/ssp/fem",
+                "text": "Free energy minimization method"
+            }, {
+                "href": "#/doc/ssp/fem_dca",
+                "text": "FEM+DCA"
+            }, {
+                "href": "#/doc/ssp/mcc",
+                "text": "Calculate MCC"
+            }, {
+                "href": "#/doc/ssp/sty",
+                "text": "Calculate STY"
+            }, {
+                "href": "#/doc/ssp/ppv",
+                "text": "Calculate PPV"
+            }
+        ]
+    }, {
+        "text": "Tertiary structure prediction",
+        "href": "#/doc/tsp",
+        "items": [
+            {
+                "href": "#/doc/tsp/assembly",
+                "text": "Assembly"
+            }, {
+                "href": "#/doc/tsp/sampling",
+                "text": "Sampling"
+            }, {
+                "href": "#/doc/tsp/optimization",
+                "text": "Optimization"
+            }
+        ]
+    }, {
+        "text": "RNA tertiary structure scoring",
+        "href": "#/doc/scoring",
+        "items": [
+            {
+                "href": "#/doc/scoring/single",
+                "text": "score a single structure"
+            }, {
+                "href": "#/doc/scoring/multiple",
+                "text": "score multiple structures"
+            }
+        ]
+    }, {
+        "text": "Direct coupling analysis",
+        "href": "#/doc/dca",
+        "items": [
+            {
+                "text": "Mean field DCA",
+                "href": "#/doc/dca/mf"
+            }, {
+                "text": "Message propogation",
+                "href": "#/doc/dca/mp"
+            }
+        ]
+    }, {
+        "text": "Utilities",
+        "href": "#/doc/utils",
+        "items": [
+            {
+                "text": "Clustering",
+                "href": "#/doc/utils/clustering"
+            }, {
+                "text": "Calculating RMSD",
+                "href": "#/doc/utils/rmsd"
+            }, {
+                "text": "Retrieving sequence",
+                "href": "#/doc/utils/seq"
+            }
+        ]
+    }
+]
