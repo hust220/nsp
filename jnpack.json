@@ -1,6 +1,6 @@
 {
   "depends": [
-    "jnbio", "jntest"
+    "jian"
   ],
 
   "projs": {
@@ -13,7 +13,7 @@
       "cxx_flags": ["-std=c++14", "-pthread"],
       "cxx_compiler": "$ENV{MPI_HOME}/bin/mpicxx",
       "threads": 16,
-      "dirs": ["nsp"],
+      "dirs": ["nsp", "src"],
       "install_prefix": "/home/wangjian"
     },
 

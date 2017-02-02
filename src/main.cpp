@@ -2,18 +2,10 @@
 #include <jian/utils/string.hpp>
 #include <jian/utils/exception.hpp>
 #include <jian/utils/Env.hpp>
-
-#ifdef JN_PARA
-#  include <jian/mpi.hpp>
-#  define JN_INIT_MPI jian::g_mpi.reset(new jian::MPI)
-#else
-#  define JN_INIT_MPI
-#endif
+#include <jian/mpi.hpp>
 
 int main(int argc, char **argv) {
-	JN_ g_argc = argc;
-	JN_ g_argv = argv;
-	JN_INIT_MPI;
+	JN_MPI_INIT(argc, argv);
 #ifdef NDEBUG
 	try {
 		JN_ NSP::run(argc, argv);
@@ -30,5 +22,6 @@ int main(int argc, char **argv) {
 #else
 	JN_ NSP::run(argc, argv);
 #endif
+    JN_MPI_FREE;
 }
 
