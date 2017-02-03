@@ -11,67 +11,68 @@
 #define PRINT_MEM_EN_MCPSB(a) << a << PP_STRING3((a)) << ' '
 
 BEGIN_JN
-	class MCSM : public MCBase {
-	public:
-		struct en_t {
-			JN_MAP(DEF_MEM_EN_MCPSB, MEM_EN_MCPSB);
-			en_t() {
-				JN_MAP(INIT_MEM_EN_MCPSB, MEM_EN_MCPSB);
-			}
-			double sum() const { return 0 JN_MAP(SUM_MEM_EN_MCPSB, MEM_EN_MCPSB); }
-			void print() const { LOG << sum() << "(total) " JN_MAP(PRINT_MEM_EN_MCPSB, MEM_EN_MCPSB) << std::endl; }
-		};
 
-		struct atom_acc_t {
-			int n_res;
-			int n_atom;
-		};
+class MCSM : public MCBase {
+    public:
+        struct en_t {
+            JN_MAP(DEF_MEM_EN_MCPSB, MEM_EN_MCPSB);
+            en_t() {
+                JN_MAP(INIT_MEM_EN_MCPSB, MEM_EN_MCPSB);
+            }
+            double sum() const { return 0 JN_MAP(SUM_MEM_EN_MCPSB, MEM_EN_MCPSB); }
+            void print() const { LOG << sum() << "(total) " JN_MAP(PRINT_MEM_EN_MCPSB, MEM_EN_MCPSB) << std::endl; }
+        };
 
-		struct distance_constraints_t {
-			atom_acc_t atom1, atom2;
-			double min, max;
-		};
+        struct atom_acc_t {
+            int n_res;
+            int n_atom;
+        };
 
-		std::vector<int> m_indices;
-		Score *m_scorer;
-		std::vector<int> m_bps;
-		std::deque<distance_constraints_t> m_distance_constraints;
-		std::array<std::array<Mat, 4>, 4> m_bp_min_distances_table;
-		std::array<std::array<Mat, 4>, 4> m_bp_max_distances_table;
+        struct distance_constraints_t {
+            atom_acc_t atom1, atom2;
+            double min, max;
+        };
 
-		MCSM() = default;
+        std::vector<int> m_indices;
+        Score *m_scorer;
+        std::vector<int> m_bps;
+        std::deque<distance_constraints_t> m_distance_constraints;
+        std::array<std::array<Mat, 4>, 4> m_bp_min_distances_table;
+        std::array<std::array<Mat, 4>, 4> m_bp_max_distances_table;
 
-		void init(const Par &par);
+        MCSM() = default;
 
-		void set_indices();
+        void init(const Par &par);
 
-		void print_pairing();
+        void set_indices();
 
-		virtual double mc_partial_energy();
+        void print_pairing();
 
-		virtual double mc_total_energy();
+        virtual double mc_partial_energy();
 
-		void mc_energy_crash(en_t &e, bool is_total);
-		void mc_energy_bond(en_t &e, bool is_total);
-		void mc_energy_angle(en_t &e, bool is_total);
-		void mc_energy_dihedral(en_t &e, bool is_total);
-		void mc_energy_constraints(en_t &e, bool is_total);
+        virtual double mc_total_energy();
 
-		virtual double dist_two_res(const Residue &r1, const Residue &r2) const;
+        void mc_energy_crash(en_t &e, bool is_total);
+        void mc_energy_bond(en_t &e, bool is_total);
+        void mc_energy_angle(en_t &e, bool is_total);
+        void mc_energy_dihedral(en_t &e, bool is_total);
+        void mc_energy_constraints(en_t &e, bool is_total);
 
-		void set_total_energy(en_t &e);
+        virtual double dist_two_res(const Residue &r1, const Residue &r2) const;
 
-		virtual void write_en();
+        void set_total_energy(en_t &e);
 
-		virtual S file_parameters() const;
+        virtual void write_en();
 
-		virtual void finish_run();
+        virtual S file_parameters() const;
 
-		virtual bool is_selected(const int &i) const = 0;
+        virtual void finish_run();
 
-		virtual Vec rotating_center() const = 0;
+        virtual bool is_selected(const int &i) const = 0;
 
-	};
+        virtual Vec rotating_center() const = 0;
+
+};
 
 END_JN
 

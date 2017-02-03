@@ -626,6 +626,7 @@ void MCBase::run() {
 	log << "# Initializing running..." << std::endl;
 	before_run();
 
+	log << "# Save fixed ranges..." << std::endl;
 	save_fixed_ranges();
 
 	log << "# Carrying on CG processing with the Chain..." << std::endl;
@@ -646,10 +647,10 @@ void MCBase::run() {
 	log << "# Coarsed Grained To All Atom..." << std::endl;
 	_pred_chain = m_cg->to_aa(_pred_chain);
 
-	log << "# Restore helix..." << std::endl;
+	log << "# Restore fixed ranges..." << std::endl;
 	restore_fixed_ranges();
 
-	log << "# Transform..." << std::endl;
+	log << "# Transform sequences..." << std::endl;
 	transform();
 
 }

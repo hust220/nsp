@@ -25,7 +25,7 @@ namespace triple {
 
 using fac_t = Factory<TModule::cons_t>;
 
-class THMC : public MCSM{
+class THMC : public MCSM {
 public:
     using Res = struct {char seq; char ss; int num;};
     using indices_t = std::deque<int>;
@@ -66,24 +66,24 @@ public:
     void print_related_residues(const related_residues_t &r) {
         int len = _seq.size();
         for (int i = 0; i < len; i++) {
-            LOG << i << ' ';
+            log << i << ' ';
             for (auto && j : *(r[i])) {
-                LOG << j << ' ';
+                log << j << ' ';
             }
-            LOG << std::endl;
+            log << std::endl;
         }
     }
 
     void print_modules() {
         for (auto && module : d_modules) {
-            LOG << module<<' '<<module->d_max_len;
+            log << module<<' '<<module->d_max_len;
             for (auto && frag : module->d_frags) {
-                LOG << ' ';
+                log << ' ';
                 for (auto && i : frag) {
-                    LOG << i<<'-';
+                    log << i<<'-';
                 }
             }
-            LOG << std::endl;
+            log << std::endl;
         }
     }
 
@@ -112,31 +112,29 @@ public:
     }
 
     void build_initial_scaffold() {
-        LOG << "## Compute maximum length." << std::endl;
+        log << "## Compute maximum length." << std::endl;
         int len = std::accumulate(d_modules.begin(), d_modules.end(), 0, [](int n, auto &&m){
             return n + m->d_max_len;
         });
-        LOG << "## Build helix." << std::endl;
-        LOG << len << std::endl;
-//        Mat &&c = build_helix(len);
+        log << "## Build helix." << std::endl;
+        log << len << std::endl;
         Chain &&c = build_helix(len);
-//        write_chain(c, "aa.pdb");
-        LOG << "## Shrink to fit." << std::endl;
+        log << "## Shrink to fit." << std::endl;
         shrink_to_fit(c);
     }
 
     Chain build_helix(int len) {
         Chain c, c_;
         if (len <= 2) {
-            LOG << "### Load triple helix." << std::endl;
+            log << "### Load triple helix." << std::endl;
             c = load_triple_helix(len);
         } else {
-            LOG << "### Load triple helix." << std::endl;
+            log << "### Load triple helix." << std::endl;
             c = load_triple_helix(2);
             for (int i = 2; i < len; i++) {
-                LOG << "### Load triple helix." << std::endl;
+                log << "### Load triple helix." << std::endl;
                 c_ = load_triple_helix(2);
-                LOG << "### Connect triple helix." << std::endl;
+                log << "### Connect triple helix." << std::endl;
                 c = connect_triple_helix(c, c_);
             }
         }
@@ -171,12 +169,12 @@ public:
         set_coords_residue(m2, 0, c2[0]);
         set_coords_residue(m2, 1, c2[2 * len2 - 1]);
         set_coords_residue(m2, 2, c2[2 * len2]);
-        LOG << "## Supperposition." << std::endl;
+        log << "## Supperposition." << std::endl;
 		geom::Superposition<double> sp(m1, m2);
 		for (auto && res : c1) for (auto && atom : res) {
 			sp.apply(atom);
 		}
-        LOG << "## Set coordinates." << std::endl;
+        log << "## Set coordinates." << std::endl;
         Chain c;
         for (int i = 0; i < len1; i++)         c.push_back(c1[i]);
         for (int i = 0; i < len2 * 2 - 2; i++) c.push_back(c2[i + 1]);
@@ -192,18 +190,18 @@ public:
         for (int i = 0; i < d_modules.size(); i++) {
             Mati &m = *(d_modules[i]->d_indices);
             int l = m.rows();
-            LOG << m << std::endl;
+            log << m << std::endl;
             for (int j = 0; j < l; j++) {
                 if (m(j, 0) != -1) {
-                    LOG << m(j, 0)<<' '<<n + j << std::endl;
+                    log << m(j, 0)<<' '<<n + j << std::endl;
                     _pred_chain[m(j, 0)] = c[n + j];
                 }
                 if (m(j, 1) != -1) {
-                    LOG << m(j, 1)<<' '<<2 * len - 1 - n - j << std::endl;
+                    log << m(j, 1)<<' '<<2 * len - 1 - n - j << std::endl;
                     _pred_chain[m(j, 1)] = c[2 * len - 1 - n - j];
                 }
                 if (m(j, 2) != -1) {
-                    LOG << m(j, 2)<<' '<<2 * len + n + j << std::endl;
+                    log << m(j, 2)<<' '<<2 * len + n + j << std::endl;
                     _pred_chain[m(j, 2)] = c[2 * len + n + j];
                 }
             }
@@ -261,18 +259,18 @@ public:
     }
 
     void print_tuple(const Tuple &tuple) {
-        LOG << tuple[0]<<' '<<tuple[1]<<' '<<tuple[2] << std::endl;
+        log << tuple[0]<<' '<<tuple[1]<<' '<<tuple[2] << std::endl;
     }
 
     void print_helix(const Tuples &helix) {
-        LOG << "Helix:" << std::endl;
+        log << "Helix:" << std::endl;
         for (auto && tuple : helix) {
             print_tuple(tuple);
         }
     }
 
     void print_tree() {
-        LOG << "Tree: " << std::endl;
+        log << "Tree: " << std::endl;
         for (auto && helix : _tree) {
             print_helix(helix);
         }
@@ -304,26 +302,26 @@ public:
             }
         }
         set_unrelated_residues();
-        LOG << "## Print related residues" << std::endl;
+        log << "## Print related residues" << std::endl;
         print_related_residues(d_mc_related_residues);
-        LOG << "## Print unrelated residues" << std::endl;
+        log << "## Print unrelated residues" << std::endl;
         print_related_residues(d_mc_unrelated_residues);
     }
 
     virtual void before_run() {
-        LOG << "# Convert 2D structure to tree..." << std::endl;
+        log << "# Convert 2D structure to tree..." << std::endl;
         ss_to_tree();
 
-        LOG << "# Set modules..." << std::endl;
+        log << "# Set modules..." << std::endl;
         set_modules();
 
-        LOG << "# Print modules..." << std::endl;
+        log << "# Print modules..." << std::endl;
         print_modules();
 
-        LOG << "# Build initial scaffold..." << std::endl;
+        log << "# Build initial scaffold..." << std::endl;
         build_initial_scaffold();
 
-        LOG << "# MC initialization..." << std::endl;
+        log << "# MC initialization..." << std::endl;
         mc_init();
     }
 
