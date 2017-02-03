@@ -5,6 +5,7 @@ Documentation:[https://hust220.github.io/nsp](https://hust220.github.io/nsp)
 1. INSTALLATION
     * Installation requirements 
     * Compile and install
+
 2. USAGE
     * Secondary structure prediction
     * Tertiary structure prediction
