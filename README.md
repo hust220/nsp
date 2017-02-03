@@ -2,7 +2,6 @@
 
 Documentation:[https://hust220.github.io/nsp](https://hust220.github.io/nsp)
 
-## Catalog
 1. INSTALLATION
     * Installation requirements 
     * Compile and install
