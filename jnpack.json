@@ -11,16 +11,13 @@
     "serial-release": {
       "target": "nsp",
       "cxx_flags": ["-std=c++14", "-pthread"],
-      "cxx_compiler": "$ENV{MPI_HOME}/bin/mpicxx",
       "threads": 16,
-      "dirs": ["nsp", "src"],
-      "install_prefix": "/home/wangjian"
+      "dirs": ["nsp", "src"]
     },
 
     "test": {
       "extends": "para-release",
       "target": "nsp-test",
-      "install_prefix": "/home/wangjian/work/nsp/.jnp",
       "dirs": ["test"]
     },
 
@@ -31,6 +28,7 @@
 
     "para-release": {
       "extends": "serial-release",
+      "cxx_compiler": "$ENV{MPI_HOME}/bin/mpicxx",
       "defs": ["JN_PARA"]
     },
 

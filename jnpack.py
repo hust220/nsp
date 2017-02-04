@@ -43,9 +43,11 @@ def pars_to_cmake(pars, src):
     str += "project(%s)\n" % pars['project']
     str += "set(CMAKE_INSTALL_PREFIX %s)\n" % pars['install_prefix']
     str += "set(CMAKE_BUILD_TYPE %s)\n" % pars['build_type']
-    for i in pars['defs']:
-        str += "add_definitions(-D%s)\n" % i
-    str += "set(CMAKE_CXX_COMPILER %s)\n" % pars['cxx_compiler']
+    if 'defs' in pars:
+       for i in pars['defs']:
+           str += "add_definitions(-D%s)\n" % i
+    if 'cxx_compiler' in pars:
+       str += "set(CMAKE_CXX_COMPILER %s)\n" % pars['cxx_compiler']
     str += "set(CMAKE_VERBOSE_MAKEFILE on)\n"
     str += "set(CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} %s\")\n" % ' '.join(pars['cxx_flags'])
     str += "include_directories(%s)\n" % SOLUTION_PATH
