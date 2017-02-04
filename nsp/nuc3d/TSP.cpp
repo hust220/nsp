@@ -22,10 +22,11 @@ void TSP::set_logfile_name() {
 	}
 	else {
 #ifdef JN_PARA
-		if (mpi_size() == 1) log.file(to_str(_name, ".tsp.log"));
-		else log.file(to_str(_name, ".", mpi_rank() + 1, ".tsp.log"));
+//		if (mpi_size() == 1) log.file(to_str(_name, ".tsp.log"));
+//		else log.file(to_str(_name, ".", mpi_rank() + 1, ".tsp.log"));
+		log.file(to_str(_name, ".", mpi_rank() + 1, ".tsp.log"));
 #else
-		log.file(to_str(_name, ".tsp.log"));
+		log.file(to_str(_name, ".1.tsp.log"));
 #endif
 	}
 }
@@ -93,10 +94,11 @@ void TSP::run() {
 
 void TSP::write_final_model() {
 #ifdef JN_PARA
-	if (mpi_size() == 1) mol_write(_pred_chain, to_str(_name, ".pred.pdb"));
-	else mol_write(_pred_chain, to_str(_name, ".", mpi_rank() + 1, ".pred.pdb"));
+//	if (mpi_size() == 1) mol_write(_pred_chain, to_str(_name, ".pred.pdb"));
+//	else mol_write(_pred_chain, to_str(_name, ".", mpi_rank() + 1, ".pred.pdb"));
+	mol_write(_pred_chain, to_str(_name, ".", mpi_rank() + 1, ".pred.pdb"));
 #else
-	mol_write(_pred_chain, to_str(_name, ".pred.pdb"));
+	mol_write(_pred_chain, to_str(_name, ".1.pred.pdb"));
 #endif
 }
 
