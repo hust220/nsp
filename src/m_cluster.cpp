@@ -114,12 +114,21 @@ BEGIN_JN
 				//Cluster cluster(k);
 
 				if (!list_file.empty()) {
-					for (auto &&it : FileLines(list_file)) {
-						LOG << "Reading: " << it.arr[0] << std::endl;
-						auto && model = mol_read_to<Model>(it.arr[0]);
+                    std::ifstream ifile(list_file.c_str());
+                    Str filename;
+                    while (ifile >> filename) {
+						auto && model = mol_read_to<Model>(filename);
 						mats.push_back(method(model));
 						names.push_back(model.name);
-					}
+                    }
+                    ifile.close();
+//					for (auto &&it : FileLines(list_file)) {
+//                        LOG << it.arr.size() << std::endl;
+//						LOG << "Reading: " << it.line << std::endl;
+//						auto && model = mol_read_to<Model>(it.line);
+//						mats.push_back(method(model));
+//						names.push_back(model.name);
+//					}
 					LOG << "Clustering..." << std::endl;
 					mat = Cluster::to_mat(mats.begin(), mats.end(), dist);
 				}
