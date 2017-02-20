@@ -5,70 +5,84 @@
 
 BEGIN_JN
 
-REGISTER_NSP_COMPONENT(sample) {
-	nuc3d::Assemble ass(par);
+namespace {
 
-	std::ostringstream stream;
-	int n;
-	bool write_samplings = par.has("write_samplings");
-	//bool write_samplings = true;
+    void write_pred(const Chain &chain, Str name, int n) {
+        mol_write(chain, to_str(name, ".pred", n, ".pdb"));
+    }
 
-	int num = 1;
-	par.set(num, "n", "num");
+    void write_sample(const nuc3d::Assemble &ass, int n) {
+        mol_write(ass._pred_chain, to_str(ass._name, ".sample", n, ".pdb"));
+    }
 
-	int num_samplings = 100 * num;
-	par.set(num_samplings, "num_samplings");
+    REGISTER_NSP_COMPONENT(sample) {
+        nuc3d::Assemble ass(par);
 
-	ass.select_templates();
-    ass.assemble();
+        std::ostringstream stream;
+        int n;
+        bool write_samplings = par.has("write_samplings");
+        //bool write_samplings = true;
 
-	n = 1;
-	std::deque<Chain> chains;
-	chains.push_back(std::move(ass._pred_chain));
+        int num = 1;
+        par.set(num, "n", "num");
 
-	if (write_samplings) mol_write(ass._pred_chain, to_str(ass._name, ".", n, ".sample.pdb"));
-	for (n = 2; n <= num_samplings; n++) {
-		ass.sample_one_template();
-		ass.assemble();
-		chains.push_back(std::move(ass._pred_chain));
-		ass.log << "# Writing sampling structure " << n << std::endl;
-		if (write_samplings) mol_write(ass._pred_chain, to_str(ass._name, ".", n, ".sample.pdb"));
-	}
+        int num_samplings = 100 * num;
+        par.set(num_samplings, "num_samplings");
 
-	ass.log << "# Clustering..." << std::endl;
-	auto clusters = pdb::cluster_chains(chains, num);
+        ass.select_templates();
+        ass.assemble();
 
-	ass.log << "# Scoring..." << std::endl;
-	auto scorer = Score::fac_t::make("aa");
-	scorer->init();
-    Double min_score = 9999;
-    Int min_ind = -1;
-	Int n_cluster = 0;
-	for (auto && cluster : clusters) {
-		Deque<Double> scores;
+        n = 1;
+        std::deque<Chain> chains;
+        chains.push_back(std::move(ass._pred_chain));
 
-		ass.log << "# Scores of cluster " << n_cluster + 1 << ":";
-		for (auto && i : cluster) {
-			scorer->run(chains[i]);
-			Double d = scorer->m_score;
-			ass.log << " " << i << "(" << d << ")";
-			scores.push_back(d);
-		}
-		ass.log << std::endl;
-
-		auto it = std::min_element(scores.begin(), scores.end());
-		Int ind = std::distance(scores.begin(), it);
-		ass.log << "Minimum score: " << cluster[ind] << "(" << scores[ind] << ")" << std::endl;
-        if (scores[ind] < min_score) {
-            min_score = scores[ind];
-            min_ind = cluster[ind];
+        if (write_samplings) write_sample(ass, n);
+        //if (write_samplings) mol_write(ass._pred_chain, to_str(ass._name, ".", n, ".sample.pdb"));
+        for (n = 2; n <= num_samplings; n++) {
+            ass.sample_one_template();
+            ass.assemble();
+            chains.push_back(std::move(ass._pred_chain));
+            ass.log << "# Writing sampling structure " << n << std::endl;
+            if (write_samplings) write_sample(ass, n);
+            //if (write_samplings) mol_write(ass._pred_chain, to_str(ass._name, ".", n, ".sample.pdb"));
         }
 
-		ass.log << "# Writing prediction " << n_cluster + 1 << std::endl;
-		mol_write(chains[cluster[ind]], to_str(ass._name, ".", n_cluster + 1, ".pred.pdb"));
-		n_cluster++;
-	}
-    mol_write(chains[min_ind], to_str(ass._name, ".pred.pdb"));
+        ass.log << "# Clustering..." << std::endl;
+        auto clusters = pdb::cluster_chains(chains, num);
+
+        ass.log << "# Scoring..." << std::endl;
+        auto scorer = Score::fac_t::make("aa");
+        scorer->init();
+        Double min_score = 9999;
+        Int min_ind = -1;
+        Int n_cluster = 0;
+        for (auto && cluster : clusters) {
+            Deque<Double> scores;
+
+            ass.log << "# Scores of cluster " << n_cluster + 1 << ":";
+            for (auto && i : cluster) {
+                scorer->run(chains[i]);
+                Double d = scorer->m_score;
+                ass.log << " " << i << "(" << d << ")";
+                scores.push_back(d);
+            }
+            ass.log << std::endl;
+
+            auto it = std::min_element(scores.begin(), scores.end());
+            Int ind = std::distance(scores.begin(), it);
+            ass.log << "Minimum score: " << cluster[ind] << "(" << scores[ind] << ")" << std::endl;
+            if (scores[ind] < min_score) {
+                min_score = scores[ind];
+                min_ind = cluster[ind];
+            }
+
+            ass.log << "# Writing prediction " << n_cluster + 1 << std::endl;
+            write_pred(chains[cluster[ind]], ass._name, n_cluster+1);
+            n_cluster++;
+        }
+        mol_write(chains[min_ind], to_str(ass._name, ".pred.pdb"));
+
+    }
 
 }
 
