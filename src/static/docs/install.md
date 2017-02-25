@@ -24,31 +24,32 @@
 
     *   ordinary user
 
-        in the step of the configure plus `--prefix=<PATH/TO/INSTALL/GCC>`
+            wget http://mirror.hust.edu.cn/gnu/gcc/gcc-4.9.3/gcc-4.9.3.tar.gz
+            tar xvzf gcc-4.9.3.tar.gz
+            cd gcc-4.9.3
+            ./contrib/download_prerequisites
+            mkdir build
+            cd build
+            ../configure --enable-checking=release --enable-languages=c,c++ --disable-multilib --prefix=<PATH/TO/INSTALL/GCC>
+            make -j4
+            sudo make install
 
 2.  download nsp
 
-        git clone https://github.com/hust220/nsp.git
+    Browse [this page](https://github.com/hust220/nsp/releases) to get the latest version of NSP
+
+    Example:
+
+        wget https://codeload.github.com/hust220/nsp/tar.gz/1.2
+        tar xvzf nsp-1.2.tar.gz
 
 3.  compile and install nsp
 
-    *   root user
- 
-            cd nsp
+            cd nsp-1.2/nsp-1.2
+            python jnpack.py update
             python jnpack.py install
-            mkdir build
-            cd build
-            cmake ..
-            make install
 
-    *   ordinary user
-
-            cd nsp
-            python jnpack.py install
-            mkdir build
-            cd build
-            cmake -DP=<PATH> ..
-            make install
+    The binary target named 'nsp' would be located in the '.jnp/bin' directory.
 
 4.  download and uncompress templates library
 
