@@ -40,6 +40,9 @@
                 "href": "#/doc/ssp/fem_dca",
                 "text": "FEM+DCA"
             }, {
+                "href": "#/doc/ssp/ss_tree",
+                "text": "Show secondary structure tree"
+            }, {
                 "href": "#/doc/ssp/mcc",
                 "text": "Calculate MCC"
             }, {
