@@ -161,6 +161,7 @@ void DHMC::bps_to_constraints() {
 
     auto foo = [this](int n1, int n2) {
         auto &dists = m_bp_distances[to_str(_seq[n1], _seq[n2])];
+        //for (int i = 0; i < 1; i++) {
         for (int i = 0; i < 6; i++) {
             m_distance_constraints.push_back({ { n1, i },{ n2, i }, dists[i], dists[i] });
         }
@@ -170,6 +171,7 @@ void DHMC::bps_to_constraints() {
         j = m_bps[i];
         if (i < j) {
             foo(i, j);
+            //_constraints.add_contact(i, j);
         }
     }
 }
@@ -351,13 +353,16 @@ void DHMC::set_mvels() {
     };
 
     Int i, j, l = size(_seq);
-    for (i = 0; i < l; i++) {
-        for (j = i; j < l; j++) {
-            if (not_in_fixed_areas(i, j) && (m_all_free || not_in_helix_ranges(i, j))) {
-                m_mvels.push_back(new MvEl(i, j, MvEl::MVEL_FG));
-            }
-        }
+    for (i = 0; i + 2 < l; i++) {
+        m_mvels.push_back(new MvEl(i, i + 2, MvEl::MVEL_FG));
     }
+//    for (i = 0; i < l; i++) {
+//        for (j = i; j < l; j++) {
+//            if (not_in_fixed_areas(i, j) && (m_all_free || not_in_helix_ranges(i, j))) {
+//                m_mvels.push_back(new MvEl(i, j, MvEl::MVEL_FG));
+//            }
+//        }
+//    }
 }
 
 // MC related methods

@@ -29,6 +29,7 @@ void NSP::run(int argc, char **argv) {
 		}
 		for (auto && pair : m) { std::cout << pair.first << ' '; }
 		std::cout << std::endl;
+		std::cout << std::endl;
 	}
 	else if (par.has("help") || par.has("h") || par.has("-help")) {
 		S name = path + par[1] + ".md";

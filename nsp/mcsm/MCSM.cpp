@@ -70,6 +70,7 @@ double MCSM::mc_total_energy() {
 
 void MCSM::mc_energy_crash(en_t &e, bool is_total) {
     int a, b, c, i, j, k, n;
+    Num d;
     for (n = 0; n < _seq.size(); n++) {
         if (is_total || is_selected(n)) {
             for (i = -m_box; i <= m_box; i++) for (j = -m_box; j <= m_box; j++) for (k = -m_box; k <= m_box; k++) {
@@ -79,13 +80,18 @@ void MCSM::mc_energy_crash(en_t &e, bool is_total) {
                 c = space_index(it[2]) + k;
                 SpaceVal &s = m_space[a][b][c];
                 for (auto && t : s) {
-                    if ((is_total && t - n > 0) || (!is_total && !is_selected(t))) {
+                    if ((is_total && t - n > 0) || (!is_total && ((is_selected(t) && t - n > 0) || (!is_selected(t))))) {
+                    //if ((is_total && t - n > 0) || (!is_total && !is_selected(t))) {
                         auto p = std::minmax(n, t);
                         e.crash += _mc_crash_weight * m_scorer->en_crash(_pred_chain[p.first], _pred_chain[p.second]);
-                        m_scorer->en_bp(_pred_chain[p.first], _pred_chain[p.second]);
-                        e.pairing += _mc_pairing_weight * m_scorer->m_en_pairing/* * (m_bps[p.first] == p.second ? 10 : 1)*/;
-                        e.stacking += _mc_stacking_weight * m_scorer->m_en_stacking;
-                        e.vdw += _mc_vdw_weight * m_scorer->m_en_vdw;
+                        if (!m_grow_mode || p.first < m_grow_length && p.second < m_grow_length) {
+                            m_scorer->en_bp(_pred_chain[p.first], _pred_chain[p.second]);
+                            d = _mc_pairing_weight * m_scorer->m_en_pairing;
+                            if (m_bps[p.first] == p.second) e.cons += _mc_constraints_weight * d;
+                            e.pairing += d/* * (m_bps[p.first] == p.second ? 10 : 1)*/;
+                            e.stacking += _mc_stacking_weight * m_scorer->m_en_stacking;
+                            e.vdw += _mc_vdw_weight * m_scorer->m_en_vdw;
+                        }
                     }
                 }
             }
@@ -95,8 +101,11 @@ void MCSM::mc_energy_crash(en_t &e, bool is_total) {
 
 void MCSM::mc_energy_bond(en_t &e, bool is_total) {
     for (auto && n : m_continuous_pts) {
-        if (is_total || (is_selected(n) + is_selected(n + 1)) % 2 != 0) {
-            e.len += _mc_bond_length_weight * m_scorer->en_len(_pred_chain, n);
+        if (!m_grow_mode || n < m_grow_length) {
+            if (is_total || is_selected(n) || is_selected(n + 1)) {
+            //if (is_total || (is_selected(n) + is_selected(n + 1)) % 2 != 0) {
+                e.len += _mc_bond_length_weight * m_scorer->en_len(_pred_chain, n);
+            }
         }
     }
 }
@@ -104,8 +113,11 @@ void MCSM::mc_energy_bond(en_t &e, bool is_total) {
 void MCSM::mc_energy_angle(en_t &e, bool is_total) {
     int len = _seq.size();
     for (auto && i : m_ang_pts) {
-        if (is_total || (is_selected(i) + is_selected(i + 1) + is_selected(i + 2)) % 3 != 0) {
-            e.ang += _mc_bond_angle_weight * m_scorer->en_ang(_pred_chain, i);
+        if (!m_grow_mode || i < m_grow_length) {
+            if (is_total || is_selected(i) || is_selected(i + 1) || is_selected(i + 2)) {
+            //if (is_total || (is_selected(i) + is_selected(i + 1) + is_selected(i + 2)) % 3 != 0) {
+                e.ang += _mc_bond_angle_weight * m_scorer->en_ang(_pred_chain, i);
+            }
         }
     }
 }
@@ -113,8 +125,11 @@ void MCSM::mc_energy_angle(en_t &e, bool is_total) {
 void MCSM::mc_energy_dihedral(en_t &e, bool is_total) {
     int len = _seq.size();
     for (auto && i : m_dih_pts) {
-        if (is_total || (is_selected(i) + is_selected(i + 1) + is_selected(i + 2) + is_selected(i + 3)) % 4 != 0) {
-            e.dih += _mc_bond_dihedral_weight * m_scorer->en_dih(_pred_chain, i);
+        if (!m_grow_mode || i < m_grow_length) {
+            if (is_total || is_selected(i) || is_selected(i + 1) || is_selected(i + 2) || is_selected(i + 3)) {
+            //if (is_total || (is_selected(i) + is_selected(i + 1) + is_selected(i + 2) + is_selected(i + 3)) % 4 != 0) {
+                e.dih += _mc_bond_dihedral_weight * m_scorer->en_dih(_pred_chain, i);
+            }
         }
     }
 }
@@ -123,30 +138,44 @@ void MCSM::mc_energy_constraints(en_t &e, bool is_total) {
     double d, k;
 
     if (m_cal_en_constraints) {
+        // residue contacts
         k = _mc_constraints_weight / _constraints.contacts.size();
         for (auto && c : _constraints.contacts) {
-            if (is_total || is_selected(c.key[0]) ^ is_selected(c.key[1])) {
-                d = geom::distance(_pred_chain[c.key[0]][0], _pred_chain[c.key[1]][0]);
-                if (d < 17) {
-                    e.cons += -100.0 * k;
-                }
-                else {
-                    e.cons += square(d - 17) * k;
+            if (!m_grow_mode || c.key[0] < m_grow_length && c.key[1] < m_grow_length) {
+                if (is_total || is_selected(c.key[0]) || is_selected(c.key[1])) {
+                //if (is_total || is_selected(c.key[0]) ^ is_selected(c.key[1])) {
+                    d = geom::distance(_pred_chain[c.key[0]][0], _pred_chain[c.key[1]][0]);
+                    if (d < 17) {
+                        e.cons += -100.0 * k;
+                    }
+                    else {
+                        e.cons += square(d - 17) * k;
+                    }
                 }
             }
         }
+
+        // residue distances
         k = _mc_constraints_weight / _constraints.distances.size();
         for (auto && c : _constraints.distances) {
-            if (is_total || is_selected(c.key[0]) ^ is_selected(c.key[1])) {
-                d = geom::distance(_pred_chain[c.key[0]][0], _pred_chain[c.key[1]][0]);
-                e.cons += square(d - c.value) * k;
+            if (!m_grow_mode || c.key[0] < m_grow_length && c.key[1] < m_grow_length) {
+                if (is_total || is_selected(c.key[0]) || is_selected(c.key[1])) {
+                //if (is_total || is_selected(c.key[0]) ^ is_selected(c.key[1])) {
+                    d = geom::distance(_pred_chain[c.key[0]][0], _pred_chain[c.key[1]][0]);
+                    e.cons += square(d - c.value) * k;
+                }
             }
         }
+
+        // base pairing
         k = _mc_constraints_weight / m_distance_constraints.size();
         for (auto && c : m_distance_constraints) {
-            if (is_total || is_selected(c.atom1.n_res) ^ is_selected(c.atom2.n_res)) {
-                d = geom::distance(_pred_chain[c.atom1.n_res][c.atom1.n_atom], _pred_chain[c.atom2.n_res][c.atom2.n_atom]);
-                e.cons += (d < c.min ? square(d - c.min) : (d > c.max ? square(d - c.max) : 0)) * k;
+            if (!m_grow_mode || c.atom1.n_res < m_grow_length && c.atom2.n_res < m_grow_length) {
+                if (is_total || is_selected(c.atom1.n_res) || is_selected(c.atom2.n_res)) {
+                //if (is_total || is_selected(c.atom1.n_res) ^ is_selected(c.atom2.n_res)) {
+                    d = geom::distance(_pred_chain[c.atom1.n_res][c.atom1.n_atom], _pred_chain[c.atom2.n_res][c.atom2.n_atom]);
+                    e.cons += (d < c.min ? square(d - c.min) : (d > c.max ? square(d - c.max) : 0)) * k;
+                }
             }
         }
     }

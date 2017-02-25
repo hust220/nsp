@@ -182,6 +182,11 @@ void MCBase::set_traj_name() {
 void MCBase::init(const Par &par) {
     TSP::init(par);
 
+    // grow
+    m_grow_mode = par.has("grow");
+    m_grow_steps = 20000;
+    m_grow_length = 3;
+
     m_selected_mvel = NULL;
     m_sample_mode = SAMPLE_TREE;
     m_cal_en_constraints = true;
@@ -194,6 +199,12 @@ void MCBase::init(const Par &par) {
     for_each_model(to_str(Env::lib(), "/RNA/pars/cg/CG2AA/templates.pdb"), [this](const Model &m, int n) {
             ResConf::extract(m_res_confs, m.residues());
             });
+    for_each_model(to_str(Env::lib(), "/RNA/pars/cg/CG2AA/templates.pdb"), [this](const Model &m, int n) {
+            FragConf<3>::extract(m_frag_confs, m.residues());
+            });
+    log << "confs: ";
+    for (auto && p : m_frag_confs) log << p.first << '(' << size(p.second) << ") ";
+    log << std::endl;
     //MolReader reader(to_str(Env::lib(), "/RNA/pars/cg/CG2AA/templates.pdb"));
     //for (auto it = reader.model_begin(); it != reader.model_end(); it++) {
     //	STD_ cerr << *it << STD_ endl;
@@ -202,6 +213,14 @@ void MCBase::init(const Par &par) {
     for (auto && pair : m_res_confs) {
         for (auto && conf : pair.second) {
             conf.res = m_cg->to_cg(conf.res);
+        }
+    }
+
+    for (auto && pair : m_frag_confs) {
+        for (auto && conf : pair.second) {
+            for (auto && r : conf.frag) {
+                r = m_cg->to_cg(r);
+            }
         }
     }
 
@@ -233,6 +252,9 @@ void MCBase::init(const Par &par) {
     if (m_init_sfile.empty()) {
         if (par.has("init:chain")) {
             _pred_chain = BuildChain()(_seq.size()).m_chain;
+        }
+        else if (par.has("init:line")) {
+            _pred_chain = BuildLine()(_seq.size()).m_chain;
         }
         else if (par.has("init:raw")) {
             nuc3d::Assemble assemble(Par(par)("seq", _seq)("ss", _ss)("loop_building", "partial_raw")("name", ""));
@@ -292,6 +314,10 @@ void MCBase::align_to_fixed_areas() {
 
 void MCBase::mc_next_step() {
     _mc_step++;
+    if (m_grow_length < _seq.size() && _mc_step % m_grow_steps == 0) {
+        //for (int i = 0; i < _seq.size(); i++) std::cout << is_selected(i) << std::endl;
+        m_grow_length += 3;
+    }
     if (_mc_step >= 100000) {
         //m_sample_mode = SAMPLE_TREE;
         m_cal_en_constraints = true;
@@ -312,8 +338,9 @@ void MCBase::validate_constraints() {
 }
 
 void MCBase::read_parameters() {
-    log << "Reading parameters of " << m_par_file << "..." << std::endl;
-    Par temp_par(Env::lib() + "/RNA/pars/nuc3d/mc/" + m_par_file + ".par");
+    Str filename = to_str(Env::lib(), "/RNA/pars/nuc3d/mc/", m_par_file, ".par");
+    log << "Reading parameters file: " << filename << std::endl;
+    Par temp_par(filename);
     JN_MAP(JN_MCXP_TEMPPAR_SET, JN_MCXP_PARS1, JN_MCXP_PARS2)
 }
 
@@ -404,6 +431,79 @@ void MCBase::mc_sample_res() {
         [this]() {
             int min = m_selected_mvel->min();
             int max = m_selected_mvel->max();
+
+            if (max >= m_grow_length) return;
+
+            std::stringstream stream;
+            for (Int i = min; i <= max; i++) stream << _pred_chain[i].name;
+            Str frag_name = stream.str();
+
+            FragConf<3>::Confs &confs = m_frag_confs[frag_name];
+            Int l = size(confs);
+            Int n = Int(rand()*l);
+            FragConf<3> &conf = confs[n];
+            auto frag = conf.frag;
+            geom::Superposition<Num> sp;
+            if (min == 0) {
+//                Mat x(1, 3);
+//                mat_set_rows(x, 0, _pred_chain[max + 1]["P"]);
+//                sp.init(conf.p2, x);
+                const Atom &p = _pred_chain[max+1]["P"];
+                for (int i = min; i <= max; i++) {
+                    int j = 0;
+                    for (auto && atom : frag[i-min]) {
+                        for (int k = 0; k < 3; k++) _pred_chain[i][j][k] = atom[k] - conf.p2[k] + p[k];
+                        j++;
+                    }
+                }
+            }
+            else if (max == _seq.size() - 1) {
+//                Mat x(1, 3);
+//                mat_set_rows(x, 0, _pred_chain[min]["P"]);
+//                sp.init(conf.p1, x);
+                const Atom &p = _pred_chain[min]["P"];
+                for (int i = min; i <= max; i++) {
+                    int j = 0;
+                    for (auto && atom : frag[i-min]) {
+                        for (int k = 0; k < 3; k++) _pred_chain[i][j][k] = atom[k] - conf.p1[k] + p[k];
+                        j++;
+                    }
+                }
+            }
+            else {
+                Mat x(2, 3);
+                mat_set_rows(x, 0, _pred_chain[min]["P"], _pred_chain[max + 1]["P"]);
+                sp.init(conf.pp, x);
+                for (Int i = min; i <= max; i++) {
+                    for (auto && atom : frag[i-min]) sp.apply(atom);
+                    set_atoms(_pred_chain[i], frag[i-min]);
+                }
+            }
+
+            if (min == 0 || max == size(_seq) - 1) {
+                int t = (min == 0 ? max : min);
+                int index = int(rand() * 3);
+                double dih = (rand() - 0.5) * m_max_angle;
+                auto &&rot = geom::rot_mat(index, dih);
+                Vec origin(3);
+                vec_set(origin, _pred_chain[t][0]);
+                for (int i = min; i <= max; i++) {
+                    for (auto && atom : _pred_chain[i]) {
+                        geom::rotate(atom, origin, rot);
+                    }
+                    space_update_item(i);
+                }
+            }
+            else {
+                geom::RotateAlong<double> rotate_along(_pred_chain[min][0], _pred_chain[max + 1][0], m_max_angle * (rand() - 0.5));
+                for (int i = min; i <= max; i++) {
+                    for (auto && atom : _pred_chain[i]) {
+                        rotate_along(atom);
+                    }
+                    space_update_item(i);
+                }
+            }
+            /*
             if (min == 0 && max == _seq.size() - 1) {
                 return;
             }
@@ -430,36 +530,27 @@ void MCBase::mc_sample_res() {
                 Residue r = confs[n].res;
                 for (auto && atom : r) sp.apply(atom);
                 set_atoms(_pred_chain[min], r);
+                space_update_item(min);
             }
             else {
                 Num d1 = -1;
                 Num d2 = -1;
                 if (min > 0) d1 = geom::distance(_pred_chain[min - 1][1], _pred_chain[min][0]);
                 if (max < size(_seq) - 1) d2 = geom::distance(_pred_chain[max][1], _pred_chain[max + 1][0]);
-                /*if (d1 > 4.0 || d2 > 4.0) {
-                  int index = int(rand() * 3);
-                  Num dist = (rand() - 0.5) * 0.3 * _mc_max_shift;
-                  for (int i = min; i <= max; i++) {
-                  for (auto && atom : _pred_chain[i]) {
-                  atom[index] += dist;
-                  }
-                  space_update_item(i);
-                  }
-                  }
-                  else */if (min == 0 || max == size(_seq) - 1 || d1 > 4.0 || d2 > 4.0) {
-                      int t = ((min == 0 || d1 > 4.0) ? max : min);
-                      int index = int(rand() * 3);
-                      double dih = (rand() - 0.5) * m_max_angle;
-                      auto &&rot = geom::rot_mat(index, dih);
-                      Vec origin(3);
-                      vec_set(origin, _pred_chain[t][0]);
-                      for (int i = min; i <= max; i++) {
-                          for (auto && atom : _pred_chain[i]) {
-                              geom::rotate(atom, origin, rot);
-                          }
-                          space_update_item(i);
-                      }
-                  }
+                if (min == 0 || max == size(_seq) - 1 || d1 > 4.0 || d2 > 4.0) {
+                    int t = ((min == 0 || d1 > 4.0) ? max : min);
+                    int index = int(rand() * 3);
+                    double dih = (rand() - 0.5) * m_max_angle;
+                    auto &&rot = geom::rot_mat(index, dih);
+                    Vec origin(3);
+                    vec_set(origin, _pred_chain[t][0]);
+                    for (int i = min; i <= max; i++) {
+                        for (auto && atom : _pred_chain[i]) {
+                            geom::rotate(atom, origin, rot);
+                        }
+                        space_update_item(i);
+                    }
+                }
                 else {
                     geom::RotateAlong<double> rotate_along(_pred_chain[min][0], _pred_chain[max + 1][0], m_max_angle * (rand() - 0.5));
                     for (int i = min; i <= max; i++) {
@@ -470,8 +561,8 @@ void MCBase::mc_sample_res() {
                     }
                 }
             }
+            */
         },
-
             // rotate base
             [this, &get_base_axis]() {
                 for (int i = 0; i < _seq.size(); i++) {
@@ -545,9 +636,15 @@ void MCBase::mc_sample_res() {
 }
 
 void MCBase::mc_back() {
+//    std::cout << "moved_atoms: " << _moved_atoms.size() << std::endl;
+//    std::cout << _moved_atoms.front() << std::endl;
+//    std::cout << _pred_chain.size() << std::endl;
     for (int i = 0; i < _seq.size(); i++) {
         if (is_selected(i)) {
             for (auto && atom : _pred_chain[i]) {
+//                std::cout << "back: " << std::endl;
+//                std::cout << atom;
+//                std::cout << _moved_atoms.front();
                 atom = _moved_atoms.front();
                 _moved_atoms.pop_front();
             }
@@ -630,7 +727,7 @@ void MCBase::run() {
     log << "# Save fixed ranges..." << std::endl;
     save_fixed_ranges();
 
-    log << "# Carrying on CG processing with the Chain..." << std::endl;
+    log << "# Carrying out CG processing with the Chain..." << std::endl;
     _pred_chain = m_cg->to_cg(_pred_chain);
 
     log << "# Init space..." << std::endl;
@@ -667,19 +764,31 @@ void MCBase::transform() {
 void MCBase::print_final_constraints() {
     double d;
     int i, j;
-    log << "Print Contacts:" << std::endl;
+
+    log << "Print residue contacts:" << std::endl;
     for (auto && c : _constraints.contacts) {
         i = c.key[0];
         j = c.key[1];
         d = dist_two_res(_pred_chain[i], _pred_chain[j]);
         log << i << ' ' << j << " weight:" << c.weight << " dist:" << d << std::endl;
     }
-    log << "Print Distances:" << std::endl;
+
+    log << "Print residue distances:" << std::endl;
     for (auto && c : _constraints.distances) {
         i = c.key[0];
         j = c.key[1];
         d = dist_two_res(_pred_chain[i], _pred_chain[j]);
         log << i << ' ' << j << " value:" << c.value << " weight:" << c.weight << " dist:" << d << std::endl;
+    }
+
+    // base pairing
+    log << "Print atom distances:" << std::endl;
+    for (auto && c : m_distance_constraints) {
+        d = geom::distance(_pred_chain[c.atom1.n_res][c.atom1.n_atom], _pred_chain[c.atom2.n_res][c.atom2.n_atom]);
+        log << "Residue " << c.atom1.n_res << " Atom " << c.atom1.n_atom
+            << ", Residue " << c.atom2.n_res << " Atom " << c.atom2.n_atom
+            << ", min: " << c.min << ", max: " << c.max
+            << ", value: " << d << std::endl;
     }
 }
 

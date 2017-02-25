@@ -23,20 +23,9 @@ class MCSM : public MCBase {
             void print() const { LOG << sum() << "(total) " JN_MAP(PRINT_MEM_EN_MCPSB, MEM_EN_MCPSB) << std::endl; }
         };
 
-        struct atom_acc_t {
-            int n_res;
-            int n_atom;
-        };
-
-        struct distance_constraints_t {
-            atom_acc_t atom1, atom2;
-            double min, max;
-        };
-
         std::vector<int> m_indices;
         Score *m_scorer;
         std::vector<int> m_bps;
-        std::deque<distance_constraints_t> m_distance_constraints;
         std::array<std::array<Mat, 4>, 4> m_bp_min_distances_table;
         std::array<std::array<Mat, 4>, 4> m_bp_max_distances_table;
 
