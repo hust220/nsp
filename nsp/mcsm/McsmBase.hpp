@@ -21,7 +21,7 @@
 #include "../nuc3d/BuildLine.hpp"
 #include "../scoring/ResConf.hpp"
 #include "../scoring/FragConf.hpp"
-
+#include "MvEl.hpp"
 
 #define JN_MCXP_PARS1 \
     heat_steps, cool_steps, cycle_steps, write_steps, heat_rate, dec_rate,\
@@ -35,70 +35,6 @@ vdw_weight, max_shift
 #define JN_MCXP_DEF_PAR(a) Num PP_CAT3(_mc_, a);
 
 BEGIN_JN
-
-using Frag = Array<int, 2>;
-
-using Frags = Deque<Frag>;
-
-class MvEl;
-
-using MvEls = Deque<MvEl>;
-
-// MvEl: Moving Element
-class MvEl {
-    public:
-        enum Type {
-            MVEL_HL, // helix
-            MVEL_HP, // hairpin
-            MVEL_IL, // internal loop
-            MVEL_FG // fragment
-        };
-
-        Type type;
-        Frags range;
-
-        MvEl(int a, int b, Type t);
-
-        MvEl(int a, int b, int c, int d, Type t);
-
-        MvEl(const Helix &h);
-
-        MvEl(SSTree::El *l, Type t);
-
-        int min() const;
-
-        int max() const;
-
-        bool operator ==(const MvEl &el) const;
-
-        bool operator !=(const MvEl &el) const;
-
-        MvEl *operator +(const MvEl &el) const;
-
-        friend std::ostream &operator <<(std::ostream &, const MvEl &el);
-
-        bool contains(const MvEl &el) const;
-
-        bool nips(const MvEl &el) const;
-
-        bool has(int n) const {
-            return std::find_if(range.begin(), range.end(), [&n](const Frag &frag) {
-                    return frag[0] <= n && n <= frag[1];
-                    }) != range.end();
-        }
-
-        bool minmax_has(int n) const {
-            int min = 99999;
-            int max = -1;
-            for (auto && frag : range) {
-                if (min > frag[0]) min = frag[0];
-                if (max < frag[1]) max = frag[1];
-            }
-            return min <= n && n <= max;
-        }
-
-        static void merge(Deque<MvEl *> &dq);
-};
 
 // MCBase: Base of Monte Carlo Molecule Simulation
 class MCBase : public TSP, public MC {
@@ -124,6 +60,8 @@ class MCBase : public TSP, public MC {
         };
 
         // grow
+        Bool m_pk_ahead;
+        Bool m_save_ss;
         Bool m_grow_mode;
         Int m_grow_steps;
         Int m_grow_length;

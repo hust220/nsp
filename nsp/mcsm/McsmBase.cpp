@@ -2,171 +2,13 @@
 #include "../nuc3d/Assemble.hpp"
 #include "../nuc3d/Convert.hpp"
 #include "McsmBase.hpp"
+#include "McsmUpdate.hpp"
 
 #define JN_MCXP_TEMPPAR_SET(a) temp_par.set(PP_CAT(_mc_, a), PP_STRING3(PP_CAT(mc_, a)));
 #define JN_MCXP_PAR_SET(a) par.set(PP_CAT(_mc_, a), PP_STRING3(PP_CAT(mc_, a)));
 #define JN_MCXP_TEMP(a) log << PP_STRING3(PP_CAT(mc_, a)) << ' ' << PP_CAT(_mc_, a) << std::endl;
 
 BEGIN_JN
-
-MvEl::MvEl(int a, int b, MvEl::Type t) : type(t) {
-    range.push_back({ a, b });
-}
-
-MvEl::MvEl(int a, int b, int c, int d, MvEl::Type t) : type(t) {
-    range.push_back({ a, b });
-    range.push_back({ c, d });
-}
-
-MvEl::MvEl(const Helix &h) : type(MvEl::MVEL_HL) {
-    int a, b, c, d;
-
-    a = h.front().res1.num - 1;
-    d = h.front().res2.num - 1;
-    for (auto && bp : h) {
-        if (bp.next == NULL) {
-            b = bp.res1.num - 1;
-            c = bp.res2.num - 1;
-        }
-    }
-    range.push_back({ a, b });
-    range.push_back({ c, d });
-}
-
-MvEl::MvEl(SSTree::El *l, MvEl::Type t) : type(t) {
-    int a, b, c, d;
-
-    if (t == MVEL_HP) {
-        a = l->data.helix.front().res1.num - 1;
-        b = l->data.helix.front().res2.num - 1;
-        range.push_back({ a, b });
-    }
-    else if (t == MVEL_IL) {
-        a = l->data.helix.front().res1.num - 1;
-        b = l->son->data.helix.front().res1.num - 2;
-        c = l->son->data.helix.front().res2.num;
-        d = l->data.helix.front().res2.num - 1;
-        range.push_back({ a, b });
-        range.push_back({ c, d });
-    }
-    else {
-        throw "jian::MvEl error!";
-    }
-}
-
-bool MvEl::operator ==(const MvEl &el) const {
-    return type == el.type && range == el.range;
-}
-
-bool MvEl::operator !=(const MvEl &el) const {
-    return !(*this == el);
-}
-
-MvEl *MvEl::operator +(const MvEl &el) const {
-    if (el.range.size() == 1) {
-        return new MvEl(range[0][0], range[1][1], el.type);
-    }
-    else if (el.range.size() == 2) {
-        return new MvEl(range[0][0], el.range[0][1], el.range[1][0], range[1][1], type);
-    }
-    else {
-        throw "jian::MvEl *jian::MvEl::operator +(const jian::MvEl &el) error!";
-    }
-}
-
-std::ostream &operator <<(std::ostream &stream, const MvEl &el) {
-    stream <<
-        (el.type == MvEl::MVEL_HL ? "Helix" :
-         (el.type == MvEl::MVEL_HP ? "Hairpin" :
-          (el.type == MvEl::MVEL_IL ? "Internal Loop" :
-           (el.type == MvEl::MVEL_FG ? "Fragment" : "Others")))) << ' ';
-    for (auto && frag : el.range) {
-        stream << '(' << frag[0] << '-' << frag[1] << ')';
-    }
-    return stream;
-}
-
-int MvEl::min() const {
-    return std::min_element(range.begin(), range.end(), [](const Frag &f1, const Frag &f2) {
-            return f1[0] <= f2[0];
-            })->at(0);
-}
-
-int MvEl::max() const {
-    return std::max_element(range.begin(), range.end(), [](const Frag &f1, const Frag &f2) {
-            return f1[1] <= f2[1];
-            })->at(1);
-}
-
-bool MvEl::contains(const MvEl &el) const {
-    return std::all_of(el.range.begin(), el.range.end(), [this](const Frag &f1) {
-            return std::any_of(this->range.begin(), this->range.end(), [&f1](const Frag &f) {
-                return f[0] <= f1[0] && f[1] >= f1[1];
-                });
-            });
-}
-
-bool MvEl::nips(const MvEl &el) const {
-    return range.size() == 2 && range[0][1] + 1 == el.min() && range[1][0] - 1 == el.max();
-}
-
-void MvEl::merge(Deque<MvEl *> &dq) {
-    //log << "# Merge ranges..." << std::endl;
-    Deque<MvEl *> els;
-    int flag = 1;
-    Map<MvEl *, Bool> m;
-
-    if (dq.empty()) return;
-
-    while (flag != 0) {
-        flag = 0;
-        m.clear();
-        for (auto && el : dq) m[el] = true;
-
-        auto it = dq.begin();
-        for (auto it1 = it; it1 != dq.end(); it1++) {
-            if (!m[*it1]) continue;
-            for (auto it2 = it1 + 1; it2 != dq.end(); it2++) {
-                if (!m[*it2]) continue;
-                if ((*it1)->type != MVEL_FG && (*it2)->type != MVEL_FG) {
-                    MvEl &el1 = *(*it1);
-                    MvEl &el2 = *(*it2);
-                    if (el1.contains(el2)) {
-                        m[*it2] = false;
-                        flag++;
-                    }
-                    else if (el2.contains(el1)) {
-                        m[*it1] = false;
-                        flag++;
-                    }
-                    else if (el1.nips(el2)) {
-                        m[*it1] = false;
-                        m[*it2] = false;
-                        els.push_back(el1 + el2);
-                        flag++;
-                    }
-                    else if (el2.nips(el1)) {
-                        m[*it1] = false;
-                        m[*it2] = false;
-                        els.push_back(el2 + el1);
-                        flag++;
-                    }
-                }
-            }
-        }
-
-        for (auto && el : dq) {
-            if (m[el]) {
-                els.push_back(el);
-            }
-            else {
-                delete el;
-            }
-        }
-        dq = els;
-        els.clear();
-    }
-}
 
 void MCBase::set_traj_name() {
 #ifdef JN_PARA
@@ -187,8 +29,12 @@ void MCBase::init(const Par &par) {
     m_grow_steps = 20000;
     m_grow_length = 3;
 
+    // save ss
+    m_pk_ahead = par.has("pk_ahead");
+    m_save_ss = par.has("save_ss");
+
     m_selected_mvel = NULL;
-    m_sample_mode = SAMPLE_TREE;
+    m_sample_mode = SAMPLE_SSE;
     m_cal_en_constraints = true;
     m_max_angle = PI * 0.5;
     m_box = 2;
@@ -415,236 +261,31 @@ void MCBase::mc_sample() {
 }
 
 void MCBase::mc_sample_res() {
-    auto get_base_axis = [](const Residue &residue) {
-        int t = pdb::res_type(residue.name);
-        std::array<Vec, 2> axis;
-        axis[0].resize(3);
-        axis[1].resize(3);
-        vec_set(axis[0], residue[1]);
-        if (t == 1 || t == 3)  vec_set(axis[1], std::plus<>{}, residue[3], residue[5]);
-        else if (t == 0 || t == 2) vec_set(axis[1], residue[5]);
-        else throw "jian::MCBase::mc_sample_res::get_base_axis error!";
-        return axis;
-    };
-
-    std::vector<std::function<void()>> actions{
-        [this]() {
-            int min = m_selected_mvel->min();
-            int max = m_selected_mvel->max();
-
-            if (max >= m_grow_length) return;
-
-            std::stringstream stream;
-            for (Int i = min; i <= max; i++) stream << _pred_chain[i].name;
-            Str frag_name = stream.str();
-
-            FragConf<3>::Confs &confs = m_frag_confs[frag_name];
-            Int l = size(confs);
-            Int n = Int(rand()*l);
-            FragConf<3> &conf = confs[n];
-            auto frag = conf.frag;
-            geom::Superposition<Num> sp;
-            if (min == 0) {
-//                Mat x(1, 3);
-//                mat_set_rows(x, 0, _pred_chain[max + 1]["P"]);
-//                sp.init(conf.p2, x);
-                const Atom &p = _pred_chain[max+1]["P"];
-                for (int i = min; i <= max; i++) {
-                    int j = 0;
-                    for (auto && atom : frag[i-min]) {
-                        for (int k = 0; k < 3; k++) _pred_chain[i][j][k] = atom[k] - conf.p2[k] + p[k];
-                        j++;
-                    }
-                }
-            }
-            else if (max == _seq.size() - 1) {
-//                Mat x(1, 3);
-//                mat_set_rows(x, 0, _pred_chain[min]["P"]);
-//                sp.init(conf.p1, x);
-                const Atom &p = _pred_chain[min]["P"];
-                for (int i = min; i <= max; i++) {
-                    int j = 0;
-                    for (auto && atom : frag[i-min]) {
-                        for (int k = 0; k < 3; k++) _pred_chain[i][j][k] = atom[k] - conf.p1[k] + p[k];
-                        j++;
-                    }
-                }
-            }
-            else {
-                Mat x(2, 3);
-                mat_set_rows(x, 0, _pred_chain[min]["P"], _pred_chain[max + 1]["P"]);
-                sp.init(conf.pp, x);
-                for (Int i = min; i <= max; i++) {
-                    for (auto && atom : frag[i-min]) sp.apply(atom);
-                    set_atoms(_pred_chain[i], frag[i-min]);
-                }
-            }
-
-            if (min == 0 || max == size(_seq) - 1) {
-                int t = (min == 0 ? max : min);
-                int index = int(rand() * 3);
-                double dih = (rand() - 0.5) * m_max_angle;
-                auto &&rot = geom::rot_mat(index, dih);
-                Vec origin(3);
-                vec_set(origin, _pred_chain[t][0]);
-                for (int i = min; i <= max; i++) {
-                    for (auto && atom : _pred_chain[i]) {
-                        geom::rotate(atom, origin, rot);
-                    }
-                    space_update_item(i);
-                }
-            }
-            else {
-                geom::RotateAlong<double> rotate_along(_pred_chain[min][0], _pred_chain[max + 1][0], m_max_angle * (rand() - 0.5));
-                for (int i = min; i <= max; i++) {
-                    for (auto && atom : _pred_chain[i]) {
-                        rotate_along(atom);
-                    }
-                    space_update_item(i);
-                }
-            }
-            /*
-            if (min == 0 && max == _seq.size() - 1) {
-                return;
-            }
-            else if (min == max) {
-                ResConf::Confs &confs = m_res_confs[_pred_chain[min].name];
-                int l = size(confs);
-                int n = int(rand()*l);
-                geom::Superposition<Num> sp;
-                if (min == 0) {
-                    Mat x(1, 3);
-                    mat_set_rows(x, 0, _pred_chain[min + 1]["P"]);
-                    sp.init(confs[n].p2, x);
-                }
-                else if (max == _seq.size() - 1) {
-                    Mat x(1, 3);
-                    mat_set_rows(x, 0, _pred_chain[min]["P"]);
-                    sp.init(confs[n].p1, x);
-                }
-                else {
-                    Mat x(2, 3);
-                    mat_set_rows(x, 0, _pred_chain[min]["P"], _pred_chain[min + 1]["P"]);
-                    sp.init(confs[n].pp, x);
-                }
-                Residue r = confs[n].res;
-                for (auto && atom : r) sp.apply(atom);
-                set_atoms(_pred_chain[min], r);
-                space_update_item(min);
-            }
-            else {
-                Num d1 = -1;
-                Num d2 = -1;
-                if (min > 0) d1 = geom::distance(_pred_chain[min - 1][1], _pred_chain[min][0]);
-                if (max < size(_seq) - 1) d2 = geom::distance(_pred_chain[max][1], _pred_chain[max + 1][0]);
-                if (min == 0 || max == size(_seq) - 1 || d1 > 4.0 || d2 > 4.0) {
-                    int t = ((min == 0 || d1 > 4.0) ? max : min);
-                    int index = int(rand() * 3);
-                    double dih = (rand() - 0.5) * m_max_angle;
-                    auto &&rot = geom::rot_mat(index, dih);
-                    Vec origin(3);
-                    vec_set(origin, _pred_chain[t][0]);
-                    for (int i = min; i <= max; i++) {
-                        for (auto && atom : _pred_chain[i]) {
-                            geom::rotate(atom, origin, rot);
-                        }
-                        space_update_item(i);
-                    }
-                }
-                else {
-                    geom::RotateAlong<double> rotate_along(_pred_chain[min][0], _pred_chain[max + 1][0], m_max_angle * (rand() - 0.5));
-                    for (int i = min; i <= max; i++) {
-                        for (auto && atom : _pred_chain[i]) {
-                            rotate_along(atom);
-                        }
-                        space_update_item(i);
-                    }
-                }
-            }
-            */
-        },
-            // rotate base
-            [this, &get_base_axis]() {
-                for (int i = 0; i < _seq.size(); i++) {
-                    if (is_selected(i)) {
-                        auto axis = get_base_axis(_pred_chain[i]);
-                        geom::RotateAlong<double> rotate_along(axis[0], axis[1], m_max_angle * (rand() - 0.5));
-                        for (int j = 3; j < 6; j++) {
-                            rotate_along(_pred_chain[i][j]);
-                        }
-                        space_update_item(i);
-                    }
-                }
-            },
-            // translate
-            [this]() {
-                int index = int(rand() * 3);
-                double dist = (rand() - 0.5) * 1 * _mc_max_shift;
-                for (int i = 0; i < _seq.size(); i++) {
-                    if (is_selected(i)) {
-                        for (auto && atom : _pred_chain[i]) {
-                            atom[index] += dist;
-                        }
-                        space_update_item(i);
-                    }
-                }
-            },
-
-            // rotate fixed in P
-            [this]() {
-                int index = int(rand() * 3);
-                double dih = (rand() - 0.5) * m_max_angle;
-                auto &&rot = geom::rot_mat(index, dih);
-                auto &&origin = rotating_center();
-                for (int i = 0; i < _seq.size(); i++) {
-                    if (is_selected(i)) {
-                        for (auto && atom : _pred_chain[i]) {
-                            geom::rotate(atom, origin, rot);
-                        }
-                        space_update_item(i);
-                    }
-                }
-            }
-
-    };
-
     backup();
-    actions[0]();
 
-    //int min = m_selected_mvel->min();
-    //int max = m_selected_mvel->max();
-    //if (m_sample_mode == SAMPLE_SSE) {
-    //	if (min == max) {
-    //		actions[std::vector<int>{0, 1, 2}[int(rand() * 3)]]();
-    //	}
-    //	else {
-    //		actions[std::vector<int>{0, 2}[int(rand()*2)]]();
-    //	}
-    //}
-    //else if (m_sample_mode == SAMPLE_TREE) {
-    //	if (min == max) {
-    //		actions[std::vector<int>{0, 1}[int(rand() * 2)]]();
-    //	}
-    //	else {
-    //		actions[0]();
-    //	}
-    //}
-    //else {
-    //	throw "jian::MCBase::sample_res error!";
-    //}
+    MvEl *mvel = m_selected_mvel;
+    auto type = mvel->type;
+    if (type == MvEl::MVEL_HL) {
+        if (rand() < 0.5) {
+            translate_mvel(*this);
+        }
+        else {
+            rotate_about_center(*this);
+        }
+    }
+    else if (type == MvEl::MVEL_FG) {
+        update_fragment(*this);
+    }
+    else {
+        throw "Unsupported moving element type!";
+    }
 
 }
 
 void MCBase::mc_back() {
-//    std::cout << "moved_atoms: " << _moved_atoms.size() << std::endl;
-//    std::cout << _moved_atoms.front() << std::endl;
-//    std::cout << _pred_chain.size() << std::endl;
     for (int i = 0; i < _seq.size(); i++) {
         if (is_selected(i)) {
             for (auto && atom : _pred_chain[i]) {
-//                std::cout << "back: " << std::endl;
-//                std::cout << atom;
-//                std::cout << _moved_atoms.front();
                 atom = _moved_atoms.front();
                 _moved_atoms.pop_front();
             }
@@ -684,8 +325,6 @@ MCBase::SpaceItem &MCBase::item(int i) {
 
 MCBase::SpaceVal &MCBase::space_val(int i) {
     SpaceItem &a = item(i);
-    //std::cout << a << std::endl;
-    //std::cout << space_index(a[0]) << ' ' << space_index(a[1]) << ' ' << space_index(a[2]) << std::endl;
     return m_space[space_index(a[0])][space_index(a[1])][space_index(a[2])];
 }
 

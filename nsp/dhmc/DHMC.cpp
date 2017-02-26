@@ -1,6 +1,7 @@
 #include <numeric>
 #include "../nuc2d/NASS.hpp"
 #include "DHMC.hpp"
+#include "../mcsm/McsmUpdate.hpp"
 
 BEGIN_JN
 
@@ -8,7 +9,6 @@ void DHMC::init(const Par &par) {
     MCSM::init(par);
 
     m_set_mvel_pk = false;
-    m_pk_ahead = par.has("pk_ahead");
     m_sample_frag = par.has("frag");
     m_sample_all_res = par.has("sample_all_res");
     m_not_sample_hp = par.has("not_sample_hp");
@@ -280,7 +280,7 @@ void DHMC::restore_helix(SSE *sse) {
 }
 
 void DHMC::restore_fixed_ranges() {
-    if (!m_all_free) {
+    if (m_save_ss) {
         log << "# " << __FUNCTION__ << std::endl;
 
         auto end = (m_pk_ahead ? m_trees.end() : std::next(m_trees.begin()));
@@ -352,9 +352,25 @@ void DHMC::set_mvels() {
         return true;
     };
 
+    if (m_save_ss) {
+        // set mvels of helices
+        auto end = (m_pk_ahead ? m_trees.end() : std::next(m_trees.begin()));
+        for (auto it = m_trees.begin(); it != end; it++) {
+            for (auto &&sse : **it) {
+                if (sse.has_helix()) {
+                    auto &front = sse.helix.front();
+                    auto &back = sse.helix.back();
+                    m_mvels.push_back(new MvEl(front.res1.num-1, back.res1.num-1, back.res2.num-1, front.res2.num-1, MvEl::MVEL_HL));
+                }
+            }
+        }
+    }
+
     Int i, j, l = size(_seq);
     for (i = 0; i + 2 < l; i++) {
-        m_mvels.push_back(new MvEl(i, i + 2, MvEl::MVEL_FG));
+        if (!is_fixed(*this, i) || !is_fixed(*this, i+1) || !is_fixed(*this, i+2)) {
+            m_mvels.push_back(new MvEl(i, i + 2, MvEl::MVEL_FG));
+        }
     }
 //    for (i = 0; i < l; i++) {
 //        for (j = i; j < l; j++) {
@@ -434,7 +450,7 @@ void DHMC::save_helix(SSE *sse) {
 }
 
 void DHMC::save_fixed_ranges() {
-    if (!m_all_free) {
+    if (m_save_ss) {
         log << "# " << __FUNCTION__ << std::endl;
 
         auto end = (m_pk_ahead ? m_trees.end() : std::next(m_trees.begin()));

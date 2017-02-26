@@ -165,6 +165,17 @@ BEGIN_JN
 				JN_OUT << *it_target;
 			}
 
+            void split() {
+                Str prefix = file::name(m_traj);
+                m_par.set(prefix, "p", "prefix");
+				for_each_model(m_traj, [this, &prefix](const Model &model, int i) {
+					if (i % m_bin == 0) {
+						LOG << "Writing: model-" << i + 1 << std::endl;
+                        mol_write(model, to_str(prefix, '.', i + 1, ".pdb"));
+					}
+				});
+            }
+
 			void run() {
 				if (m_func == "rmsd") {
 					rmsd();
@@ -175,6 +186,9 @@ BEGIN_JN
 				else if (m_func == "extract") {
 					extract();
 				}
+                else if (m_func == "split") {
+                    split();
+                }
 			}
 		};
 

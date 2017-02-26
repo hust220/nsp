@@ -29,7 +29,6 @@ public:
 	Int m_frag_size;
 	ResFrags *m_frags;
 	Bool m_sample_frag;
-	Bool m_pk_ahead;
 	Bool m_sample_all_res;
 	Bool m_not_sample_hp;
 	Bool m_not_sample_il;
