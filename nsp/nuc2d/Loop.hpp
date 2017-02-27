@@ -29,6 +29,14 @@ public:
 		return stream.str();
 	}
 
+    Deque<Int> nums() const {
+        Deque<Int> ls;
+        for (auto && res : *this) {
+            ls.push_back(res.num - 1);
+        }
+        return ls;
+    }
+
 	operator Str() const {
 		std::ostringstream stream;
 		stream << seq() << ' ' << ss() << ' ';

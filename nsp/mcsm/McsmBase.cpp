@@ -30,8 +30,18 @@ void MCBase::init(const Par &par) {
     m_grow_length = 3;
 
     // save ss
+    m_del_pk = par.has("del_pk");
     m_pk_ahead = par.has("pk_ahead");
     m_save_ss = par.has("save_ss");
+    m_sample_tree = par.has("sample_tree");
+
+    if (m_del_pk) {
+        for (auto && c : _ss) {
+            if (c != '(' && c != ')' && c != '&') {
+                c = '.';
+            }
+        }
+    }
 
     m_selected_mvel = NULL;
     m_sample_mode = SAMPLE_SSE;
@@ -265,19 +275,15 @@ void MCBase::mc_sample_res() {
 
     MvEl *mvel = m_selected_mvel;
     auto type = mvel->type;
-    if (type == MvEl::MVEL_HL) {
+    if (type == MvEl::MVEL_FG && mvel->range[0][1] - mvel->range[0][0] == 2) {
+        update_fragment(*this);
+    } else {
         if (rand() < 0.5) {
             translate_mvel(*this);
         }
         else {
             rotate_about_center(*this);
         }
-    }
-    else if (type == MvEl::MVEL_FG) {
-        update_fragment(*this);
-    }
-    else {
-        throw "Unsupported moving element type!";
     }
 
 }

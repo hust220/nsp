@@ -60,6 +60,8 @@ class MCBase : public TSP, public MC {
         };
 
         // grow
+        Bool m_sample_tree;
+        Bool m_del_pk;
         Bool m_pk_ahead;
         Bool m_save_ss;
         Bool m_grow_mode;

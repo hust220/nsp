@@ -178,6 +178,18 @@ BEGIN_JN
 		return c;
 	}
 
+    Model CG::to_aa(const Model &model) const {
+        Model m;
+        m.name = model.name;
+        m.type = model.type;
+        m.num = model.num;
+        for (auto && chain : model) {
+            m.push_back(to_aa(chain));
+        }
+        m.m_cg = "aa";
+        return m;
+    }
+
 	Chain CG::to_aa(const Mat &c, int beg, int end) const {
 		return CG2AA::instance(m_cg).run(c, std::vector<int>{beg, end});
 	}

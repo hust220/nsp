@@ -71,8 +71,6 @@ public:
 
 	virtual void restore_fixed_ranges();
 
-	void set_mvels();
-
 	// MC related methods
 
 	virtual void mc_sample();

@@ -6,6 +6,7 @@
 #include <nsp/pdb.hpp>
 #include <jian/geom.hpp>
 #include <jian/utils/string.hpp>
+#include <nsp/cg.hpp>
 
 BEGIN_JN
 
@@ -168,10 +169,17 @@ BEGIN_JN
             void split() {
                 Str prefix = file::name(m_traj);
                 m_par.set(prefix, "p", "prefix");
-				for_each_model(m_traj, [this, &prefix](const Model &model, int i) {
+                Bool aa = m_par.has("aa");
+				for_each_model(m_traj, [this, &prefix, &aa](const Model &model, int i) {
 					if (i % m_bin == 0) {
 						LOG << "Writing: model-" << i + 1 << std::endl;
-                        mol_write(model, to_str(prefix, '.', i + 1, ".pdb"));
+                        SP<CG> cg = CG::fac_t::make("6p");
+                        if (aa) {
+                            mol_write(cg->to_aa(model), to_str(prefix, '.', i + 1, ".pdb"));
+                        }
+                        else {
+                            mol_write(model, to_str(prefix, '.', i + 1, ".pdb"));
+                        }
 					}
 				});
             }

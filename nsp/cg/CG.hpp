@@ -36,6 +36,8 @@ BEGIN_JN
 
 		Chain to_aa(const Chain &chain) const;
 
+		Model to_aa(const Model &model) const;
+
 		Chain to_aa(const Mat &c, int beg, int end) const;
 
 	};

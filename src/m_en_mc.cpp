@@ -15,6 +15,10 @@ namespace {
         Num len = 0, ang = 0, dih = 0, crash = 0, pairing = 0, stacking = 0;
     };
 
+    Num en_total(const En &en) {
+        return en.len + en.ang + en.dih + en.crash + en.pairing + en.stacking;
+    }
+
     REGISTER_NSP_COMPONENT(en_mc) {
         Str filename;
         Chain chain;
@@ -41,7 +45,15 @@ namespace {
             }
         }
 
-        JN_OUT << en.len << ' ' << en.ang << ' ' << en.dih << ' ' << en.crash << ' ' << en.pairing << ' ' << en.stacking << std::endl;
+        JN_OUT
+            << "total: " << en_total(en)
+            << ", len: " << en.len
+            << ", ang: " << en.ang
+            << ", dih: " << en.dih
+            << ", crash: " << en.crash
+            << ", pairing: " << en.pairing
+            << ", stacking: " << en.stacking
+            << std::endl;
     }
 }
 
