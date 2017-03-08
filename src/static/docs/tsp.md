@@ -14,8 +14,10 @@
         -seq <SEQUENCE> \
         -ss "<SECONDARY_STRUCTURE>" \
         -init <INITIAL_PDB_FILE> \
-        [-<constraints|c> <CONSTRAINTS_FILE>] \
+        -save_ss \
+        -sample_tree \
         [-dca <DCA_FILE>] \
+        [-<constraints|c> <CONSTRAINTS_FILE>] \
         [-queue <QUEUE>] \
         [-seed <SEED>]
 
@@ -52,3 +54,26 @@
     </tr>
     <tr><td>SEED</td><td>default value of seed is 11</td></tr>
     </table>
+
+*   #### Trajectory Clustering
+
+        nsp traj cluster <TRAJECTORY_FILE> -[prefix|p] <PREFIX> -k <NUMBER_OF_CLUSTERS> -aa
+
+    Example:
+
+        nsp trajc cluster example.traj.pdb -p example.cluster -k 10 -aa
+
+    This command will generate 10 files:
+
+        example.cluster.1.pdb
+        example.cluster.2.pdb
+        example.cluster.3.pdb
+        example.cluster.4.pdb
+        example.cluster.5.pdb
+        example.cluster.6.pdb
+        example.cluster.7.pdb
+        example.cluster.8.pdb
+        example.cluster.9.pdb
+        example.cluster.10.pdb
+
+
