@@ -2,6 +2,12 @@
 
 BEGIN_JN
 
+MvEl::MvEl(MvEl::Type t) : type(t) {}
+
+MvEl &MvEl::add_frag(int a, int b) {
+    range.push_back({a, b});
+}
+
 MvEl::MvEl(int a, int b, MvEl::Type t) : type(t) {
     range.push_back({ a, b });
 }

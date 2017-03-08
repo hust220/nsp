@@ -3,9 +3,11 @@
 #include <array>
 #include <iostream>
 #include "nsp.hpp"
+#include "En6p.hpp"
 #include <nsp/pdb.hpp>
 #include <jian/geom.hpp>
 #include <jian/utils/string.hpp>
+#include <jian/utils/Cluster.hpp>
 #include <nsp/cg.hpp>
 
 BEGIN_JN
@@ -184,6 +186,75 @@ BEGIN_JN
 				});
             }
 
+            template<typename _Chain>
+            Mat *chain_to_mat(const _Chain &rs) {
+                Int l = size(rs);
+                Mat *mat = new Mat(l * 6, 3);
+                for (Int i = 0; i < l; i++) {
+                    for (Int j = 0; j < 6; j++) {
+                        for (Int k = 0; k < 3; k++) {
+                            (*mat)(i * 6 + j, k) = rs[i][j][k];
+                        }
+                    }
+                }
+                return mat;
+            }
+
+            void cluster() {
+                Str prefix = file::name(m_traj);
+                m_par.set(prefix, "p", "prefix");
+
+                Int k = 5;
+                m_par.set(k, "k");
+
+                Bool aa = m_par.has("aa");
+
+                auto cluster = Cluster::fac_t::make("kmeans", Par("k", k));
+                Deque<Mat *> mats;
+                Map<Mat *, Num> scores;
+                Map<Mat *, Model> models;
+                //auto dist = [](Mat *m1, Mat *m2) {return geom::rmsd(*m1, *m2); };
+
+				for_each_model(m_traj, [this, &mats, &scores, &models](const Model &model, int i) {
+					if (i % m_bin == 0) {
+						LOG << "Reading: model-" << i + 1 << std::endl;
+                        auto rs = model.residues();
+                        Mat *m = chain_to_mat(rs);
+                        mats.push_back(m);
+                        scores[m] = total(en6p_chain(rs));
+                        models[m] = model;
+					}
+				});
+
+                std::sort(mats.begin(), mats.end(), [&scores](auto &&m1, auto &&m2){return scores[m1] < scores[m2];});
+                Deque<Mat *> mats_lower;
+                for (Int i = 0; i < std::min(500, size(mats)/2); i++) mats_lower.push_back(mats[i]);
+
+                LOG << "Clustering..." << std::endl;
+                Mat *mat = Cluster::to_mat(mats_lower.begin(), mats_lower.end(), [](Mat *m1, Mat *m2) {return geom::rmsd(*m1, *m2); });
+                (*cluster)(*mat);
+
+                Int i = 0;
+                SP<CG> cg = CG::fac_t::make("6p");
+                for (auto && c : cluster->m_clusters) {
+                    Str filename = to_str(prefix, '.', i+1, ".pdb");
+                    LOG << "Writing " << filename << "..." << std::endl;
+                    Int n = c[0];
+                    if (aa) {
+                        mol_write(cg->to_aa(models[mats_lower[n]]), filename);
+                    }
+                    else {
+                        mol_write(models[mats_lower[n]], filename);
+                    }
+                    i++;
+                }
+                //print_clusters(*cluster, names);
+                //LOG << "All done." << std::endl;
+
+                for (auto && m : mats) delete m;
+                delete mat;
+            }
+
 			void run() {
 				if (m_func == "rmsd") {
 					rmsd();
@@ -196,6 +267,9 @@ BEGIN_JN
 				}
                 else if (m_func == "split") {
                     split();
+                }
+                else if (m_func == "cluster") {
+                    cluster();
                 }
 			}
 		};

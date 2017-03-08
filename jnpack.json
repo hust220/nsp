@@ -10,7 +10,7 @@
 
     "serial-release": {
       "target": "nsp",
-      "cxx_flags": ["-std=c++14", "-pthread"],
+      "cxx_flags": ["-std=c++14", "-pthread", "-lm", "-msse4.2"],
       "threads": 16,
       "dirs": ["nsp", "src"]
     },

@@ -2,7 +2,6 @@
 #include "../nuc3d/Assemble.hpp"
 #include "../nuc3d/Convert.hpp"
 #include "McsmBase.hpp"
-#include "McsmUpdate.hpp"
 
 #define JN_MCXP_TEMPPAR_SET(a) temp_par.set(PP_CAT(_mc_, a), PP_STRING3(PP_CAT(mc_, a)));
 #define JN_MCXP_PAR_SET(a) par.set(PP_CAT(_mc_, a), PP_STRING3(PP_CAT(mc_, a)));
@@ -266,28 +265,6 @@ void MCBase::write_traj() {
     output.close();
 }
 
-void MCBase::mc_sample() {
-    mc_sample_res();
-}
-
-void MCBase::mc_sample_res() {
-    backup();
-
-    MvEl *mvel = m_selected_mvel;
-    auto type = mvel->type;
-    if (type == MvEl::MVEL_FG && mvel->range[0][1] - mvel->range[0][0] == 2) {
-        update_fragment(*this);
-    } else {
-        if (rand() < 0.5) {
-            translate_mvel(*this);
-        }
-        else {
-            rotate_about_center(*this);
-        }
-    }
-
-}
-
 void MCBase::mc_back() {
     for (int i = 0; i < _seq.size(); i++) {
         if (is_selected(i)) {
@@ -440,10 +417,10 @@ void MCBase::print_final_constraints() {
 void MCBase::before_run() {}
 void MCBase::finish_run() {}
 
-Str MCBase::file_parameters() const {
-    return "3drna";
-}
-
+//Str MCBase::file_parameters() const {
+//    return "3drna";
+//}
+//
 void MCBase::save_fixed_ranges() {}
 void MCBase::restore_fixed_ranges() {}
 

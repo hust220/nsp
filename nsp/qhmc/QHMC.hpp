@@ -350,6 +350,9 @@ public:
         set_related_and_unrelated_residues();
     }
 
+    virtual void mc_sample() {
+    }
+
     virtual void mc_select() {
         int len = _seq.size();
         m_selected_index = int(rand() * len);

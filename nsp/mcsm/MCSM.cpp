@@ -145,10 +145,7 @@ void MCSM::mc_energy_constraints(en_t &e, bool is_total) {
                 if (is_total || is_selected(c.key[0]) || is_selected(c.key[1])) {
                 //if (is_total || is_selected(c.key[0]) ^ is_selected(c.key[1])) {
                     d = geom::distance(_pred_chain[c.key[0]][0], _pred_chain[c.key[1]][0]);
-                    if (d < 17) {
-                        e.cons += -100.0 * k;
-                    }
-                    else {
+                    if (d > 17) {
                         e.cons += square(d - 17) * k;
                     }
                 }
@@ -195,10 +192,10 @@ void MCSM::write_en() {
         << _mc_local_succ_rate << "(rate)" << std::endl;
 }
 
-S MCSM::file_parameters() const {
-    return "mcpsb";
-}
-
+//S MCSM::file_parameters() const {
+//    return "mcpsb";
+//}
+//
 void MCSM::finish_run() {
     log << "# Displaying pairing information" << std::endl;
     print_pairing();

@@ -1,7 +1,8 @@
 #include <numeric>
 #include "../nuc2d/NASS.hpp"
 #include "DHMC.hpp"
-#include "SetMvEl.hpp"
+#include "dhmc_update.hpp"
+#include "dhmc_set_mvels.hpp"
 
 BEGIN_JN
 
@@ -14,6 +15,7 @@ void DHMC::init(const Par &par) {
     m_not_sample_hp = par.has("not_sample_hp");
     m_not_sample_il = par.has("not_sample_il");
     m_all_free = par.has("all_free");
+    m_save_bg = par.has("save_bg");
 
     log << "# Load bp distances..." << std::endl;
     for (auto &&it : FileLines(to_str(Env::lib(), "/RNA/pars/nuc3d/bp_distances.txt"))) {
@@ -48,7 +50,7 @@ void DHMC::init(const Par &par) {
     }
 
     log << "# Set moving elements" << std::endl;
-    set_mvels(*this);
+    dhmc_set_mvels(*this);
 
     //log << "# Set moving elements of each base" << std::endl;
     //set_base_mvels();
@@ -154,6 +156,11 @@ void DHMC::set_trees() {
 
 void DHMC::set_bps() {
     m_bps = NASS::get_bps(_ss);
+    log << "Fixed bases " << std::endl;
+    for (Int i = 0; i < size(_seq); i++) {
+        log << i << ':' << is_fixed(*this, i) << ' ';
+    }
+    log << std::endl;
 }
 
 void DHMC::bps_to_constraints() {
@@ -297,57 +304,7 @@ void DHMC::restore_fixed_ranges() {
 // MC related methods
 
 void DHMC::mc_sample() {
-    if (m_selected_mvel->type == MvEl::MVEL_FG && m_sample_frag) {
-        mc_sample_frag();
-    }
-    else {
-        mc_sample_res();
-    }
-}
-
-void DHMC::mc_sample_frag() {
-    int i, j, k, id;
-    Mat m, m1, m2;
-    Mat *mat;
-
-    if (m_selected_mvel->type != MvEl::MVEL_FG)
-        throw "jian::DHMC::mc_sample_frag error!";
-
-    backup();
-
-    std::ostringstream stream;
-    Frag &f = m_selected_mvel->range[0];
-    for (i = f[0]; i <= f[1]; i++) {
-        stream << _seq[i];
-    }
-
-    auto &ids = m_frags->m_ids[stream.str()];
-    id = ids[int(ids.size() * rand())];
-    mat = m_frags->m_mats[id];
-
-    m = *mat;
-    m1.resize(2 * m_cg->res_size(), 3);
-    m2.resize(2 * m_cg->res_size(), 3);
-    for (j = 0; j < m_cg->res_size(); j++) {
-        for (k = 0; k < 3; k++) {
-            m1(j, k) = m(j, k);
-            m1(m_cg->res_size() + j, k) = m((m_frag_size - 1) * m_cg->res_size() + j, k);
-            m2(j, k) = _pred_chain[f[0]][j][k];
-            m2(m_cg->res_size() + j, k) = _pred_chain[f[0] + (m_frag_size - 1)][j][k];
-        }
-    }
-    geom::Superposition<Num> sp(m1, m2);
-    sp.apply_m(m);
-    for (i = 0; i < m_frag_size; i++) {
-        if (m_is_free[f[0] + i]) {
-            for (j = 0; j < m_cg->res_size(); j++) {
-                for (k = 0; k < 3; k++) {
-                    _pred_chain[f[0] + i][j][k] = m(i * m_cg->res_size() + j, k);
-                }
-            }
-            space_update_item(f[0] + i);
-        }
-    }
+    dhmc_sample_res(*this);
 }
 
 void DHMC::save_helix(SSE *sse) {

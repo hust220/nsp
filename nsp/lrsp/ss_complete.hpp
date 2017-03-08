@@ -9,12 +9,12 @@ BEGIN_JN
 
 namespace lrsp {
 
-using pair_t = std::array<int, 2>;
-using pairs_t = std::list<pair_t>;
-using seq_t = std::string;
-using ss_t = std::string;
+using pair_t = Array<int, 2>;
+using pairs_t = Deque<pair_t>;
+using seq_t = Str;
+using ss_t = Str;
 
-S ss_complete(S seq, S ss);
+Str ss_complete(Str seq, Str ss);
 void ss_complete(pairs_t & pairs, const seq_t & seq);
 
 } // namespace lrsp

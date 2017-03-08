@@ -28,6 +28,7 @@ public:
 	Map<SSE *, Chain *> m_saved_helices;
 	Int m_frag_size;
 	ResFrags *m_frags;
+    Bool m_save_bg;
 	Bool m_sample_frag;
 	Bool m_sample_all_res;
 	Bool m_not_sample_hp;
@@ -35,7 +36,8 @@ public:
 	Bool m_set_mvel_pk;
 	Bool m_all_free;
 	Map<Str, Array<Num, 6>> m_bp_distances;
-	Vector<Bool> m_is_free;
+//	Vector<Bool> m_is_free;
+//    Vector<Bool> m_is_single_pair;
 
 	DHMC() = default;
 
@@ -74,8 +76,6 @@ public:
 	// MC related methods
 
 	virtual void mc_sample();
-
-	void mc_sample_frag();
 
 	void save_helix(SSE *sse);
 

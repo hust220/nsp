@@ -12,9 +12,9 @@ struct tuple_t {
     int a, b;
     double c;
 };
-using tuples_t = std::list<tuple_t>;
-using pair_t = std::array<int, 2>;
-using pairs_t = std::list<pair_t>;
+using tuples_t = Deque<tuple_t>;
+using pair_t = Array<Int, 2>;
+using pairs_t = Deque<pair_t>;
 using seq_t = Str;
 using ss_t = Str;
 

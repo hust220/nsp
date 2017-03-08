@@ -16,7 +16,7 @@ namespace dca {
 	std::vector<std::array<char, 2>> patterns = { {'.', '.'}, {'(', ')'}, {'[', ']'}, {'{', '}'} };
 
 void pairs_sort(pairs_t &pairs) {
-    pairs.sort([](auto && pair1, auto && pair2){
+    std::sort(pairs.begin(), pairs.end(), [](auto && pair1, auto && pair2){
 		return pair1[0] < pair2[0] || (pair1[0] == pair2[0] && pair1[1] < pair2[1]);
 	});
 }
@@ -31,7 +31,8 @@ pairs_t pairs_from_file(const Str &file_name, int size) {
 }
 
 tuples_t tuples_from_file(const Str &file_name, int size) {
-    tuples_t tuples;
+    //tuples_t tuples;
+    List<tuple_t> tuples;
 	int a, b;
 	Num c;
 
@@ -48,6 +49,7 @@ tuples_t tuples_from_file(const Str &file_name, int size) {
 		}
 		if (a >= 0 && b - a - 1 >= 4) {
 			auto p = std::minmax(a, b);
+            //std::cout << c << ' ' << size << ' ' << tuples.size() << std::endl;
 			if (c <= tuples.back().c) {
 				if (tuples.size() >= size) {
 				}
@@ -73,7 +75,9 @@ tuples_t tuples_from_file(const Str &file_name, int size) {
 			}
 		}
 	}
-    return tuples;
+    tuples_t ts;
+    for (auto && t : tuples) ts.push_back(t);
+    return ts;
 }
 
 pairs_t pairs_from_ss(const ss_t &ss) {

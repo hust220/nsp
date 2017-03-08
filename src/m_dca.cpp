@@ -1,5 +1,4 @@
-#include <nsp/dca/Dca.hpp>
-#include <nsp/dca/ss_pairs.hpp>
+#include <nsp/dca.hpp>
 #include <nsp/nuc2d/SSTree.hpp>
 #include <nsp/nuc2d/SSE.hpp>
 #include "nsp.hpp"
@@ -119,24 +118,32 @@ namespace dca {
 	void rm_fp(const Par &par) {
 		Str di_file;
 		Str seq;
-		Num k = 0.8;
+		Num k = 0.5;
+        Num frac_reserved;
+        Int nr;
 		int i, j, l;
 		Vb v;
-		pairs_t::iterator it, it1, it2;
-		pairs_t pairs, new_pairs;
+		tuples_t::iterator it, it1, it2;
+		tuples_t pairs, new_pairs;
 
 		auto neighbor = [](auto it1, auto it2) {
 			return 
-				((*it1)[0] + 1 == (*it2)[0] && (*it1)[1] - 1 == (*it2)[1]) ||
-				((*it1)[0] - 1 == (*it2)[0] && (*it1)[1] + 1 == (*it2)[1]);
+				(it1->a + 1 == it2->a && it1->b - 1 == it2->b) ||
+				(it1->a - 1 == it2->a && it1->b + 1 == it2->b);
 		};
 
 		di_file = par.get("di");
 		seq = par.get("seq");
+
 		par.set(k, "k");
 		l = int(size(seq) * k);
 
-		pairs = pairs_from_file(di_file, l);
+        frac_reserved = 0;
+        par.set(frac_reserved, "fr", "frac_reserved");
+        nr = Int(frac_reserved * size(seq));
+
+		pairs = tuples_from_file(di_file, l);
+        std::sort(pairs.begin(), pairs.end(), [](auto && t1, auto && t2){return t1.c > t2.c;});
 		v.resize(l, false);
 		for (it1 = pairs.begin(), i = 0; it1 != pairs.end(); it1++, i++) {
 			for (it2 = STD_ next(it1), j = i + 1; it2 != pairs.end(); it2++, j++) {
@@ -147,9 +154,9 @@ namespace dca {
 			}
 		}
 		for (i = 0, it = pairs.begin(); it != pairs.end(); i++, it++) {
-			if (v[i]) new_pairs.push_back(*it);
+			if (v[i] || i <= nr) new_pairs.push_back(*it);
 		}
-		dca::print_pairs(JN_OUT, new_pairs);
+		dca::print_tuples(JN_OUT, new_pairs);
 	}
 
 	REGISTER_NSP_COMPONENT(dca) {

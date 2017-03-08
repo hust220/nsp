@@ -41,6 +41,8 @@ class MvEl {
         Type type;
         Frags range;
 
+        MvEl(Type t);
+
         MvEl(int a, int b, Type t);
 
         MvEl(int a, int b, int c, int d, Type t);
@@ -48,6 +50,8 @@ class MvEl {
         MvEl(const Helix &h);
 
         MvEl(SSTree::El *l, Type t);
+
+        MvEl &add_frag(int a, int b);
 
         int min() const;
 

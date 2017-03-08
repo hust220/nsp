@@ -81,6 +81,7 @@ class MCBase : public TSP, public MC {
         Num m_box_size;
         Deque<Atom> _moved_atoms;
         Str m_traj;
+        Deque<Num> m_scores;
         Int mc_num_writing = 1;
         Vector<Int> m_continuous_pts;
         Vector<Int> m_ang_pts;
@@ -126,10 +127,6 @@ class MCBase : public TSP, public MC {
 
         void write_traj();
 
-        virtual void mc_sample();
-
-        void mc_sample_res();
-
         void mc_back();
 
         void backup();
@@ -150,6 +147,8 @@ class MCBase : public TSP, public MC {
 
         void print_final_constraints();
 
+        virtual void mc_sample() = 0;
+
         virtual void mc_next_step();
 
         virtual double mc_partial_energy() = 0;
@@ -164,7 +163,7 @@ class MCBase : public TSP, public MC {
 
         virtual void finish_run();
 
-        virtual S file_parameters() const;
+//        virtual S file_parameters() const;
 
         virtual void save_fixed_ranges();
 

@@ -37,6 +37,8 @@ class MCSM : public MCBase {
 
         void print_pairing();
 
+        virtual void mc_sample() = 0;
+
         virtual double mc_partial_energy();
 
         virtual double mc_total_energy();
@@ -53,7 +55,7 @@ class MCSM : public MCBase {
 
         virtual void write_en();
 
-        virtual S file_parameters() const;
+//        virtual S file_parameters() const;
 
         virtual void finish_run();
 
