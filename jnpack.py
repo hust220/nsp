@@ -69,10 +69,13 @@ def read_config(dir):
 
     return json.loads(content)
 
+def multi_filter(names, patterns):
+    return filter(lambda name: any(fnmatch.fnmatch(name, pattern) for pattern in patterns), names)
+
 def find_cpps(dir):
     matches = []
     for root, dirnames, filenames in os.walk(dir):
-        for filename in fnmatch.filter(filenames, '*.cpp'):
+        for filename in multi_filter(filenames, ['*.c', '*.cpp']):
             matches.append(os.path.join(root, filename))
     return matches
 
