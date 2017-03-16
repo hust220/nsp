@@ -4,6 +4,46 @@
 
 BEGIN_JN
 
+static Int frag_has_frag(const Frag &f1, const Frag &f2) {
+    if (f2[1] < f1[0] || f2[0] > f1[1]) return -1;
+    else if (f2[0] >= f1[0] && f2[1] <= f1[1]) return 1;
+    else return 0;
+}
+
+static Int mvel_has_frag(MvEl *el, const Frag &frag) {
+    for (auto && f : el->range) {
+        Int n = frag_has_frag(f, frag);
+        if (n == 0) return 0;
+        else if (n == 1) return 1;
+    }
+    return -1;
+}
+
+static Bool mvel_compatible_el(MvEl *el, const Frags &frags) {
+    Int n = 0;
+    for (auto && f : frags) {
+        n += mvel_has_frag(el, f);
+    }
+    return std::abs(n) == size(frags);
+}
+
+static Bool mvel_compatible_els(MvEl *el, const Deque<Frags> &els) {
+    for (auto && frags : els) {
+        if (!mvel_compatible_el(el, frags)) return false;
+    }
+    return true;
+}
+
+void mvels_set_fixed_els(Deque<MvEl *> &mvels, const Deque<Frags> &els) {
+    Deque<MvEl *> ls;
+    for (auto && el : mvels) {
+        if (mvel_compatible_els(el, els)) {
+            ls.push_back(el);
+        }
+    }
+    mvels = ls;
+}
+
 template<typename _SSE>
 auto loop_nums(const _SSE &sse) {
     Deque<Int> dq;

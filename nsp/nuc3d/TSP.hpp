@@ -48,6 +48,7 @@ public:
 	Vi m_chain_lens{};
 	Vs m_chain_names{};
 	B m_will_log;
+    Str m_out_dir = ".";
 
     TSP() = default;
     ~TSP();

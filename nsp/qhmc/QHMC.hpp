@@ -155,8 +155,7 @@ public:
 
         LOG << "#### Supperposition." << std::endl;
         auto sp = geom::suppos(m1, m2);
-        INIT_SUPPOS(sp);
-		for (auto && res : c1) for (auto && atom : res) { APPLY_SUPPOS(atom, sp); }
+		for (auto && res : c1) for (auto && atom : res) sp.apply(atom);
 
         LOG << "#### Set coordinates." << std::endl;
         for (i = 0; i < 4; i++) {

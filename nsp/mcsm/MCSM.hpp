@@ -4,7 +4,7 @@
 #include "../cg.hpp"
 #include "../scoring/Score.hpp"
 
-#define MEM_EN_MCPSB len, ang, dih, crash, cons, vdw, stacking, pairing
+#define MEM_EN_MCPSB len, ang, dih, crash, cons, vdw, stacking, pairing, rg
 #define DEF_MEM_EN_MCPSB(a) double a = 0;
 #define INIT_MEM_EN_MCPSB(a) a = 0;
 #define SUM_MEM_EN_MCPSB(a) + a
@@ -48,20 +48,19 @@ class MCSM : public MCBase {
         void mc_energy_angle(en_t &e, bool is_total);
         void mc_energy_dihedral(en_t &e, bool is_total);
         void mc_energy_constraints(en_t &e, bool is_total);
+        void mc_energy_rg(en_t &e, bool is_total);
 
-        virtual double dist_two_res(const Residue &r1, const Residue &r2) const;
+//        virtual double dist_two_res(const Residue &r1, const Residue &r2) const;
 
         void set_total_energy(en_t &e);
 
         virtual void write_en();
 
-//        virtual S file_parameters() const;
-
         virtual void finish_run();
 
         virtual bool is_selected(const int &i) const = 0;
 
-        virtual Vec rotating_center() const = 0;
+//        virtual Vec rotating_center() const = 0;
 
 };
 

@@ -64,15 +64,18 @@ in_t get_in(const ss_t &nat, const ss_t &pred) {
 }
 
 double sty(const in_t &in) {
-    return in.tp / (in.tp + in.fn);
+    Num n = in.tp + in.fn;
+    return n == 0 ? 0 : in.tp / n;
 }
 
 double ppv(const in_t &in) {
-    return in.tp / (in.tp + in.fp);
+    Num n = in.tp + in.fp;
+    return n == 0 ? 0 : in.tp / n;
 }
 
 double mcc(const in_t &in) {
-    return std::sqrt(sty(in) * ppv(in));
+    Num n = sty(in) * ppv(in);
+    return n == 0 ? 0 : std::sqrt(n);
 }
 
 } // namespace mcc_detail

@@ -217,5 +217,9 @@ void SSTree::make_b(const Str &seq, const Str &ss, int hinge) {
 	}
 }
 
+SSTree ss_tree(Str seq, Str ss, Int h) {
+    return SSTree(seq, ss, h);
+}
+
 END_JN
 

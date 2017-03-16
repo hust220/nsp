@@ -5,7 +5,7 @@
 
 BEGIN_JN
 
-Model transform(const Model &m, const S &seq, const S &type);
+Chain build_helix(Str seq);
 
 END_JN
 

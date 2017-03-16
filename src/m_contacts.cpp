@@ -28,12 +28,16 @@ static Chain make_chain(std::initializer_list<T> ls) {
 }
 
 REGISTER_NSP_COMPONENT(contacts) {
-    Chain c = read_model_to_chain(par[std::vector<std::string>{"s", "pdb", "p"}][0]);
+    Str filename = par.get("s", "pdb");
+    Num cutoff = 3.5;
+    par.set(cutoff, "c", "cutoff");
+
+    Chain c = read_model_to_chain(filename);
     int len = c.size();
     for (int i = 0; i < len; i++) {
         for (int j = i + 3; j < len; j++) {
-            if (min_distance(c[i], c[j]) < std::stoi(par[std::vector<std::string>{"cutoff", "c"}][0])) {
-                std::cout << i+1 << ' ' << c[i].name << ' ' << j+1 << ' ' << c[j].name << std::endl;
+            if (min_distance(c[i], c[j]) < cutoff) {
+                JN_OUT << i+1 << ' ' << c[i].name << ' ' << j+1 << ' ' << c[j].name << std::endl;
                 if (par.has("write")) {
                     std::ostringstream stream;
                     stream << c.model_name << '-' << i+1 << '-' << j+1 << ".pdb";

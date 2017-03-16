@@ -3,6 +3,7 @@
 #include "DHMC.hpp"
 #include "dhmc_update.hpp"
 #include "dhmc_set_mvels.hpp"
+#include "../rtsp/build_helix.hpp"
 
 BEGIN_JN
 
@@ -51,6 +52,16 @@ void DHMC::init(const Par &par) {
 
     log << "# Set moving elements" << std::endl;
     dhmc_set_mvels(*this);
+
+    log << "# Reading fixed frags" << std::endl;
+    if (par.has("fixed_els")) {
+        tokenize_v v;
+        tokenize(par.get("fixed_els"), v, ":");
+        for (auto && s : v) {
+            m_fixed_els.push_back(frags_read(s));
+        }
+        mvels_set_fixed_els(m_mvels, m_fixed_els);
+    }
 
     //log << "# Set moving elements of each base" << std::endl;
     //set_base_mvels();
@@ -115,6 +126,7 @@ void DHMC::print_constraints() {
 }
 
 void DHMC::print_mvels() {
+    log << size(m_mvels) << " moving elements: ";
     for (auto && el : m_mvels) {
         log << *el << ' ';
     }
@@ -184,14 +196,14 @@ void DHMC::bps_to_constraints() {
 }
 
 void DHMC::set_pseudo_knots() {
-    auto translate_pseudo_knots_helix = [this](Model &m, const List<Int> &nums) {
+    auto translate_pseudo_knots_helix = [this](Chain &m, const List<Int> &nums) {
         int n = m_cg->res_size() * nums.size() / 2;
         Mat x(n, 3), y(n, 3);
         int i = 0;
         int l = 0;
         for (auto && j : nums) {
             if (i < nums.size() / 2) {
-                Residue && res1 = m_cg->to_cg(m[0][i]);
+                Residue && res1 = m_cg->to_cg(m[i]);
                 Residue && res2 = m_cg->to_cg(_pred_chain[j]);
                 for (int k = 0; k < m_cg->res_size(); k++) {
                     for (int t = 0; t < 3; t++) {
@@ -204,7 +216,7 @@ void DHMC::set_pseudo_knots() {
             i++;
         }
         geom::Superposition<Num> sp(x, y);
-        for (auto && res : m[0]) {
+        for (auto && res : m) {
             for (auto && atom : res) {
                 sp.apply(atom);
             }
@@ -221,7 +233,7 @@ void DHMC::set_pseudo_knots() {
 
         int i = 0;
         for (auto && n : nums) {
-            _pred_chain[n] = std::move(m[0][i]);
+            _pred_chain[n] = std::move(m[i]);
             i++;
         }
     };
@@ -339,7 +351,7 @@ void DHMC::before_run() {
 }
 
 void DHMC::mc_select() {
-    m_selected_mvel = m_mvels[int(rand() * m_mvels.size())];
+    m_selected_mvel = m_mvels[int(rand() * size(m_mvels))];
 }
 
 bool DHMC::is_selected(const I &i) const {
@@ -357,29 +369,29 @@ bool DHMC::is_selected(const I &i) const {
     }
 }
 
-Vec DHMC::rotating_center() const {
-    Vec origin = Vec::Zero(3);
-
-    if (m_selected_mvel->type == MvEl::MVEL_FG) {
-        for (I i = 0; i < 3; i++) origin[i] = _pred_chain[m_selected_mvel->range[0][0]][0][i];
-    }
-    else {
-        int beg = m_selected_mvel->min();
-        int end = m_selected_mvel->max();
-        auto &r1 = _pred_chain[beg];
-        auto &r2 = _pred_chain[end];
-        int n_atom = 0;
-        for (auto && atom : r1) {
-            for (I i = 0; i < 3; i++) origin[i] += atom[i];
-            n_atom++;
-        }
-        for (auto && atom : r2) {
-            for (I i = 0; i < 3; i++) origin[i] += atom[i];
-            n_atom++;
-        }
-        for (I i = 0; i < 3; i++) origin[i] /= n_atom;
-    }
-    return origin;
-}
+//Vec DHMC::rotating_center() const {
+//    Vec origin = Vec::Zero(3);
+//
+//    if (m_selected_mvel->type == MvEl::MVEL_FG) {
+//        for (I i = 0; i < 3; i++) origin[i] = _pred_chain[m_selected_mvel->range[0][0]][0][i];
+//    }
+//    else {
+//        int beg = m_selected_mvel->min();
+//        int end = m_selected_mvel->max();
+//        auto &r1 = _pred_chain[beg];
+//        auto &r2 = _pred_chain[end];
+//        int n_atom = 0;
+//        for (auto && atom : r1) {
+//            for (I i = 0; i < 3; i++) origin[i] += atom[i];
+//            n_atom++;
+//        }
+//        for (auto && atom : r2) {
+//            for (I i = 0; i < 3; i++) origin[i] += atom[i];
+//            n_atom++;
+//        }
+//        for (I i = 0; i < 3; i++) origin[i] /= n_atom;
+//    }
+//    return origin;
+//}
 
 END_JN

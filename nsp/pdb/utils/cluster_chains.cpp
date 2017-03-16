@@ -30,8 +30,7 @@ namespace pdb {
 	}
 
 	static double dist(Mat *m1, Mat *m2) {
-		auto sp = geom::suppos(*m1, *m2);
-		return sp.rmsd;
+        return geom::rmsd(*m1, *m2);
 	}
 
 	Cluster::clusters_t cluster_chains(const std::deque<Chain> &chains, int k) {

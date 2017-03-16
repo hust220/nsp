@@ -44,10 +44,9 @@ public:
         set_mat(m1, ls1, chain1);
         set_mat(m2, ls2, chain2);
         auto sp = geom::suppos(m1, m2);
-        INIT_SUPPOS(sp);
         for (auto && res : chain1) {
             for (auto && atom : res) {
-                APPLY_SUPPOS(atom, sp);
+                sp.apply(atom);
             }
         }
         Chain chain;
@@ -92,10 +91,9 @@ public:
         set_mat(m1, ls1, chain1);
         set_mat(m2, ls2, chain2);
         auto sp = geom::suppos(m1, m2);
-        INIT_SUPPOS(sp);
         for (auto && res : chain1) {
             for (auto && atom : res) {
-                APPLY_SUPPOS(atom, sp);
+                sp.apply(atom);
             }
         }
         Chain chain;

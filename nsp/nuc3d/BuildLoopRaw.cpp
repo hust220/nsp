@@ -225,9 +225,7 @@ Chain BuildLoopRaw::make_chain() {
 }
 
 void BuildLoopRaw::transform(Chain &chain) {
-	Model m;
-	m.push_back(chain);
-	chain = std::move(jian::transform(m, m_seq, "RNA")[0]);
+    chain = mutate(chain, m_seq, type);
 }
 
 void BuildLoopRaw::complete_chain(Chain &chain) {

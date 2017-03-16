@@ -51,6 +51,7 @@ double MCSM::mc_partial_energy() {
     mc_energy_angle(e, false);
     mc_energy_dihedral(e, false);
     mc_energy_constraints(e, false);
+    mc_energy_rg(e, false);
     return e.sum();
 }
 
@@ -60,12 +61,17 @@ void MCSM::set_total_energy(en_t &e) {
     mc_energy_angle(e, true);
     mc_energy_dihedral(e, true);
     mc_energy_constraints(e, true);
+    mc_energy_rg(e, true);
 }
 
 double MCSM::mc_total_energy() {
     en_t e;
     set_total_energy(e);
     return e.sum();
+}
+
+void MCSM::mc_energy_rg(en_t &e, bool is_total) {
+    e.rg += _mc_rg_weight * en_rg(_pred_chain);
 }
 
 void MCSM::mc_energy_crash(en_t &e, bool is_total) {
@@ -178,9 +184,9 @@ void MCSM::mc_energy_constraints(en_t &e, bool is_total) {
     }
 }
 
-double MCSM::dist_two_res(const Residue &r1, const Residue &r2) const {
-    return geom::distance(r1[0], r2[0]);
-}
+//double MCSM::dist_two_res(const Residue &r1, const Residue &r2) const {
+//    return geom::distance(r1[0], r2[0]);
+//}
 
 void MCSM::write_en() {
     en_t e;

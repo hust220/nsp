@@ -22,9 +22,9 @@ void TSP::set_logfile_name() {
 	}
 	else {
 #ifdef JN_PARA
-		log.file(to_str(_name, ".p", mpi_rank() + 1, ".log"));
+		log.file(to_str(m_out_dir, '/', _name, ".p", mpi_rank() + 1, ".log"));
 #else
-		log.file(to_str(_name, ".p1.log"));
+		log.file(to_str(m_out_dir, '/', _name, ".p1.log"));
 #endif
 	}
 }
@@ -33,6 +33,7 @@ void TSP::init(const Par &pars) {
 	_par = new Par(pars);
 	_lib = Env::lib();
 	_name = pars.get("job_name", "job", "name");
+    pars.set(m_out_dir, "out_dir");
 	m_will_log = !_name.empty();
 	if (m_will_log) set_logfile_name();
 	log << "# Reading sequence" << std::endl;
@@ -92,9 +93,9 @@ void TSP::run() {
 
 void TSP::write_final_model() {
 #ifdef JN_PARA
-	mol_write(_pred_chain, to_str(_name, ".pred.p", mpi_rank() + 1, ".pdb"));
+	mol_write(_pred_chain, to_str(m_out_dir, '/', _name, ".pred.p", mpi_rank() + 1, ".pdb"));
 #else
-	mol_write(_pred_chain, to_str(_name, ".pred.p1.pdb"));
+	mol_write(_pred_chain, to_str(m_out_dir, '/', _name, ".pred.p1.pdb"));
 #endif
 }
 

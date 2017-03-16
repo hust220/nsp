@@ -5,11 +5,11 @@
 BEGIN_JN
 
 struct En6p {
-    Num len = 0, ang = 0, dih = 0, crash = 0, pairing = 0, stacking = 0;
+    Num len = 0, ang = 0, dih = 0, crash = 0, pairing = 0, stacking = 0, rg = 0;
 };
 
 inline Num total(const En6p &en) {
-    return en.len + en.ang + en.dih + en.crash + en.pairing + en.stacking;
+    return en.len + 5*en.ang + 5*en.dih + en.crash + en.pairing + en.stacking + 0.02*en.rg;
 }
 
 template<typename _Chain>
@@ -24,6 +24,7 @@ En6p en6p_chain(const _Chain &c) {
     scorer->init();
 
     En6p en;
+    en.rg = en_rg(chain);
     for (Int i = 0; i < l; i++) {
         en.len += scorer->en_len(chain, i);
         en.ang += scorer->en_ang(chain, i);

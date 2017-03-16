@@ -2,6 +2,33 @@
 
 BEGIN_JN
 
+Frag frag_read(Str s) {
+    tokenize_v v;
+    int beg, end;
+
+    tokenize(s, v, "-");
+    beg = JN_INT(v[0]) - 1;
+    if (v.size() == 1) {
+        end = beg;
+    }
+    else if (v.size() == 2) {
+        end = JN_INT(v[1]) - 1;
+    }
+    return {beg, end};
+}
+
+Frags frags_read(Str str) {
+    Frags frags;
+    tokenize_v w;
+
+    tokenize(str, w, "+");
+    for (auto && s : w) {
+        frags.push_back(frag_read(s));
+    }
+    return frags;
+}
+
+
 MvEl::MvEl(MvEl::Type t) : type(t) {}
 
 MvEl &MvEl::add_frag(int a, int b) {

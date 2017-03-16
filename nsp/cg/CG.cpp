@@ -5,7 +5,7 @@
 #include "jian/utils/Env.hpp"
 #include "jian/utils/log.hpp"
 #include "jian/geom.hpp"
-#include "../nuc3d/Convert.hpp"
+#include "../rtsp/mutate.hpp"
 
 BEGIN_JN
 	Chain CG::to_cg(const Chain &chain) const {
@@ -172,7 +172,7 @@ BEGIN_JN
 		Chain &&c = to_aa(mat, 0, mat.rows() - 1);
 		int i = 0;
 		for (Residue &res : c) {
-			res = convert_res(res, to_str(s[i]));
+			res = mutate(res, to_str(s[i]));
 			i++;
 		}
 		return c;

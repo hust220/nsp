@@ -7,12 +7,12 @@ BEGIN_JN
 
 namespace {
 
-    void write_pred(const Chain &chain, Str name, int n) {
-        mol_write(chain, to_str(name, ".pred", n, ".pdb"));
+    void write_pred(const Chain &chain, Str dir, Str name, int n) {
+        mol_write(chain, to_str(dir, '/', name, ".pred", n, ".pdb"));
     }
 
     void write_sample(const nuc3d::Assemble &ass, int n) {
-        mol_write(ass._pred_chain, to_str(ass._name, ".sample", n, ".pdb"));
+        mol_write(ass._pred_chain, to_str(ass.m_out_dir, '/', ass._name, ".sample", n, ".pdb"));
     }
 
     REGISTER_NSP_COMPONENT(sample) {
@@ -77,10 +77,10 @@ namespace {
             }
 
             ass.log << "# Writing prediction " << n_cluster + 1 << std::endl;
-            write_pred(chains[cluster[ind]], ass._name, n_cluster+1);
+            write_pred(chains[cluster[ind]], ass.m_out_dir, ass._name, n_cluster+1);
             n_cluster++;
         }
-        mol_write(chains[min_ind], to_str(ass._name, ".pred.pdb"));
+        mol_write(chains[min_ind], to_str(ass.m_out_dir, '/', ass._name, ".pred.pdb"));
 
     }
 

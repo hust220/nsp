@@ -95,6 +95,7 @@ pairs_t pairs_from_ss(const ss_t &ss) {
             auto it2 = std::find_if(keys.begin(), keys.end(), [&c](auto && key){return key.second == c;});
             if (it2 != keys.end()) {
                 int n = std::distance(keys.begin(), it2);
+                if (v[n].empty()) throw to_str("Wrong secondary structure: ", ss);
                 pairs.push_back({v[n].back(), i});
                 v[n].pop_back();
             } else {

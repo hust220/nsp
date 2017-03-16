@@ -13,8 +13,6 @@
 #include "../mcsm.hpp"
 #include "../cg/ResFrags.hpp"
 #include "jian/utils/file.hpp"
-#include "../nuc3d/BuildHelix.hpp"
-#include "../nuc3d/transform.hpp"
 #include "../nuc3d/TemplRec.hpp"
 #include "../nuc3d/TSP.hpp"
 
@@ -28,6 +26,7 @@ public:
 	Map<SSE *, Chain *> m_saved_helices;
 	Int m_frag_size;
 	ResFrags *m_frags;
+    Deque<Frags> m_fixed_els;
     Bool m_save_bg;
 	Bool m_sample_frag;
 	Bool m_sample_all_res;
@@ -87,7 +86,7 @@ public:
 
 	virtual bool is_selected(const I &i) const;
 
-	virtual Vec rotating_center() const;
+//	virtual Vec rotating_center() const;
 
 };
 

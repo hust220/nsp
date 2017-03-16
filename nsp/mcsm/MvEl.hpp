@@ -3,8 +3,6 @@
 #include <memory>
 #include <sstream>
 #include "../nuc3d/TSP.hpp"
-#include "../nuc3d/BuildHelix.hpp"
-#include "../nuc3d/transform.hpp"
 #include "../nuc3d/TemplRec.hpp"
 #include "../cg.hpp"
 #include "../cg/ResFrags.hpp"
@@ -23,6 +21,10 @@ BEGIN_JN
 using Frag = Array<int, 2>;
 
 using Frags = Deque<Frag>;
+
+Frag frag_read(Str s);
+
+Frags frags_read(Str s);
 
 class MvEl;
 
@@ -87,7 +89,6 @@ class MvEl {
 
         static void merge(Deque<MvEl *> &dq);
 };
-
 
 END_JN
 

@@ -4,14 +4,14 @@
 #include "jian/utils/file.hpp"
 #include "jian/jian.hpp"
 #include "Assemble.hpp"
-#include "BuildHelix.hpp"
+#include "../rtsp/build_helix.hpp"
 
 BEGIN_JN
 namespace nuc3d {
 
 void chain_read_record(Chain &chain, const record_t &templ_res) {
     STD_ ostringstream stream;
-    stream << Env::lib() << "/RNA/templates/" << templ_res._name << ".pdb";
+    stream << Env::lib() << "/RNA/templates/" << templ_res.name << ".pdb";
     chain_read_model(chain, stream.str());
 }
 
@@ -37,27 +37,27 @@ void find_loop_records(SSE *l, records_t &records, S name,
     S line;
     int num = 0;
     while (std::getline(ifile, line) && set_loop_rec(templ_rec, line)) {
-        if (std::find(disused_pdbs.begin(), disused_pdbs.end(), templ_rec._src) != disused_pdbs.end()) {
+        if (std::find(disused_pdbs.begin(), disused_pdbs.end(), templ_rec.src) != disused_pdbs.end()) {
             continue;
         } else if ((!used_pdbs.empty()) &&
-                   std::find(used_pdbs.begin(), used_pdbs.end(), templ_rec._src) == used_pdbs.end()) {
+                   std::find(used_pdbs.begin(), used_pdbs.end(), templ_rec.src) == used_pdbs.end()) {
             continue;
-        } else if (NASS::pure_ss(NASS::lower_ss(templ_rec._ss, 1)) == lower_ss) {
-            templ_rec._score = (templ_rec._ss == ss ? 5 : 0);
-            if (templ_rec._src == jian::upper(name)) {
-                templ_rec._score += 5;
+        } else if (NASS::pure_ss(NASS::lower_ss(templ_rec.ss, 1)) == lower_ss) {
+            templ_rec.score = (templ_rec.ss == ss ? 5 : 0);
+            if (templ_rec.src == jian::upper(name)) {
+                templ_rec.score += 5;
             }
-            if (templ_rec._family == family && family != "other") {
-                templ_rec._score += 2;
+            if (templ_rec.family == family && family != "other") {
+                templ_rec.score += 2;
             }
-            for (uint i = 0; i < templ_rec._seq.size(); i++) {
-                if (seq[i] == templ_rec._seq[i]) {
-                    if (ss[i] == templ_rec._ss[i] && ss[i] != '.' && ss[i] != '(' && ss[i] != ')') {
-                        templ_rec._score += 2;
+            for (uint i = 0; i < templ_rec.seq.size(); i++) {
+                if (seq[i] == templ_rec.seq[i]) {
+                    if (ss[i] == templ_rec.ss[i] && ss[i] != '.' && ss[i] != '(' && ss[i] != ')') {
+                        templ_rec.score += 2;
                     } else if (ss[i] == '(' || ss[i] == ')') {
-                        templ_rec._score += 0.2;
+                        templ_rec.score += 0.2;
                     } else {
-                        templ_rec._score += 1;
+                        templ_rec.score += 1;
                     }
                 }
             }
@@ -67,7 +67,7 @@ void find_loop_records(SSE *l, records_t &records, S name,
     }
     ifile.close();
     std::sort(records.begin(), records.end(), [](auto &&loop1, auto &&loop2) {
-        return loop1._score > loop2._score;
+        return loop1.score > loop2.score;
     });
 }
 
@@ -88,17 +88,17 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
     S line;
     int num = 0;
     while (std::getline(ifile, line) && set_helix_rec(templ_rec, line)) {
-        if (templ_rec._len == len) {
-            templ_rec._score = 0;
-            if (templ_rec._src == jian::upper(name)) {
-                templ_rec._score += 5;
+        if (templ_rec.len == len) {
+            templ_rec.score = 0;
+            if (templ_rec.src == jian::upper(name)) {
+                templ_rec.score += 5;
             }
-            if (templ_rec._family == family && family != "other") {
-                templ_rec._score += 2;
+            if (templ_rec.family == family && family != "other") {
+                templ_rec.score += 2;
             }
-            for (uint i = 0; i < templ_rec._seq.size(); i++) {
-                if (seq[i] == templ_rec._seq[i]) {
-                    templ_rec._score++;
+            for (uint i = 0; i < templ_rec.seq.size(); i++) {
+                if (seq[i] == templ_rec.seq[i]) {
+                    templ_rec.score++;
                 }
             }
             records.push_back(std::move(templ_rec));
@@ -108,7 +108,7 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
     ifile.close();
 
     std::sort(records.begin(), records.end(), [](auto &&loop1, auto &&loop2) {
-        return loop1._score > loop2._score;
+        return loop1.score > loop2.score;
     });
 }
 
@@ -189,10 +189,10 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
         for (auto && pair : m_records) {
             auto & l = pair.first;
             if (l->has_loop()) {
-                e += m_selected_record[l].first._score;
+                e += m_selected_record[l].first.score;
             }
             if (l->has_helix()) {
-                e += m_selected_record[l].second._score;
+                e += m_selected_record[l].second.score;
             }
         }
         return e;
@@ -232,9 +232,7 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
     }
 
     void Assemble::transform() {
-        Model m;
-        m.push_back(_pred_chain);
-        _pred_chain = std::move(jian::transform(m, _seq, _type)[0]);
+        _pred_chain = std::move(jian::mutate(_pred_chain, _seq, _type));
     }
 
 	void Assemble::set_loop_template(SSE *l, Bool is_first) {
@@ -415,10 +413,11 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
         int len = chain.size();
         auto mat2 = model_mat(chain, std::list<int>{0, 1, len - 2, len - 1});
         auto sp = geom::suppos(mat2, mat);
-        INIT_SUPPOS(sp);
+        //INIT_SUPPOS(sp);
         for (auto && res : chain) {
             for (auto && atom : res) {
-                APPLY_SUPPOS(atom, sp);
+                sp.apply(atom);
+                //APPLY_SUPPOS(atom, sp);
             }
         }
 //        EACH_ATOM(model, 
@@ -493,30 +492,30 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
         S line;
         int num = 0;
         while (std::getline(ifile, line) && set_loop_rec(templ_rec, line)) {
-            if (std::find(m_disused_pdbs.begin(), m_disused_pdbs.end(), templ_rec._src) != m_disused_pdbs.end()) {
+            if (std::find(m_disused_pdbs.begin(), m_disused_pdbs.end(), templ_rec.src) != m_disused_pdbs.end()) {
                 continue;
-            } else if (NASS::pure_ss(NASS::lower_ss(templ_rec._ss, 1)) == lower_ss) {
-                templ_rec._score = (templ_rec._ss == ss ? 5 : 0);
-                if (templ_rec._src == _name) {
-                    templ_rec._score += 5;
+            } else if (NASS::pure_ss(NASS::lower_ss(templ_rec.ss, 1)) == lower_ss) {
+                templ_rec.score = (templ_rec.ss == ss ? 5 : 0);
+                if (templ_rec.src == _name) {
+                    templ_rec.score += 5;
                 }
-                if (templ_rec._family == family && family != "other") {
-                    templ_rec._score += 2;
+                if (templ_rec.family == family && family != "other") {
+                    templ_rec.score += 2;
                 }
-                for (uint i = 0; i < templ_rec._seq.size(); i++) {
-                    if (seq[i] == templ_rec._seq[i]) {
-                        if (ss[i] == templ_rec._ss[i] && ss[i] != '.' && ss[i] != '(' && ss[i] != ')') {
-                            templ_rec._score += 2;
+                for (uint i = 0; i < templ_rec.seq.size(); i++) {
+                    if (seq[i] == templ_rec.seq[i]) {
+                        if (ss[i] == templ_rec.ss[i] && ss[i] != '.' && ss[i] != '(' && ss[i] != ')') {
+                            templ_rec.score += 2;
                         } else if (ss[i] == '(' || ss[i] == ')') {
-                            templ_rec._score += 0.2;
+                            templ_rec.score += 0.2;
                         } else {
-                            templ_rec._score += 1;
+                            templ_rec.score += 1;
                         }
                     }
                 }
                 m_records[l].first.push_back(templ_rec);
                 num++;
-                if ((!(_source_pdb.empty())) && (templ_rec._src == _source_pdb)) {
+                if ((!(_source_pdb.empty())) && (templ_rec.src == _source_pdb)) {
                     m_records[l].first.clear(); 
                     m_records[l].first.push_back(templ_rec);
                     num = 1;
@@ -527,7 +526,7 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
         }
         ifile.close();
         std::sort(m_records[l].first.begin(), m_records[l].first.end(), []( const TemplRec &loop1, const TemplRec &loop2) {
-            return loop1._score > loop2._score; });
+            return loop1.score > loop2.score; });
     }
 
     void Assemble::find_helix_records(SSE *l) {
@@ -544,20 +543,20 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
         S line;
         int num = 0;
         while (std::getline(ifile, line) && set_helix_rec(templ_rec, line)) {
-            /* if (std::find(_disused_pdbs.begin(), _disused_pdbs.end(), templ_rec._src) != _disused_pdbs.end()) {
+            /* if (std::find(_disused_pdbs.begin(), _disused_pdbs.end(), templ_rec.src) != _disused_pdbs.end()) {
                 continue;
 			} else */ 
-			if (templ_rec._len == len) {
-				templ_rec._score = 0;
-				if (templ_rec._src == jian::upper(_name)) {
-					templ_rec._score += 5;
+			if (templ_rec.len == len) {
+				templ_rec.score = 0;
+				if (templ_rec.src == jian::upper(_name)) {
+					templ_rec.score += 5;
 				}
-				if (templ_rec._family == family && family != "other") {
-					templ_rec._score += 2;
+				if (templ_rec.family == family && family != "other") {
+					templ_rec.score += 2;
 				}
-				for (uint i = 0; i < templ_rec._seq.size(); i++) {
-					if (seq[i] == templ_rec._seq[i]) {
-						templ_rec._score++;
+				for (uint i = 0; i < templ_rec.seq.size(); i++) {
+					if (seq[i] == templ_rec.seq[i]) {
+						templ_rec.score++;
 					}
 				}
 				m_records[l].second.push_back(std::move(templ_rec));
@@ -566,7 +565,7 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
         }
         ifile.close();
         std::sort(m_records[l].second.begin(), m_records[l].second.end(), []( const TemplRec &loop1, const TemplRec &loop2) {
-            return loop1._score > loop2._score; });
+            return loop1.score > loop2.score; });
     }
 
 } // namespace nuc3d

@@ -8,7 +8,7 @@ BEGIN_JN
 namespace {
 
     void write_pred(const nuc3d::Assemble &ass, int n) {
-        mol_write(ass._pred_chain, to_str(ass._name, ".pred", n, ".pdb"));
+        mol_write(ass._pred_chain, to_str(ass.m_out_dir, '/', ass._name, ".pred", n, ".pdb"));
     }
 
     REGISTER_NSP_COMPONENT(assemble) {

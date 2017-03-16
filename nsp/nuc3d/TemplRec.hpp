@@ -1,23 +1,29 @@
 #pragma once
 
-#include <string>
+#include <jian/utils/traits.hpp>
+#include "../nuc2d.hpp"
 
 BEGIN_JN
 
 class TemplRec {
 public:
-    S _name;
-    S _seq;
-    S _ss;
-    S _family;
-    S _src;
-    int _len = 0;
-    int _type;
-    double _score = 0;
+    Str name;
+    Str seq;
+    Str ss;
+    Str family;
+    Str src;
+    Int len = 0;
+    Int type;
+    Num score = 0;
 };
 
-bool set_loop_rec(TemplRec &, const S &);
-bool set_helix_rec(TemplRec &, const S &);
+Bool set_loop_rec(TemplRec &, const Str &);
 
-}
+Bool set_helix_rec(TemplRec &, const Str &);
+
+Deque<TemplRec> find_helix_templates(Str seq, Str src = "");
+
+Deque<TemplRec> find_loop_templates(Str seq, Str ss, Str src = "");
+
+END_JN
 

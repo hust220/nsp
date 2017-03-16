@@ -13,7 +13,8 @@ BEGIN_JN
 class BuildStrand {
     using Mat = Eigen::MatrixXd;
 
-public:
+    public:
+
     std::set<std::string> _coarse_atoms {"C4*"};
     DG dg;
 
@@ -23,14 +24,14 @@ public:
 
     Chain build_strand(int n, const Mat &a, const Mat &b) {
         if ((a.rows() != _coarse_atoms.size() * 2 && a.rows() != 0) || 
-            (b.rows() != _coarse_atoms.size() * 2 && b.rows() != 0)) {
+                (b.rows() != _coarse_atoms.size() * 2 && b.rows() != 0)) {
             throw "jian::BuildStrand::build_strand(int, const Mat &, const Mat &) error!";
         }
         Debug::print("build strand:\n");
         auto bound = make_bound(n, a, b);
         auto scaffold = dg(bound);
         superpose_scaffold(scaffold, a, b);
-		std::shared_ptr<CG> cg(CG::fac_t::create("1p"));
+        std::shared_ptr<CG> cg(CG::fac_t::create("1p"));
         auto residues = cg->to_aa(scaffold, 0, int(scaffold.rows())-1);
         auto new_residues = slice(residues, a.rows(), a.rows() + n);
         return new_residues;
@@ -55,29 +56,29 @@ public:
     }
 
     template<typename MatType>
-    void superpose_scaffold(MatType &scaffold, const Mat &a, const Mat &b) {
-        if (a.rows() != 0 || b.rows() != 0) {
-            int temp_len = a.rows() + b.rows();
-            Mat x(temp_len, 3), y(temp_len, 3);
-            if (a.rows() != 0) {
-                for (int i = 0; i < 3; i++) {
-                    x(0, i) = scaffold(0, i);
-                    x(1, i) = scaffold(1, i);
-                    y(0, i) = a(0, i);
-                    y(1, i) = a(1, i);
+        void superpose_scaffold(MatType &scaffold, const Mat &a, const Mat &b) {
+            if (a.rows() != 0 || b.rows() != 0) {
+                int temp_len = a.rows() + b.rows();
+                Mat x(temp_len, 3), y(temp_len, 3);
+                if (a.rows() != 0) {
+                    for (int i = 0; i < 3; i++) {
+                        x(0, i) = scaffold(0, i);
+                        x(1, i) = scaffold(1, i);
+                        y(0, i) = a(0, i);
+                        y(1, i) = a(1, i);
+                    }
                 }
-            }
-            if (b.rows() != 0) {
-                for (int i = 0; i < 3; i++) {
-                    x(x.rows() - 2, i) = scaffold(scaffold.rows() - 2, i);
-                    x(x.rows() - 1, i) = scaffold(scaffold.rows() - 1, i);
-                    y(y.rows() - 2, i) = b(0, i);
-                    y(y.rows() - 1, i) = b(1, i);
+                if (b.rows() != 0) {
+                    for (int i = 0; i < 3; i++) {
+                        x(x.rows() - 2, i) = scaffold(scaffold.rows() - 2, i);
+                        x(x.rows() - 1, i) = scaffold(scaffold.rows() - 1, i);
+                        y(y.rows() - 2, i) = b(0, i);
+                        y(y.rows() - 1, i) = b(1, i);
+                    }
                 }
+                geom::suppos(scaffold, x, y);
             }
-            geom::suppos(scaffold, x, y);
         }
-    }
 
 };
 

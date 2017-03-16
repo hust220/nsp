@@ -1,6 +1,6 @@
 #include <functional>
 #include "../nuc3d/Assemble.hpp"
-#include "../nuc3d/Convert.hpp"
+#include "../rtsp/mutate.hpp"
 #include "McsmBase.hpp"
 
 #define JN_MCXP_TEMPPAR_SET(a) temp_par.set(PP_CAT(_mc_, a), PP_STRING3(PP_CAT(mc_, a)));
@@ -12,9 +12,9 @@ BEGIN_JN
 void MCBase::set_traj_name() {
 #ifdef JN_PARA
     //m_traj = (mpi_size() == 1 ? to_str(_name, ".traj.pdb") : to_str(_name, ".", mpi_rank() + 1, ".traj.pdb"));
-    m_traj = to_str(_name, ".traj.p", mpi_rank() + 1, ".pdb");
+    m_traj = to_str(m_out_dir, '/', _name, ".traj.p", mpi_rank() + 1, ".pdb");
 #else
-    m_traj = to_str(_name, ".traj.p1.pdb");
+    m_traj = to_str(m_out_dir, '/', _name, ".traj.p1.pdb");
 #endif
     log << "# Trajectory file: " << m_traj << std::endl;
 
@@ -346,6 +346,11 @@ void MCBase::run() {
     log << "# Initializing running..." << std::endl;
     before_run();
 
+    if (size(m_mvels) == 0) {
+        log << "# Nothing to move, exit..." << std::endl;
+        return;
+    }
+
     log << "# Save fixed ranges..." << std::endl;
     save_fixed_ranges();
 
@@ -378,7 +383,7 @@ void MCBase::run() {
 void MCBase::transform() {
     int i = 0;
     for (Residue &r : _pred_chain) {
-        r = convert_res(r, to_str(_seq[i]));
+        r = mutate(r, to_str(_seq[i]));
         i++;
     }
 }
@@ -391,7 +396,8 @@ void MCBase::print_final_constraints() {
     for (auto && c : _constraints.contacts) {
         i = c.key[0];
         j = c.key[1];
-        d = dist_two_res(_pred_chain[i], _pred_chain[j]);
+        d = geom::distance(item(i), item(j));
+        //d = dist_two_res(_pred_chain[i], _pred_chain[j]);
         log << i << ' ' << j << " weight:" << c.weight << " dist:" << d << std::endl;
     }
 
@@ -399,7 +405,8 @@ void MCBase::print_final_constraints() {
     for (auto && c : _constraints.distances) {
         i = c.key[0];
         j = c.key[1];
-        d = dist_two_res(_pred_chain[i], _pred_chain[j]);
+        d = geom::distance(item(i), item(j));
+        //d = dist_two_res(_pred_chain[i], _pred_chain[j]);
         log << i << ' ' << j << " value:" << c.value << " weight:" << c.weight << " dist:" << d << std::endl;
     }
 

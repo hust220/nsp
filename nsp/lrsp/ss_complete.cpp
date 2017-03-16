@@ -14,9 +14,13 @@ namespace lrsp {
 
 std::map<char, int> index_base {{'X', 0}, {'A', 1}, {'U', 2}, {'T', 2}, {'G', 4}, {'C', 8}};
 
-bool is_paired(const char & a, const char & b) {
+static bool is_paired(const char & a, const char & b) {
     int n = index_base[a] | index_base[b];
     return n == 3 || n == 12 || n == 6;
+}
+
+static Bool overlap(const pair_t &p1, const pair_t &p2) {
+    return p1[0] == p2[0] || p1[0] == p2[1] || p1[1] == p2[0] || p1[1] == p2[1];
 }
 
 void ss_complete(pairs_t & pairs, const seq_t & seq) {
@@ -33,16 +37,22 @@ void ss_complete(pairs_t & pairs, const seq_t & seq) {
             pair_t p2 {pair[0] + 1, pair[1] - 1};
             int flag = 0;
             if (p1[0] >= 0 && p1[1] < l && is_paired(seq[p1[0]], seq[p1[1]])) {
-                if (std::find(pairs.begin(), pairs.end(), p1) == pairs.end()) {
+                if (std::find_if(pairs.begin(), pairs.end(), [&p1](auto && p){return overlap(p, p1);}) == pairs.end()) {
                     pairs.push_back(p1);
+                    flag++;
                 }
-                flag++;
+                else if (std::find(pairs.begin(), pairs.end(), p1) != pairs.end()) {
+                    flag++;
+                }
             }
             if (p2[1] - p2[0] > 3 && is_paired(seq[p2[0]], seq[p2[1]])) {
-                if (std::find(pairs.begin(), pairs.end(), p2) == pairs.end()) {
+                if (std::find_if(pairs.begin(), pairs.end(), [&p2](auto && p){return overlap(p, p2);}) == pairs.end()) {
                     pairs.push_back(p2);
+                    flag++;
                 }
-                flag++;
+                else if (std::find(pairs.begin(), pairs.end(), p2) != pairs.end()) {
+                    flag++;
+                }
             }
             if (flag == 0) {
                 it = pairs.erase(it);

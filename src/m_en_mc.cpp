@@ -29,6 +29,7 @@ namespace {
             << ", crash: " << en.crash
             << ", pairing: " << en.pairing
             << ", stacking: " << en.stacking
+            << ", rg: " << en.rg
             << std::endl;
     }
 }

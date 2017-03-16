@@ -1,11 +1,38 @@
 #pragma once
 
-#include "jian/utils/Factory.hpp"
+#include <jian/utils/Factory.hpp>
+#include <jian/geom.hpp>
 #include "../cg.hpp"
 
 #define REG_SCORER(name, type) REGISTER_FACTORY(jian::Score::Constructor, name, type)
 
 BEGIN_JN
+
+/**
+ * Energy of radius of gyration
+ */
+template<typename _Chain>
+Num en_rg(_Chain && c) {
+    // Mean position
+    Int n = 0;
+    Vec v = Vec::Zero(3);
+    for (auto && r : c) {
+        for (auto && a : r) {
+            for (Int i = 0; i < 3; i++) v[i] += a[i];
+            n++;
+        }
+    }
+    for (Int i = 0; i < 3; i++) v[i] /= n;
+
+    // sum of distance
+    Num e = 0;
+    for (auto && r : c) {
+        for (auto && a : r) {
+            e += geom::dist2(a, v);
+        }
+    }
+    return e / n;
+}
 
 class Score {
 public:
@@ -51,5 +78,6 @@ public:
 
 };
 
-}
+END_JN
+
 

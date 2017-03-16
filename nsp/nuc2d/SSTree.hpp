@@ -74,5 +74,7 @@ public:
 
 };
 
+SSTree ss_tree(Str seq, Str ss, Int h = 1);
+
 END_JN
 
