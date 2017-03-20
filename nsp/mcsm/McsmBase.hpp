@@ -28,7 +28,7 @@ init_tempr, queue, lowest_rate, lowest_en, lowest_tempr, highest_tempr
 #define JN_MCXP_PARS2 \
     bond_length_weight, bond_angle_weight, bond_angle_std, bond_dihedral_weight, bond_dihedral_std, \
 pairing_weight, wc_weight, nwc_weight, stacking_weight,  constraints_weight, crash_weight, rg_weight, \
-vdw_weight, max_shift
+contacts_weight, vdw_weight, max_shift
 
 #define JN_MCXP_DEF_PAR(a) Num PP_CAT3(_mc_, a);
 

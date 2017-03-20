@@ -226,17 +226,18 @@ BEGIN_JN
                 auto cluster = Cluster::fac_t::make("kmeans", Par("k", k));
                 Deque<Mat *> mats;
                 Map<Mat *, Num> scores;
-                Map<Mat *, Model> models;
+                Map<Mat *, Int> inds;
+                //Map<Mat *, Model> models;
                 //auto dist = [](Mat *m1, Mat *m2) {return geom::rmsd(*m1, *m2); };
 
-                for_each_model(m_traj, [this, &mats, &scores, &models](const Model &model, int i) {
+                for_each_model(m_traj, [this, &mats, &scores, &inds](const Model &model, int i) {
                     if (i % m_bin == 0) {
                         LOG << "Reading: model-" << i + 1 << std::endl;
                         auto rs = model.residues();
                         Mat *m = chain_to_mat(rs);
                         mats.push_back(m);
                         scores[m] = total(en6p_chain(rs));
-                        models[m] = model;
+                        inds[m] = i;
                     }
                 });
 
@@ -245,18 +246,30 @@ BEGIN_JN
                 Mat *mat = Cluster::to_mat(mats.begin(), std::next(mats.begin(), size(mats)/3), [](Mat *m1, Mat *m2) {return geom::rmsd(*m1, *m2); });
                 (*cluster)(*mat);
 
+                Map<Int, Str> names;
+
                 Int n = 0;
                 for (auto && c : cluster->m_clusters) {
                     LOG << "Writing Cluster " << n+1 << "..." << std::endl;
+
                     JN_OUT << "Cluster " << n+1 << ", size " << size(c) << ", center score " << scores[mats[c[0]]] << ", lowest score ";
-                    write_model(models[mats[c[0]]], to_str(out_dir, '/', prefix, '.', n+1, ".center.pdb"), aa);
+                    //write_model(models[mats[c[0]]], to_str(out_dir, '/', prefix, '.', n+1, ".center.pdb"), aa);
+                    names[inds[mats[c[0]]]] = to_str(out_dir, '/', prefix, '.', n+1, ".center.pdb");
+
                     std::sort(c.begin(), c.end(), [&scores, &mats](auto && n1, auto && n2){return scores[mats[n1]] < scores[mats[n2]];});
+
                     JN_OUT << scores[mats[c[0]]] << std::endl;
-                    write_model(models[mats[c[0]]], to_str(out_dir, '/', prefix, '.', n+1, ".lowest.pdb"), aa);
+                    names[inds[mats[c[0]]]] = to_str(out_dir, '/', prefix, '.', n+1, ".lowest.pdb");
+                    //write_model(models[mats[c[0]]], to_str(out_dir, '/', prefix, '.', n+1, ".lowest.pdb"), aa);
                     n++;
                 }
-                //print_clusters(*cluster, names);
-                //LOG << "All done." << std::endl;
+
+                for_each_model(m_traj, [this, &aa, &names](const Model &model, int i) {
+                    if (names.find(i) != names.end()) {
+                        write_model(model, names[i], aa);
+                    }
+                });
+
 
                 for (auto && m : mats) delete m;
                 delete mat;

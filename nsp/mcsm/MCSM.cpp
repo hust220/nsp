@@ -145,7 +145,7 @@ void MCSM::mc_energy_constraints(en_t &e, bool is_total) {
 
     if (m_cal_en_constraints) {
         // residue contacts
-        k = _mc_constraints_weight / _constraints.contacts.size();
+        k = _mc_contacts_weight / _constraints.contacts.size();
         for (auto && c : _constraints.contacts) {
             if (!m_grow_mode || c.key[0] < m_grow_length && c.key[1] < m_grow_length) {
                 if (is_total || is_selected(c.key[0]) || is_selected(c.key[1])) {
