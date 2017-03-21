@@ -32,7 +32,7 @@ void TSP::set_logfile_name() {
 void TSP::init(const Par &pars) {
 	_par = new Par(pars);
 	_lib = Env::lib();
-	_name = pars.get("job_name", "job", "name");
+	_name = pars.get("name", "job_name", "job");
     pars.set(m_out_dir, "out_dir");
 	m_will_log = !_name.empty();
 	if (m_will_log) set_logfile_name();
@@ -70,6 +70,14 @@ void TSP::set_constraints() {
 	_par->set(_file_distances, "distances");
 	_par->set(_file_dca, "dca");
 	_par->set(_file_contacts, "contacts");
+   if (_par->has("constraints", "c")) {
+      Str file = _par->get("constraints", "c");
+      Str type = "dca";
+      _par->set(type, "constraints_type", "ct");
+      if (type == "dca") _file_dca = file;
+      else if (type == "distances") _file_distances = file;
+      else if (type == "contacts") _file_contacts = file;
+   }
 	_constraints.read_dca(_file_dca, int(_seq.size() * 0.5));
 	_constraints.read_contacts(_file_contacts);
 	_constraints.read_distances(_file_distances);

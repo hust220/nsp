@@ -241,38 +241,60 @@ BEGIN_JN
                     }
                 });
 
-                LOG << "Clustering..." << std::endl;
-                std::sort(mats.begin(), mats.end(), [&scores](auto &&m1, auto &&m2){return scores[m1] < scores[m2];});
-                Mat *mat = Cluster::to_mat(mats.begin(), std::next(mats.begin(), size(mats)/3), [](Mat *m1, Mat *m2) {return geom::rmsd(*m1, *m2); });
-                (*cluster)(*mat);
+                if (size(mats) < k) {
+                   Int n = 0;
+                   for_each_model(m_traj, [this, &aa, &mats, &k, &out_dir, &prefix, &n](const Model &model, int i) {
+                      if (i % m_bin == 0) {
+                          write_model(model, to_str(out_dir, '/', prefix, '.', n+1, ".center.pdb"), aa);
+                          write_model(model, to_str(out_dir, '/', prefix, '.', n+1, ".lowest.pdb"), aa);
+                          n++;
+                          if (n == size(mats)) {
+                            for (Int j = n; j < k; j++) {
+                               write_model(model, to_str(out_dir, '/', prefix, '.', j+1, ".center.pdb"), aa);
+                               write_model(model, to_str(out_dir, '/', prefix, '.', j+1, ".lowest.pdb"), aa);
+                            }
+                          }
+                      }
+                   });
+                }
+                else {
 
-                Map<Int, Str> names;
+                   LOG << "Clustering..." << std::endl;
+                   std::sort(mats.begin(), mats.end(), [&scores](auto &&m1, auto &&m2){return scores[m1] < scores[m2];});
+                   Mat *mat = Cluster::to_mat(mats.begin(), std::next(mats.begin(), std::min(size(mats)/3, k)), [](Mat *m1, Mat *m2) {return geom::rmsd(*m1, *m2); });
+                   (*cluster)(*mat);
 
-                Int n = 0;
-                for (auto && c : cluster->m_clusters) {
-                    LOG << "Writing Cluster " << n+1 << "..." << std::endl;
+                   Map<Int, Str> names_center, names_lowest;
 
-                    JN_OUT << "Cluster " << n+1 << ", size " << size(c) << ", center score " << scores[mats[c[0]]] << ", lowest score ";
-                    //write_model(models[mats[c[0]]], to_str(out_dir, '/', prefix, '.', n+1, ".center.pdb"), aa);
-                    names[inds[mats[c[0]]]] = to_str(out_dir, '/', prefix, '.', n+1, ".center.pdb");
+                   Int n = 0;
+                   for (auto && c : cluster->m_clusters) {
+                       LOG << "Writing Cluster " << n+1 << "..." << std::endl;
 
-                    std::sort(c.begin(), c.end(), [&scores, &mats](auto && n1, auto && n2){return scores[mats[n1]] < scores[mats[n2]];});
+                       JN_OUT << "Cluster " << n+1 << ", size " << size(c) << ", center score " << scores[mats[c[0]]] << ", lowest score ";
+                       //write_model(models[mats[c[0]]], to_str(out_dir, '/', prefix, '.', n+1, ".center.pdb"), aa);
+                       names_center[inds[mats[c[0]]]] = to_str(out_dir, '/', prefix, '.', n+1, ".center.pdb");
 
-                    JN_OUT << scores[mats[c[0]]] << std::endl;
-                    names[inds[mats[c[0]]]] = to_str(out_dir, '/', prefix, '.', n+1, ".lowest.pdb");
-                    //write_model(models[mats[c[0]]], to_str(out_dir, '/', prefix, '.', n+1, ".lowest.pdb"), aa);
-                    n++;
+                       std::sort(c.begin(), c.end(), [&scores, &mats](auto && n1, auto && n2){return scores[mats[n1]] < scores[mats[n2]];});
+
+                       JN_OUT << scores[mats[c[0]]] << std::endl;
+                       names_lowest[inds[mats[c[0]]]] = to_str(out_dir, '/', prefix, '.', n+1, ".lowest.pdb");
+                       //write_model(models[mats[c[0]]], to_str(out_dir, '/', prefix, '.', n+1, ".lowest.pdb"), aa);
+                       n++;
+                   }
+
+                   for_each_model(m_traj, [this, &aa, &names_center, &names_lowest](const Model &model, int i) {
+                       if (names_center.find(i) != names_center.end()) {
+                           write_model(model, names_center[i], aa);
+                       }
+                       if (names_lowest.find(i) != names_lowest.end()) {
+                           write_model(model, names_lowest[i], aa);
+                       }
+                   });
+
+                   delete mat;
                 }
 
-                for_each_model(m_traj, [this, &aa, &names](const Model &model, int i) {
-                    if (names.find(i) != names.end()) {
-                        write_model(model, names[i], aa);
-                    }
-                });
-
-
                 for (auto && m : mats) delete m;
-                delete mat;
             }
 
             void run() {
