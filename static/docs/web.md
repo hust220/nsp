@@ -2,7 +2,7 @@
 
 [Click to visit the 3dRNA web server](http://biophy.hust.edu.cn/3dRNA)
 
-There are three types of tasks:
+There are four types of tasks:
 
 1.  3dRNA (only assembly)
 
