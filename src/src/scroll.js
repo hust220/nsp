@@ -15,15 +15,17 @@
   }
 
   export function ScrollToControl(id) {
-    var elem = document.getElementById(id)
-    if (elem) {
-      var scrollPos = elementPosition(elem).y
-      scrollPos = scrollPos - document.body.scrollTop - 60
-      window.scrollBy(0, scrollPos)
-      // var remainder = scrollPos % 50
-      // var repeatTimes = (scrollPos - remainder) / 50
-      // ScrollSmoothly(scrollPos, repeatTimes)
-      // window.scrollBy(0, remainder)
+    var h = document.documentElement.scrollTop
+    console.log('id: ' + id)
+    if (id === '') {
+      window.scrollBy(0, 0 - h - 60)
+    } else {
+      var elem = document.getElementById(id)
+      if (elem) {
+        var scrollPos = elementPosition(elem).y
+        scrollPos = scrollPos - h - 60
+        window.scrollBy(0, scrollPos)
+      }
     }
   }
 

@@ -16,11 +16,14 @@
         "href": "#/doc/web",
         "items": [
             {
-                "href": "#/doc/web/assembly",
+                "href": "#/doc/web/3drna",
                 "text": "3dRNA"
             }, {
-                "href": "#/doc/web/sampling",
+                "href": "#/doc/web/3drna-with-sampling",
                 "text": "3dRNA with sampling"
+            }, {
+                "href": "#/doc/web/3drna-with-optimization",
+                "text": "3dRNA with optimization"
             }, {
                 "href": "#/doc/web/optimization",
                 "text": "Optimization"

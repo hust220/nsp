@@ -38,11 +38,7 @@
 
     methods: {
       scroll(item) {
-        if (item) {
-          ScrollToControl(item)
-        } else {
-          window.scrollBy(0, -document.body.scrollTop)
-        }
+        ScrollToControl(item)
       },
 
       fetch_doc_nav() {
@@ -58,12 +54,18 @@
         var params = this.$route.params
         var theme = (params.theme ? params.theme : 'install')
         var item = (params.item ? params.item : '')
-        if (docCache.theme && theme === docCache.theme) this.scroll(item)
-        else if (theme in docCache) {
+        console.log(docCache)
+        console.log(theme + ' ' + item)
+        if (docCache.theme && theme === docCache.theme) {
+          console.log(1)
+          this.scroll(item)
+        } else if (theme in docCache) {
+          console.log(2)
           this.content = docCache[theme]
           docCache.theme = theme
           this.scroll(item)
         } else {
+          console.log(3)
           var url = 'static/docs/' + theme + '.md'
           this.$http.get(url).then(response => {
             this.content = marked(response.body)
@@ -147,17 +149,14 @@
     border: 1px solid #ddd;
   }
 
-  .sidebar a:visited.active {
-    color: blue;
-  }
 
   .sidebar a {
     text-decoration: none;
     color: black;
   }
 
-  .sidebar a:visited {
-    color: black;
+  .sidebar a.active {
+    color: blue;
   }
 
   .sidebar a:hover {
