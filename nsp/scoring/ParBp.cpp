@@ -1,6 +1,17 @@
 #include "ParBp.hpp"
+#include <jian/geom.hpp>
 
 BEGIN_JN
+
+Bool is_bp(const Residue &r1, const Residue &r2) {
+    if (geom::distance(r1[0], r2[0]) < 20) {
+        ParBp par_bp(r1, r2);
+        return par_bp.is_wc();
+    }
+    else {
+        return false;
+    }
+}
 
 ParBp::ParBp() {
 	m_cg.reset(CG::fac_t::create("6p"));
@@ -76,7 +87,7 @@ bool ParBp::is_stacked() const {
 }
 
 bool ParBp::is_wc() const {
-	return is_paired() && d < 6.1 && std::fabs(alpha) < 15;
+	return is_paired() && d < 6.2 && std::fabs(alpha) < 25;
 }
 
 bool ParBp::is_nwc() const {

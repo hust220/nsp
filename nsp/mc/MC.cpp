@@ -164,7 +164,7 @@ namespace jian {
 			n_en += (std::fabs(en - _mc_en) <= _mc_lowest_en ? 1 : 0);
 			en = _mc_en;
 			n_rate += (_mc_local_succ_rate <= _mc_lowest_rate ? 1 : 0);
-			return n_rate < 5 && n_en < 5 && _mc_tempr >= _mc_lowest_tempr;
+			return n_rate < 10 && n_en < 10 && _mc_tempr >= _mc_lowest_tempr;
 		});
 	}
 

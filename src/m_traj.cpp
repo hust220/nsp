@@ -259,26 +259,32 @@ BEGIN_JN
                 }
                 else {
 
+                   // fraction of lowest scores
+                   Num fl = 0.3;
+                   m_par.set(fl, "fl");
+
                    LOG << "Clustering..." << std::endl;
                    std::sort(mats.begin(), mats.end(), [&scores](auto &&m1, auto &&m2){return scores[m1] < scores[m2];});
-                   Mat *mat = Cluster::to_mat(mats.begin(), std::next(mats.begin(), std::min(size(mats)/3, k)), [](Mat *m1, Mat *m2) {return geom::rmsd(*m1, *m2); });
+                   Mat *mat = Cluster::to_mat(mats.begin(), std::next(mats.begin(), std::max(Int(size(mats)*fl), k)), [](Mat *m1, Mat *m2) {return geom::rmsd(*m1, *m2); });
                    (*cluster)(*mat);
 
                    Map<Int, Str> names_center, names_lowest;
 
                    Int n = 0;
                    for (auto && c : cluster->m_clusters) {
+
+                       Int lowest_ind = std::distance(c.begin(), std::min_element(c.begin(), c.end(), [&scores, &mats](Int n1, Int n2){return scores[mats[n1]]<scores[mats[n2]];}));
+                       Num center_score = scores[mats[c[0]]];
+                       Num lowest_score = scores[mats[c[lowest_ind]]];
+
                        LOG << "Writing Cluster " << n+1 << "..." << std::endl;
+                       JN_OUT << "Cluster " << n+1 << ", size " << size(c) << std::endl;
+                       for (auto && ind : c) JN_OUT << ind << ' '; JN_OUT << std::endl;
+                       JN_OUT << "center score: " << center_score << ", lowest score: " << lowest_score << std::endl;
+                       JN_OUT << std::endl;
 
-                       JN_OUT << "Cluster " << n+1 << ", size " << size(c) << ", center score " << scores[mats[c[0]]] << ", lowest score ";
-                       //write_model(models[mats[c[0]]], to_str(out_dir, '/', prefix, '.', n+1, ".center.pdb"), aa);
                        names_center[inds[mats[c[0]]]] = to_str(out_dir, '/', prefix, '.', n+1, ".center.pdb");
-
-                       std::sort(c.begin(), c.end(), [&scores, &mats](auto && n1, auto && n2){return scores[mats[n1]] < scores[mats[n2]];});
-
-                       JN_OUT << scores[mats[c[0]]] << std::endl;
-                       names_lowest[inds[mats[c[0]]]] = to_str(out_dir, '/', prefix, '.', n+1, ".lowest.pdb");
-                       //write_model(models[mats[c[0]]], to_str(out_dir, '/', prefix, '.', n+1, ".lowest.pdb"), aa);
+                       names_lowest[inds[mats[c[lowest_ind]]]] = to_str(out_dir, '/', prefix, '.', n+1, ".lowest.pdb");
                        n++;
                    }
 

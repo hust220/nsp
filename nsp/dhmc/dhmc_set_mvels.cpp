@@ -152,6 +152,56 @@ void set_mvels_all(DHMC &m) {
     }
 }
 
+static void loop_free_global(DHMC &m) {
+    for (auto && sse : *(m.m_trees.front())) {
+        if (sse.has_loop() && !(m.m_save_bg && is_small_bulge(sse))) {
+            auto nums = loop_nums(sse);
+            Int l = size(nums);
+            for (Int i = 0; i < l; i++) {
+                for (Int j = i + 1; j < l; j++) {
+                    if (nums[j] - nums[i] > 2 && m._ss[nums[i]] != ')' && m._ss[nums[j]] != '(') {
+                        m.m_mvels.push_back(new MvEl(nums[i], nums[j], MvEl::MVEL_FG));
+                    }
+                }
+            }
+        }
+    }
+}
+
+static void loop_free_local(DHMC &m) {
+    Int l = size(m._seq);
+    Vector<Bool> v(l);
+    for (auto && i : v) i = true;
+    auto end = (m.m_pk_ahead ? m.m_trees.end() : std::next(m.m_trees.begin()));
+    for (auto it = m.m_trees.begin(); it != end; it++) {
+        for (auto &&sse : **it) {
+            if (sse.has_helix()) {
+                auto &front = sse.helix.front();
+                auto &back = sse.helix.back();
+                Int a1 = front.res1.num-1, a2 = back.res1.num-1, b1 = front.res2.num-1, b2 = back.res2.num-1;
+                m.m_mvels.push_back(new MvEl(a1, a2, b2, b1, MvEl::MVEL_HL));
+                for (Int i = a1; i < a2; i++) v[i] = false;
+                for (Int i = b2; i < b1; i++) v[i] = false;
+            }
+        }
+    }
+    for (Int i = 0; i < l; i++) if (v[i]) m.m_mvels.push_back(new MvEl(i, i, MvEl::MVEL_FG));
+}
+
+static void all_free_global(DHMC &m) {
+    Int l = size(m._seq);
+    for (Int i = 0; i < l; i++) {
+        for (Int j = i + 3; j < l; j++) {
+            m.m_mvels.push_back(new MvEl(i, j, MvEl::MVEL_FG));
+        }
+    }
+}
+
+static void all_free_local(DHMC &m) {
+    Int l = size(m._seq);
+    for (Int i = 0; i < l; i++) m.m_mvels.push_back(new MvEl(i, i, MvEl::MVEL_FG));
+}
+
 void dhmc_set_mvels(DHMC &m) {
 //    const auto &keys = NASS::instance().paired_keys;
 //    const auto &bks = NASS::instance().break_keys;
@@ -159,15 +209,12 @@ void dhmc_set_mvels(DHMC &m) {
 //    for (auto && c : _ss) if (std::find(bks.begin(), bks.end(), c) == bks.end()) ss.push_back(c);
 
     if (m.m_save_ss) {
-        if (m.m_sample_tree) {
-            set_mvels_tree(m);
-        }
-        else {
-            set_mvels_helices(m);
-        }
+        if (m.m_sample_tree) loop_free_global(m); else loop_free_local(m);
+    }
+    else {
+        if (m.m_sample_tree) all_free_global(m); else all_free_local(m);
     }
     set_mvels_frag3(m);
-
 
 }
 

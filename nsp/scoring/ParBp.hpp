@@ -7,6 +7,8 @@
 
 BEGIN_JN
 
+Bool is_bp(const Residue &r1, const Residue &r2);
+
 class ParBp {
 public:
 	using vec_t = Eigen::Vector3d;

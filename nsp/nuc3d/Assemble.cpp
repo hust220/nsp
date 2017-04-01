@@ -5,6 +5,7 @@
 #include "jian/jian.hpp"
 #include "Assemble.hpp"
 #include "../rtsp/build_helix.hpp"
+#include "../rtsp/build_loop.hpp"
 
 BEGIN_JN
 namespace nuc3d {
@@ -122,7 +123,7 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
         m_sample = par.has("sample");
         par.set(m_sample_mode, "sample_mode");
 
-		m_loop_building_method = "partial_dg";
+		m_loop_building_method = "partial_bires";
 		par.set(m_loop_building_method, "loop_building", "lb");
 		to_lower(m_loop_building_method);
 
@@ -241,6 +242,11 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
 				(m_loop_building_method == "partial_dg" && m_records[l].first.empty())) {
 				build_loop_dg.init(l->loop.seq(), NASS::lower_ss(l->loop.ss()));
 				m_templates[l].first = build_loop_dg();
+				m_selected_record[l].first = TemplRec{};
+			}
+			else if (m_loop_building_method == "all_bires" ||
+				(m_loop_building_method == "partial_bires" && m_records[l].first.empty())) {
+				m_templates[l].first = build_loop(l->loop.seq(), NASS::lower_ss(l->loop.ss()));
 				m_selected_record[l].first = TemplRec{};
 			}
 			else if (m_loop_building_method == "all_raw" ||

@@ -14,26 +14,30 @@ inline Num total(const En6p &en) {
 
 template<typename _Chain>
 En6p en6p_chain(const _Chain &c) {
+    auto scorer = Score::fac_t::make("6p");
+    scorer->init();
+
+    auto cg = CG::fac_t::make("6p");
+
     Chain chain;
-    for (auto && r : c) chain.push_back(r);
+    for (auto && r : c) chain.push_back(cg->to_cg(r));
 
     Int l = size(chain);
     Num d;
 
-    auto scorer = Score::fac_t::make("6p");
-    scorer->init();
-
     En6p en;
-    en.rg = en_rg(chain);
+    en.rg = en_rg_6p(chain);
     for (Int i = 0; i < l; i++) {
         en.len += scorer->en_len(chain, i);
         en.ang += scorer->en_ang(chain, i);
         en.dih += scorer->en_dih(chain, i);
         for (Int j = i + 1; j < l; j++) {
-            en.crash += scorer->en_crash(chain[i], chain[j]);
-            scorer->en_bp(chain[i], chain[j]);
-            en.pairing += scorer->m_en_pairing;
-            en.stacking += scorer->m_en_stacking;
+            if (geom::distance(chain[i][2], chain[j][2]) < 20) {
+                en.crash += scorer->en_crash(chain[i], chain[j]);
+                scorer->en_bp(chain[i], chain[j]);
+                en.pairing += scorer->m_en_pairing;
+                en.stacking += scorer->m_en_stacking;
+            }
         }
     }
 

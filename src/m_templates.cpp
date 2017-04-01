@@ -72,7 +72,7 @@ namespace {
         if (sub == "find") {
             ss = par.get("ss");
             if (!par.has("seq")) seq = Str(size(ss), 'X');
-            Int n = 5;
+            Int n = 0;
             par.set(n, "n");
             if (par.has("write_els")) {
                 find_els(seq, ss, n);

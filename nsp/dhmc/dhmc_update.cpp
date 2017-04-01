@@ -10,7 +10,7 @@ void dhmc_sample_res(DHMC &m) {
     if (type == MvEl::MVEL_FG && mvel->range[0][1] - mvel->range[0][0] == 2) {
         update_fragment(m);
     } else {
-        if (rand() < 0.5) {
+        if (JN_ rand() < 0.5) {
             translate_mvel(m);
         }
         else {

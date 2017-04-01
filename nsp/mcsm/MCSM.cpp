@@ -71,7 +71,7 @@ double MCSM::mc_total_energy() {
 }
 
 void MCSM::mc_energy_rg(en_t &e, bool is_total) {
-    e.rg += _mc_rg_weight * en_rg(_pred_chain);
+    e.rg += _mc_rg_weight * en_rg_6p(_pred_chain);
 }
 
 void MCSM::mc_energy_crash(en_t &e, bool is_total) {

@@ -81,6 +81,12 @@ public:
 		mc_write();
 	}
 
+	virtual double mc_total_energy();
+	virtual double mc_partial_energy();
+	virtual void mc_select();
+	virtual void mc_sample();
+	virtual void mc_back();
+
 	virtual void mc_next_step();
 	virtual void mc_write();
 	void mc_run();
@@ -89,11 +95,6 @@ public:
 	virtual void mc_warm(int);
 	virtual void mc_remc(int);
 	virtual void mc_samc(int);
-	virtual double mc_total_energy();
-	virtual double mc_partial_energy();
-	virtual void mc_select();
-	virtual void mc_sample();
-	virtual void mc_back();
 	bool mc_is_heating() const;
 	bool mc_is_cooling() const;
 
