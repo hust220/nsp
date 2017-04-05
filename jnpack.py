@@ -14,6 +14,8 @@ import glob
 import fnmatch
 
 SOLUTION_PATH = os.getcwd()
+LIB_PATH = SOLUTION_PATH + '/lib'
+LUA_VERSION = '5.3.3'
 JNP_PATH = SOLUTION_PATH + '/.jnp'
 PROJS_PATH = JNP_PATH + '/projs'
 JNPACKS_PATH = SOLUTION_PATH + '/jnpacks'
@@ -51,11 +53,14 @@ def pars_to_cmake(pars, src):
     str += "set(CMAKE_VERBOSE_MAKEFILE on)\n"
     str += "set(CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} %s\")\n" % ' '.join(pars['cxx_flags'])
     str += "include_directories(%s)\n" % SOLUTION_PATH
+    str += "include_directories(%s/lua-%s/include)\n" % (LIB_PATH, LUA_VERSION)
     for i in glob.glob('%s/*' % JNPACKS_PATH):
         basename = os.path.basename(i)
         if basename != 'CMakeLists.txt':
             str += "include_directories(%s)\n" % i
+    str += "link_directories(%s/lua-%s/lib)\n" % (LIB_PATH, LUA_VERSION)
     str += "add_executable(%s %s)\n" % (pars['target'], ' '.join(src))
+    str += "target_link_libraries(%s %s)\n" % (pars['target'], 'lua dl')
     str += "install(TARGETS %s DESTINATION bin)" % pars['target']
     return str
 
@@ -170,7 +175,12 @@ class Jnpack(object):
         os.system('cmake .')
         os.system('make -j %d' % self.projs[proj_name]['threads'])
 
+    def build_lua(self):
+        os.chdir('%s/%s' % (LIB_PATH, 'lua-5.3.3'))
+        os.system('make linux')
+
     def install(self, proj_name):
+        self.build_lua()
         proj_path = PROJS_PATH + '/' + proj_name
         self.build(proj_name)
         os.chdir(proj_path)

@@ -9,6 +9,7 @@ NSP &NSP::instance() {
 
 void NSP::run(int argc, char **argv) {
 	Par par(argc, argv);
+    auto g = par.getv("global");
 	NSP::instance().m_argc = argc;
 	NSP::instance().m_argv = argv;
 	if (par.has("log_level")) {

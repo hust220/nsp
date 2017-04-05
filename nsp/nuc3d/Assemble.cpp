@@ -255,6 +255,7 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
 				m_templates[l].first = build_loop_raw();
 				m_selected_record[l].first = TemplRec{};
 			}
+            /*
 			else if (m_loop_building_method == "all_mc" ||
 				(m_loop_building_method == "partial_mc" && m_records[l].first.empty())) {
 				build_loop_raw.init(l->loop.seq(), NASS::lower_ss(l->loop.ss()));
@@ -262,6 +263,7 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
 				m_templates[l].first = sample_loop();
 				m_selected_record[l].first = TemplRec{};
 			}
+            */
 			else {
 				int n = (is_first ? 0 : int(rand() * m_records[l].first.size()));
 				m_templates[l].first = load_pdb(m_records[l].first[n]);

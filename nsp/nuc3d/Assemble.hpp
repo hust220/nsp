@@ -11,7 +11,7 @@
 #include "../rtsp/mutate.hpp"
 #include "BuildLoopDG.hpp"
 #include "BuildLoopRaw.hpp"
-#include "SampleLoop.hpp"
+//#include "SampleLoop.hpp"
 #include "TSP.hpp"
 
 BEGIN_JN
@@ -56,7 +56,7 @@ namespace nuc3d {
 
 		BuildLoopDG build_loop_dg;
 		BuildLoopRaw build_loop_raw;
-		SampleLoop sample_loop;
+		//SampleLoop sample_loop;
         Par::pars_t m_disused_pdbs;
 
 		Assemble(const Par &par);

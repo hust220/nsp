@@ -8,6 +8,7 @@
 *.sln.docstates
 .jnp
 jnp.log
+*.o
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
