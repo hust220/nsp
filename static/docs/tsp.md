@@ -55,7 +55,7 @@
     <tr><td>SEED</td><td>default value of seed is 11</td></tr>
     </table>
 
-*   #### Trajectory Clustering
+*   <h4 id='traj-cluster'>Trajectory Clustering</h4>
 
         nsp traj cluster <TRAJECTORY_FILE> -[prefix|p] <PREFIX> -k <NUMBER_OF_CLUSTERS> -aa
 

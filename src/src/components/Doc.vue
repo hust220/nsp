@@ -50,6 +50,13 @@
         })
       },
 
+      set_content(content, item) {
+        this.content = content
+        this.$nextTick(function () {
+          this.scroll(item)
+        })
+      },
+
       fetch_doc_content() {
         var params = this.$route.params
         var theme = (params.theme ? params.theme : 'install')
@@ -61,16 +68,14 @@
           this.scroll(item)
         } else if (theme in docCache) {
           console.log(2)
-          this.content = docCache[theme]
           docCache.theme = theme
-          this.scroll(item)
+          this.set_content(docCache[theme], item)
         } else {
           console.log(3)
           var url = 'static/docs/' + theme + '.md'
           this.$http.get(url).then(response => {
-            this.content = marked(response.body)
+            this.set_content(marked(response.body))
             docCache[theme] = this.content
-            this.scroll(item)
           }, response => {
             //
           })
@@ -105,6 +110,9 @@
     overflow-y:scroll;
     height: 100%;
     padding-left: 50px;
+  }
+
+  .sidebar .doc-nav {
     padding-bottom: 100px;
   }
 
@@ -149,6 +157,9 @@
     border: 1px solid #ddd;
   }
 
+  .doc-content img {
+    max-width: 80%;
+  }
 
   .sidebar a {
     text-decoration: none;

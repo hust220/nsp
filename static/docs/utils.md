@@ -1,4 +1,4 @@
-## <b id="clustering">Clustering</b>
+<h4 id="cluster">Clustering</h4>
 
     nsp cluster -list <LIST_FILE> -k <NUMBER_OF_CLUSTERS>
 
@@ -8,28 +8,36 @@ After a period of operation, the structure of the cluster will be printed out on
 
 The list_file file contains the name of the structure to cluster:
 
-## <b id="rmsd">Calculating RMSD</b>
+<h4 id="rmsd">Calculating RMSD</h4>
 
-    nsp rmsd -s <PDB_FILE_1> <PDB_FILE_2>
+    nsp rmsd <PDB_FILE_1> <PDB_FILE_2>
 
-## <b id="seq">Get the sequence of the molecule </b>
+<h4 id="seq">Get the sequence of the molecule </h4>
 
-    nsp seq -s <PDB_FILE>
+    nsp seq <PDB_FILE>
 
-## <b id="len">Get the number of residues in the molecule</b>
+<h4 id="ss">Get the secondary structure of the molecule </h4>
 
-    nsp len -s <PDB_FILE>
+    nsp ss <PDB_FILE>
 
-## <b id="sub">Get of specified residues in the molecul</b>
+<h4 id="len">Get the number of residues in the molecule</h4>
 
-    nsp sub -s <PDB_FILE> -num <FRAG1> <FRAG2> <FRAG3> <FRAG4> ...
+    nsp len <PDB_FILE>
+
+<h4 id="sub">Get of specified residues in the molecul</h4>
+
+    nsp sub <PDB_FILE> -num <FRAG1> <FRAG2> <FRAG3> <FRAG4> ...
 
 Each frag refers to a base segment, the format is a single residue number n or the specified starting point and end point of the fragment  `begin-end.`
 for example, 1 represents the first residue, and 4-11 represents a fragment of fourth to eleventh bases.
 
-## <b id="format">Remove unwanted rows from the molecule, leaving only atom lines</b>
+<h4 id="rna">Only residues A, U, G and C are retained</h4>
 
-    nsp rna -s <PDB_FILE>
+    nsp rna <PDB_FILE>
+
+<h4 id="rna-format">Only residues A, U, G and C containing the complete atoms are retained</h4>
+
+    nsp rna <PDB_FILE> -format
 
     
 

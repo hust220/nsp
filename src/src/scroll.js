@@ -24,6 +24,7 @@
       if (elem) {
         var scrollPos = elementPosition(elem).y
         scrollPos = scrollPos - h - 60
+        console.log('document: ' + h + ', ele: ' + elementPosition(elem).y)
         window.scrollBy(0, scrollPos)
       }
     }

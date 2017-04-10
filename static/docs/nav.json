@@ -30,6 +30,9 @@
             }, {
                 "href": "#/doc/web/3drnascore",
                 "text": "3dRNAscore"
+            }, {
+                "href": "#/doc/web/dca",
+                "text": "DCA"
             }
         ]
     }, {
@@ -69,6 +72,9 @@
             }, {
                 "href": "#/doc/tsp/optimization",
                 "text": "Optimization"
+            }, {
+                "href": "#/doc/tsp/traj-cluster",
+                "text": "Trajectory clustering"
             }
         ]
     }, {
@@ -88,11 +94,14 @@
         "href": "#/doc/dca",
         "items": [
             {
-                "text": "Mean field DCA",
+                "text": "Mean field DCA (mfDCA)",
                 "href": "#/doc/dca/mf"
             }, {
-                "text": "Message propogation",
+                "text": "Message propogation DCA (mpDCA)",
                 "href": "#/doc/dca/mp"
+            }, {
+                "text": "Pseudo-likelyhood maximum DCA (plmDCA)",
+                "href": "#/doc/dca/plm"
             }
         ]
     }, {
@@ -100,14 +109,29 @@
         "href": "#/doc/utils",
         "items": [
             {
-                "text": "Clustering",
-                "href": "#/doc/utils/clustering"
+                "text": "Cluster",
+                "href": "#/doc/utils/cluster"
             }, {
                 "text": "Calculating RMSD",
                 "href": "#/doc/utils/rmsd"
             }, {
                 "text": "Retrieving sequence",
                 "href": "#/doc/utils/seq"
+            }, {
+                "text": "Retrieving secondary structure",
+                "href": "#/doc/utils/ss"
+            }, {
+                "text": "Getting the number of residues in a molecule",
+                "href": "#/doc/utils/len"
+            }, {
+                "text": "Obtaining a portion of the residues in the molecule",
+                "href": "#/doc/utils/sub"
+            }, {
+                "text": "Only residues A, U, G and C are retained",
+                "href": "#/doc/utils/rna"
+            }, {
+                "text": "Only residues A, U, G and C containing the complete atoms are retained",
+                "href": "#/doc/utils/rna-format"
             }
         ]
     }

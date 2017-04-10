@@ -25,6 +25,8 @@ There are four types of tasks:
 
     The optimization procedure can optimize any structure provided by the user.
 
+![](static/images/3drna-task-type.png)
+
 #### 3dRNA
 
 1.  Select the type of the task to be '3dRNA'.
@@ -54,6 +56,8 @@ There are four types of tasks:
 6.  Submit
 
     After the task is submitted, the page will jump to the results page.
+
+![](static/images/3drna-assembly.png)
 
 #### 3dRNA with sampling
 
@@ -88,6 +92,8 @@ There are four types of tasks:
 7.  Submit
 
     After the task is submitted, the page will jump to the results page.
+
+![](static/images/3drna-assembly-sampling.png)
 
 #### 3dRNA with optimization
 
@@ -127,6 +133,8 @@ There are four types of tasks:
 
     After the task is submitted, the page will jump to the results page.
 
+![](static/images/3drna-assembly-optimization.png)
+
 #### Optimization
 
 1.  Select the type of the task to be 'Optimization'.
@@ -163,6 +171,8 @@ There are four types of tasks:
 
     After the task is submitted, the page will jump to the results page.
 
+![](static/images/3drna-optimization.png)
+
 ## 3dRNAscore
 
 [Click to visit the 3dRNAscore web server](http://biophy.hust.edu.cn/3dRNAscore)
@@ -170,4 +180,18 @@ There are four types of tasks:
 1. Upload structure file
 
 2. Submit
+
+![](static/images/3drnascore-intro.png)
+
+## DCA
+
+[Click to visit the DCA web server](http://biophy.hust.edu.cn/DCA)
+
+Direct Coupling Analysis (DCA) is a statistical inference framework used to infer direct co-evolutionary couplings among residue pairs in multiple sequence alignments, which aims at disentangling direct from indirect correlations. 
+
+Users only need to select the input type, output type, and then provide the necessary input according to the selected input type, and finally submitted on it.
+
+![](static/images/dca-intro.png)
+
+There are three types of input, the first is to provide only the sequence, the second is to provide multiple sequence alignment, the third is to provide direct interactions.
 
