@@ -50,11 +50,9 @@
         })
       },
 
-      set_content(content, item) {
+      set_content(content, f) {
         this.content = content
-        this.$nextTick(function () {
-          this.scroll(item)
-        })
+        this.$nextTick(f)
       },
 
       fetch_doc_content() {
@@ -68,18 +66,23 @@
           this.scroll(item)
         } else if (theme in docCache) {
           console.log(2)
-          docCache.theme = theme
-          this.set_content(docCache[theme], item)
+          this.set_content(docCache[theme], () => {
+            this.scroll(item)
+            docCache.theme = theme
+          })
         } else {
           console.log(3)
           var url = 'static/docs/' + theme + '.md'
           this.$http.get(url).then(response => {
-            this.set_content(marked(response.body))
-            docCache[theme] = this.content
+            this.set_content(marked(response.body), () => {
+              console.log(item)
+              this.scroll(item)
+              docCache[theme] = this.content
+              docCache.theme = theme
+            })
           }, response => {
             //
           })
-          docCache.theme = theme
         }
       }
 
