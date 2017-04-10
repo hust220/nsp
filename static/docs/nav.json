@@ -33,6 +33,9 @@
             }, {
                 "href": "#/doc/web/dca",
                 "text": "DCA"
+            }, {
+                "href": "#/doc/web/3drpc",
+                "text": "3dRPC"
             }
         ]
     }, {
