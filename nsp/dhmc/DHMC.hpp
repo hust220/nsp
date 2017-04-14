@@ -8,6 +8,7 @@
 #include "../pdb.hpp"
 #include "jian/geom.hpp"
 #include "../nuc2d.hpp"
+#include "../nuc2d/SST.hpp"
 #include "../cg.hpp"
 #include "jian/pp.hpp"
 #include "../mcsm.hpp"
@@ -15,6 +16,7 @@
 #include "jian/utils/file.hpp"
 #include "../nuc3d/TemplRec.hpp"
 #include "../nuc3d/TSP.hpp"
+#include "dhmc_mvel.hpp"
 
 BEGIN_JN
 
@@ -22,6 +24,8 @@ class DHMC : public MCSM {
 public:
 	using Range = Ai<4>;
 
+    Deque<dhmc_mvel_t> m_mvels;
+    dhmc_mvel_t m_selected_mvel;
 	Deque<SP<SSTree>> m_trees;
 	Map<SSE *, Chain *> m_saved_helices;
 	Int m_frag_size;
@@ -34,7 +38,17 @@ public:
 	Bool m_not_sample_il;
 	Bool m_set_mvel_pk;
 	Bool m_all_free;
+    Vector<Bool> m_selected;
+    Vector<Bool> m_dependent;
 	Map<Str, Array<Num, 6>> m_bp_distances;
+    SST m_sst;
+    Map<Str, Chain> m_templates;
+    Map<SSE *, Deque<TemplRec>> m_loop_records;
+    Map<SSE *, Deque<TemplRec>> m_helix_records;
+    Bool m_sample_helix_templates;
+    Bool m_sample_loop_templates;
+    Deque<Str> m_sources;
+    Deque<Str> m_excludes;
 //	Vector<Bool> m_is_free;
 //    Vector<Bool> m_is_single_pair;
 
@@ -52,7 +66,7 @@ public:
 
 	void bps_to_constraints();
 
-	void set_base_mvels();
+//	void set_base_mvels();
 
 	void remove_useless_constraints();
 
@@ -66,6 +80,8 @@ public:
 
 	void set_pseudo_knots();
 
+	bool is_dependent(const I &i) const;
+
 	void transform_saved_helix(Chain *h, const Li & nums);
 
 	void restore_helix(SSE *sse);
@@ -74,15 +90,19 @@ public:
 
 	// MC related methods
 
-	virtual void mc_sample();
-
 	void save_helix(SSE *sse);
 
 	virtual void save_fixed_ranges();
 
 	virtual void before_run();
 
+	virtual void mc_sample();
+
 	virtual void mc_select();
+
+    virtual void mc_rollback();
+
+    virtual void mc_backup();
 
 	virtual bool is_selected(const I &i) const;
 

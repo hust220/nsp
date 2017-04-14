@@ -56,12 +56,13 @@ public:
 		mc_write();
 		for (; _mc_step < steps;) {
 			mc_select();
-			auto &&en_old = mc_partial_energy();
+			Num en_old = mc_partial_energy();
+            mc_backup();
 			mc_sample();
-			auto &&en_new = mc_partial_energy();
-			auto &&en_diff = en_new - en_old;
+			Num en_new = mc_partial_energy();
+			Num en_diff = en_new - en_old;
 			if (en_new > en_old && jian::rand() > std::exp(-en_diff / _mc_tempr)) {
-				mc_back();
+				mc_rollback();
 			}
 			else {
 				_mc_en += en_diff;
@@ -72,7 +73,7 @@ public:
 				mc_write();
 			}
 			if (_mc_step % _mc_cycle_steps == _mc_cycle_steps - 1) {
-				_mc_local_succ_rate = double(local_succ_num) / _mc_cycle_steps;
+				_mc_local_succ_rate = Num(local_succ_num) / _mc_cycle_steps;
 				local_succ_num = 0;
 				if (!ctrl_tempr()) break;
 			}
@@ -81,11 +82,12 @@ public:
 		mc_write();
 	}
 
-	virtual double mc_total_energy();
-	virtual double mc_partial_energy();
+	virtual Num mc_total_energy();
+	virtual Num mc_partial_energy();
 	virtual void mc_select();
 	virtual void mc_sample();
-	virtual void mc_back();
+	virtual void mc_backup();
+	virtual void mc_rollback();
 
 	virtual void mc_next_step();
 	virtual void mc_write();

@@ -13,7 +13,8 @@ static S seq_chain(const Chain &c) {
 }
 
 REGISTER_NSP_COMPONENT(seq) {
-    auto && m = mol_read_to<Model>(par.get("s"));
+    auto g = par.getv("global");
+    auto && m = mol_read_to<Model>(g[1]);
     if (par.has("chain")) {
         for (auto && chain : m) {
             if (chain.name == par["chain"][0]) {

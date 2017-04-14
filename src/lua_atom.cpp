@@ -115,18 +115,9 @@ static const struct luaL_Reg atomlib_m [] = {
 
 int lua_openatom(lua_State *L) {
     luaL_newmetatable(L, "Atom.meta");
-//    lua_pushstring(L, "__index");
-//    lua_pushvalue(L, -2); /* pushes the metatable */
-//    lua_settable(L, -3); /* metatable.__index = metatable */
     luaL_setfuncs(L, atomlib_m, 0);
 
     luaL_newlib(L, atomlib_f);
-//    lua_getglobal(L, "Atom");
-//    if (lua_isnil(L, -1)) {
-//        lua_pop(L, 1);
-//        lua_newtable(L);
-//    }
-//    luaL_setfuncs(L, atomlib, 0);
     lua_setglobal(L, "Atom");
     return 1;
 }

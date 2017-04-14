@@ -46,7 +46,7 @@ namespace nuc3d {
         void set_mvels_helices(THMC &m) {
             for (auto && module : m.d_modules) {
                 if (module->type() == "helix") {
-                    MvEl *el = new MvEl(MvEl::MVEL_HL);
+                    MvEl *el = new MvEl(MVEL_HL);
                     for (auto && frag : module->d_frags) {
                         el->add_frag(frag.front(), frag.back());
                     }
@@ -63,7 +63,7 @@ namespace nuc3d {
             Int i, j, l = size(m._seq);
             for (i = 0; i + 2 < l; i++) {
                 if (!is_fixed(m, i) || !is_fixed(m, i+1) || !is_fixed(m, i+2)) {
-                    m.m_mvels.push_back(new MvEl(i, i + 2, MvEl::MVEL_FG));
+                    m.m_mvels.push_back(new MvEl(i, i + 2, MVEL_FG));
                 }
             }
         }

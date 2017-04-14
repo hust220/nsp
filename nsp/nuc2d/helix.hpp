@@ -7,14 +7,11 @@
 #include <sstream>
 #include "bp.hpp"
 #include "jian/utils/string.hpp"
-#include "jian/utils/ListRange.hpp"
 
 BEGIN_JN
 
-class Helix : public SList<bp> {
+class Helix : public Deque<bp> {
 public:
-	using Self = Helix;
-	using Base = SList<bp>;
 
     Str ss() const {
 		STD_ ostringstream stream;

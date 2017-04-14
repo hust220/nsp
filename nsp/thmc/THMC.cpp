@@ -326,6 +326,10 @@ namespace nuc3d {
             return vec;
         }
 
+    void THMC::mc_rollback() {}
+
+    void THMC::mc_backup() {}
+
 
     } // namespace triple
 } // namespace nuc3d

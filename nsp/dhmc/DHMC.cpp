@@ -1,8 +1,12 @@
 #include <numeric>
 #include "../nuc2d/NASS.hpp"
 #include "DHMC.hpp"
-#include "dhmc_update.hpp"
-#include "dhmc_set_mvels.hpp"
+#include "dhmc_move.hpp"
+#include "dhmc_mvel.hpp"
+#include "dhmc_templates.hpp"
+#include "dhmc_backup.hpp"
+#include "dhmc_select.hpp"
+#include "dhmc_rollback.hpp"
 #include "../rtsp/build_helix.hpp"
 
 BEGIN_JN
@@ -17,6 +21,16 @@ void DHMC::init(const Par &par) {
     m_not_sample_il = par.has("not_sample_il");
     m_all_free = par.has("all_free");
     m_save_bg = par.has("save_bg");
+    m_sample_helix_templates = !par.has("no_sampling_helix_templates", "nsht");
+    m_sample_loop_templates = !par.has("no_sampling_loop_templates", "nslt");
+    par.setv(m_sources, "sources", "source", "srcs", "src");
+    par.setv(m_excludes, "disused_pdbs", "excludes", "exclude");
+
+    log << "# DHMC parameters" << std::endl;
+    log << "Sample helix templates: " << (m_sample_helix_templates ? "Yes" : "No") << std::endl;
+    log << "Sample loop templates: " << (m_sample_loop_templates ? "Yes" : "No") << std::endl;
+    log << "Sources: " << join(' ', m_sources) << std::endl;
+    log << "Excludes: " << join(' ', m_excludes) << std::endl;
 
     log << "# Load bp distances..." << std::endl;
     for (auto &&it : FileLines(to_str(Env::lib(), "/RNA/pars/nuc3d/bp_distances.txt"))) {
@@ -39,6 +53,11 @@ void DHMC::init(const Par &par) {
 
     log << "# Set 2D trees" << std::endl;
     set_trees();
+    m_sst = sst_new(_seq, _ss, 2);
+
+    log << "# Set templates" << std::endl;
+    dhmc_set_templates(*this);
+    dhmc_print_templates(*this);
 
     if (m_sample_frag) {
         log << "# Set fragments" << std::endl;
@@ -53,15 +72,15 @@ void DHMC::init(const Par &par) {
     log << "# Set moving elements" << std::endl;
     dhmc_set_mvels(*this);
 
-    log << "# Reading fixed frags" << std::endl;
-    if (par.has("fixed_els")) {
-        tokenize_v v;
-        tokenize(par.get("fixed_els"), v, ":");
-        for (auto && s : v) {
-            m_fixed_els.push_back(frags_read(s));
-        }
-        mvels_set_fixed_els(m_mvels, m_fixed_els);
-    }
+//    log << "# Reading fixed frags" << std::endl;
+//    if (par.has("fixed_els")) {
+//        tokenize_v v;
+//        tokenize(par.get("fixed_els"), v, ":");
+//        for (auto && s : v) {
+//            m_fixed_els.push_back(frags_read(s));
+//        }
+//        mvels_set_fixed_els(m_mvels, m_fixed_els);
+//    }
 
     //log << "# Set moving elements of each base" << std::endl;
     //set_base_mvels();
@@ -78,24 +97,25 @@ void DHMC::init(const Par &par) {
 }
 
 DHMC::~DHMC() {
+    tree_free(m_sst.head);
     for (auto && el : m_mvels) {
-        delete el;
+        dhmc_mvel_free(el);
     }
     for (auto && h : m_saved_helices) {
         delete h.second;
     }
 }
 
-void DHMC::set_base_mvels() {
-    m_base_mvels.resize(_seq.size());
-    for (auto && el : m_mvels) {
-        for (auto && frag : el->range) {
-            for (int i = frag[0]; i <= frag[1]; i++) {
-                m_base_mvels[i] = el;
-            }
-        }
-    }
-}
+//void DHMC::set_base_mvels() {
+//    m_base_mvels.resize(_seq.size());
+//    for (auto && el : m_mvels) {
+//        for (auto && frag : el->range) {
+//            for (int i = frag[0]; i <= frag[1]; i++) {
+//                m_base_mvels[i] = el;
+//            }
+//        }
+//    }
+//}
 
 void DHMC::remove_useless_constraints() {
     Constraints cs;
@@ -128,8 +148,11 @@ void DHMC::print_constraints() {
 void DHMC::print_mvels() {
     log << size(m_mvels) << " moving elements: ";
     for (auto && el : m_mvels) {
-        log << *el << ' ';
+        log << el << ' ';
     }
+//    for (auto && el : m_mvels) {
+//        log << *el << ' ';
+//    }
     log << std::endl;
 }
 
@@ -168,11 +191,6 @@ void DHMC::set_trees() {
 
 void DHMC::set_bps() {
     m_bps = NASS::get_bps(_ss);
-    log << "Fixed bases " << std::endl;
-    for (Int i = 0; i < size(_seq); i++) {
-        log << i << ':' << is_fixed(*this, i) << ' ';
-    }
-    log << std::endl;
 }
 
 void DHMC::bps_to_constraints() {
@@ -315,10 +333,6 @@ void DHMC::restore_fixed_ranges() {
 
 // MC related methods
 
-void DHMC::mc_sample() {
-    dhmc_sample_res(*this);
-}
-
 void DHMC::save_helix(SSE *sse) {
     auto && nums = sse->helix.nums();
 
@@ -350,48 +364,28 @@ void DHMC::before_run() {
     set_pseudo_knots();
 }
 
+void DHMC::mc_rollback() {
+    dhmc_rollback(*this);
+}
+
+void DHMC::mc_backup() {
+    dhmc_backup(*this);
+}
+
+void DHMC::mc_sample() {
+    dhmc_move(*this);
+}
+
 void DHMC::mc_select() {
-    m_selected_mvel = m_mvels[int(rand() * size(m_mvels))];
+    dhmc_select(*this);
 }
 
 bool DHMC::is_selected(const I &i) const {
-    if (m_selected_mvel == NULL) {
-        return false;
-    }
-    else if (m_sample_mode == SAMPLE_SSE) {
-        return m_selected_mvel->has(i);
-    }
-    else if (m_sample_mode == SAMPLE_TREE) {
-        return m_selected_mvel->minmax_has(i);
-    }
-    else {
-        throw "jian::DHMC::is_selected error! Illegal sample mode!";
-    }
+    return m_selected[i];
 }
 
-//Vec DHMC::rotating_center() const {
-//    Vec origin = Vec::Zero(3);
-//
-//    if (m_selected_mvel->type == MvEl::MVEL_FG) {
-//        for (I i = 0; i < 3; i++) origin[i] = _pred_chain[m_selected_mvel->range[0][0]][0][i];
-//    }
-//    else {
-//        int beg = m_selected_mvel->min();
-//        int end = m_selected_mvel->max();
-//        auto &r1 = _pred_chain[beg];
-//        auto &r2 = _pred_chain[end];
-//        int n_atom = 0;
-//        for (auto && atom : r1) {
-//            for (I i = 0; i < 3; i++) origin[i] += atom[i];
-//            n_atom++;
-//        }
-//        for (auto && atom : r2) {
-//            for (I i = 0; i < 3; i++) origin[i] += atom[i];
-//            n_atom++;
-//        }
-//        for (I i = 0; i < 3; i++) origin[i] /= n_atom;
-//    }
-//    return origin;
-//}
+bool DHMC::is_dependent(const I &i) const {
+    return m_dependent[i];
+}
 
 END_JN

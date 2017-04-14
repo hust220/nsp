@@ -118,6 +118,7 @@ namespace dca {
 	void rm_fp(const Par &par) {
 		Str di_file;
 		Str seq;
+        Num cutoff = 1000;
 		Num k = 0.5;
         Num frac_reserved;
         Int nr;
@@ -142,6 +143,8 @@ namespace dca {
         par.set(frac_reserved, "fr", "frac_reserved");
         nr = Int(frac_reserved * size(seq));
 
+        par.set(cutoff, "c", "cutoff");
+
 		pairs = tuples_from_file(di_file, l);
         std::sort(pairs.begin(), pairs.end(), [](auto && t1, auto && t2){return t1.c > t2.c;});
 		v.resize(l, false);
@@ -154,7 +157,7 @@ namespace dca {
 			}
 		}
 		for (i = 0, it = pairs.begin(); it != pairs.end(); i++, it++) {
-			if (v[i] || i <= nr) new_pairs.push_back(*it);
+			if (v[i] || i <= nr || it->c > cutoff) new_pairs.push_back(*it);
 		}
 		dca::print_tuples(JN_OUT, new_pairs);
 	}

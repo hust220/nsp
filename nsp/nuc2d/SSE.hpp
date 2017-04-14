@@ -20,6 +20,7 @@ struct SSE {
 	Loop loop;
 	Helix helix;
 	Vector<Pair<Int, Int>> hinges;
+    SSE *son = NULL, *bro = NULL;
 
 	Pair<int, int> head_tail() const {
 		int left, right;

@@ -92,9 +92,9 @@ class MCBase : public TSP, public MC {
         Str m_alignfile;
         Deque<Array<Int, 2>> m_align;
 
-        Deque<MvEl *> m_mvels;
+        //Deque<MvEl *> m_mvels;
         Vector<MvEl *> m_base_mvels;
-        MvEl *m_selected_mvel = NULL;
+        //MvEl *m_selected_mvel = NULL;
         List<Vector<Bool>> m_fixed_areas;
 
         JN_MAP(JN_MCXP_DEF_PAR, JN_MCXP_PARS2);
@@ -125,10 +125,6 @@ class MCBase : public TSP, public MC {
 
         void write_traj();
 
-        void mc_back();
-
-        void backup();
-
         void init_space();
 
         int space_index(double n) const;
@@ -145,15 +141,11 @@ class MCBase : public TSP, public MC {
 
         void print_final_constraints();
 
-        virtual void mc_sample() = 0;
-
         virtual void mc_next_step();
 
         virtual double mc_partial_energy() = 0;
 
         virtual double mc_total_energy() = 0;
-
-//        virtual double dist_two_res(const Residue &, const Residue &) const = 0;
 
         virtual void write_en() = 0;
 
@@ -161,17 +153,19 @@ class MCBase : public TSP, public MC {
 
         virtual void finish_run();
 
-//        virtual S file_parameters() const;
-
         virtual void save_fixed_ranges();
 
         virtual void restore_fixed_ranges();
 
         virtual void mc_select() = 0;
 
-        virtual bool is_selected(const int &i) const = 0;
+        virtual void mc_rollback() = 0;
 
-//        virtual Vec rotating_center() const = 0;
+        virtual void mc_backup() = 0;
+
+        virtual void mc_sample() = 0;
+
+        virtual bool is_selected(const int &i) const = 0;
 
 };
 

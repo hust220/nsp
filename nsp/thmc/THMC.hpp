@@ -34,6 +34,8 @@ public:
     int d_mc_selected_index;
     RelatedResidues d_mc_related_residues;
     RelatedResidues d_mc_unrelated_residues;
+    Deque<MvEl *> m_mvels;
+    MvEl *m_selected_mvel;
 
     THMC() = default;
 
@@ -78,6 +80,10 @@ public:
     virtual void mc_sample();
 
     virtual void mc_select();
+
+    virtual void mc_rollback();
+
+    virtual void mc_backup();
 
     virtual bool is_selected(const int &i) const;
 

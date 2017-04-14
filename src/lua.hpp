@@ -1,6 +1,7 @@
 #pragma once
 
 #include <jian/utils/traits.hpp>
+#include <jian/utils/Par.hpp>
 
 extern "C"  
 {  
@@ -30,6 +31,10 @@ inline void lua_gc(lua_State *L, Str msg = "") {
         if (*r) delete *r;
     }
 }
+
+void lua_run(Str filename, const Par &par);
+
+void lua_cmd(Str cmd, const Par &par);
 
 END_JN
 

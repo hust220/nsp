@@ -352,6 +352,12 @@ public:
     virtual void mc_sample() {
     }
 
+    virtual void mc_rollback() {
+    }
+
+    virtual void mc_backup() {
+    }
+
     virtual void mc_select() {
         int len = _seq.size();
         m_selected_index = int(rand() * len);

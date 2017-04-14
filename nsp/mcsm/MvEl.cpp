@@ -44,7 +44,7 @@ MvEl::MvEl(int a, int b, int c, int d, MvEl::Type t) : type(t) {
     range.push_back({ c, d });
 }
 
-MvEl::MvEl(const Helix &h) : type(MvEl::MVEL_HL) {
+MvEl::MvEl(const Helix &h) : type(MVEL_HL) {
     int a, b, c, d;
 
     a = h.front().res1.num - 1;
@@ -102,10 +102,10 @@ MvEl *MvEl::operator +(const MvEl &el) const {
 
 std::ostream &operator <<(std::ostream &stream, const MvEl &el) {
     stream <<
-        (el.type == MvEl::MVEL_HL ? "Helix" :
-         (el.type == MvEl::MVEL_HP ? "Hairpin" :
-          (el.type == MvEl::MVEL_IL ? "Internal Loop" :
-           (el.type == MvEl::MVEL_FG ? "Fragment" : "Others")))) << ' ';
+        (el.type == MVEL_HL ? "Helix" :
+         (el.type == MVEL_HP ? "Hairpin" :
+          (el.type == MVEL_IL ? "Internal Loop" :
+           (el.type == MVEL_FG ? "Fragment" : "Others")))) << ' ';
     for (auto && frag : el.range) {
         stream << '(' << frag[0] << '-' << frag[1] << ')';
     }

@@ -237,7 +237,11 @@ namespace jian {
 		//LOG << __FUNCTION__ << "..." << std::endl;
 	}
 
-	void MC::mc_back() {
+	void MC::mc_backup() {
+		//LOG << __FUNCTION__ << "..." << std::endl;
+	}
+
+	void MC::mc_rollback() {
 		//LOG << __FUNCTION__ << "..." << std::endl;
 	}
 

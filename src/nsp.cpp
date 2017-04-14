@@ -1,10 +1,21 @@
 #include "nsp.hpp"
+#include "lua.hpp"
 
 BEGIN_JN
 
 NSP &NSP::instance() {
 	static NSP nsp;
 	return nsp;
+}
+
+template<typename _Methods>
+static void show_help(Str filename, _Methods && m) {
+    for (auto &&it : FileLines(filename)) {
+        std::cout << it.line << std::endl;
+    }
+    for (auto && pair : m) { std::cout << pair.first << ' '; }
+    std::cout << std::endl;
+    std::cout << std::endl;
 }
 
 void NSP::run(int argc, char **argv) {
@@ -23,14 +34,8 @@ void NSP::run(int argc, char **argv) {
 	}
 	auto &m = instance()._methods;
 	S path = Env::lib() + "/RNA/pars/src/";
-	if (par._orig_pars.size() <= 1 || m.find(par[1]) == m.end()) {
-		S name = path + "nsp.md";
-		for (auto &&it : FileLines(name)) {
-			std::cout << it.line << std::endl;
-		}
-		for (auto && pair : m) { std::cout << pair.first << ' '; }
-		std::cout << std::endl;
-		std::cout << std::endl;
+	if (par._orig_pars.size() <= 1) {
+        show_help(path + "nsp.md", m);
 	}
 	else if (par.has("help") || par.has("h") || par.has("-help")) {
 		S name = path + par[1] + ".md";
@@ -39,7 +44,19 @@ void NSP::run(int argc, char **argv) {
 		}
 	}
 	else {
-		m[par[1]](par);
+        if (m.find(par[1]) != m.end()) {
+            m[par[1]](par);
+        }
+        else {
+            Str filename = to_str(Env::lib(), "/RNA/scripts/", par[1], ".lua");
+            std::ifstream ifile(filename.c_str());
+            if (ifile) {
+                lua_run(filename, par);
+            }
+            else {
+                show_help(path + "nsp.md", m);
+            }
+        }
 	}
 }
 

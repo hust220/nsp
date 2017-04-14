@@ -45,6 +45,8 @@ def pars_to_cmake(pars, src):
     str += "project(%s)\n" % pars['project']
     str += "set(CMAKE_INSTALL_PREFIX %s)\n" % pars['install_prefix']
     str += "set(CMAKE_BUILD_TYPE %s)\n" % pars['build_type']
+    if pars['build_type'] == 'Debug':
+        pars['cxx_flags'].append('-gdwarf-2')
     if 'defs' in pars:
         for i in pars['defs']:
             str += "add_definitions(-D%s)\n" % i

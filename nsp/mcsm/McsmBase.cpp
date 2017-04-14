@@ -42,7 +42,7 @@ void MCBase::init(const Par &par) {
         }
     }
 
-    m_selected_mvel = NULL;
+//    m_selected_mvel = NULL;
     m_sample_mode = SAMPLE_SSE;
     m_cal_en_constraints = true;
     m_max_angle = PI * 0.5;
@@ -51,12 +51,9 @@ void MCBase::init(const Par &par) {
     m_will_write_traj = !_name.empty();
 
     log << "# Extract residue conformations..." << std::endl;
-    for_each_model(to_str(Env::lib(), "/RNA/pars/cg/CG2AA/templates.pdb"), [this](const Model &m, int n) {
-            ResConf::extract(m_res_confs, m.residues());
-            });
-    for_each_model(to_str(Env::lib(), "/RNA/pars/cg/CG2AA/templates.pdb"), [this](const Model &m, int n) {
-            FragConf<3>::extract(m_frag_confs, m.residues());
-            });
+    for_each_model(to_str(Env::lib(), "/RNA/pars/cg/CG2AA/templates.pdb"), [this](const Model &m, int n) { ResConf::extract(m_res_confs, m.residues()); });
+    for_each_model(to_str(Env::lib(), "/RNA/pars/cg/CG2AA/templates.pdb"), [this](const Model &m, int n) { FragConf<3>::extract(m_frag_confs, m.residues()); });
+    for_each_model(to_str(Env::lib(), "/RNA/pars/cg/CG2AA/templates2.pdb"), [this](const Model &m, int n) { FragConf<3>::extract(m_frag_confs, m.residues()); });
     log << "confs: ";
     for (auto && p : m_frag_confs) log << p.first << '(' << size(p.second) << ") ";
     log << std::endl;
@@ -65,19 +62,9 @@ void MCBase::init(const Par &par) {
     //	STD_ cerr << *it << STD_ endl;
     //	ResConf::extract(m_res_confs, it->residues());
     //}
-    for (auto && pair : m_res_confs) {
-        for (auto && conf : pair.second) {
-            conf.res = m_cg->to_cg(conf.res);
-        }
-    }
+    for (auto && pair : m_res_confs) { for (auto && conf : pair.second) { conf.res = m_cg->to_cg(conf.res); } }
 
-    for (auto && pair : m_frag_confs) {
-        for (auto && conf : pair.second) {
-            for (auto && r : conf.frag) {
-                r = m_cg->to_cg(r);
-            }
-        }
-    }
+    for (auto && pair : m_frag_confs) { for (auto && conf : pair.second) { for (auto && r : conf.frag) { r = m_cg->to_cg(r); } } }
 
     if (m_will_write_traj) {
         set_traj_name();
@@ -265,29 +252,29 @@ void MCBase::write_traj() {
     output.close();
 }
 
-void MCBase::mc_back() {
-    for (int i = 0; i < _seq.size(); i++) {
-        if (is_selected(i)) {
-            for (auto && atom : _pred_chain[i]) {
-                atom = _moved_atoms.front();
-                _moved_atoms.pop_front();
-            }
-            space_update_item(i);
-        }
-    }
-}
-
-void MCBase::backup() {
-    _moved_atoms.clear();
-
-    for (int i = 0; i < _seq.size(); i++) {
-        if (is_selected(i)) {
-            for (auto && atom : _pred_chain[i]) {
-                _moved_atoms.push_back(atom);
-            }
-        }
-    }
-}
+//void MCBase::mc_back() {
+//    for (int i = 0; i < _seq.size(); i++) {
+//        if (is_selected(i)) {
+//            for (auto && atom : _pred_chain[i]) {
+//                atom = _moved_atoms.front();
+//                _moved_atoms.pop_front();
+//            }
+//            space_update_item(i);
+//        }
+//    }
+//}
+//
+//void MCBase::backup() {
+//    _moved_atoms.clear();
+//
+//    for (int i = 0; i < _seq.size(); i++) {
+//        if (is_selected(i)) {
+//            for (auto && atom : _pred_chain[i]) {
+//                _moved_atoms.push_back(atom);
+//            }
+//        }
+//    }
+//}
 
 void MCBase::init_space() {
     m_item_space.resize(_seq.size());
@@ -346,10 +333,10 @@ void MCBase::run() {
     log << "# Initializing running..." << std::endl;
     before_run();
 
-    if (size(m_mvels) == 0) {
-        log << "# Nothing to move, exit..." << std::endl;
-        return;
-    }
+//    if (size(m_mvels) == 0) {
+//        log << "# Nothing to move, exit..." << std::endl;
+//        return;
+//    }
 
     log << "# Save fixed ranges..." << std::endl;
     save_fixed_ranges();

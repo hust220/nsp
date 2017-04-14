@@ -30,15 +30,18 @@ class MvEl;
 
 using MvEls = Deque<MvEl>;
 
+enum {
+    MVEL_HL,
+    MVEL_IL,
+    MVEL_HP,
+    MVEL_FG,
+    MVEL_ML
+};
+
 // MvEl: Moving Element
 class MvEl {
     public:
-        enum Type {
-            MVEL_HL, // helix
-            MVEL_HP, // hairpin
-            MVEL_IL, // internal loop
-            MVEL_FG // fragment
-        };
+        using Type = Int;
 
         Type type;
         Frags range;

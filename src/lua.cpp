@@ -1,5 +1,11 @@
 #include <cstdio>
 #include "lua.hpp"
+#include "lua_atom.hpp"
+#include "lua_res.hpp"
+#include "lua_chain.hpp"
+#include "lua_model.hpp"
+#include "lua_mol.hpp"
+#include "lua_par.hpp"
 
 BEGIN_JN
 
@@ -25,6 +31,32 @@ void stackDump (lua_State *L) {
         printf(" "); /* put a separator */
     }
     printf("\n"); /* end the listing */
+}
+
+void lua_run(Str filename, const Par &par) {
+    lua_State *L = luaL_newstate();
+    luaL_openlibs(L);// open lua libraries
+    lua_openatom(L);
+    lua_openres(L);
+    lua_openchain(L);
+    lua_openmodel(L);
+    lua_openmol(L);
+    lua_openpar(L, par);
+    luaL_dofile(L, filename.c_str());// run script
+    lua_close(L);// close lua
+}
+
+void lua_cmd(Str cmd, const Par &par) {
+    lua_State *L = luaL_newstate();
+    luaL_openlibs(L);// open lua libraries
+    lua_openatom(L);
+    lua_openres(L);
+    lua_openchain(L);
+    lua_openmodel(L);
+    lua_openmol(L);
+    lua_openpar(L, par);
+    luaL_dostring(L, cmd.c_str());// run script
+    lua_close(L);// close lua
 }
 
 END_JN
