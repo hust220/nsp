@@ -36,16 +36,16 @@
 
 2.  download nsp
 
-    Browse [this page](https://github.com/hust220/nsp/releases) to get the latest version of NSP
+    Browse [this page](https://github.com/hust220/nsp/releases/latest) to get the latest version of NSP
 
     Example:
 
-        wget https://codeload.github.com/hust220/nsp/tar.gz/1.2
-        tar xvzf nsp-1.2.tar.gz
+        wget https://codeload.github.com/hust220/nsp/tar.gz/<VERSION NUMBER>
+        tar xvzf nsp-<VERSION NUMBER>.tar.gz
 
 3.  compile and install nsp
 
-            cd nsp-1.2/nsp-1.2
+            cd nsp-<VERSION NUMBER>
             python jnpack.py update
             python jnpack.py install
 
@@ -53,8 +53,8 @@
 
 4.  download and uncompress templates library
 
-        wget http://biophy.hust.edu.cn/download/nsp-lib.tar.gz
-        tar xvzf nsp-lib.tar.gz
+        wget http://biophy.hust.edu.cn/download/nsp-lib-<VERSION NUMBER>.tar.gz
+        tar xvzf nsp-lib-<VERSION NUMBER>.tar.gz
 
 5.  Set the enviroment
     
