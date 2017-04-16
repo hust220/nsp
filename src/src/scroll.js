@@ -15,7 +15,8 @@
   }
 
   export function ScrollToControl(id) {
-    var h = document.documentElement.scrollTop
+    // var h = document.documentElement.scrollTop
+    var h = window.scrollY
     console.log('id: ' + id)
     if (id === '') {
       window.scrollBy(0, 0 - h - 60)
