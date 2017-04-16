@@ -2,7 +2,7 @@
   <el-row class="top-nav">
     <el-menu default-active="1" class="el-menu-demo" mode="horizontal" @select="handleSelect">
       <el-col :span="22" :offset="1">
-        <el-menu-item index="1">
+        <el-menu-item index="1" v-if="'logo' in top" >
           <img class="nsp-logo" :src="'static/'+top.logo" />
         </el-menu-item>
         <el-menu-item index="1">
