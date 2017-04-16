@@ -1,0 +1,24 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\node.exe',
+1 verbose cli   'C:\\Users\\Jian\\AppData\\Roaming\\npm\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'run',
+1 verbose cli   'dev' ]
+2 info using npm@3.8.8
+3 info using node@v5.2.0
+4 verbose config Skipping project config: C:\Users\Jian/.npmrc. (matches userconfig)
+5 verbose stack Error: ENOENT: no such file or directory, open 'C:\Users\Jian\package.json'
+5 verbose stack     at Error (native)
+6 verbose cwd C:\Users\Jian\Desktop\项目\nsp-doc
+7 error Windows_NT 10.0.14986
+8 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Users\\Jian\\AppData\\Roaming\\npm\\node_modules\\npm\\bin\\npm-cli.js" "run" "dev"
+9 error node v5.2.0
+10 error npm  v3.8.8
+11 error path C:\Users\Jian\package.json
+12 error code ENOENT
+13 error errno -4058
+14 error syscall open
+15 error enoent ENOENT: no such file or directory, open 'C:\Users\Jian\package.json'
+16 error enoent ENOENT: no such file or directory, open 'C:\Users\Jian\package.json'
+16 error enoent This is most likely not a problem with npm itself
+16 error enoent and is related to npm not being able to find a file.
+17 verbose exit [ -4058, true ]
