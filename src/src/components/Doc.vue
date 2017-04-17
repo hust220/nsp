@@ -5,10 +5,10 @@
         <h2>Documentation</h2>
         <p><a href="https://github.com/hust220/nsp">Github</a></p>
         <ul>
-          <li v-for="theme in doc_nav">
+          <li class="doc-theme" v-for="theme in doc_nav">
             <strong><a :href="theme.href" :class="[theme.href == '#' + $route.path ? 'active' : '']" v-text="theme.text"></a></strong>
             <ul>
-              <li v-for="item in theme.items">
+              <li class="doc-item" v-for="item in theme.items">
                 <a :href="item.href" :class="[item.href == '#' + $route.path ? 'active' : '']" v-text="item.text"></a>
               </li>
             </ul>
@@ -17,7 +17,7 @@
       </div>
     </el-col>
     <el-col :span="18" :offset="6" class="main">
-      <div class="doc-content" v-html="content"></div>
+      <div class="doc-content" v-html="content" :style="'padding-bottom: ' + padding_bottom + 'px'"></div>
     </el-col>
   </el-row>
 </template>
@@ -32,7 +32,8 @@
     data() {
       return {
         doc_nav: '',
-        content: ''
+        content: '',
+        padding_bottom: 0
       }
     },
 
@@ -98,6 +99,54 @@
           if (!e.complete) return false
         }
         return true
+      },
+
+      aboveTopVisualArea(e) {
+        try {
+          var hw = window.scrollY
+          var r = e.href.match(/#\/doc\/.+\/(.+)$/)
+          var item = r[1]
+          var el = document.getElementById(item)
+          var p = elementPosition(el).y
+          return p <= hw + 60
+        } catch (e) {
+          return false
+        }
+      },
+
+      routeTheme() {
+        var params = this.$route.params
+        var theme = (params.theme ? params.theme : 'install')
+        return theme
+      },
+
+      pathTheme(path) {
+        try {
+          var r = path.match(/#\/doc\/(.+)\/(.+)$/)
+          return r[1]
+        } catch (e) {
+          return ''
+        }
+      },
+
+      handleScroll() {
+        var ls = document.querySelectorAll('.doc-item a')
+        var len = ls.length
+        var theme = this.routeTheme()
+        for (var i = 0; i < len; i++) {
+          var e1 = ls[i]
+          var e2 = ls[i + 1]
+          if (this.pathTheme(e1.href) === theme && this.aboveTopVisualArea(e1) && !this.aboveTopVisualArea(e2)) {
+            e1.setAttribute('class', 'active')
+          } else {
+            e1.setAttribute('class', '')
+          }
+        }
+      },
+
+      handleResized() {
+        var h = window.innerHeight
+        this.padding_bottom = h - 150
       }
 
     },
@@ -105,7 +154,9 @@
     created() {
       this.fetch_doc_nav()
       this.fetch_doc_content()
-      // window.addEventListener('scroll', this.handleScroll)
+      this.handleResized()
+      window.addEventListener('scroll', this.handleScroll)
+      window.addEventListener('resize', this.handleResized)
     },
 
     watch: {
