@@ -1,4 +1,4 @@
-  function elementPosition(obj) {
+  export function elementPosition(obj) {
     var curleft = 0
     var curtop = 0
     if (obj.offsetParent) {

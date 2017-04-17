@@ -24,7 +24,7 @@
 
 <script>
   import { bus } from '../bus.js'
-  import { ScrollToControl } from '../scroll.js'
+  import { elementPosition, ScrollToControl } from '../scroll.js'
   import docCache from '../data.js'
   import marked from 'marked'
 
@@ -38,7 +38,11 @@
 
     methods: {
       scroll(item) {
-        ScrollToControl(item)
+        if (this.imgLoaded()) {
+          ScrollToControl(item)
+        } else {
+          window.setTimeout(() => { this.scroll(item) }, 50)
+        }
       },
 
       fetch_doc_nav() {
@@ -84,6 +88,17 @@
             //
           })
         }
+      },
+
+      imgLoaded() {
+        var ls = document.querySelectorAll('.doc-content img')
+        var len = ls.length
+        for (var i = 0; i < len; i++) {
+          var e = ls[i]
+          var h = e.height
+          if (h <= 0) return false
+        }
+        return true
       }
 
     },
@@ -91,6 +106,7 @@
     created() {
       this.fetch_doc_nav()
       this.fetch_doc_content()
+      // window.addEventListener('scroll', this.handleScroll)
     },
 
     watch: {
