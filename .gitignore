@@ -9,6 +9,8 @@
 .jnp
 jnp.log
 *.o
+*.a
+*.so
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
