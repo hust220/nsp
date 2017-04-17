@@ -95,9 +95,7 @@
         var len = ls.length
         for (var i = 0; i < len; i++) {
           var e = ls[i]
-          var h = e.height
-          console.log(h)
-          if (h <= 0) return false
+          if (!e.complete) return false
         }
         return true
       }
