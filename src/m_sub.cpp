@@ -3,6 +3,7 @@
 #include <jian/geom.hpp>
 #include <nsp/cg.hpp>
 
+
 BEGIN_JN
 
 namespace {
