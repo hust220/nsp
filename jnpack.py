@@ -180,6 +180,7 @@ class Jnpack(object):
     def build_lua(self):
         os.chdir('%s/%s' % (LIB_PATH, 'lua-5.3.3'))
         os.system('make linux')
+        os.system('make install')
 
     def install(self, proj_name):
         self.build_lua()
