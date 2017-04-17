@@ -28,7 +28,8 @@ static Chain make_chain(std::initializer_list<T> ls) {
 }
 
 REGISTER_NSP_COMPONENT(contacts) {
-    Str filename = par.get("s", "pdb");
+    auto g = par.getv("global");
+    Str filename = g[1];
     Num cutoff = 3.5;
     par.set(cutoff, "c", "cutoff");
 

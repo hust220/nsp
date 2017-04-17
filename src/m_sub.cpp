@@ -36,7 +36,8 @@ namespace {
         tokenize_v v, w;
         int i;
 
-        par.set(in, "p", "pdb", "s");
+        auto g = par.getv("global");
+        in = g[1];
         mol_read(mol, in);
         if (mol.empty()) {
             throw "Empty file!";

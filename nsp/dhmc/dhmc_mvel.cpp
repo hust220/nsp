@@ -30,7 +30,7 @@ void dhmc_mvel_free(dhmc_mvel_t el) {
     Int t = el.t;
     if (t == DHMC_MVEL_HELIX || t == DHMC_MVEL_LOOP) {
         SSE *sse = (SSE *) el.p;
-        delete sse;
+//        delete sse;
     }
     else if (t = DHMC_MVEL_FRAG || t == DHMC_MVEL_FRAG3) {
         Array<Int, 2> *p = (Array<Int, 2> *) el.p;

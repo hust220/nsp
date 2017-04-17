@@ -30,7 +30,7 @@ namespace {
                 m_has_traj = par.has("traj");
 
                 if (par.has("nums")) {
-                    set_nums(nums, par["nums"][0]);
+                    set_nums(nums, par.get("nums"));
                 }
 
                 m_files.push_back(g[1]);
@@ -43,7 +43,7 @@ namespace {
 
             void set_nums(nums_t &nums, const Str &par) {
                 std::vector<Str> v, w;
-                jian::tokenize(par, v, "+");
+                jian::tokenize(par, v, "+ ");
                 for (auto && i : v) {
                     jian::tokenize(i, w, "-");
                     if (w.size() == 1) {
@@ -63,10 +63,12 @@ namespace {
                 std::list<std::array<double, 3>> l1, l2;
                 int i1 = 0, j1 = 0, i2 = 0, j2 = 0, n = 0;
 
-                while (true) {
-                    const Residue & r1 = m1[i1][j1];
-                    const Residue & r2 = m2[i2][j2];
-                    if (!m_has_nums || std::find(nums.begin(), nums.end(), i1) != nums.end()) {
+                auto rs1 = m1.residues();
+                auto rs2 = m2.residues();
+                for (int i = 0; i < len; i++) {
+                    const Residue & r1 = rs1[i];
+                    const Residue & r2 = rs2[i];
+                    if (!m_has_nums || std::find(nums.begin(), nums.end(), i) != nums.end()) {
                         if (!m_loose) assert(r1.name == r2.name);
                         for (auto && a1 : r1) {
                             for (auto && a2 : r2) {
@@ -78,23 +80,39 @@ namespace {
                             }
                         }
                     }
-                    j1++;
-                    if (j1 >= m1[i1].size()) {
-                        j1 = 0;
-                        i1++;
-                        if (i1 >= m1.size()) {
-                            break;
-                        }
-                    }
-                    j2++;
-                    if (j2 >= m2[i2].size()) {
-                        j2 = 0;
-                        i2++;
-                        if (i2 >= m2.size()) {
-                            break;
-                        }
-                    }
                 }
+//                while (true) {
+//                    const Residue & r1 = m1[i1][j1];
+//                    const Residue & r2 = m2[i2][j2];
+//                    if (!m_has_nums || std::find(nums.begin(), nums.end(), i1) != nums.end()) {
+//                        if (!m_loose) assert(r1.name == r2.name);
+//                        for (auto && a1 : r1) {
+//                            for (auto && a2 : r2) {
+//                                if (a1.name == a2.name) {
+//                                    l1.push_back({ a1[0],a1[1],a1[2] });
+//                                    l2.push_back({ a2[0],a2[1],a2[2] });
+//                                    n++;
+//                                }
+//                            }
+//                        }
+//                    }
+//                    j1++;
+//                    if (j1 >= m1[i1].size()) {
+//                        j1 = 0;
+//                        i1++;
+//                        if (i1 >= m1.size()) {
+//                            break;
+//                        }
+//                    }
+//                    j2++;
+//                    if (j2 >= m2[i2].size()) {
+//                        j2 = 0;
+//                        i2++;
+//                        if (i2 >= m2.size()) {
+//                            break;
+//                        }
+//                    }
+//                }
 
                 Mat mat1(n, 3), mat2(n, 3);
                 int i = 0;
