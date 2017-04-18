@@ -1,1 +1,4 @@
-export default []
+export var docCache = []
+
+export var apiCache = []
+

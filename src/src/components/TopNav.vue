@@ -11,9 +11,9 @@
         <el-menu-item index="1">
           <router-link to="/doc">Documentation</router-link>
         </el-menu-item>
-        <!--<el-menu-item index="1">
+        <el-menu-item index="1">
           <router-link to="/api">API</router-link>
-        </el-menu-item>-->
+        </el-menu-item>
         <el-menu-item index="1">
           <router-link to="/download">Download</router-link>
         </el-menu-item>

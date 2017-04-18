@@ -1,0 +1,72 @@
+[
+    {
+        "text": "Sequence",
+        "href": "#/api/seq",
+        "items": [
+            {
+                "href": "#/api/seq/fasta",
+                "text": "Fasta"
+            }
+        ]
+    },
+    {
+        "text": "2D structure",
+        "href": "#/api/ss",
+        "items": [
+            {
+                "href": "#/api/ss/sse",
+                "text": "SSE"
+            },
+            {
+                "href": "#/api/ss/sst",
+                "text": "SST"
+            }
+        ]
+    },
+    {
+        "text": "3D structure",
+        "href": "#/api/ts",
+        "items": [
+            {
+                "href": "#/api/ts/atom",
+                "text": "Atom"
+            },
+            {
+                "href": "#/api/ts/res",
+                "text": "Residue"
+            },
+            {
+                "href": "#/api/ts/chain",
+                "text": "Chain"
+            },
+            {
+                "href": "#/api/ts/model",
+                "text": "Model"
+            },
+            {
+                "href": "#/api/ts/mol",
+                "text": "Molecule"
+            }
+        ]
+    },
+    {
+        "text": "Monte Carlo Simulation",
+        "href": "#/api/mc",
+        "items": [
+            {
+                "href": "#/api/mc/mc",
+                "text": "MC"
+            }
+        ]
+    },
+    {
+        "text": "Matrix",
+        "href": "#/api/mat",
+        "items": [
+            {
+                "href": "#/api/mat/mat",
+                "text": "Mat"
+            }
+        ]
+    }
+]

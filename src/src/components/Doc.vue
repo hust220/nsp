@@ -2,7 +2,7 @@
   <el-row class="doc">
     <el-col :span="6" class="sidebar">
       <div class="doc-nav">
-        <h2>Documentation</h2>
+        <h2><a href="#/doc">Documentation</a></h2>
         <p><a href="https://github.com/hust220/nsp">Github</a></p>
         <ul>
           <li class="doc-theme" v-for="theme in doc_nav">
@@ -25,7 +25,7 @@
 <script>
   import { bus } from '../bus.js'
   import { elementPosition, ScrollToControl } from '../scroll.js'
-  import docCache from '../data.js'
+  import { docCache } from '../data.js'
   import marked from 'marked'
 
   export default {
@@ -195,7 +195,7 @@
     margin: 10px 0px;
   }
 
-  .doc-nav >ul {
+  .sidebar .doc-nav >ul {
     margin: 10px 0px;
   }
 

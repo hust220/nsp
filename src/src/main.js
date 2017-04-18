@@ -23,6 +23,8 @@ const router = new VueRouter({
     { path: '/doc/:theme', component: Doc },
     { path: '/doc/:theme/:item', component: Doc },
     { path: '/api', component: API },
+    { path: '/api/:theme', component: API },
+    { path: '/api/:theme/:item', component: API },
     { path: '/download', component: Download },
   ],
 
