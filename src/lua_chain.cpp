@@ -21,7 +21,7 @@ static int chain_new(lua_State *L) {
     *c = new Chain;
 
     if (lua_gettop(L) == 2) {
-        mol_read(**c, lua_tolstring(L, 1, NULL));
+        chain_read_model(**c, lua_tolstring(L, 1, NULL));
     }
 
     luaL_getmetatable(L, "Chain.meta");

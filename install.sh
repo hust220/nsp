@@ -1,0 +1,105 @@
+PD=$(cd $(dirname ${0}); pwd) # project directory
+BD="$PD/.build" # building directory
+
+CXX=g++
+CXX_FLAGS="-std=c++14 -pthread -lm -O3 -DNDEBUG"
+CXX_INCLUDES="-I$PD -I$PD/lib -I$PD/lib/lua-5.3.3/include"
+
+#LD_FLAGS="-L${PD}/lib/lua-5.3.3/lib -Wl,-rpath,${PD}/lib/lua-5.3.3/lib: -rdynamic -llua -ldl"
+LD_LIB_PATHS="${PD}/lib/lua-5.3.3/lib"
+LD_LIBS="lua dl"
+
+TARGET=/home/wangjian/bin/nsp
+NTHREADS=16 # number of threads
+
+set_ld_lib_paths() {
+    local libpaths="$@"
+    local i
+    for i in ${libpaths}; do
+        echo -n -L${i}" "
+    done
+    echo -n -Wl,-rpath,
+    for i in ${libpaths}; do
+        echo -n ${i}:
+    done
+}
+
+set_ld_libs() {
+    local libs="$@"
+    local i
+    for i in ${libs}; do
+        echo -n -l${i}" "
+    done
+}
+
+LD_FLAGS="$(set_ld_lib_paths ${LD_LIB_PATHS}) $(set_ld_libs ${LD_LIBS})"
+
+# path of directory
+pdir() {
+    echo $BD/objs${1}
+}
+
+# path of object
+pobj() {
+    echo $BD/objs${1}.o
+}
+
+check_dir() {
+    local pdir=$(pdir $1)
+    if [ ! -d ${pdir} ]; then
+        mkdir -p ${pdir}
+    fi
+}
+
+find_cpps() {
+    local dir="";
+    for dir in $@; do
+        dir=$(cd ${dir}; pwd) # absolute path
+        check_dir ${dir}
+        for i in $(ls ${dir}); do
+            local name=${dir}/${i}
+            if [ -d ${name} ]; then
+                find_cpps ${name}
+            else
+                local filename=${name%.*}
+                local ext=${name##*.}
+                if [[ ${ext} = "cpp" || ${ext} = "c" ]]; then
+                    echo ${name}
+                fi
+            fi
+        done
+    done
+}
+
+build_lua() {
+    cd $PD/lib/lua-5.3.3
+    make linux
+    make install
+    cd $PD
+}
+
+build() {
+    if [ ! -d ${BD} ]; then mkdir -p ${BD}; fi
+    cd ${BD}
+    rm -rf makefile
+
+    local cpps=$(find_cpps ../lib/jian ../nsp ../src)
+    local objs=$(for cpp in ${cpps}; do echo $(pobj ${cpp}); done)
+
+    echo all: $objs >>makefile
+    echo -e "\t"${CXX} ${CXX_FLAGS} ${CXX_INCLUDES} $objs -o ${TARGET} ${LD_FLAGS} >>makefile
+
+    for cpp in ${cpps}; do
+        local obj=$(pobj ${cpp})
+        echo ${obj}: ${cpp} >>makefile
+        echo -e "\t"${CXX} ${CXX_FLAGS} ${CXX_INCLUDES} -c ${cpp} -o ${obj} >>makefile
+        echo >>makefile
+    done
+
+    make -j${NTHREADS}
+    cd ${PD}
+}
+
+build_lua
+build
+
