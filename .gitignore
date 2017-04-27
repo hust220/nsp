@@ -9,6 +9,7 @@
 .jnp
 .build
 jnp.log
+install.log
 *.o
 *.a
 *.so

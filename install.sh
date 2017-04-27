@@ -1,16 +1,63 @@
+##################################################################################################
+
 PD=$(cd $(dirname ${0}); pwd) # project directory
-BD="$PD/.build" # building directory
+PROJ="serial_release"
 
-CXX=g++
-CXX_FLAGS="-std=c++14 -pthread -lm -O3 -DNDEBUG"
-CXX_INCLUDES="-I$PD -I$PD/lib -I$PD/lib/lua-5.3.3/include"
+proj_serial_release() {
+    BD="$PD/.build/serial-release" # building directory
 
-#LD_FLAGS="-L${PD}/lib/lua-5.3.3/lib -Wl,-rpath,${PD}/lib/lua-5.3.3/lib: -rdynamic -llua -ldl"
-LD_LIB_PATHS="${PD}/lib/lua-5.3.3/lib"
-LD_LIBS="lua dl"
+    BUILD_MODE="Serial" # Serial or Para
+    BUILD_TYPE="Release" # Release or Debug
 
-TARGET=/home/wangjian/bin/nsp
-NTHREADS=16 # number of threads
+    CXX=g++
+    CXX_FLAGS="-std=c++14 -pthread -lm"
+    CXX_INCLUDES="-I$PD -I$PD/lib -I$PD/lib/lua-5.3.3/include"
+
+    #LD_FLAGS="-L${PD}/lib/lua-5.3.3/lib -Wl,-rpath,${PD}/lib/lua-5.3.3/lib: -rdynamic -llua -ldl"
+    LD_LIB_PATHS="${PD}/lib/lua-5.3.3/lib"
+    LD_LIBS="lua dl"
+
+    TARGET=/home/wangjian/bin/nsp
+    NTHREADS=16 # number of threads
+}
+
+proj_serial_debug() {
+    BD="$PD/.build/serial-debug" # building directory
+
+    BUILD_MODE="Serial" # Serial or Para
+    BUILD_TYPE="Debug" # Release or Debug
+
+    CXX=g++
+    CXX_FLAGS="-std=c++14 -pthread -lm"
+    CXX_INCLUDES="-I$PD -I$PD/lib -I$PD/lib/lua-5.3.3/include"
+
+    #LD_FLAGS="-L${PD}/lib/lua-5.3.3/lib -Wl,-rpath,${PD}/lib/lua-5.3.3/lib: -rdynamic -llua -ldl"
+    LD_LIB_PATHS="${PD}/lib/lua-5.3.3/lib"
+    LD_LIBS="lua dl"
+
+    TARGET=/home/wangjian/bin/nsp
+    NTHREADS=16 # number of threads
+}
+
+proj_para_release() {
+    BD="$PD/.build/para-release" # building directory
+
+    BUILD_MODE="Para" # Serial or Para
+    BUILD_TYPE="Release" # Release or Debug
+
+    CXX=mpicxx
+    CXX_FLAGS="-std=c++14 -pthread -lm"
+    CXX_INCLUDES="-I$PD -I$PD/lib -I$PD/lib/lua-5.3.3/include"
+
+    #LD_FLAGS="-L${PD}/lib/lua-5.3.3/lib -Wl,-rpath,${PD}/lib/lua-5.3.3/lib: -rdynamic -llua -ldl"
+    LD_LIB_PATHS="${PD}/lib/lua-5.3.3/lib"
+    LD_LIBS="lua dl"
+
+    TARGET=/home/wangjian/bin/nsp
+    NTHREADS=16 # number of threads
+}
+
+###################################################################################################
 
 set_ld_lib_paths() {
     local libpaths="$@"
@@ -32,7 +79,23 @@ set_ld_libs() {
     done
 }
 
-LD_FLAGS="$(set_ld_lib_paths ${LD_LIB_PATHS}) $(set_ld_libs ${LD_LIBS})"
+set_proj() {
+    proj_${1}
+    if [[ $? -ne 0 ]]; then return 1; fi
+
+    LD_FLAGS="$(set_ld_lib_paths ${LD_LIB_PATHS}) $(set_ld_libs ${LD_LIBS})"
+
+    if [[ ${BUILD_TYPE} = "Release" ]]; then
+        CXX_FLAGS="${CXX_FLAGS} -O3 -DNDEBUG"
+    elif [[ ${BUILD_TYPE} = "Debug" ]]; then
+        CXX_FLAGS="${CXX_FLAGS} -g -gdwarf-2"
+    fi
+
+    if [[ ${BUILD_MODE} = "Para" ]]; then
+        CXX_FLAGS="${CXX_FLAGS} -DJN_PARA"
+    fi
+
+}
 
 # path of directory
 pdir() {
@@ -83,7 +146,7 @@ build() {
     cd ${BD}
     rm -rf makefile
 
-    local cpps=$(find_cpps ../lib/jian ../nsp ../src)
+    local cpps=$(find_cpps ${PD}/lib/jian ${PD}/nsp ${PD}/src)
     local objs=$(for cpp in ${cpps}; do echo $(pobj ${cpp}); done)
 
     echo all: $objs >>makefile
@@ -100,6 +163,15 @@ build() {
     cd ${PD}
 }
 
+if [[ $# -eq 0 ]]; then
+    set_proj ${PROJ}
+elif [[ $# -eq 1 ]]; then
+    set_proj ${1}
+    if [[ $? -ne 0 ]]; then
+        echo Error: unknown project \'$1\'!
+        exit
+    fi
+fi
 build_lua
 build
 
