@@ -1,14 +1,12 @@
 ## <b id="requirements">Installation requirements</b>
 
 *   g++ version is greater than 4.8
-*   cmake version is greater than 2.8.7
-*   git
 
 ## <b id="install">Compile and install</b>
 
 1.  upgrade g++
     
-    If the g++ version is less than 4.8, you need to upgrade the g++ firstly.Here take gcc-4.9.3 as an example:
+    If the g++ version is less than 4.8, you need to upgrade the g++ firstly. Here take gcc-4.9.3 as an example:
         
     *   root user
  
@@ -40,21 +38,22 @@
 
     Example:
 
-        wget https://codeload.github.com/hust220/nsp/tar.gz/<VERSION NUMBER>
-        tar xvzf nsp-<VERSION NUMBER>.tar.gz
+        wget https://codeload.github.com/hust220/nsp/tar.gz/<VERSION>
+        tar xvzf nsp-<VERSION>.tar.gz
 
 3.  compile and install nsp
 
-            cd nsp-<VERSION NUMBER>
-            python jnpack.py update
-            python jnpack.py install
+        cd nsp-<VERSION>
+        bash install.sh
 
-    The binary target named 'nsp' would be located in the '.jnp/bin' directory.
+    The binary target named 'nsp' would be located in the '.install' directory.
+
+    The user can change the installation path by editing the value of the TARGET variable in install.sh.
 
 4.  download and uncompress templates library
 
-        wget http://biophy.hust.edu.cn/download/nsp-lib-<VERSION NUMBER>.tar.gz
-        tar xvzf nsp-lib-<VERSION NUMBER>.tar.gz
+        wget http://biophy.hust.edu.cn/download/nsp-lib-1.5.tar.gz
+        tar xvzf nsp-lib-1.5.tar.gz
 
 5.  Set the enviroment
     

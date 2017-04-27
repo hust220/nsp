@@ -17,8 +17,9 @@
         <el-menu-item index="1">
           <router-link to="/download">Download</router-link>
         </el-menu-item>
-        <el-menu-item index="1">
-          <el-menu-item index="3"><a href="mailto:wj_hust08@hust.edu.cn?cc=yxiao@hust.edu.cn">Contact</a></el-menu-item>
+        <el-menu-item index="3">
+          <a href="mailto:wj_hust08@hust.edu.cn?cc=yxiao@hust.edu.cn">Contact</a>
+        </el-menu-item>
       </el-col>
     </el-menu>
     <div class="line"></div>
