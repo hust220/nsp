@@ -3,7 +3,7 @@
 PROJ="serial_release"
 
 PD=$(cd $(dirname ${0}); pwd) # project directory
-TARGET=/home/wangjian/bin/nsp
+TARGET=nsp
 NTHREADS=16 # number of threads
 CXX_FLAGS="-std=c++14 -pthread -lm"
 CXX_INCLUDES="-I$PD -I$PD/lib -I$PD/lib/lua-5.3.3/include"
@@ -11,7 +11,7 @@ LD_LIB_PATHS="${PD}/lib/lua-5.3.3/lib"
 LD_LIBS="lua dl"
 
 proj_serial_release() {
-    BD="$PD/.build/serial-release" # building directory
+    BD="$PD/.install/serial-release" # building directory
 
     BUILD_MODE="Serial" # Serial or Para
     BUILD_TYPE="Release" # Release or Debug
@@ -22,7 +22,7 @@ proj_serial_release() {
 }
 
 proj_serial_debug() {
-    BD="$PD/.build/serial-debug" # building directory
+    BD="$PD/.install/serial-debug" # building directory
 
     BUILD_MODE="Serial" # Serial or Para
     BUILD_TYPE="Debug" # Release or Debug
@@ -31,7 +31,7 @@ proj_serial_debug() {
 }
 
 proj_para_release() {
-    BD="$PD/.build/para-release" # building directory
+    BD="$PD/.install/para-release" # building directory
 
     BUILD_MODE="Para" # Serial or Para
     BUILD_TYPE="Release" # Release or Debug
