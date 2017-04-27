@@ -1,7 +1,14 @@
 ##################################################################################################
 
-PD=$(cd $(dirname ${0}); pwd) # project directory
 PROJ="serial_release"
+
+PD=$(cd $(dirname ${0}); pwd) # project directory
+TARGET=/home/wangjian/bin/nsp
+NTHREADS=16 # number of threads
+CXX_FLAGS="-std=c++14 -pthread -lm"
+CXX_INCLUDES="-I$PD -I$PD/lib -I$PD/lib/lua-5.3.3/include"
+LD_LIB_PATHS="${PD}/lib/lua-5.3.3/lib"
+LD_LIBS="lua dl"
 
 proj_serial_release() {
     BD="$PD/.build/serial-release" # building directory
@@ -10,15 +17,8 @@ proj_serial_release() {
     BUILD_TYPE="Release" # Release or Debug
 
     CXX=g++
-    CXX_FLAGS="-std=c++14 -pthread -lm"
-    CXX_INCLUDES="-I$PD -I$PD/lib -I$PD/lib/lua-5.3.3/include"
 
     #LD_FLAGS="-L${PD}/lib/lua-5.3.3/lib -Wl,-rpath,${PD}/lib/lua-5.3.3/lib: -rdynamic -llua -ldl"
-    LD_LIB_PATHS="${PD}/lib/lua-5.3.3/lib"
-    LD_LIBS="lua dl"
-
-    TARGET=/home/wangjian/bin/nsp
-    NTHREADS=16 # number of threads
 }
 
 proj_serial_debug() {
@@ -28,15 +28,6 @@ proj_serial_debug() {
     BUILD_TYPE="Debug" # Release or Debug
 
     CXX=g++
-    CXX_FLAGS="-std=c++14 -pthread -lm"
-    CXX_INCLUDES="-I$PD -I$PD/lib -I$PD/lib/lua-5.3.3/include"
-
-    #LD_FLAGS="-L${PD}/lib/lua-5.3.3/lib -Wl,-rpath,${PD}/lib/lua-5.3.3/lib: -rdynamic -llua -ldl"
-    LD_LIB_PATHS="${PD}/lib/lua-5.3.3/lib"
-    LD_LIBS="lua dl"
-
-    TARGET=/home/wangjian/bin/nsp
-    NTHREADS=16 # number of threads
 }
 
 proj_para_release() {
@@ -46,15 +37,6 @@ proj_para_release() {
     BUILD_TYPE="Release" # Release or Debug
 
     CXX=mpicxx
-    CXX_FLAGS="-std=c++14 -pthread -lm"
-    CXX_INCLUDES="-I$PD -I$PD/lib -I$PD/lib/lua-5.3.3/include"
-
-    #LD_FLAGS="-L${PD}/lib/lua-5.3.3/lib -Wl,-rpath,${PD}/lib/lua-5.3.3/lib: -rdynamic -llua -ldl"
-    LD_LIB_PATHS="${PD}/lib/lua-5.3.3/lib"
-    LD_LIBS="lua dl"
-
-    TARGET=/home/wangjian/bin/nsp
-    NTHREADS=16 # number of threads
 }
 
 ###################################################################################################
