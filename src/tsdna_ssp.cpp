@@ -63,7 +63,7 @@ namespace tsdna {
                               -642.19, -735.33, -851.11, -509.75;
             }
 
-            List<ss_info_t> run(S seq, int k) {
+            List<tsdna_ss_info_t> run(S seq, int k) {
                 _seq = seq;
                 _min_hairpin_size = k;
                 seq_t vec(_seq.size());
@@ -77,9 +77,9 @@ namespace tsdna {
                 std::vector<int> arr(sub_infos.size());
                 std::iota(arr.begin(), arr.end(), 0);
                 std::sort(arr.begin(), arr.end(), [&](int i, int j) {return sc[i] < sc[j]; });
-                List<ss_info_t> ls;
-                for (auto it = arr.begin(); it < arr.begin() + 10 && it < arr.end(); it++) {
-                    //std::cout << ss[*it] << ' ' << sc[*it] << std::endl;
+                List<tsdna_ss_info_t> ls;
+                //for (auto it = arr.begin(); it < arr.begin() + 10 && it < arr.end(); it++) {
+                for (auto it = arr.begin(); it < arr.end(); it++) {
                     ls.push_back({ss[*it], sc[*it]});
                 }
                 return ls;
@@ -347,12 +347,12 @@ namespace tsdna {
 #  pragma warning(default: 4305) // truncation from 'double' to 'const float'
 #endif
 
-    List<ss_info_t> seq_ss(Str seq) {
-        PredTriSS pred;
-        return pred.run(seq, 3);
-    }
-
 } // namespace tsdna
+
+List<tsdna_ss_info_t> tsdna_ssp(Str seq) {
+    tsdna::PredTriSS pred;
+    return pred.run(seq, 3);
+}
 
 END_JN
 

@@ -2,16 +2,12 @@
 
 BEGIN_JN
 
-namespace tsdna {
+struct tsdna_ss_info_t {
+    Str ss;
+    Num score;
+};
 
-    struct ss_info_t {
-        Str ss;
-        Num score;
-    };
-
-    List<ss_info_t> seq_ss(Str seq);
-
-}
+List<tsdna_ss_info_t> tsdna_ssp(Str seq);
 
 END_JN
 

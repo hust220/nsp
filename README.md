@@ -2,5 +2,5 @@
 
 Documentation: [https://hust220.github.io/nsp/#/doc](https://hust220.github.io/nsp/#/doc)
 
-Contact: wj_hust08@163.com
+Contact: jianopt@163.com
 
