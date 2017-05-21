@@ -1,5 +1,5 @@
 #include "lua_mol.hpp"
-#include <nsp/pdb.hpp>
+#include "pdb.hpp"
 
 BEGIN_JN
 

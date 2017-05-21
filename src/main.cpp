@@ -1,8 +1,8 @@
 #include "nsp.hpp"
-#include <jian/utils/string.hpp>
-#include <jian/utils/exception.hpp>
-#include <jian/utils/Env.hpp>
-#include <jian/mpi.hpp>
+#include "string.hpp"
+#include "exception.hpp"
+#include "env.hpp"
+#include "mpi.hpp"
 
 int main(int argc, char **argv) {
 	JN_MPI_INIT(argc, argv);

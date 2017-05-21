@@ -1,7 +1,7 @@
 #pragma once
 
-#include <jian/utils/traits.hpp>
-#include <jian/utils/Par.hpp>
+#include "jian.hpp"
+#include "par.hpp"
 
 extern "C"  
 {  

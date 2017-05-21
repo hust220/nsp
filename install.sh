@@ -2,27 +2,28 @@
 
 PROJ="serial_release"
 
-PD=$(cd $(dirname ${0}); pwd) # project directory
-TARGET=nsp
+SD=$(cd $(dirname ${0}); pwd) # source directory
+BD=$SD/.build # building directory
 NTHREADS=16 # number of threads
 CXX_FLAGS="-std=c++14 -pthread -lm"
-CXX_INCLUDES="-I$PD -I$PD/lib -I$PD/lib/lua-5.3.3/include"
-LD_LIB_PATHS="${PD}/lib/lua-5.3.3/lib"
+CXX_INCLUDES="-I$SD/ext -I$SD/ext/lua-5.3.3/include"
+LD_LIB_PATHS="${SD}/ext/lua-5.3.3/lib"
 LD_LIBS="lua dl"
+TARGET=$BD/nsp
 
 proj_serial_release() {
-    BD="$PD/.install/serial-release" # building directory
+    PD="$BD/serial-release" # project directory
 
     BUILD_MODE="Serial" # Serial or Para
     BUILD_TYPE="Release" # Release or Debug
 
     CXX=g++
 
-    #LD_FLAGS="-L${PD}/lib/lua-5.3.3/lib -Wl,-rpath,${PD}/lib/lua-5.3.3/lib: -rdynamic -llua -ldl"
+    #LD_FLAGS="-L${SD}/lib/lua-5.3.3/lib -Wl,-rpath,${SD}/lib/lua-5.3.3/lib: -rdynamic -llua -ldl"
 }
 
 proj_serial_debug() {
-    BD="$PD/.install/serial-debug" # building directory
+    PD="$BD/serial-debug" # project directory
 
     BUILD_MODE="Serial" # Serial or Para
     BUILD_TYPE="Debug" # Release or Debug
@@ -31,7 +32,7 @@ proj_serial_debug() {
 }
 
 proj_para_release() {
-    BD="$PD/.install/para-release" # building directory
+    PD="$BD/para-release" # project directory
 
     BUILD_MODE="Para" # Serial or Para
     BUILD_TYPE="Release" # Release or Debug
@@ -81,12 +82,12 @@ set_proj() {
 
 # path of directory
 pdir() {
-    echo $BD/objs${1}
+    echo $PD/objs${1}
 }
 
 # path of object
 pobj() {
-    echo $BD/objs${1}.o
+    echo $PD/objs${1}.o
 }
 
 check_dir() {
@@ -117,18 +118,18 @@ find_cpps() {
 }
 
 build_lua() {
-    cd $PD/lib/lua-5.3.3
+    cd $SD/ext/lua-5.3.3
     make linux
     make install
-    cd $PD
+    cd $SD
 }
 
 build() {
-    if [ ! -d ${BD} ]; then mkdir -p ${BD}; fi
-    cd ${BD}
+    if [ ! -d ${PD} ]; then mkdir -p ${PD}; fi
+    cd ${PD}
     rm -rf makefile
 
-    local cpps=$(find_cpps ${PD}/lib/jian ${PD}/nsp ${PD}/src)
+    local cpps=$(find_cpps ${SD}/src)
     local objs=$(for cpp in ${cpps}; do echo $(pobj ${cpp}); done)
 
     echo all: $objs >>makefile
@@ -142,7 +143,7 @@ build() {
     done
 
     make -j${NTHREADS}
-    cd ${PD}
+    cd ${SD}
 }
 
 if [[ $# -eq 0 ]]; then

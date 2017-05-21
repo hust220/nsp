@@ -1,6 +1,6 @@
 #include "lua_atom.hpp"
-#include <nsp/pdb.hpp>
-#include <jian/geom.hpp>
+#include "pdb.hpp"
+#include "geom.hpp"
 
 BEGIN_JN
 

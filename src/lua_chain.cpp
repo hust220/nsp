@@ -1,5 +1,5 @@
 #include "lua_chain.hpp"
-#include <nsp/pdb.hpp>
+#include "pdb.hpp"
 
 BEGIN_JN
 
