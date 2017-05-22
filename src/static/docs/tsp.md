@@ -61,7 +61,7 @@
 
     Example:
 
-        nsp trajc cluster example.traj.pdb -p example.cluster -k 10 -aa
+        nsp traj cluster example.traj.pdb -p example.cluster -k 10 -aa
 
     This command will generate 10 files:
 

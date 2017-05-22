@@ -46,7 +46,7 @@
         cd nsp-<VERSION>
         bash install.sh
 
-    The binary target named 'nsp' would be located in the '.install' directory.
+    The binary target named 'nsp' would be located in the '.build' directory.
 
     The user can change the installation path by editing the value of the TARGET variable in install.sh.
 
