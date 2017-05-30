@@ -35,7 +35,6 @@ namespace {
 
                 m_files.push_back(g[1]);
                 m_files.push_back(g[2]);
-                //par.setv(m_files, "s");
                 par.set(m_ref, "ref");
                 par.set(m_tgt, "traj");
 
@@ -81,38 +80,6 @@ namespace {
                         }
                     }
                 }
-//                while (true) {
-//                    const Residue & r1 = m1[i1][j1];
-//                    const Residue & r2 = m2[i2][j2];
-//                    if (!m_has_nums || std::find(nums.begin(), nums.end(), i1) != nums.end()) {
-//                        if (!m_loose) assert(r1.name == r2.name);
-//                        for (auto && a1 : r1) {
-//                            for (auto && a2 : r2) {
-//                                if (a1.name == a2.name) {
-//                                    l1.push_back({ a1[0],a1[1],a1[2] });
-//                                    l2.push_back({ a2[0],a2[1],a2[2] });
-//                                    n++;
-//                                }
-//                            }
-//                        }
-//                    }
-//                    j1++;
-//                    if (j1 >= m1[i1].size()) {
-//                        j1 = 0;
-//                        i1++;
-//                        if (i1 >= m1.size()) {
-//                            break;
-//                        }
-//                    }
-//                    j2++;
-//                    if (j2 >= m2[i2].size()) {
-//                        j2 = 0;
-//                        i2++;
-//                        if (i2 >= m2.size()) {
-//                            break;
-//                        }
-//                    }
-//                }
 
                 Mat mat1(n, 3), mat2(n, 3);
                 int i = 0;
@@ -144,6 +111,7 @@ namespace {
         RmsdComponent rmsd(par);
         rmsd.run();
     }
+
 }
 
 END_JN

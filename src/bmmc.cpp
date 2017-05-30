@@ -11,6 +11,10 @@ void MCSM::init(const Par &par) {
     m_scorer = Score::fac_t::create(m_cg_type);
     m_scorer->init();
 
+    log << "# Initializing bps..." << std::endl;
+    m_bps.resize(_seq.size());
+    for (auto && i : m_bps) i = -1;
+
     log << "# Seting indices..." << std::endl;
     set_indices();
 }

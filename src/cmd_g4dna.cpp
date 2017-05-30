@@ -1,6 +1,6 @@
 #include "nsp.hpp"
 #include "pdb.hpp"
-#include "g4dna_ssp.hpp"
+#include "g4dna.hpp"
 
 BEGIN_JN
 
@@ -20,6 +20,11 @@ REGISTER_NSP_COMPONENT(g4dna) {
     if (t == "ssp") {
         Str seq = g[2];
         handle_g4dna_ssp(seq);
+    }
+    else if (t == "tsp") {
+        qhmc::QHMC qua;
+        qua.init(par);
+        qua.predict();
     }
 }
 

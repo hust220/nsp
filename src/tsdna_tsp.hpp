@@ -45,6 +45,8 @@ namespace tsdna {
 
             ~THMC();
 
+            void build_scaffold();
+
             void print_related_residues(const RelatedResidues &r);
 
             void print_modules();

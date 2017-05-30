@@ -1,6 +1,6 @@
 #include "nsp.hpp"
 #include "pdb.hpp"
-#include "tsdna_ssp.hpp"
+#include "tsdna.hpp"
 
 BEGIN_JN
 
@@ -17,6 +17,12 @@ REGISTER_NSP_COMPONENT(tsdna) {
     if (t == "ssp") {
         Str seq = g[2];
         handle_tsdna_ssp(seq);
+    }
+    else if (t == "tsp") {
+        tsdna::THMC m;
+        m.init(par);
+        m.build_scaffold();
+        m.run();
     }
 }
 

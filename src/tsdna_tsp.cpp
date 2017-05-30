@@ -276,7 +276,7 @@ namespace tsdna {
     //            print_related_residues(d_mc_unrelated_residues);
     //        }
 
-    void THMC::before_run() {
+    void THMC::build_scaffold() {
         log << "# Convert 2D structure to tree..." << std::endl;
         ss_to_tree();
 
@@ -289,6 +289,9 @@ namespace tsdna {
         log << "# Build initial scaffold..." << std::endl;
         build_initial_scaffold();
 
+    }
+
+    void THMC::before_run() {
         log << "# MC initialization..." << std::endl;
         thmc_set_mvels(*this);
     }

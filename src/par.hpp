@@ -14,9 +14,9 @@ BEGIN_JN
 
 class Par {
 public:
-    using pars_t = std::deque<Str>;
+    using pars_t = Deque<Str>;
 
-    std::map<Str, pars_t> _pars;
+    Map<Str, pars_t> _pars;
     pars_t _orig_pars;
 
     Int m_argc;

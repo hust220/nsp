@@ -18,17 +18,5 @@ REGISTER_NSP_COMPONENT(opt) {
 
 ALIAS_NSP_COMPONENT(opt, dhmc);
 
-REGISTER_NSP_COMPONENT(thmc) {
-    tsdna::THMC tri;
-    tri.init(par);
-    tri.predict();
-}
-
-REGISTER_NSP_COMPONENT(qhmc) {
-    qhmc::QHMC qua;
-    qua.init(par);
-    qua.predict();
-}
-
 END_JN
 
