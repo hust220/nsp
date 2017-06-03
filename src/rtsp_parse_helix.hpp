@@ -12,6 +12,7 @@ struct parse_helix_t {
 };
 
 parse_helix_t parse_helix(const Model &helix);
+parse_helix_t parse_helix(const Mat &helix);
 Eigen::MatrixXd make_standard_helix(int);
 void dihs_std_helix();
 

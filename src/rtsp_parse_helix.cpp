@@ -54,11 +54,14 @@ public:
         return mat;
     }
 
-    Result parse(const Model &helix) {
+    Result parse(const Model &m) {
+        return parse(get_mat_helix(m));
+    }
+
+    Result parse(const Mat &mat) {
         Vec origin, x, y, z;
 		int len;
 
-        auto mat = get_mat_helix(helix); 
         len = mat.rows();
 		geom::Superposition<double> sp(make_standard_helix(len / 2 - 1), mat);
 		origin << 0, 0, 0; x << 1, 0, 0; y << 0, 1, 0; z << 0, 0, 1;
@@ -83,6 +86,10 @@ void dihs_std_helix() {
     for (int i = 0; i < 15; i++) {
         LOG << geom::dihedral(m.row(i), m.row(i+1), m.row(i+2), m.row(i+3)) << std::endl;
     }
+}
+
+parse_helix_t parse_helix(const Mat &mat) {
+    return parse_helix_detail::parser.parse(mat);
 }
 
 parse_helix_t parse_helix(const Model &helix) {
