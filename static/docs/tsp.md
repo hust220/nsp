@@ -14,8 +14,6 @@
         -seq <SEQUENCE> \
         -ss "<SECONDARY_STRUCTURE>" \
         -init <INITIAL_PDB_FILE> \
-        -save_ss \
-        -sample_tree \
         [-dca <DCA_FILE>] \
         [-<constraints|c> <CONSTRAINTS_FILE>] \
         [-queue <QUEUE>] \
@@ -42,11 +40,10 @@
             Queue of optimization actions.<br>
             Optimization action example:
             <table>
-                <tr><td>Simulated Annealing Monte Carlo simulation</td><td>samc:1000000:500-20</td></tr>
-                <tr><td>Replica Exchange Monte Carlo simulation</td><td>remc:1000000:20-500</td></tr>
-                <tr><td>Monte Carlo simulation by always heating</td><td>heat:1000000:20<br>heat:1000000</td></tr>
-                <tr><td>Monte Carlo simulation by always cooling</td><td>cool:1000000:20<br>cool:1000000</td></tr>
-                <tr><td>Monte Carlo simulation by always warming</td><td>warm:1000000:20<br>warm:1000000</td></tr>
+                <tr><td>Simulated Annealing Monte Carlo simulation</td><td>samc:200000:20-0.01</td></tr>
+                <tr><td>Monte Carlo simulation by always heating</td><td>heat:100000:20<br>heat:100000</td></tr>
+                <tr><td>Monte Carlo simulation by always cooling</td><td>cool:100000:20<br>cool:100000</td></tr>
+                <tr><td>Monte Carlo simulation by always warming</td><td>warm:100000:20<br>warm:100000</td></tr>
             </table>
             Queue example:<br>
             heat:30000+warm:100000+cool:1000000

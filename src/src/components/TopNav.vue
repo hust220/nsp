@@ -2,24 +2,22 @@
   <el-row class="top-nav">
     <el-menu default-active="1" class="el-menu-demo" mode="horizontal" @select="handleSelect">
       <el-col :span="22" :offset="1">
-        <el-menu-item index="1" v-if="'logo' in top" >
-          <img class="nsp-logo" :src="'static/'+top.logo" />
-        </el-menu-item>
-        <el-menu-item index="1">
-          <router-link to="/home">Home</router-link>
-        </el-menu-item>
-        <el-menu-item index="1">
-          <router-link to="/doc">Documentation</router-link>
-        </el-menu-item>
-        <el-menu-item index="1">
-          <router-link to="/api">API</router-link>
-        </el-menu-item>
-        <el-menu-item index="1">
-          <router-link to="/download">Download</router-link>
-        </el-menu-item>
-        <el-menu-item index="3">
-          <a href="mailto:wj_hust08@hust.edu.cn?cc=yxiao@hust.edu.cn">Contact</a>
-        </el-menu-item>
+        
+          <router-link to="/home"  v-if="'logo' in top">
+            <el-menu-item index="1"><img class="nsp-logo" :src="'static/'+top.logo" /></el-menu-item>
+          </router-link>
+          <router-link to="/doc">
+            <el-menu-item index="1">Documentation</el-menu-item>
+          </router-link>
+          <router-link to="/api">
+            <el-menu-item index="1">API</el-menu-item>
+          </router-link>
+          <router-link to="/download">
+            <el-menu-item index="1">Download</el-menu-item>
+          </router-link>
+          <a href="mailto:wj_hust08@hust.edu.cn?cc=yxiao@hust.edu.cn">
+            <el-menu-item index="1">Contact
+          </el-menu-item></a>
       </el-col>
     </el-menu>
     <div class="line"></div>
