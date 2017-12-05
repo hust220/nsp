@@ -13,6 +13,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <algorithm>
 #include "platform.hpp"
 
 #ifdef JN_OS_WIN

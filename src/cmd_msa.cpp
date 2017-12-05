@@ -4,17 +4,18 @@
 BEGIN_JN
 
 static void msa_trim(Fasta &fa) {
+    Int n = 0;
+    auto r = STD_ find_if(fa.begin(), fa.end(), [](auto && it) { return it.name == "TARGET"; });
+    if (r != fa.end()) n = STD_ distance(fa.begin(), r);
+    auto && it = fa[n];
+
     Int a = -1, b = -1;
-    for (auto && it : fa) {
-        if (it.name == "TARGET") {
-            for (Int i = 1; i < size(it.seq); i++) {
-                if (a == -1 && it.seq[i-1] == '-' && it.seq[i] != '-') {
-                    a = i;
-                }
-                if (it.seq[i] != '-') {
-                    b = i;
-                }
-            }
+    for (Int i = 1; i < size(it.seq); i++) {
+        if (a == -1 && it.seq[i-1] == '-' && it.seq[i] != '-') {
+            a = i;
+        }
+        if (it.seq[i] != '-') {
+            b = i;
         }
     }
     for (auto && it : fa) {
@@ -23,17 +24,18 @@ static void msa_trim(Fasta &fa) {
 }
 
 static void msa_del_gap(Fasta &fa) {
+    Int n = 0;
+    auto r = STD_ find_if(fa.begin(), fa.end(), [](auto && it) { return it.name == "TARGET"; });
+    if (r != fa.end()) n = STD_ distance(fa.begin(), r);
+    auto && it = fa[n];
+
     Map<Int, Bool> m;
-    for (auto && it : fa) {
-        if (it.name == "TARGET") {
-            for (Int i = 0; i < size(it.seq); i++) {
-                if (it.seq[i] == 'A' || it.seq[i] == 'U' || it.seq[i] == 'G' || it.seq[i] == 'C') {
-                    m[i] = true;
-                }
-                else {
-                    m[i] = false;
-                }
-            }
+    for (Int i = 0; i < size(it.seq); i++) {
+        if (it.seq[i] == 'A' || it.seq[i] == 'U' || it.seq[i] == 'G' || it.seq[i] == 'C') {
+            m[i] = true;
+        }
+        else {
+            m[i] = false;
         }
     }
     for (auto && it : fa) {

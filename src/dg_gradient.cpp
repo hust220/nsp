@@ -3,6 +3,7 @@
 #include <iterator>
 
 BEGIN_JN
+
 namespace dg {
 
 Gradient::Gradient() { init_dihs(); }
@@ -71,18 +72,24 @@ double Gradient::atom_energy(const Mat &coord, int n) {
 }
 
 double Gradient::atom_dist_energy(const Mat &coord, int n) {
-    double sum = 0; for (int i = 0; i < coord.rows(); i++) sum += atom_pair_energy(coord, i, n); return sum;
+    double sum = 0;
+    for (int i = 0; i < coord.rows(); i++) sum += atom_pair_energy(coord, i, n);
+    return sum;
 }
 
 double Gradient::atom_pair_energy(const Mat &coord, int i, int j) {
     if (i == j) return 0;
-    double dist =  0; for (int k = 0; k < 3; k++) dist += square(coord(i, k)-coord(j, k)); dist = std::sqrt(dist);
+    double dist =  0;
+    for (int k = 0; k < 3; k++) dist += square(coord(i, k)-coord(j, k));
+    dist = std::sqrt(dist);
     return (i < j ? relative_dist_energy(dist, (bound(j, i)), (bound(i, j))) : 
                     relative_dist_energy(dist, (bound(i, j)), (bound(j, i))));
 }
 
 double Gradient::relative_dist_energy(double dist, double l, double u) {
-    if (dist > u) return square(dist - u); else if (dist < l) return square(l - dist); else return 0;
+    if (dist > u) return square(dist - u);
+    else if (dist < l) return square(l - dist);
+    else return 0;
 }
 
 double Gradient::atom_dih_energy(int n) {
@@ -113,5 +120,6 @@ double Gradient::relative_dih_energy(double dih, double std) {
 }
 
 } // namespace dg
+
 END_JN
 

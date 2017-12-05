@@ -2,14 +2,20 @@
 
 #include <array>
 #include "mat_base.hpp"
+#include "fftw3.h"
 
 BEGIN_JN
+
+#define JN_MAT3_EACH(mat, i, j, k) for (int i = 0; i < (mat).size[0]; i++) for (int j = 0; j < (mat).size[1]; j++) for (int k = 0; k < (mat).size[2]; k++)
 
 template<typename NumType>
 class Matrix<3, NumType> : public MatBase<3, NumType> {
     public:
+        using value_type = NumType;
+        using type = Matrix<3, value_type>;
+
         std::array<int, 3> size;
-        NumType ***p;
+        value_type *p;
 
         Matrix() {
             init();
@@ -20,13 +26,30 @@ class Matrix<3, NumType> : public MatBase<3, NumType> {
             resize(a, b, c);
         }
 
-        Matrix(Matrix<3, NumType> &&m) {
-            init();
-            std::swap(size, m.size);
-            std::swap(p, m.p);
+        Matrix(const Matrix<3, value_type> &m) { init(); *this = m; }
+
+        template<typename T> Matrix(const T &m) { init(); *this = m; }
+
+        Matrix(Matrix<3, value_type> &&m) { init(); std::swap(size, m.size); std::swap(p, m.p); m.init(); }
+
+        type &operator=(const Matrix<3, value_type> &m) {
+            resize(m.size[0], m.size[1], m.size[2]);
+            for (int i = 0; i < size[0]; i++) for (int j = 0; j < size[1]; j++) for (int k = 0; k < size[2]; k++) {
+                p[index(i, j, k)] = m(i, j, k);
+            }
+            return *this;
         }
 
-        Matrix<3, NumType> &operator=(Matrix<3, NumType> &&m) {
+        template<typename T>
+        type &operator=(const T &m) {
+            resize(m.size[0], m.size[1], m.size[2]);
+            for (int i = 0; i < size[0]; i++) for (int j = 0; j < size[1]; j++) for (int k = 0; k < size[2]; k++) {
+                p[index(i, j, k)] = m(i, j, k);
+            }
+            return *this;
+        }
+
+        type &operator=(type &&m) {
             std::swap(size, m.size);
             std::swap(p, m.p);
             m.init();
@@ -38,119 +61,123 @@ class Matrix<3, NumType> : public MatBase<3, NumType> {
             p = NULL;
         }
 
-        template<typename F>
-            void each(F && f) {
-                for (int i = 0; i < size[0]; i++) {
-                    for (int j = 0; j < size[1]; j++) {
-                        for (int k = 0; k < size[2]; k++) {
-                            f(p[i][j][k], i, j, k);
-                        }
-                    }
-                }
-            }
+        template<typename T> type &set_all(T && v) {
+            JN_MAT3_EACH(*this, i, j, k) p[index(i, j, k)] = v;
+            return *this;
+        }
 
-        NumType sum() const {
-            NumType n = 0;
+        value_type sum() const {
+            value_type n = 0;
             for (int i = 0; i < size[0]; i++) {
                 for (int j = 0; j < size[1]; j++) {
                     for (int k = 0; k < size[2]; k++) {
-                        n += p[i][j][k];
+                        n += p[index(i,j,k)];
                     }
                 }
             }
             return n;
         }
 
-        void resize(int a, int b, int c) {
+        template<typename T, JN_ENABLE(!JN_IS_SAME(value_type, std::complex<T>))>
+        value_type max() const {
+            value_type max = p[0];
+            for (int i = 0; i < size[0]; i++) for (int j = 0; j < size[1]; j++) for (int k = 0; k < size[2]; k++) {
+                if (max < p[index(i, j, k)]) max = p[index(i, j, k)];
+            }
+            return max;
+        }
+
+        type &resize(int a, int b, int c) {
             int i, j;
 
             if (p != NULL) clear();
             size[0] = a;
             size[1] = b;
             size[2] = c;
-            p = new NumType**[a];
-            for (i = 0; i < a; i++) {
-                p[i] = new NumType*[b];
-                for (j = 0; j < b; j++) {
-                    p[i][j] = new NumType[c];
-                }
-            }
+            p = new value_type[a*b*c];
+            return *this;
         }
 
-        void clear() {
+        type &clear() {
             if (p != NULL) {
-                int i, j;
-                for (i = 0; i < size[0]; i++) {
-                    for (j = 0; j < size[1]; j++) {
-                        delete[] p[i][j];
-                    }
-                    delete[] p[i];
-                }
                 delete[] p;
                 p = NULL;
                 size = { 0, 0, 0 };
             }
         }
 
-        static Matrix<3, NumType> Zero(int a, int b, int c) {
-            Matrix<3, NumType> m(a, b, c);
-            m.each([](NumType &n, int a, int b, int c) {
-                    n = 0;
-                    });
-            return m;
+        static type Zero(int a, int b, int c) {
+            type m(a, b, c);
+            return m.set_all(0);
         }
 
-        static Matrix<3, NumType> Ones(int a, int b, int c) {
-            Matrix<3, NumType> m(a, b, c);
-            m.each([](NumType &n, int a, int b, int c) {
-                    n = 1;
-                    });
-            return m;
+        static type Ones(int a, int b, int c) {
+            type m(a, b, c);
+            return m.set_all(1);
         }
 
-        static Matrix<3, NumType> Constant(int a, int b, int c, NumType v) {
-            Matrix<3, NumType> m(a, b, c);
-            m.each([&v](NumType &n, int a, int b, int c) {
-                    n = v;
-                    });
-            return m;
+        template<typename T>
+        static type Constant(int a, int b, int c, T && v) {
+            type m(a, b, c);
+            return m.set_all(v);
         }
 
         ~Matrix() {
             clear();
         }
 
-        NumType &operator()(int a, int b, int c) {
-            return p[a][b][c];
+        Int index(Int a, Int b, Int c) const {
+            return a * (size[1] * size[2]) + b * size[2] + c;
         }
 
-        const NumType &operator()(int a, int b, int c) const {
-            return p[a][b][c];
+        value_type &operator()(int a, int b, int c) {
+            return p[index(a,b,c)];
+        }
+
+        const value_type &operator()(int a, int b, int c) const {
+            return p[index(a, b, c)];
         }
 
         void print() const {
             std::cout << *this;
         }
 
-        friend std::ostream &operator <<(std::ostream &stream, const Matrix<3, NumType> &m) {
-            for (int i = 0; i < m.size[0]; i++) {
-                for (int j = 0; j < m.size[1]; j++) {
-                    for (int k = 0; k < m.size[2]; k++) {
-                        stream << m.p[i][j][k] << ' ';
-                    }
-                    stream << std::endl;
-                }
-            }
+        template<typename Mat_>
+        const type &fft(Mat_ &&mat) const {
+            fftw_plan plan = fftw_plan_dft_3d(size[0], size[1], size[2], reinterpret_cast<fftw_complex*>(p), reinterpret_cast<fftw_complex*>(mat.p), FFTW_FORWARD, FFTW_ESTIMATE);
+            fftw_execute(plan); /* repeat as needed */
+            fftw_destroy_plan(plan);
+            return *this;
+        }
+
+        template<typename Mat_>
+        const type &ifft(Mat_ &&mat) const {
+            fftw_plan plan = fftw_plan_dft_3d(size[0], size[1], size[2], reinterpret_cast<fftw_complex*>(p), reinterpret_cast<fftw_complex*>(mat.p), FFTW_BACKWARD, FFTW_ESTIMATE);
+            fftw_execute(plan); /* repeat as needed */
+            fftw_destroy_plan(plan);
+            return *this;
+        }
+
+        template<typename _N>
+        type &divide(_N &&n) {
+            JN_MAT3_EACH(*this, i, j, k) p[index(i,j,k)] /= n;
+            return *this;
+        }
+
+        friend std::ostream &operator <<(std::ostream &stream, const type &m) {
+            JN_MAT3_EACH(m, i, j, k) stream << m(i, j, k) << ' ';
             return stream;
         }
 
+
 };
 
-using Mat3 = Matrix<3, float>;
+using Mat3 = Matrix<3, Num>;
 using Mat3f = Matrix<3, float>;
 using Mat3d = Matrix<3, double>;
 using Mat3i = Matrix<3, int>;
 using Mat3u = Matrix<3, unsigned>;
+using Mat3c = Matrix<3, std::complex<Num>>;
 
 END_JN
 

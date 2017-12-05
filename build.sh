@@ -8,7 +8,7 @@ NTHREADS=16 # number of threads
 CXX_FLAGS="-std=c++14 -pthread -lm"
 CXX_INCLUDES="-I$SD/ext -I$SD/ext/lua-5.3.3/include"
 LD_LIB_PATHS="${SD}/ext/lua-5.3.3/lib"
-LD_LIBS="lua dl"
+LD_LIBS="lua dl fftw3"
 TARGET=$BD/nsp
 
 proj_serial_release() {
@@ -157,4 +157,5 @@ elif [[ $# -eq 1 ]]; then
 fi
 build_lua
 build
+
 

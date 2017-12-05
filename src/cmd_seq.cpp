@@ -29,13 +29,14 @@ REGISTER_NSP_COMPONENT(seq) {
         S seq;
         for (auto && chain : m) {
             for (auto && res : chain) {
-                if (std::find(r.begin(), r.end(), res.name) != r.end()) {
-                    seq += res.name;
-                } else if (std::find(d.begin(), d.end(), res.name) != d.end()) {
-                    seq += res.name.back();
-                } else {
-                    seq += 'X';
-                }
+                seq += pdb::res_name(res.name, "abbr");
+//                if (std::find(r.begin(), r.end(), res.name) != r.end()) {
+//                    seq += res.name;
+//                } else if (std::find(d.begin(), d.end(), res.name) != d.end()) {
+//                    seq += res.name.back();
+//                } else {
+//                    seq += 'X';
+//                }
             }
         }
         std::cout << seq << std::endl;

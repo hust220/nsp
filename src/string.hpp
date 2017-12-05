@@ -52,5 +52,14 @@ static Str join(_Interval && interval, _Ls && ls) {
     return stream.str();
 }
 
+template<typename... Pars_>
+::std::string format(std::string fmt, Pars_ && ...pars) {
+    int count = snprintf(NULL, 0, fmt.c_str(), pars...);
+    ::std::string buf;
+    buf.resize(count);
+    sprintf(&(buf[0]), fmt.c_str(), pars...);
+    return std::move(buf);
+}
+
 END_JN
 

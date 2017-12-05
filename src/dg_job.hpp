@@ -6,21 +6,23 @@
 #include "dg_dih_bound.hpp"
 
 BEGIN_JN
+
 namespace dg {
 
 struct Job
 {
-//    using Mat = Eigen::MatrixXd;
     using DihEntry = Vi;
     using DistBoundType = Mat;
     using DihBoundType = DihBound;
 
     int len = 0;
 
-	Log log;
-    Mat bound;
+    Log log;
+
+    Mat bound; /**< distance bound matrix. */
+    DihBound _dih_bound; /**< dihedral bound matrix. */
+
     double _min_dist = 5;
-    DihBound _dih_bound;
     Mat d, m, c, g;
     double g2 = 0;
     double _dist_en = 0;
@@ -30,5 +32,6 @@ struct Job
 };
 
 } // namespace dg
+
 END_JN
 

@@ -5,6 +5,7 @@
 #include <list>
 
 BEGIN_JN
+
 namespace dg {
 
 class Gradient : public Job {
@@ -31,5 +32,6 @@ public:
 };
 
 } // namespace dg
+
 END_JN
 

@@ -4,10 +4,9 @@
 BEGIN_JN
 
 REGISTER_NSP_COMPONENT(build_loop_dg) {
-    BuildLoopDG build_loop_dg;
-    build_loop_dg.init(par["seq"][0], par["ss"][0]);
-//    write_pdb(build_loop_dg(), "3drna-dg.pdb");
-    std::cout << build_loop_dg() << std::endl;
+    Str seq = par.get("seq");
+    Str ss = par.get("ss");
+    JN_OUT << build_chain_dg(seq, ss) << std::endl;
 }
 
 END_JN
