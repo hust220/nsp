@@ -17,24 +17,32 @@ struct Decompose {
     Str seq, ss;
 
     void operator ()(const Par &par) {
-        set_par(par);
-        run();
-    }
-
-    void set_par(const Par &par) {
         auto g = par.getv("global");
-        n_bps = 1;
-        par.set(n_bps, "n", "n_bps");
+
         filename = g[1];
         dirname = g[2];
-        is_full = par.has("full");
-    }
 
-    void run() {
+        // Read the model
         Model m = mol_read_to<Model>(filename);
 
+        // n_bps is the number of base pairs that would be retained for the loop.
+        n_bps = 1;
+        par.set(n_bps, "n", "n_bps");
+
+        // Full refers to retaining all the basepairs of the loop rather than only n base pairs.
+        // Please don't use the full option when building the templates library.
+        is_full = par.has("full");
+
+        // Set sequence
         seq = JN_ seq(m);
-        ss = get_ss(m.residues());
+
+        // Set secondary structure
+        if (par.has("ss")) {
+            par.set(ss, "ss");
+        }
+        else {
+            ss = get_ss(m.residues());
+        }
 
         if (is_full) {
             parse_full(m);
