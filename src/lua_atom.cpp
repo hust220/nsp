@@ -2,7 +2,7 @@
 #include "pdb.hpp"
 #include "geom.hpp"
 
-BEGIN_JN
+namespace jian {
 
 static int atom_new(lua_State *L) {
     Str name = lua_tostring(L, 1);
@@ -122,5 +122,5 @@ int lua_openatom(lua_State *L) {
     return 1;
 }
 
-END_JN
+}
 

@@ -1,17 +1,17 @@
 #include "fasta.hpp"
 
-BEGIN_JN
+namespace jian {
 
 void fasta_read(Fasta &fa, Str fastafile) {
     FastaItem x;
     for (auto &&it : FileLines(fastafile)) {
         if (it.line[0] == '>') {
             fa.push_back(x);
-            x.name = (JN_ trim_copy(it.line.substr(1)));
+            x.name = (jian::trim_copy(it.line.substr(1)));
             x.seq = "";
         }
         else {
-            x.seq += JN_ trim_copy(it.line);
+            x.seq += jian::trim_copy(it.line);
         }
     }
     fa.push_back(x);
@@ -36,5 +36,5 @@ void fasta_write(std::ostream &stream, const Fasta &fa, Int n, Int line_width) {
     }
 }
 
-END_JN
+}
 

@@ -10,7 +10,7 @@ extern "C"
 #include "lauxlib.h"  
 };
 
-BEGIN_JN
+namespace jian {
 
 void stackDump (lua_State *L);
 
@@ -36,5 +36,5 @@ void lua_run(Str filename, const Par &par);
 
 void lua_cmd(Str cmd, const Par &par);
 
-END_JN
+}
 

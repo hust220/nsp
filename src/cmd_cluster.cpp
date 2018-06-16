@@ -11,7 +11,7 @@
 #include "cluster.hpp"
 #include "log.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace {
 
@@ -174,5 +174,5 @@ namespace {
 
 }
 
-END_JN
+}
 

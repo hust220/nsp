@@ -2,7 +2,7 @@
 #include "pdb.hpp"
 #include "tsdna.hpp"
 
-BEGIN_JN
+namespace jian {
 
 static void handle_tsdna_ssp(Str seq) {
     auto ls = tsdna_ssp(seq);
@@ -26,5 +26,5 @@ REGISTER_NSP_COMPONENT(tsdna) {
     }
 }
 
-END_JN
+}
 

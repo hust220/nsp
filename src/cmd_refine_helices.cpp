@@ -1,7 +1,7 @@
 #include "nsp.hpp"
 #include "pdb.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace {
 
@@ -22,5 +22,5 @@ namespace {
 
 }
 
-END_JN
+}
 

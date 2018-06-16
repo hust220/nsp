@@ -2,9 +2,9 @@
 
 #include <string>
 
-BEGIN_JN
+namespace jian {
 
 S ss_pred(const S &);
 
-END_JN
+}
 

@@ -4,7 +4,7 @@
 #include "rss_get_ss.hpp"
 #include "rss_sst.hpp"
 
-BEGIN_JN
+namespace jian {
 
 struct Decompose {
     // pars
@@ -33,7 +33,7 @@ struct Decompose {
     void run() {
         Model m = mol_read_to<Model>(filename);
 
-        seq = JN_ seq(m);
+        seq = jian::seq(m);
         ss = get_ss(m.residues());
 
         if (is_full) {
@@ -142,7 +142,7 @@ struct Decompose {
             n_helix++;
             Str helix_name = to_str(m.name, '.', n_helix, ".helix");
             mol_write(sub(m, get_helix_nums(l)), to_str(dirname, '/', helix_name, ".pdb"));
-            JN_OUT << helix_name << ' ' << size(l->helix) << ' ' << l->helix.seq() << ' ' << l->helix.ss() << ' ' << "other" << STD_ endl;
+            JN_OUT << helix_name << ' ' << size(l->helix) << ' ' << l->helix.seq() << ' ' << l->helix.ss() << ' ' << "other" << std::endl;
         }
     }
 
@@ -162,5 +162,5 @@ REGISTER_NSP_COMPONENT(decompose) {
     decompose(par);
 }
 
-END_JN
+}
 

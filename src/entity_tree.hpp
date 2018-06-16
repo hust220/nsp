@@ -2,7 +2,7 @@
 #include "entity.hpp"
 #include "jian.hpp"
 
-BEGIN_JN
+namespace jian {
 
 template<typename _Data>
 using TreePath = L<_Data *>;
@@ -215,7 +215,7 @@ public:
 
 	template<typename _Data>
 	El *set_root(_Data &&data) {
-		this->m_beg.el = El::make(STD_ forward<_Data>(data));
+		this->m_beg.el = El::make(std::forward<_Data>(data));
 		return this->root();
 	}
 };
@@ -223,4 +223,4 @@ public:
 template<typename _Data>
 using Tree = TreeNt<PlainTreeRg<PlainTreeIt<PlainTreeEl<_Data>>>>;
 
-END_JN
+}

@@ -1,6 +1,6 @@
 #include "rtsp_build_loop_raw.hpp"
 
-BEGIN_JN
+namespace jian {
 
 BuildLoopRaw &BuildLoopRaw::init(const Str &seq, const Str &ss) {
 	//Hinges &&hinges = ss_to_hinges(NASS::hinge_ss(ss));

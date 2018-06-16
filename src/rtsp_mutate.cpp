@@ -6,7 +6,7 @@
 #include "matrix.hpp"
 #include "env.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class ConvertImpl {
     public:
@@ -158,5 +158,5 @@ Chain mutate(const Chain &m, const S &seq, const S &type) {
 	}
 }
 
-END_JN
+}
 

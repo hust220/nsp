@@ -1,7 +1,7 @@
 #include "nsp.hpp"
 #include "fasta.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(fasta) {
     auto g = par.getv("global");
@@ -18,5 +18,5 @@ REGISTER_NSP_COMPONENT(fasta) {
     fasta_write(JN_OUT, fa, n);
 }
 
-END_JN
+}
 

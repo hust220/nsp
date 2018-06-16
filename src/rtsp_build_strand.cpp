@@ -4,7 +4,7 @@
 #include "env.hpp"
 #include "score_frag_conf.hpp"
 
-BEGIN_JN
+namespace jian {
 
 using Sp = geom::Superposition<Num>;
 
@@ -115,5 +115,5 @@ void sample_strand(Chain &strand, Str ss) {
     for (Int i = n+1; i < l; i++) for (auto && atom : strand[i]) sp.apply(atom);
 }
 
-END_JN
+}
 

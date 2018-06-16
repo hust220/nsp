@@ -2,7 +2,7 @@
 
 #include "jian.hpp"
 
-BEGIN_JN
+namespace jian {
 
 
 template<int N, typename T>
@@ -18,4 +18,4 @@ public:
 template<int N, typename T>
 class Matrix : public MatBase<N, T> {};
 
-END_JN
+}

@@ -1,7 +1,7 @@
 #include "lua_chain.hpp"
 #include "pdb.hpp"
 
-BEGIN_JN
+namespace jian {
 
 static int lua_pushres(lua_State *L, Residue *p) {
     //Residue ** r = new Residue *;
@@ -141,5 +141,5 @@ int lua_openchain(lua_State *L) {
     return 1;
 }
 
-END_JN
+}
 

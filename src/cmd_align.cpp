@@ -10,7 +10,7 @@
 #include "geom_suppos.hpp"
 #include "file.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace {
 
@@ -116,5 +116,5 @@ namespace {
 
 }
 
-END_JN
+}
 

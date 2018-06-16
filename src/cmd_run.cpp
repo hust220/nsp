@@ -2,7 +2,7 @@
 #include "lua.hpp"
 #include "pdb.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(run) {
     auto g = par.getv("global");
@@ -14,5 +14,5 @@ REGISTER_NSP_COMPONENT(cmd) {
     lua_cmd(g[1], par);
 }
 
-END_JN
+}
 

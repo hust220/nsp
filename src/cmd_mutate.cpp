@@ -2,7 +2,7 @@
 #include "nsp.hpp"
 #include "rtsp_mutate.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(mutate) {
     auto global = par.getv("global");
@@ -21,5 +21,5 @@ REGISTER_NSP_COMPONENT(mutate) {
     //JN_OUT << mutate(read_model_to_chain(global[1]), global[2], "RNA");
 }
 
-END_JN
+}
 

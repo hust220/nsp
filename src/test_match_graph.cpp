@@ -1,6 +1,6 @@
 #include "test_match_graph.hpp"
 
-BEGIN_JN
+namespace jian {
 
 struct GraphMatching {
     std::vector<GraphMatch> matches;
@@ -89,5 +89,5 @@ std::vector<GraphMatch> match_graph(const Graph &g1, const Graph &g2) {
     return GraphMatching(g1, g2).matches;
 }
 
-END_JN
+}
 

@@ -1,6 +1,6 @@
 #include "jian.hpp"
 
-BEGIN_JN
+namespace jian {
 
 struct Graph {
     std::vector<int> vertices;
@@ -11,5 +11,5 @@ using GraphMatch = std::vector<std::array<int, 2>>;
 
 std::vector<GraphMatch> match_graph(const Graph &, const Graph &);
 
-END_JN
+}
 

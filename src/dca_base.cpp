@@ -6,7 +6,7 @@
 #  pragma warning(disable: 4244) // 'this' : used in base member initializer list
 #endif
 
-BEGIN_JN
+namespace jian {
 namespace dca {
 
     Dca::~Dca() {}
@@ -231,7 +231,7 @@ namespace dca {
     }
 
 } // namespace dca
-END_JN
+}
 
 #ifdef JN_OS_WIN
 #  pragma warning(pop)

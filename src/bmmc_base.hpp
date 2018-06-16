@@ -32,7 +32,7 @@ contacts_weight, vdw_weight, max_shift
 
 #define JN_MCXP_DEF_PAR(a) Num PP_CAT3(_mc_, a);
 
-BEGIN_JN
+namespace jian {
 
 // MCBase: Base of Monte Carlo Molecule Simulation
 class MCBase : public TSP, public MC {
@@ -171,5 +171,5 @@ class MCBase : public TSP, public MC {
 
 };
 
-END_JN
+}
 

@@ -12,7 +12,7 @@
 #include "log.hpp"
 #include "rssp_hp_pred.hpp"
 
-BEGIN_JN
+namespace jian {
 namespace lrsp {
     namespace ss_hp_pred_detail {
 
@@ -154,5 +154,5 @@ namespace lrsp {
 
 } // lrsp
 
-END_JN
+}
 

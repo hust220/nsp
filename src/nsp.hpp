@@ -10,12 +10,12 @@
 #include <string>
 #include "pp.hpp"
 
-BEGIN_JN
+namespace jian {
 
 #define REGISTER_NSP_COMPONENT(i)\
-    void PP_CAT(nsp_, i)(JN_ Par par);\
+    void PP_CAT(nsp_, i)(jian::Par par);\
     NSPComponent PP_CAT(component_, i)(PP_STRING(i), PP_CAT(nsp_, i));\
-    void PP_CAT(nsp_, i)(JN_ Par par)
+    void PP_CAT(nsp_, i)(jian::Par par)
 
 #define ALIAS_NSP_COMPONENT(i, j)\
 	NSPComponent PP_CAT(component_, j)(PP_STRING(j), PP_CAT(nsp_, i))
@@ -40,5 +40,5 @@ public:
     }
 };
 
-END_JN
+}
 

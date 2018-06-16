@@ -9,7 +9,7 @@
 #include "file.hpp"
 #include "jian.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(view_constraints) {
     auto &&chain = read_model_to_chain(par["s"][0]);
@@ -46,5 +46,5 @@ REGISTER_NSP_COMPONENT(view_constraints) {
 	}
 }
 
-END_JN
+}
 

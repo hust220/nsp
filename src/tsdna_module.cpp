@@ -1,7 +1,7 @@
 #include <algorithm>
 #include "tsdna_module.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace tsdna {
 
@@ -29,6 +29,6 @@ void TModule::set_indices(int n, int beg, int end) {
 
 } // namespace tsdna
 
-END_JN
+}
 
 

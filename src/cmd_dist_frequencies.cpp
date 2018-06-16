@@ -1,7 +1,7 @@
 #include "nsp.hpp"
 #include "matrix.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(dist_frequencies) {
     S file_name = par["f"][0];
@@ -49,5 +49,5 @@ REGISTER_NSP_COMPONENT(dist_frequencies) {
     }
 }
 
-END_JN
+}
 

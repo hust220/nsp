@@ -5,7 +5,7 @@
 #include "jian.hpp"
 #include "par.hpp"
 
-BEGIN_JN
+namespace jian {
 
 extern int g_argc;
 extern char **g_argv;

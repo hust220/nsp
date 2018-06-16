@@ -1,7 +1,7 @@
 #include "nsp.hpp"
 #include "cg.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(cg_to_aa) {
 	Str filename = par.get("s");
@@ -16,5 +16,5 @@ REGISTER_NSP_COMPONENT(cg_to_aa) {
 	JN_OUT << mol;
 }
 
-END_JN
+}
 

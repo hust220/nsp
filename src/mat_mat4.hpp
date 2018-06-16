@@ -3,7 +3,7 @@
 #include <array>
 #include "jian.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class Mat4 {
 public:
@@ -39,6 +39,6 @@ public:
     void print() const;
 };
 
-END_JN
+}
 
 

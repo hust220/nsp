@@ -10,7 +10,7 @@
 #include "string.hpp"
 #include "jian.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class Par {
 public:
@@ -151,5 +151,5 @@ public:
 
 };
 
-END_JN
+}
 

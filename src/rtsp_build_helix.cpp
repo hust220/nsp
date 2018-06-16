@@ -6,7 +6,7 @@
 #include "env.hpp"
 #include "geom.hpp"
 
-BEGIN_JN
+namespace jian {
 
 static void res_set_mat(Mat &m, const Residue &r, Int n = 0) {
     static Vector<Str> atoms {"C5*", "O3*", "C1*"};
@@ -90,5 +90,5 @@ Chain build_helix(S seq) {
     }
 }
 
-END_JN
+}
 

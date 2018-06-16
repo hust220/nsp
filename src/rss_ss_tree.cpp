@@ -12,7 +12,7 @@
 #define TRUE_LENGTH(a) \
 	std::count_if(a.begin(), a.end(), [](auto && c){return c != '&';})
 
-BEGIN_JN
+namespace jian {
 
 namespace sstree_detail {
 
@@ -105,8 +105,8 @@ namespace sstree_detail {
 		}
 
 		int n_res = 0;
-		for (auto it = l->loop.begin(); it != l->loop.end() /*&&*/ /*STD_ next(it) != l->loop.end()*/; it++) {
-			if (it->type == 'Z' && STD_ next(it)->type == 'z') {
+		for (auto it = l->loop.begin(); it != l->loop.end() /*&&*/ /*std::next(it) != l->loop.end()*/; it++) {
+			if (it->type == 'Z' && std::next(it)->type == 'z') {
 				l->hinges.push_back({ n_res, n_res + 1 });
 			}
 			n_res++;
@@ -122,7 +122,7 @@ namespace sstree_detail {
 			if (res.type == 'Z') res.type = '('; else if (res.type == 'z') res.type = ')';
 		}
 
-		set_tree_relation(ls, SSTree::El::make(STD_ move(*l)));
+		set_tree_relation(ls, SSTree::El::make(std::move(*l)));
 		return true;
 	}
 
@@ -135,7 +135,7 @@ namespace sstree_detail {
 		}
 		std::vector<SSTree::El *> ls;
 		while (find_hairpin(v, ls, hinge));
-		//STD_ cout << size(ls) << STD_ endl;
+		//std::cout << size(ls) << std::endl;
 		return ls.back();
 	}
 
@@ -221,5 +221,5 @@ SSTree ss_tree(Str seq, Str ss, Int h) {
     return SSTree(seq, ss, h);
 }
 
-END_JN
+}
 

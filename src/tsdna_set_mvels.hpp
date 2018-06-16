@@ -2,7 +2,7 @@
 
 #include "tsdna.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace tsdna {
 
@@ -10,5 +10,5 @@ namespace tsdna {
 
 }
 
-END_JN
+}
 

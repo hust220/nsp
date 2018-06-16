@@ -8,7 +8,7 @@
 #include <string>
 #include <algorithm>
 
-BEGIN_JN
+namespace jian {
 
 class NASS {
 public:
@@ -36,5 +36,5 @@ private:
 	NASS();
 };
 
-END_JN
+}
 

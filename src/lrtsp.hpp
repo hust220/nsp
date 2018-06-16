@@ -10,7 +10,7 @@
 #include "rtsp_build_loop_dg.hpp"
 #include "rna_mc.hpp"
 
-BEGIN_JN
+namespace jian {
 namespace lrsp {
 
 class LRTSP {
@@ -425,5 +425,5 @@ public:
 };
 
 } // namespace lrsp
-END_JN
+}
 

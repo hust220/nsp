@@ -2,7 +2,7 @@
 
 #include "dca.hpp"
 
-BEGIN_JN
+namespace jian {
 namespace dca {
 
     class MfDca : public Dca {
@@ -18,6 +18,6 @@ namespace dca {
     };
 
 } // namespace dca
-END_JN
+}
 
 

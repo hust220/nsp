@@ -2,7 +2,7 @@
 #include <string>
 #include "pdb_parser.hpp"
 
-BEGIN_JN
+namespace jian {
 
 MolParser::MolParser(const S &f) {
 	FOPEN(ifile, f);
@@ -55,5 +55,5 @@ MolParser *MolParser::make(const S &file_type, const S &file_path, S mol_type) {
     return parser;
 }
 
-END_JN
+}
 

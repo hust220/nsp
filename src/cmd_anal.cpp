@@ -5,7 +5,7 @@
 #include "debug.hpp"
 #include "rtsp_parse_helix.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(anal) {
     Chain chain;
@@ -128,7 +128,7 @@ REGISTER_NSP_COMPONENT(dihs_std_helix) {
     dihs_std_helix();
 }
 
-END_JN
+}
 
 
 

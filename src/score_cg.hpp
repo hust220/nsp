@@ -10,7 +10,7 @@
 #include "score.hpp"
 #include "score_par_bp.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class ScoreCg : public Score {
 public:
@@ -87,5 +87,5 @@ public:
 
 };
 
-END_JN
+}
 

@@ -1,6 +1,6 @@
 #include "g4dna_ssp.hpp"
 
-BEGIN_JN
+namespace jian {
 
 using Frag = Deque<Int>;
 
@@ -92,5 +92,5 @@ Deque<g4dna_ss_info_t> g4dna_ssp(Str seq) {
     return ls;
 }
 
-END_JN
+}
 

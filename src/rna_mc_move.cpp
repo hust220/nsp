@@ -1,6 +1,6 @@
 #include "rna_mc_move.hpp"
 
-BEGIN_JN
+namespace jian {
 
 static auto rand_rot_mat(Num max_angle) {
     int index = int(rand() * 3);
@@ -159,7 +159,7 @@ static Chain &get_template(DHMC &m, Str name) {
 static Chain &rand_helix_template(DHMC &m, SSE *sse) {
     auto & ls = m.m_helix_records[sse];
     Int n = size(ls);
-    Int i = Int(JN_ rand() * n);
+    Int i = Int(jian::rand() * n);
     Str name = ls[i].name;
     auto && helix = get_template(m, name);
     if (size(helix)/2 != sse->helix.size()) {
@@ -173,7 +173,7 @@ static Chain &rand_helix_template(DHMC &m, SSE *sse) {
 static Chain &rand_loop_template(DHMC &m, SSE *sse) {
     auto & ls = m.m_loop_records[sse];
     Int n = size(ls);
-    Int i = Int(JN_ rand() * n);
+    Int i = Int(jian::rand() * n);
     Str name = ls[i].name;
     return get_template(m, name);
 }
@@ -287,7 +287,7 @@ static void dhmc_move_loop(DHMC &m) {
 
 static void dhmc_move_frag(DHMC &m) {
     //auto el = m.m_selected_mvel;
-    if (JN_ rand() < 0.5) translate_mvel(m);
+    if (jian::rand() < 0.5) translate_mvel(m);
     else rotate_about_center(m);
 }
 
@@ -366,5 +366,5 @@ void dhmc_move(DHMC &m) {
 //    return axis;
 //}
 
-END_JN
+}
 

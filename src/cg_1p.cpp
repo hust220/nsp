@@ -1,6 +1,6 @@
 #include "cg_1p.hpp"
 
-BEGIN_JN
+namespace jian {
 
 	REG_CG("1p", CG1p);
 
@@ -24,4 +24,4 @@ BEGIN_JN
 		return res;
 	}
 
-END_JN
+}

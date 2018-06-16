@@ -2,10 +2,10 @@
 
 #include "jian.hpp"
 
-BEGIN_JN
+namespace jian {
 
 double rand();
 void seed(int t);
 
-END_JN
+}
 

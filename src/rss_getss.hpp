@@ -3,7 +3,7 @@
 #include "rss.hpp"
 #include "../pdb/IFModel.hpp"
 
-BEGIN_JN
+namespace jian {
 namespace nuc2d {
 
 class GetSS {
@@ -80,5 +80,5 @@ public:
 };
 
 } // namespace nuc2d
-END_JN
+}
 

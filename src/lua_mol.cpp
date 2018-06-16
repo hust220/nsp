@@ -1,7 +1,7 @@
 #include "lua_mol.hpp"
 #include "pdb.hpp"
 
-BEGIN_JN
+namespace jian {
 
 static int lua_pushmodel(lua_State *L, Model *p) {
     Model ** r = new Model *;
@@ -137,5 +137,5 @@ int lua_openmol(lua_State *L) {
     return 1;
 }
 
-END_JN
+}
 

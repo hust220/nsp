@@ -1,7 +1,7 @@
 #include "nsp.hpp"
 #include "pdb.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(len) {
     auto g = par.getv("global");
@@ -19,5 +19,5 @@ REGISTER_NSP_COMPONENT(len) {
     }
 }
 
-END_JN
+}
 

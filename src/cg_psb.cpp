@@ -5,7 +5,7 @@
 #include <algorithm>
 #include "cg_psb.hpp"
 
-BEGIN_JN
+namespace jian {
 	REG_CG("psb", CGpsb);
 
 	CGpsb::CGpsb() {
@@ -51,4 +51,4 @@ BEGIN_JN
 		}
 	}
 
-END_JN
+}

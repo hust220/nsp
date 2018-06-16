@@ -6,7 +6,7 @@
 #include "geom.hpp"
 #include "string.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace {
 
@@ -114,5 +114,5 @@ namespace {
 
 }
 
-END_JN
+}
 

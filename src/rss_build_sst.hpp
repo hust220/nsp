@@ -4,7 +4,7 @@
 #include "rss_sst.hpp"
 #include "rss.hpp"
 
-BEGIN_JN
+namespace jian {
 namespace nuc2d {
 
 class BuildSST {
@@ -111,7 +111,7 @@ public:
 };
 
 } // namespace nuc2d
-END_JN
+}
 
 #endif
 

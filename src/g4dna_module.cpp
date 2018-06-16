@@ -2,7 +2,7 @@
 #include "g4dna_module.hpp"
 #include "factory.hpp"
 
-BEGIN_JN
+namespace jian {
 namespace qhmc {
 
 void Module::set_indices(int n, const Frag &f, bool d = true) {
@@ -15,6 +15,6 @@ void Module::set_indices(int n, const Frag &f, bool d = true) {
 }
 
 } // namespace qhmc
-END_JN
+}
 
 

@@ -2,7 +2,7 @@
 
 #include "rss_sst.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace nuc2d {
 

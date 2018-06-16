@@ -1,6 +1,6 @@
 #include "rna_mc_select.hpp"
 
-BEGIN_JN
+namespace jian {
 
 static void set_selected(DHMC &m) {
     Int l = size(m._seq);
@@ -39,5 +39,5 @@ void dhmc_select(DHMC &m) {
     set_selected(m);
 }
 
-END_JN
+}
 

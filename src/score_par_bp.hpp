@@ -5,7 +5,7 @@
 #include "pdb.hpp"
 #include "cg.hpp"
 
-BEGIN_JN
+namespace jian {
 
 Bool is_bp(const Residue &r1, const Residue &r2);
 
@@ -47,4 +47,4 @@ public:
 	ParBp &anal(const Residue &res1, const Residue &res2);
 };
 
-END_JN
+}

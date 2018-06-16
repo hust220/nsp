@@ -2,7 +2,7 @@
 #include <cmath>
 #include "tsdna_head_hairpin.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace tsdna {
 
@@ -34,6 +34,6 @@ namespace tsdna {
 
 } // namespace tsdna
 
-END_JN
+}
 
 

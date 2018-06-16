@@ -2,7 +2,7 @@
 
 #include "score_cg.hpp"
 
-BEGIN_JN
+namespace jian {
 class Score6p : public ScoreCg {
 public:
 	Score6p();
@@ -18,4 +18,4 @@ public:
 	virtual bool in_base(int);
 };
 
-END_JN
+}

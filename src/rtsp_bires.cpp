@@ -3,7 +3,7 @@
 #include "rss.hpp"
 #include "rand.hpp"
 
-BEGIN_JN
+namespace jian {
 
 static Int seq_code(Char seq1, Char seq2) {
     // fill
@@ -45,11 +45,11 @@ const Chain &bires_chain(Char seq1, Char seq2, Char ss1, Char ss2) {
         std::cout << bires_code(seq1, seq2, ss1, ss2) << std::endl;
     }
     */
-    Int n = Int(JN_ rand() * l);
+    Int n = Int(jian::rand() * l);
     return m[n];
 }
 
 
-END_JN
+}
 
 

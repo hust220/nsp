@@ -1,7 +1,7 @@
 #include "nsp.hpp"
 #include "pdb.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(fit) {
    Molecule m;
@@ -20,5 +20,5 @@ REGISTER_NSP_COMPONENT(fit) {
    JN_OUT << m << std::endl;
 }
 
-END_JN
+}
 

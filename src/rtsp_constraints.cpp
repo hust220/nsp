@@ -3,7 +3,7 @@
 #include "jian_ls.hpp"
 #include "dca.hpp"
 
-BEGIN_JN
+namespace jian {
 
 	template<typename T>
 	static bool equal(T &&ls, int i, int j) {
@@ -96,5 +96,5 @@ BEGIN_JN
 		}
 	}
 
-END_JN
+}
 

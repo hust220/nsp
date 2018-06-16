@@ -7,7 +7,7 @@
 #include "mpi.h"
 #include "env.hpp"
 
-BEGIN_JN
+namespace jian {
 
 void mpi_init(int *argc, char ***argv);
 
@@ -21,9 +21,9 @@ Str mpi_recv(int rank);
 
 void mpi_free();
 
-END_JN
+}
 
-#define JN_MPI_INIT(argc, argv) JN_ mpi_init(&argc, &argv)
+#define JN_MPI_INIT(argc, argv) jian::mpi_init(&argc, &argv)
 #define JN_MPI_FREE
 
 #else

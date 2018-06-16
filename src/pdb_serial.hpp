@@ -4,7 +4,7 @@
 #include <sstream>
 #include "pdb_molecule.hpp"
 
-BEGIN_JN
+namespace jian {
 
 	class MolSerial {
 	public:

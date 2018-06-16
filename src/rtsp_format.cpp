@@ -2,7 +2,7 @@
 #include <algorithm>
 #include "rtsp_format.hpp"
 
-BEGIN_JN
+namespace jian {
 
 Format::Format() {
     _atom_rank["A"] = {{"P", 0}, {"O1P", 1}, {"O2P", 2}, {"O5*", 3},
@@ -140,5 +140,5 @@ void Format::sort(Molecule &pdb) {
     }
 }
 
-END_JN
+}
 

@@ -1,7 +1,7 @@
 #include "tsdna_loop.hpp"
 #include <numeric>
 
-BEGIN_JN
+namespace jian {
 
 namespace tsdna {
 
@@ -36,6 +36,6 @@ namespace tsdna {
 
 } // namespace tsdna
 
-END_JN
+}
 
 

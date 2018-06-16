@@ -2,7 +2,7 @@
 #include "pdb.hpp"
 #include "log.hpp"
 
-BEGIN_JN
+namespace jian {
 	namespace {
 
 		REGISTER_NSP_COMPONENT(pdb2jn) {
@@ -26,5 +26,5 @@ BEGIN_JN
 		}
 
 	}
-END_JN
+}
 

@@ -6,7 +6,7 @@
 #include "matrix.hpp"
 #include "factory.hpp"
 
-BEGIN_JN
+namespace jian {
 namespace qhmc {
 
 using Frag = std::deque<int>;
@@ -30,6 +30,6 @@ public:
 #define REGISTER_QUADRUPLE_MODULE_FACTORY(name, Type) REGISTER_FACTORY(jian::qhmc::Module::cons_t, name, Type)
 
 } // namespace qhmc
-END_JN
+}
 
 

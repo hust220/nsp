@@ -1,6 +1,6 @@
 #include "cluster_dbscan.hpp"
 
-BEGIN_JN
+namespace jian {
 	REG_CLUSTER("dbscan", DBSCAN);
 
 	DBSCAN::DBSCAN(const Par &par) {

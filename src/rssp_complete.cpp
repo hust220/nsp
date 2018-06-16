@@ -9,7 +9,7 @@
 #include "rss.hpp"
 #include "rssp_complete.hpp"
 
-BEGIN_JN
+namespace jian {
 namespace lrsp {
 
 std::map<char, int> index_base {{'X', 0}, {'A', 1}, {'U', 2}, {'T', 2}, {'G', 4}, {'C', 8}};
@@ -72,5 +72,5 @@ S ss_complete(S seq, S ss) {
 }
 
 } // namespace lrsp
-END_JN
+}
 

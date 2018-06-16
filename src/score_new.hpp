@@ -3,7 +3,7 @@
 #include "pdb.hpp"
 #include "matrix.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace scoring {
 
@@ -12,5 +12,5 @@ namespace scoring {
 
 }
 
-END_JN
+}
 

@@ -5,7 +5,7 @@
 #include <vector>
 #include <map>
 
-BEGIN_JN
+namespace jian {
 namespace pdb {
 
 using names_t = std::vector<std::string>;
@@ -103,5 +103,5 @@ inline const names_t &res_included_atoms(const S &rname) {
 
 }
 
-END_JN
+}
 

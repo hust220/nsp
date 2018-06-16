@@ -4,7 +4,7 @@
 #include "nsp.hpp"
 #include "jian.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(ssp_dca) {
     Num k = 0.3;
@@ -43,5 +43,5 @@ REGISTER_NSP_COMPONENT(ssp_dca) {
     JN_OUT << ss << std::endl;
 }
 
-END_JN
+}
 

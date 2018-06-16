@@ -1,6 +1,6 @@
 #include "g4dna_tsp.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace qhmc {
 
@@ -504,6 +504,6 @@ void tsp_g4(const Par &par) {
     tsp_g4_opt(tsp);
 }
 
-END_JN
+}
 
 

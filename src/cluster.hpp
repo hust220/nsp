@@ -14,7 +14,7 @@
 
 #define REG_CLUSTER(name, type) REGISTER_FACTORY(::jian::Cluster::constructor_t, name, type)
 
-BEGIN_JN
+namespace jian {
 
 class Cluster {
 public:
@@ -61,5 +61,5 @@ public:
 
 };
 
-END_JN
+}
 

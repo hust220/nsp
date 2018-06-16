@@ -18,7 +18,7 @@
 #include "env.hpp"
 #include "file.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace tsdna {
 
@@ -94,6 +94,6 @@ namespace tsdna {
 
 } // tsdna
 
-END_JN
+}
 
 

@@ -2,7 +2,7 @@
 
 #include "score.hpp"
 
-BEGIN_JN
+namespace jian {
 
 struct En6p {
     Num len = 0, ang = 0, dih = 0, crash = 0, pairing = 0, stacking = 0, rg = 0;
@@ -46,5 +46,5 @@ En6p en6p_chain(const _Chain &c) {
 }
 
 
-END_JN
+}
 

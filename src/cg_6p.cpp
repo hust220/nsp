@@ -6,7 +6,7 @@
 #include "cg_6p.hpp"
 #include "cg_complete_res.hpp"
 
-BEGIN_JN
+namespace jian {
 	REG_CG("6p", CG6p);
 
 	CG6p::CG6p() {
@@ -68,4 +68,4 @@ BEGIN_JN
 		}
 	}
 
-END_JN
+}

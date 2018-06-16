@@ -1,6 +1,6 @@
 #include "dca_mf.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace dca {
 
@@ -93,6 +93,6 @@ namespace dca {
 
 } // namespace dca
 
-END_JN
+}
 
 

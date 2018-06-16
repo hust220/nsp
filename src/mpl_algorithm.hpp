@@ -3,7 +3,7 @@
 
 #include "list.h"
 
-BEGIN_JN
+namespace jian {
 namespace mpl {
 
 template<template<typename...> class F, typename D, typename L>
@@ -20,7 +20,7 @@ struct fold<F, D, Pair<Head, Tail>> {
 };
 
 } // namespace mpl
-END_JN
+}
 
 
 

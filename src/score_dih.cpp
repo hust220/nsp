@@ -4,7 +4,7 @@
 #include "geom.hpp"
 #include "score_dih.hpp"
 
-BEGIN_JN
+namespace jian {
 
 DihAnal::DihAnal(double n) {
     p = NULL;
@@ -364,5 +364,5 @@ double DihAnal::getScore() {
     return score;
 }
 
-END_JN
+}
 

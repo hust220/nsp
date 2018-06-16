@@ -1,7 +1,7 @@
 #include "tsdna.hpp"
 #include "tsdna_set_mvels.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace tsdna {
 
@@ -335,6 +335,6 @@ namespace tsdna {
 
 } // namespace tsdna
 
-END_JN
+}
 
 

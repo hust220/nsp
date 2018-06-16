@@ -1,6 +1,6 @@
 #include "bmmc_mvel.hpp"
 
-BEGIN_JN
+namespace jian {
 
 Frag frag_read(Str s) {
     tokenize_v v;
@@ -196,4 +196,4 @@ void MvEl::merge(Deque<MvEl *> &dq) {
 
 
 
-END_JN
+}

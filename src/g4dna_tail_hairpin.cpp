@@ -3,7 +3,7 @@
 #include "g4dna_tail_hairpin.hpp"
 #include <numeric>
 
-BEGIN_JN
+namespace jian {
 namespace qhmc {
 
 REGISTER_QUADRUPLE_MODULE_FACTORY("tail_hairpin", TailHairpin);

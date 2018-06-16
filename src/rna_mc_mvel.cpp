@@ -1,7 +1,7 @@
 #include "rna_mc.hpp"
 #include "rna_mc_mvel.hpp"
 
-BEGIN_JN
+namespace jian {
 
 std::ostream &operator <<(std::ostream &stream, const dhmc_mvel_t &el) {
     if (el.t == DHMC_MVEL_LOOP) {
@@ -322,5 +322,5 @@ void dhmc_set_mvels(DHMC &m) {
 //    for (Int i = 0; i < l; i++) m.m_mvels.push_back(new MvEl(i, i, MvEl::MVEL_FG));
 //}
 
-END_JN
+}
 

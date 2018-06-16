@@ -8,13 +8,13 @@
 #include "rss_bp.hpp"
 #include "string.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class Helix : public Deque<bp> {
 public:
 
     Str ss() const {
-		STD_ ostringstream stream;
+		std::ostringstream stream;
 		for (auto &&node : *this) stream << '(';
 		for (auto &&node : *this) stream << ')';
 		return stream.str();
@@ -43,7 +43,7 @@ public:
     }
 
     operator Str() const {
-        STD_ ostringstream stream;
+        std::ostringstream stream;
         stream << seq() << ' ' << ss();
         for (auto && i : nums()) {
             stream << ' ' << i+1;
@@ -51,12 +51,12 @@ public:
         return stream.str();
     }
 
-    friend STD_ ostream &operator <<(STD_ ostream &stream, Helix h) {
+    friend std::ostream &operator <<(std::ostream &stream, Helix h) {
         stream << "Helix: " << ' ' << (Str)h;
 		return stream;
     }
 
 };
 
-END_JN
+}
 

@@ -3,7 +3,7 @@
 #include "geom.hpp"
 #include "score_par_bp.hpp"
 
-BEGIN_JN
+namespace jian {
 
 static Bool are_neighbors(const Residue &r1, const Residue &r2) {
     auto && a1 = r1["O3*"];
@@ -30,5 +30,5 @@ REGISTER_NSP_COMPONENT(check_breaks) {
     JN_OUT << std::endl;
 }
 
-END_JN
+}
 

@@ -9,7 +9,7 @@
 #include "rna_mc_rollback.hpp"
 #include "rtsp_build_helix.hpp"
 
-BEGIN_JN
+namespace jian {
 
 void DHMC::init(const Par &par) {
     MCSM::init(par);
@@ -388,4 +388,4 @@ bool DHMC::is_dependent(const I &i) const {
     return m_dependent[i];
 }
 
-END_JN
+}

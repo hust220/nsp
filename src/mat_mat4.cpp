@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-BEGIN_JN
+namespace jian {
 
 Mat4::Mat4() {
     init();
@@ -108,6 +108,6 @@ void Mat4::print() const {
     }
 }
 
-END_JN
+}
 
 

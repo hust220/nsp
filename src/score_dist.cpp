@@ -2,7 +2,7 @@
 #include "geom.hpp"
 #include "score_dist.hpp"
 
-BEGIN_JN
+namespace jian {
 
 #define FREE_COORDS do {\
 	for (auto && p : m_coords) {\
@@ -212,5 +212,5 @@ double DistAnal::en_pairing(const Residue &r1, const Residue &r2) {
 }
 
 
-END_JN
+}
 

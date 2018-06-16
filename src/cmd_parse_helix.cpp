@@ -1,7 +1,7 @@
 #include "nsp.hpp"
 #include "rtsp_parse_helix.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(parse_helix) {
     auto result = parse_helix(mol_read_to<Model>(par.get("s")));
@@ -13,5 +13,5 @@ REGISTER_NSP_COMPONENT(parse_helix) {
     std::cout << result.phi << std::endl;
 }
 
-END_JN
+}
 

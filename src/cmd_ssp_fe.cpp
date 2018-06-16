@@ -1,7 +1,7 @@
 #include "nsp.hpp"
 #include "rss_ss_pred.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(ssp_fe) {
     S seq = par.get("seq");
@@ -10,5 +10,5 @@ REGISTER_NSP_COMPONENT(ssp_fe) {
     JN_OUT << ss  << Endl;
 }
 
-END_JN
+}
 

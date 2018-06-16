@@ -1,7 +1,7 @@
 #ifndef JIAN_ETL_CONTROL
 #define JIAN_ETL_CONTROL
 
-BEGIN_JN
+namespace jian {
 
 namespace static_if_detail {
 
@@ -43,7 +43,7 @@ static_if_detail::statement<Cond> static_if(const F &f){
     return if_;
 }
 
-END_JN
+}
 
 #endif
 

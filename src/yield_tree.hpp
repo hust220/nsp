@@ -2,7 +2,7 @@
 
 #include "yield.hpp"
 
-BEGIN_JN
+namespace jian {
 
 template<typename _Node>
 struct TreeNodes : public itBase {
@@ -105,5 +105,5 @@ _Node *tree_copy(_Node *node) {
     return n;
 }
 
-END_JN
+}
 

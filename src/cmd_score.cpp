@@ -7,7 +7,7 @@
 #include "rtsp_format.hpp"
 #include "log.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace {
 
@@ -200,7 +200,7 @@ namespace {
     }
 }
 
-END_JN
+}
 
 
 

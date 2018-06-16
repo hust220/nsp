@@ -1,7 +1,7 @@
 #include "nsp.hpp"
 #include "rna_mc.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(temp) {
     Str nat;
@@ -16,5 +16,5 @@ REGISTER_NSP_COMPONENT(temp) {
     dhmc->predict();
 }
 
-END_JN
+}
 

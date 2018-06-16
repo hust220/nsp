@@ -6,7 +6,7 @@
 #include <deque>
 #include "nsp.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class MD {
 public:
@@ -126,5 +126,5 @@ REGISTER_NSP_COMPONENT(md) {
     md.run(std::stoi(par["steps"][0]));
 }
 
-END_JN
+}
 

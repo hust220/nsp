@@ -2,7 +2,7 @@
 
 #include "jian.hpp"
 
-BEGIN_JN
+namespace jian {
 
 template<typename _Derived, typename _Data>
 class BasicEl 
@@ -17,7 +17,7 @@ public:
 	template<typename _Ty>
 	static El *make(_Ty &&data) {
 		El *el = new El;
-		el->data = STD_ forward<_Ty>(data);
+		el->data = std::forward<_Ty>(data);
 		return el;
 	}
 
@@ -25,8 +25,8 @@ public:
 
 template<typename _Derived, typename _El>
 class BasicIt :
-	public STD_ iterator<
-		STD_ input_iterator_tag,    // iterator_category
+	public std::iterator<
+		std::input_iterator_tag,    // iterator_category
 	    typename _El::Data,					    // value_type
 		int                         // diffrence type
 	>
@@ -35,8 +35,8 @@ public:
 	using El = _El;
 	using Data = typename El::Data;
 	using It = _Derived;
-	using Self = STD_ iterator<
-		STD_ input_iterator_tag,
+	using Self = std::iterator<
+		std::input_iterator_tag,
 		Data,
 		int
 	>;
@@ -110,7 +110,7 @@ public:
 	}
 
 	int size() const {
-		return STD_ distance(m_beg, m_end);
+		return std::distance(m_beg, m_end);
 	}
 
 };
@@ -131,5 +131,5 @@ public:
 
 };
 
-END_JN
+}
 

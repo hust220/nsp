@@ -8,7 +8,7 @@
 #include "file.hpp"
 #include "factory.hpp"
 
-BEGIN_JN
+namespace jian {
 
 struct MolParsedLine {
 	S atom_type;
@@ -53,5 +53,5 @@ public:
 #define REG_MOL_PARSER(name, Type) REGISTER_FACTORY(jian::MolParser::creater_t, name, Type)
 using FacMolParser = Factory<MolParser::creater_t>;
 
-END_JN
+}
 

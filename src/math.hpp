@@ -4,7 +4,7 @@
 
 #define PI 3.1415927
 
-BEGIN_JN
+namespace jian {
 
 template<typename T> 
 inline T square(const T &data) {
@@ -21,7 +21,7 @@ inline auto sum(F &&f, T1 &&t1, T2 && ...t2) {
     return f(std::forward<T1>(t1)) + sum(f, std::forward<T2>(t2)...);
 }
 
-END_JN
+}
 
 
 

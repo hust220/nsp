@@ -3,7 +3,7 @@
 #include "tsdna.hpp"
 #include "g4dna.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(opt) {
     auto g = par.getv("global");
@@ -18,5 +18,5 @@ REGISTER_NSP_COMPONENT(opt) {
 
 ALIAS_NSP_COMPONENT(opt, dhmc);
 
-END_JN
+}
 

@@ -4,7 +4,7 @@
 #include "pdb_chain.hpp"
 #include "cg.hpp"
 
-BEGIN_JN
+namespace jian {
 
 	class CG6p : public CG {
 	public:
@@ -16,6 +16,6 @@ BEGIN_JN
 		virtual int res_size() const;
 	};
 
-END_JN
+}
 
 

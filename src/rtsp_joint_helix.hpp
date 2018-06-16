@@ -3,7 +3,7 @@
 #include "geom.hpp"
 #include "pdb.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class JointHelix {
 public:
@@ -119,7 +119,7 @@ public:
 
 };
 
-END_JN
+}
 
 
 

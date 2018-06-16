@@ -6,7 +6,7 @@
 #include <fstream>
 #include "pdb_parser.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class Cif;
 
@@ -19,5 +19,5 @@ private:
     Cif *_cif;
 };
 
-END_JN
+}
 

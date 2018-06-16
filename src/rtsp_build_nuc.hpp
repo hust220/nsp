@@ -3,7 +3,7 @@
 #include "dg.hpp"
 #include "pdb.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class BuildNuc {
 public:
@@ -128,9 +128,11 @@ public:
                 par(vec[i], vec[j]) = par(vec[j], vec[i]) = dist;
             }
         }
-        DG dg(par);
-        dg.log.set_display(_view);
-        auto phos_sugar_coords = dg();
+        auto dg = create_dg();
+        JN_TODO;
+//        DG dg(par);
+        dg->log.set_display(_view);
+        auto phos_sugar_coords = dg->sample();
         temp_coords.resize(3, 3);
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -158,5 +160,5 @@ public:
 
 };
 
-END_JN
+}
 

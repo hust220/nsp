@@ -5,7 +5,7 @@
 #include <fstream>
 #include "entity.hpp"
 
-BEGIN_JN
+namespace jian {
 
 struct file {
 	static S name(const S & file_path);
@@ -56,17 +56,17 @@ public:
 
 	//El *el;
 	SP<El> el;
-	STD_ ifstream *stream;
+	std::ifstream *stream;
 	Str delimiters;
 
 	FileLinesIt() :
-		stream(NULL), delimiters(" "), el(STD_ make_shared<El>())
+		stream(NULL), delimiters(" "), el(std::make_shared<El>())
 	{
 		el->n = -2;
 	}
 
-	FileLinesIt(STD_ ifstream *stream_, Str delimiters_ = " ") :
-		stream(stream_), delimiters(delimiters_), el(STD_ make_shared<El>())
+	FileLinesIt(std::ifstream *stream_, Str delimiters_ = " ") :
+		stream(stream_), delimiters(delimiters_), el(std::make_shared<El>())
 	{
 		if (stream != NULL) {
 			el->n = -1;
@@ -92,7 +92,7 @@ public:
             el->n = -2;
         }
         else {
-            STD_ getline(*stream, el->line);
+            std::getline(*stream, el->line);
             tokenize(el->line, el->arr, delimiters);
             el->n++;
         }
@@ -114,7 +114,7 @@ public:
 	using It = FileLinesIt;
 	using Rg = FileLinesRg;
 
-	STD_ ifstream *stream = NULL;
+	std::ifstream *stream = NULL;
 	Str delimiters;
 
 protected:
@@ -150,12 +150,12 @@ public:
 	{
 		free();
 		filename = filename_;
-		stream = new STD_ ifstream(filename.c_str());
+		stream = new std::ifstream(filename.c_str());
 		delimiters = delimiters_;
 		m_beg = It(stream, delimiters);
 		return *this;
 	}
 };
 
-END_JN
+}
 

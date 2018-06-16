@@ -5,7 +5,7 @@
 #include "pdb.hpp"
 #include "geom.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace rebuild_chain_detail {
 
@@ -45,5 +45,5 @@ REGISTER_NSP_COMPONENT(rebuild_chain) {
     std::cout << rebuild_chain_detail::set_ss(par["ss"][0], v);
 }
 
-END_JN
+}
 

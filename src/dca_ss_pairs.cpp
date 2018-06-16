@@ -10,7 +10,7 @@
 #include "dca_ss_pairs.hpp"
 #include "file.hpp"
 
-BEGIN_JN
+namespace jian {
 namespace dca {
 
 	std::vector<std::array<char, 2>> patterns = { {'.', '.'}, {'(', ')'}, {'[', ']'}, {'{', '}'} };
@@ -37,12 +37,12 @@ tuples_t tuples_from_file(const Str &file_name, int size) {
 	Num c;
 
 	for (auto &&l : FileLines(file_name)) {
-		if (JN_ size(l.arr) == 2) {
+		if (jian::size(l.arr) == 2) {
 			a = JN_INT(l.arr[0]) - 1;
 			b = JN_INT(l.arr[1]) - 1;
 			c = 1;
 		}
-		else if (JN_ size(l.arr) >= 3) {
+		else if (jian::size(l.arr) >= 3) {
 			a = JN_INT(l.arr[0]) - 1;
 			b = JN_INT(l.arr[1]) - 1;
 			c = JN_NUM(l.arr[2]);
@@ -106,13 +106,13 @@ pairs_t pairs_from_ss(const ss_t &ss) {
     return pairs;
 }
 
-void print_pairs(STD_ ostream &stream, const pairs_t & pairs) {
+void print_pairs(std::ostream &stream, const pairs_t & pairs) {
     for (auto && pair : pairs) {
         stream << pair[0]+1 << ' ' << pair[1]+1 << std::endl;
     }
 }
 
-void print_tuples(STD_ ostream &stream, const tuples_t & tuples) {
+void print_tuples(std::ostream &stream, const tuples_t & tuples) {
     for (auto && tuple : tuples) {
 		stream << tuple.a+1 << ' ' << tuple.b+1 << ' ' << tuple.c << std::endl;
     }
@@ -160,5 +160,5 @@ ss_t pairs_to_ss(const pairs_t &pairs, int size) {
 
 
 } // namespace dca
-END_JN
+}
 

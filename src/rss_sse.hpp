@@ -14,7 +14,7 @@
 #include "entity_tree.hpp"
 #include "log.hpp"
 
-BEGIN_JN
+namespace jian {
 
 struct SSE {
 	Loop loop;
@@ -41,10 +41,10 @@ struct SSE {
 	}
 
 	bool has(int i) const {
-		return STD_ find_if(loop.begin(), loop.end(), [&i](auto &&res) {
+		return std::find_if(loop.begin(), loop.end(), [&i](auto &&res) {
 			return res.type != '(' && res.type != ')' && res.num == i;
 		}) != loop.end() ||
-			STD_ find_if(helix.begin(), helix.end(), [&i](auto &&bp) {
+			std::find_if(helix.begin(), helix.end(), [&i](auto &&bp) {
 			return bp.res1.num == i || bp.res2.num == i;
 		}) != helix.end();
 	}
@@ -62,7 +62,7 @@ struct SSE {
 	}
 
 	int num_branches() const {
-		return STD_ count_if(loop.begin(), loop.end(), [](auto &&res) {return res.type == ')'; }) / 2;
+		return std::count_if(loop.begin(), loop.end(), [](auto &&res) {return res.type == ')'; }) / 2;
 	}
 
 	int num_sons() const {
@@ -85,9 +85,9 @@ struct SSE {
 		return !is_open() && num_sons() > 1;
 	}
 
-	friend STD_ ostream &operator <<(STD_ ostream &stream, const SSE &sse) {
-		stream << "SSE (" << &sse << ") : " << STD_ endl;
-		stream << sse.helix << STD_ endl;
+	friend std::ostream &operator <<(std::ostream &stream, const SSE &sse) {
+		stream << "SSE (" << &sse << ") : " << std::endl;
+		stream << sse.helix << std::endl;
 		stream << sse.loop;
 		return stream;
 	}
@@ -95,4 +95,4 @@ struct SSE {
 
 };
 
-END_JN
+}

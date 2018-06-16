@@ -2,7 +2,7 @@
 
 #include "entity.hpp"
 
-BEGIN_JN
+namespace jian {
 
 template<typename _Derived, typename _Data>
 class BasicListEl :
@@ -72,7 +72,7 @@ public:
 
 	It last() const {
 		auto it = Base::m_beg;
-		for (; STD_ next(it) != Base::m_end; ++it);
+		for (; std::next(it) != Base::m_end; ++it);
 		return it;
 	}
 
@@ -157,8 +157,8 @@ public:
 
 	template<typename _First, typename _Second, typename... _Rest>
 	void push_back(_First &&first, _Second &&second, _Rest &&...rest) {
-		push_back(STD_ forward<_First>(first));
-		push_back(STD_ forward<_Second>(second), STD_ forward<_Rest>(rest)...);
+		push_back(std::forward<_First>(first));
+		push_back(std::forward<_Second>(second), std::forward<_Rest>(rest)...);
 	}
 
 	template<typename _Data>
@@ -170,8 +170,8 @@ public:
 
 	template<typename _First, typename _Second, typename... _Rest>
 	void push_front(_First &&first, _Second &&second, _Rest &&...rest) {
-		push_front(STD_ forward<_First>(first));
-		push_front(STD_ forward<_Second>(second), STD_ forward<_Rest>(rest)...);
+		push_front(std::forward<_First>(first));
+		push_front(std::forward<_Second>(second), std::forward<_Rest>(rest)...);
 	}
 
 };
@@ -179,4 +179,4 @@ public:
 template<typename _Data>
 using SList = BasicListNt<PlainListRg<PlainListIt<PlainListEl<_Data>>>>;
 
-END_JN
+}

@@ -2,7 +2,7 @@
 #include "pdb.hpp"
 #include "socket.hpp"
 
-BEGIN_JN
+namespace jian {
 	namespace {
 
 		class Server {
@@ -164,5 +164,5 @@ BEGIN_JN
 			});
 		}
 	}
-END_JN
+}
 

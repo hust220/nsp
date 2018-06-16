@@ -4,7 +4,7 @@
 
 #include <string>
 
-BEGIN_JN
+namespace jian {
 
 class RNA {
 public:
@@ -12,6 +12,6 @@ public:
     static void check(const Model &m);
 };
 
-END_JN
+}
 
 

@@ -3,7 +3,7 @@
 #include "pdb_model.hpp"
 #include "geom.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(joint) {
     auto set_nums = [](auto &&ls, auto &&v){
@@ -63,7 +63,7 @@ REGISTER_NSP_COMPONENT(joint4) {
     std::cout << joint_helix._joint<4>(chain1, chain2) << std::endl;
 }
 
-END_JN
+}
 
 
 

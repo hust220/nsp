@@ -1,6 +1,6 @@
 #include "rtsp_build_loop_fa.hpp"
 
-BEGIN_JN
+namespace jian {
 
 Chain init_loop(Str seq, Str ss) {
     Int n = size(seq);
@@ -25,5 +25,5 @@ Chain build_loop(Str seq, Str ss) {
     return build_loop_fa.pred;
 }
 
-END_JN
+}
 

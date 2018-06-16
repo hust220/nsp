@@ -1,6 +1,6 @@
 #include "lua_par.hpp"
 
-BEGIN_JN
+namespace jian {
 
 static const char * par_name = "par";
 
@@ -109,5 +109,5 @@ void lua_openpar(lua_State *L, const Par &par) {
 
 }
 
-END_JN
+}
 

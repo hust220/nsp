@@ -1,7 +1,7 @@
 #include "nsp.hpp"
 #include "lua.hpp"
 
-BEGIN_JN
+namespace jian {
 
 NSP &NSP::instance() {
 	static NSP nsp;
@@ -60,6 +60,6 @@ void NSP::run(int argc, char **argv) {
 	}
 }
 
-END_JN
+}
 
 

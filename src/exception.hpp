@@ -4,7 +4,7 @@
 #include <exception>
 #include "jian.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class Error : public std::exception {
 private:
@@ -18,5 +18,5 @@ public:
     }
 };
 
-END_JN
+}
 

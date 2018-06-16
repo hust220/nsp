@@ -2,7 +2,7 @@
 
 #include "yield_tree.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class SSE;
 
@@ -16,4 +16,4 @@ TreeNodes<SSE> sst_nodes(SST sst);
 
 void sst_print(SST sst, std::ostream &stream);
 
-END_JN
+}

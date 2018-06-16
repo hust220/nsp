@@ -5,7 +5,7 @@
 #include <string>
 #include <memory>
 
-BEGIN_JN
+namespace jian {
 
 template<typename T>
 class Factory;
@@ -53,5 +53,5 @@ public:
 
 #define REGISTER_FACTORY(Callback, name, Type) namespace {Factory<Callback>::register_t<Type> reg(name);}
 
-END_JN
+}
 

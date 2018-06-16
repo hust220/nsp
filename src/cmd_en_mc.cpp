@@ -8,7 +8,7 @@
 #include "log.hpp"
 #include "cmd_en6p.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace {
 
@@ -34,7 +34,7 @@ namespace {
     }
 }
 
-END_JN
+}
 
 
 

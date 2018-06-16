@@ -11,7 +11,7 @@
 #include "jian_ls.hpp"
 #include "matrix.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace tsdna {
 
@@ -354,5 +354,5 @@ List<tsdna_ss_info_t> tsdna_ssp(Str seq) {
     return pred.run(seq, 3);
 }
 
-END_JN
+}
 

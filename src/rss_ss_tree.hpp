@@ -4,7 +4,7 @@
 #include "string.hpp"
 #include "rss_sse.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class SSTreeRg : 
 	public BasicTreeRg<SSTreeRg, PlainTreeIt<PlainTreeEl<SSE>>>
@@ -48,10 +48,10 @@ public:
 		return seq;
 	}
 
-	friend STD_ ostream &operator <<(STD_ ostream &stream, SSTreeRg sst) {
-		stream << "SST (Secondary Structure Tree) : " << &sst << STD_ endl;
+	friend std::ostream &operator <<(std::ostream &stream, SSTreeRg sst) {
+		stream << "SST (Secondary Structure Tree) : " << &sst << std::endl;
 		for (auto && sse : sst) {
-			stream << sse << STD_ endl;
+			stream << sse << std::endl;
 		}
 		return stream;
 	}
@@ -76,5 +76,5 @@ public:
 
 SSTree ss_tree(Str seq, Str ss, Int h = 1);
 
-END_JN
+}
 

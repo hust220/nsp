@@ -20,7 +20,7 @@
 
 #define end_ } while(0)
 
-BEGIN_JN
+namespace jian {
 
 struct itBase {
     int __state__;
@@ -43,5 +43,5 @@ _Out map_j(_Fn && f, _In && in) {
     return out;
 }
 
-END_JN
+}
 

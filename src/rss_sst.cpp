@@ -10,7 +10,7 @@
 #include "log.hpp"
 #include "yield_tree.hpp"
 
-BEGIN_JN
+namespace jian {
 
 static void set_tree_relation(Vector<SSE *> &s, SSE *l) {
     int num = l->num_sons();
@@ -93,8 +93,8 @@ static bool find_hairpin(Q<res> &v, V<SSE *> &ls, int hinge) {
     }
 
     int n_res = 0;
-    for (auto it = l->loop.begin(); it != l->loop.end() /*&&*/ /*STD_ next(it) != l->loop.end()*/; it++) {
-        if (it->type == 'Z' && STD_ next(it)->type == 'z') {
+    for (auto it = l->loop.begin(); it != l->loop.end() /*&&*/ /*std::next(it) != l->loop.end()*/; it++) {
+        if (it->type == 'Z' && std::next(it)->type == 'z') {
             l->hinges.push_back({ n_res, n_res + 1 });
         }
         n_res++;
@@ -104,7 +104,7 @@ static bool find_hairpin(Q<res> &v, V<SSE *> &ls, int hinge) {
         if (res.type == 'Z') res.type = '('; else if (res.type == 'z') res.type = ')';
     }
 
-    //set_tree_relation(ls, SSTree::El::make(STD_ move(*l)));
+    //set_tree_relation(ls, SSTree::El::make(std::move(*l)));
     //set_tree_relation(ls, new SSE(*l));
     set_tree_relation(ls, l);
     return true;
@@ -187,5 +187,5 @@ void sst_print(SST sst, std::ostream &stream) {
     } end_;
 }
 
-END_JN
+}
 

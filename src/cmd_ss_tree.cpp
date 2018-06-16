@@ -3,7 +3,7 @@
 #include "rss_sse.hpp"
 #include "exception.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(ss_tree) {
     try {
@@ -26,5 +26,5 @@ REGISTER_NSP_COMPONENT(ss_tree) {
     }
 }
 
-END_JN
+}
 

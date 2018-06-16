@@ -1,6 +1,6 @@
 #include "os.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace os {
 
@@ -17,5 +17,5 @@ namespace os {
 
 }
 
-END_JN
+}
 

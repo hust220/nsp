@@ -2,7 +2,7 @@
 
 #include "g4dna_module.hpp"
 
-BEGIN_JN
+namespace jian {
 namespace qhmc {
 
 class TailHairpin : public Module {

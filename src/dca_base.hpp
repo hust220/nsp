@@ -13,7 +13,7 @@
 #include "matrix.hpp"
 #include "factory.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace dca {
 
@@ -61,5 +61,5 @@ namespace dca {
 
 } // namespace dca
 
-END_JN
+}
 

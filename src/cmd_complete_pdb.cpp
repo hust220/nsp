@@ -3,7 +3,7 @@
 #include "geom.hpp"
 #include "env.hpp"
 
-BEGIN_JN
+namespace jian {
 
 static Chain read_template() {
     return read_model_to_chain(to_str(Env::lib(), "/RNA/pars/cg/CG2AA/templates.pdb"));
@@ -88,5 +88,5 @@ REGISTER_NSP_COMPONENT(complete_pdb) {
     JN_OUT << mol << std::endl;
 }
 
-END_JN
+}
 

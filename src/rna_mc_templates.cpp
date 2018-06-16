@@ -1,7 +1,7 @@
 #include "rtsp_templ_rec.hpp"
 #include "rna_mc_templates.hpp"
 
-BEGIN_JN
+namespace jian {
 
 static void find_loop_records(SSE *l, Deque<TemplRec> &records, Int max_num = -1, const Deque<Str> &sources = {}, const Deque<Str> &excludes = {})
 {
@@ -11,9 +11,9 @@ static void find_loop_records(SSE *l, Deque<TemplRec> &records, Int max_num = -1
 
     int num_sons = l->num_sons();
 
-    STD_ ostringstream stream;
+    std::ostringstream stream;
     stream << Env::lib() << "/RNA/records/" << (l->is_open() ? "open_" : "") << "loop";
-    STD_ ifstream ifile;
+    std::ifstream ifile;
     FOPEN(ifile, stream.str());
 
     TemplRec templ_rec;
@@ -54,9 +54,9 @@ static void find_helix_records(SSE *l, Deque<TemplRec> &records, Int max_num) {
 
     int len = size(l->helix);
 
-    STD_ ostringstream stream;
+    std::ostringstream stream;
     stream << Env::lib() << "/RNA/records/helix";
-    STD_ ifstream ifile;
+    std::ifstream ifile;
     FOPEN(ifile, stream.str());
 
     TemplRec templ_rec;
@@ -99,5 +99,5 @@ void dhmc_print_templates(DHMC &m) {
     } end_;
 }
 
-END_JN
+}
 

@@ -10,7 +10,7 @@
 #include "cluster.hpp"
 #include "cg.hpp"
 
-BEGIN_JN
+namespace jian {
 
     namespace {
 
@@ -158,7 +158,7 @@ BEGIN_JN
                         }
                     }
                     else {
-                        Num d = STD_ fabs(rmsd_target - rmsd(it->residues()));
+                        Num d = std::fabs(rmsd_target - rmsd(it->residues()));
                         if (d < min) {
                             it_target = it;
                             min = d;
@@ -328,5 +328,5 @@ BEGIN_JN
         }
     }
 
-END_JN
+}
 

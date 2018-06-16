@@ -4,7 +4,7 @@
 #include "nsp.hpp"
 #include "jian.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(pairs_to_ss) {
     Int l;
@@ -18,5 +18,5 @@ REGISTER_NSP_COMPONENT(pairs_to_ss) {
 
 }
 
-END_JN
+}
 

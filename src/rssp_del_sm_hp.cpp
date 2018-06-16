@@ -10,7 +10,7 @@
 #include "fsm.hpp"
 #include "rssp_del_sm_hp.hpp"
 
-BEGIN_JN
+namespace jian {
 namespace lrsp {
 namespace ss_del_sm_hp_detail {
 
@@ -80,5 +80,5 @@ S ss_del_sm_hp(S ss) {
 }
 
 } // namespace lrsp
-END_JN
+}
 

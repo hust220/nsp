@@ -4,7 +4,7 @@
 #include "cg.hpp"
 
 
-BEGIN_JN
+namespace jian {
 
 namespace {
     template<typename NUMS>
@@ -97,7 +97,7 @@ namespace {
     }
 }
 
-END_JN
+}
 
 
 

@@ -5,7 +5,7 @@
 #include "env.hpp"
 #include "pdb_rna.hpp"
 
-BEGIN_JN
+namespace jian {
 
 struct res_t {
     S name;
@@ -105,6 +105,6 @@ void RNA::check(const Model &m) {
     }
 }
 
-END_JN
+}
 
 

@@ -1,7 +1,7 @@
 #include "lua_res.hpp"
 #include "pdb.hpp"
 
-BEGIN_JN
+namespace jian {
 
 static int res_new(lua_State *L) {
     Residue **r = (Residue **)lua_newuserdata(L, sizeof(Residue *));
@@ -140,5 +140,5 @@ int lua_openres(lua_State *L) {
     return 1;
 }
 
-END_JN
+}
 

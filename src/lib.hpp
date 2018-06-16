@@ -3,7 +3,7 @@
 
 #include <string>
 
-BEGIN_JN
+namespace jian {
 
 class Lib {
 public:
@@ -20,7 +20,7 @@ public:
     }
 };
 
-END_JN
+}
 
 #endif
 

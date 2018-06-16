@@ -3,7 +3,7 @@
 #include "pdb_cluster_chains.hpp"
 #include "score.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace {
 
@@ -38,5 +38,5 @@ namespace {
 
 }
 
-END_JN
+}
 

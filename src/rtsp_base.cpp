@@ -11,7 +11,7 @@
 #  include "mpi.hpp"
 #endif
 
-BEGIN_JN
+namespace jian {
 
 void TSP::set_logfile_name() {
 	if (_par->has("log:off")) {
@@ -165,5 +165,5 @@ void TSP::read_ss() {
 	_par->set(_ss, "ss", "secondary_structure");
 }
 
-END_JN
+}
 

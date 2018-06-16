@@ -9,7 +9,7 @@
 #include "pdb.hpp"
 #include "rss.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class SplitModel {
 public:
@@ -50,6 +50,6 @@ public:
     }
 };
 
-END_JN
+}
 
 

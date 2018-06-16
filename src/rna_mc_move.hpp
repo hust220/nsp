@@ -2,9 +2,9 @@
 
 #include "rna_mc.hpp"
 
-BEGIN_JN
+namespace jian {
 
 void dhmc_move(DHMC &m);
 
-END_JN
+}
 

@@ -3,7 +3,7 @@
 #include "pdb_cluster_chains.hpp"
 #include "score.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(tsp) {
     nuc3d::Assemble ass(par);
@@ -70,5 +70,5 @@ REGISTER_NSP_COMPONENT(tsp) {
 
 }
 
-END_JN
+}
 

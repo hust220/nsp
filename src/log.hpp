@@ -27,7 +27,7 @@
 #define LOGD if (LOGLEVEL >= LOG_LEVEL_DEBUG) LOGSTREAM
 #define LOGV if (LOGLEVEL >= LOG_LEVEL_VERBOSE) LOGSTREAM
 
-BEGIN_JN
+namespace jian {
 
 #ifdef JN_OS_WIN
 #  pragma warning(push)
@@ -42,10 +42,10 @@ const int LOG_LEVEL_INFO = 4;
 const int LOG_LEVEL_DEBUG = 5;
 const int LOG_LEVEL_VERBOSE = 6;
 
-template<typename CharType, class CharTraits = STD_ char_traits<CharType> >
-class basic_nullbuf : public STD_ basic_streambuf<CharType, CharTraits>
+template<typename CharType, class CharTraits = std::char_traits<CharType> >
+class basic_nullbuf : public std::basic_streambuf<CharType, CharTraits>
 {
-	typedef STD_ basic_streambuf<CharType, CharTraits>  base_type;
+	typedef std::basic_streambuf<CharType, CharTraits>  base_type;
 public:
 	// Types
 	typedef typename base_type::char_type    char_type;
@@ -55,20 +55,20 @@ public:
 	typedef typename base_type::off_type     off_type;
 
 protected:
-	virtual  ::std::streamsize  xsputn(char_type const* /*s*/, STD_ streamsize n) { return n; } // "s" is unused
+	virtual  ::std::streamsize  xsputn(char_type const* /*s*/, std::streamsize n) { return n; } // "s" is unused
 	virtual  int_type           overflow(int_type c = traits_type::eof()) { return traits_type::not_eof(c); }
 };
 
 typedef basic_nullbuf<char>      nullbuf;
 typedef basic_nullbuf<wchar_t>  wnullbuf;
 
-template< typename _CharType, class _CharTraits = STD_ char_traits<_CharType> >
+template< typename _CharType, class _CharTraits = std::char_traits<_CharType> >
 class basic_onullstream : 
 	protected member_from_base<basic_nullbuf<_CharType, _CharTraits>>,
-	public STD_ basic_ostream<_CharType, _CharTraits>
+	public std::basic_ostream<_CharType, _CharTraits>
 {
 	typedef member_from_base<basic_nullbuf<_CharType, _CharTraits>> pbase_type;
-	typedef STD_ basic_ostream<_CharType, _CharTraits> base_type;
+	typedef std::basic_ostream<_CharType, _CharTraits> base_type;
 public:
 	basic_onullstream() : pbase_type(), base_type(&this->pbase_type::member) {}
 };
@@ -76,20 +76,20 @@ public:
 typedef basic_onullstream<char>      onullstream;
 typedef basic_onullstream<wchar_t>  wonullstream;
 
-template<typename _CharType, typename _CharTraits = STD_ char_traits<_CharType>>
+template<typename _CharType, typename _CharTraits = std::char_traits<_CharType>>
 class BasicLog : 
 	protected member_from_base<basic_nullbuf<_CharType, _CharTraits>>,
-	protected member_from_base<STD_ basic_filebuf<_CharType, _CharTraits>>,
-	public    STD_ basic_ostream<_CharType, _CharTraits>
+	protected member_from_base<std::basic_filebuf<_CharType, _CharTraits>>,
+	public    std::basic_ostream<_CharType, _CharTraits>
 {
 public:
 	using nullbuf = member_from_base<basic_nullbuf<_CharType, _CharTraits>>;
-	using filebuf = member_from_base<STD_ basic_filebuf<_CharType, _CharTraits>>;
-	using base_type = STD_ basic_ostream<_CharType, _CharTraits>;
+	using filebuf = member_from_base<std::basic_filebuf<_CharType, _CharTraits>>;
+	using base_type = std::basic_ostream<_CharType, _CharTraits>;
 	using string_type = BasicStr<_CharType, _CharTraits>;
 
 	basic_onullstream<_CharType> onstream;
-	STD_ basic_ofstream<_CharType> ofile;
+	std::basic_ofstream<_CharType> ofile;
 	string_type m_filename;
 
 	BasicLog() : base_type(&this->nullbuf::member) {}
@@ -98,7 +98,7 @@ public:
 		file(filename);
 	}
 
-	void file(string_type filename, STD_ ios::openmode openmode = STD_ ios::out) {
+	void file(string_type filename, std::ios::openmode openmode = std::ios::out) {
 		m_filename = filename;
 		if (filename == "") {
 			this->rdbuf(&this->nullbuf::member);
@@ -269,5 +269,5 @@ inline int log_level() {
 #  pragma warning(default: 4355)
 #endif
 
-END_JN
+}
 

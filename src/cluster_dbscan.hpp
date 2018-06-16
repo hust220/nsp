@@ -11,7 +11,7 @@
 #include "factory.hpp"
 #include "cluster.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class DBSCAN : public Cluster {
 public:
@@ -31,5 +31,5 @@ public:
 
 };
 
-END_JN
+}
 

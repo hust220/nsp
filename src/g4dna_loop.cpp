@@ -1,7 +1,7 @@
 #include "g4dna_loop.hpp"
 #include <numeric>
 
-BEGIN_JN
+namespace jian {
 namespace qhmc {
 
 REGISTER_QUADRUPLE_MODULE_FACTORY("loop", Loop);

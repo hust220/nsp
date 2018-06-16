@@ -1,6 +1,6 @@
 #pragma once
 
-BEGIN_JN
+namespace jian {
 
 class res {
 public:
@@ -14,5 +14,5 @@ public:
     res(const res &r) : type(r.type), name(r.name), num(r.num) {}
 };
 
-END_JN
+}
 

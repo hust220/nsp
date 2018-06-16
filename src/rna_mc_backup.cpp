@@ -2,7 +2,7 @@
 #include "rna_mc_backup.hpp"
 #include "rna_mc_select.hpp"
 
-BEGIN_JN
+namespace jian {
 
 void dhmc_backup(DHMC &m) {
     m._moved_atoms.clear();
@@ -18,4 +18,4 @@ void dhmc_backup(DHMC &m) {
     }
 }
 
-END_JN
+}

@@ -1,7 +1,7 @@
 #include "rtsp_bps.hpp"
 #include "rss.hpp"
 
-BEGIN_JN
+namespace jian {
 
 Bps ss_to_bps(const Str &ss) {
     const NASS &nass = NASS::instance();
@@ -65,5 +65,5 @@ Str bps_to_ss(const Bps &bps, int len) {
     return ss;
 }
 
-END_JN
+}
 

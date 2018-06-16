@@ -3,7 +3,7 @@
 #include "env.hpp"
 #include "geom.hpp"
 
-BEGIN_JN
+namespace jian {
 
 std::map<std::string, std::map<int, ResFrags>> ResFrags::m_instances;
 
@@ -88,4 +88,4 @@ void ResFrags::extract_frags(const S &pdb) {
 	}
 }
 
-END_JN
+}

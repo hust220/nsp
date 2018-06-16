@@ -8,15 +8,15 @@
 //#include "mpi.hpp"
 #include "nsp.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace {
 
 	REGISTER_NSP_COMPONENT(test_file) {
 		auto file = FileLines("aa.txt");
-		JN_OUT << (file.begin() == file.end()) << STD_ endl;
+		JN_OUT << (file.begin() == file.end()) << std::endl;
 		for (auto &&it : FileLines("aa.txt")) {
-			JN_OUT << it.line << STD_ endl;
+			JN_OUT << it.line << std::endl;
 		}
 	}
 
@@ -151,5 +151,5 @@ namespace {
 	}
 }
 
-END_JN
+}
 

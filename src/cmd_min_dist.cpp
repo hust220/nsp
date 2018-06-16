@@ -3,7 +3,7 @@
 #include "pdb.hpp"
 #include "geom.hpp"
 
-BEGIN_JN
+namespace jian {
 
 static double min_distance(const Residue &r1, const Residue &r2) {
     double d, min = 99999;
@@ -36,7 +36,7 @@ REGISTER_NSP_COMPONENT(min_dist) {
     }
 }
 
-END_JN
+}
 
 
 

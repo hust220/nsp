@@ -14,7 +14,7 @@
 //#include "SampleLoop.hpp"
 #include "rtsp.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace nuc3d {
 
@@ -117,5 +117,5 @@ namespace nuc3d {
 
 } // namespace nuc3d
 
-END_JN
+}
 

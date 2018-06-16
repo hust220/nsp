@@ -2,7 +2,7 @@
 #include "pdb.hpp"
 #include "rtsp_format.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace {
 
@@ -40,5 +40,5 @@ REGISTER_NSP_COMPONENT(protein) {
 
 } // namespace
 
-END_JN
+}
 

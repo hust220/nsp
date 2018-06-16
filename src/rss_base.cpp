@@ -11,7 +11,7 @@
 #include "file.hpp"
 #include "rss.hpp"
 
-BEGIN_JN
+namespace jian {
 
 	namespace nass_detail {
 
@@ -218,5 +218,5 @@ BEGIN_JN
 			std::count_if(ss.begin(), ss.end(), [](auto && c) {return c != '&'; });
 	}
 
-END_JN
+}
 

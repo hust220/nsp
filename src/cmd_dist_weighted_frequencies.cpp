@@ -1,7 +1,7 @@
 #include "nsp.hpp"
 #include "matrix.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(dist_weighted_frequencies) {
     S weight_file = par[std::vector<std::string>{"weights", "w"}][0];
@@ -41,5 +41,5 @@ REGISTER_NSP_COMPONENT(dist_weighted_frequencies) {
     }
 }
 
-END_JN
+}
 

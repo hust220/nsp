@@ -5,7 +5,7 @@
 #include <string>
 #include <deque>
 
-BEGIN_JN
+namespace jian {
 
 	class Chain : public std::deque<Residue> {
 	public:
@@ -32,5 +32,5 @@ BEGIN_JN
 	refs<const Chain> chains() const { return refs<const Chain>().append(*this); }
 
 
-END_JN
+}
 

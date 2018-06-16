@@ -1,6 +1,6 @@
 #include "g4dna_helix.hpp"
 
-BEGIN_JN
+namespace jian {
 namespace qhmc {
 
 REGISTER_QUADRUPLE_MODULE_FACTORY("helix", Helix);

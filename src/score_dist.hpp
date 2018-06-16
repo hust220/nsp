@@ -3,7 +3,7 @@
 #include <array>
 #include <string>
 
-BEGIN_JN
+namespace jian {
 
 class Chain;
 
@@ -41,6 +41,6 @@ public:
 	double en_pairing(const Residue &r1, const Residue &r2);
 };
 
-END_JN
+}
 
 

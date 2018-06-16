@@ -2,7 +2,7 @@
 #include <iostream>
 #include "pdb_atom.hpp"
 
-BEGIN_JN
+namespace jian {
 
 thread_local std::map<char, double> s_mass {
     {'H', 1.00794},
@@ -47,5 +47,5 @@ void Atom::set_mass() {
     }
 }
 
-END_JN
+}
 

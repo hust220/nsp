@@ -10,7 +10,7 @@
 #include "pdb_names.hpp"
 #include "pdb_io.hpp"
 
-BEGIN_JN
+namespace jian {
 
 bool is_mol_type(const Residue &res, Str type = "") {
 	if (type == "") {
@@ -56,7 +56,7 @@ auto get_sort_keys() {
 void sort(Residue &res) {
 	static auto sort_keys = get_sort_keys();
 	auto & keys = sort_keys;
-	STD_ sort(res.begin(), res.end(), [&res, &keys](auto &&a1, auto &&a2) {
+	std::sort(res.begin(), res.end(), [&res, &keys](auto &&a1, auto &&a2) {
 		return keys[res.name][a1.name] < keys[res.name][a2.name];
 	});
 }
@@ -81,15 +81,15 @@ const Atom &Residue::operator [](int n) const {
 
 Atom &Residue::operator [](const S &s) {
 	for (auto &&atom : *this) if (atom.name == s) { return atom; }
-	STD_ cerr << "jian::Residue::operator[] error! Not found atom '" << s << "'!" << STD_ endl;
-	STD_ cerr << *this << STD_ endl;
+	std::cerr << "jian::Residue::operator[] error! Not found atom '" << s << "'!" << std::endl;
+	std::cerr << *this << std::endl;
 	die();
 }
 
 const Atom &Residue::operator[](const S &s) const {
 	for (auto &&atom : *this) if (atom.name == s) { return atom; }
-	STD_ cerr << "jian::Residue::operator[] error! Not found atom '" << s << "'!" << STD_ endl;
-	STD_ cerr << *this << STD_ endl;
+	std::cerr << "jian::Residue::operator[] error! Not found atom '" << s << "'!" << std::endl;
+	std::cerr << *this << std::endl;
 	die();
 }
 
@@ -100,5 +100,5 @@ Residue &Residue::operator+=(const Residue &res) {
 	return *this;
 }
 
-END_JN
+}
 

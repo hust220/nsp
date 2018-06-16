@@ -2,7 +2,7 @@
 #include <numeric>
 #include "dca_mp.hpp"
 
-BEGIN_JN
+namespace jian {
 	namespace dca {
 
 		REG_DCA_FAC("mp", MpDca);
@@ -318,6 +318,6 @@ BEGIN_JN
 		}
 
 	} // namespace dca
-END_JN
+}
 
 

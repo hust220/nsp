@@ -11,7 +11,7 @@
 
 #include "rss_ss_pred.hpp"
 
-BEGIN_JN
+namespace jian {
 
 	namespace ss_pred_detail {
 
@@ -336,5 +336,5 @@ BEGIN_JN
 		return ss_pred_detail::pred(seq);
 	}
 
-END_JN
+}
 

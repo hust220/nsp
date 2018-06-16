@@ -13,7 +13,7 @@
 #include "par.hpp"
 #include "env.hpp"
 
-BEGIN_JN
+namespace jian {
 namespace qhmc {
 
     using fac_t = Factory<Module::cons_t>;
@@ -119,6 +119,6 @@ namespace qhmc {
 
 void tsp_g4(const Par &par);
 
-END_JN
+}
 
 

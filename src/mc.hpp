@@ -11,7 +11,7 @@
 #include "mpi.hpp"
 #endif
 
-BEGIN_JN
+namespace jian {
 
 class MC {
 public:
@@ -105,5 +105,5 @@ public:
 
 };
 
-END_JN
+}
 

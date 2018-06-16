@@ -5,7 +5,7 @@
 #include "score_dih.hpp"
 #include "score.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class ScoreAa : public Score {
 public:
@@ -56,5 +56,5 @@ public:
 
 };
 
-END_JN
+}
 

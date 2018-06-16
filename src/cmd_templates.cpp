@@ -3,7 +3,7 @@
 #include "rss.hpp"
 #include "rtsp_templ_rec.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace {
 
@@ -85,5 +85,5 @@ namespace {
 
 }
 
-END_JN
+}
 

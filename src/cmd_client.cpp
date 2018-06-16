@@ -2,7 +2,7 @@
 #include "pdb.hpp"
 #include "socket.hpp"
 
-BEGIN_JN
+namespace jian {
 
 	REGISTER_NSP_COMPONENT(client) {
 		S ip = "127.0.0.1";
@@ -20,5 +20,5 @@ BEGIN_JN
 		socket.close(s);
 	}
 
-END_JN
+}
 

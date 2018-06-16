@@ -4,7 +4,7 @@
 #include "rss_get_ss.hpp"
 #include "rss_sst.hpp"
 
-BEGIN_JN
+namespace jian {
 
 struct BranchCoords {
     Vector<Int> get_helix_nums(SSE *l) {
@@ -36,7 +36,7 @@ struct BranchCoords {
         auto g = par.getv("global");
         Model m = mol_read_to<Model>(g[1]);
         auto rs = m.residues();
-        Str seq = JN_ seq(m);
+        Str seq = jian::seq(m);
         Str ss = get_ss(rs);
         SST sst = sst_new(seq, ss, 2);
         for_ (sse, tree_nodes(sst.head)) {
@@ -62,5 +62,5 @@ REGISTER_NSP_COMPONENT(branch_coords) {
     b(par);
 }
 
-END_JN
+}
 

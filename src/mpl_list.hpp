@@ -1,7 +1,7 @@
 #ifndef JIAN_MPL_LIST
 #define JIAN_MPL_LIST
 
-BEGIN_JN
+namespace jian {
 namespace mpl {
 
 #define Define(A, n) struct A {enum {data = n};}
@@ -48,7 +48,7 @@ struct list<T, U...> {
 };
 
 } // namespace mpl
-END_JN
+}
 
 
 

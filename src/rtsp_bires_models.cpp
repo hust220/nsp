@@ -6,7 +6,7 @@
 #include "env.hpp"
 #include "geom.hpp"
 
-BEGIN_JN
+namespace jian {
 
 static Bool is_close(const Residue &r1, const Residue &r2) {
     return geom::distance(r1["O3*"], r2["C5*"]) < 4;
@@ -63,7 +63,7 @@ struct BiResModels {
         Chain dq;
         Deque<Char> dq_ss;
 
-        Str seq = JN_ seq(m);
+        Str seq = jian::seq(m);
         //std::cout << seq << std::endl;
         Str ss = get_ss(m.residues());
         //std::cout << ss << std::endl;
@@ -112,5 +112,5 @@ Array<Model, 16*4> &bires_models() {
 
 
 
-END_JN
+}
 

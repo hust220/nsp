@@ -2,9 +2,9 @@
 
 #include "lua.hpp"
 
-BEGIN_JN
+namespace jian {
 
 int lua_openres(lua_State *L);
 
-END_JN
+}
 

@@ -3,7 +3,7 @@
 #include "rss_sse.hpp"
 #include "nsp.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace dca {
 
@@ -68,7 +68,7 @@ void trim_di(const Par &par) {
     V<SSTree::El *> v;
     v.resize(l);
     for (Int i = 0; i < l; i++) {
-        v[i] = STD_ find_if(sst.begin(), sst.end(), [&i](auto &&sse) {return sse.has(i + 1); }).el;
+        v[i] = std::find_if(sst.begin(), sst.end(), [&i](auto &&sse) {return sse.has(i + 1); }).el;
     }
     for (auto && l : v) LOG << l << ' '; LOG << std::endl;
     for (auto && tuple : tuples) {
@@ -152,7 +152,7 @@ void rm_fp(const Par &par) {
     std::sort(pairs.begin(), pairs.end(), [](auto && t1, auto && t2){return t1.c > t2.c;});
     v.resize(l, false);
     for (it1 = pairs.begin(), i = 0; it1 != pairs.end(); it1++, i++) {
-        for (it2 = STD_ next(it1), j = i + 1; it2 != pairs.end(); it2++, j++) {
+        for (it2 = std::next(it1), j = i + 1; it2 != pairs.end(); it2++, j++) {
             if (neighbor(it1, it2)) {
                 v[i] = true;
                 v[j] = true;
@@ -186,5 +186,5 @@ REGISTER_NSP_COMPONENT(dca) {
 
 } // namespace dca
 
-END_JN
+}
 

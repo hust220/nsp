@@ -3,9 +3,9 @@
 #include <string>
 #include "pdb.hpp"
 
-BEGIN_JN
+namespace jian {
 
 Chain build_helix(Str seq);
 
-END_JN
+}
 

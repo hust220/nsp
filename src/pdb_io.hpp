@@ -4,7 +4,7 @@
 #include "pdb_parser.hpp"
 #include "file.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class MolWriter {
 public:
@@ -133,7 +133,7 @@ public:
         It &operator ++()
         {
             if (parser == NULL || parser->eof()) throw "";
-            el = STD_ make_shared<El>();
+            el = std::make_shared<El>();
             (*parser) >> el->data;
             n = (parser->eof() ? -1 : n + 1);
             return *this;
@@ -195,5 +195,5 @@ T coarse_grained(const T &residue, U && ls) {
     return r;
 }
 
-END_JN
+}
 

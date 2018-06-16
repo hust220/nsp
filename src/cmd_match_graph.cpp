@@ -1,7 +1,7 @@
 #include "nsp.hpp"
 #include "test_match_graph.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(match_graph) {
     Graph g1{{0, 1, 2}, {{0, 1, 1}, {0, 2, 1}, {1, 2, 2}}};
@@ -16,5 +16,5 @@ REGISTER_NSP_COMPONENT(match_graph) {
 
 }
 
-END_JN
+}
 

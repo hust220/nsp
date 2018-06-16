@@ -1,12 +1,12 @@
 #include "nsp.hpp"
 #include "fasta.hpp"
 
-BEGIN_JN
+namespace jian {
 
 static void msa_trim(Fasta &fa) {
     Int n = 0;
-    auto r = STD_ find_if(fa.begin(), fa.end(), [](auto && it) { return it.name == "TARGET"; });
-    if (r != fa.end()) n = STD_ distance(fa.begin(), r);
+    auto r = std::find_if(fa.begin(), fa.end(), [](auto && it) { return it.name == "TARGET"; });
+    if (r != fa.end()) n = std::distance(fa.begin(), r);
     auto && it = fa[n];
 
     Int a = -1, b = -1;
@@ -25,8 +25,8 @@ static void msa_trim(Fasta &fa) {
 
 static void msa_del_gap(Fasta &fa) {
     Int n = 0;
-    auto r = STD_ find_if(fa.begin(), fa.end(), [](auto && it) { return it.name == "TARGET"; });
-    if (r != fa.end()) n = STD_ distance(fa.begin(), r);
+    auto r = std::find_if(fa.begin(), fa.end(), [](auto && it) { return it.name == "TARGET"; });
+    if (r != fa.end()) n = std::distance(fa.begin(), r);
     auto && it = fa[n];
 
     Map<Int, Bool> m;
@@ -71,5 +71,5 @@ REGISTER_NSP_COMPONENT(msa) {
 
 }
 
-END_JN
+}
 

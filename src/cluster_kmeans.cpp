@@ -1,6 +1,6 @@
 #include "cluster_kmeans.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REG_CLUSTER("kmeans", KMeans);
 

@@ -2,7 +2,7 @@
 #include "pdb.hpp"
 #include "geom.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace {
 
@@ -81,5 +81,5 @@ REGISTER_NSP_COMPONENT(test) {
 
 }
 
-END_JN
+}
 

@@ -6,7 +6,7 @@
 #include "serial.hpp"
 #include "file.hpp"
 
-BEGIN_JN
+namespace jian {
 
 
 template<typename NumType>
@@ -174,5 +174,5 @@ inline Mat hstack(const _Mats & ...mats) {
 	return t;
 }
 
-END_JN
+}
 

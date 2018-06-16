@@ -6,7 +6,7 @@
 #define TRACE_IN Trace::enter_function(__FUNCTION__)
 #define TRACE_OUT Trace::exit_function(__FUNCTION__)
 
-BEGIN_JN
+namespace jian {
 
 class Trace {
 public:

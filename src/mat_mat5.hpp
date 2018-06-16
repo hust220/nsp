@@ -4,7 +4,7 @@
 #include <iostream>
 #include "jian.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class Mat5 {
 public:
@@ -44,6 +44,6 @@ public:
 
 std::ostream &operator <<(std::ostream &out, const Mat5 &mat);
 
-END_JN
+}
 
 

@@ -8,7 +8,7 @@ int main(int argc, char **argv) {
 	JN_MPI_INIT(argc, argv);
 #ifdef NDEBUG
 	try {
-		JN_ NSP::run(argc, argv);
+		jian::NSP::run(argc, argv);
 	}
 	catch (const jian::Error &inf) {
 		Err << inf.what() << Endl;
@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
 		Err << s << Endl;
 	}
 #else
-	JN_ NSP::run(argc, argv);
+	jian::NSP::run(argc, argv);
 #endif
     JN_MPI_FREE;
 }

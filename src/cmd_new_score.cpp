@@ -2,7 +2,7 @@
 #include "score_new.hpp"
 #include "file.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(new_score) {
 	if (par.has("l")) {
@@ -14,7 +14,7 @@ REGISTER_NSP_COMPONENT(new_score) {
     }
 }
 
-END_JN
+}
 
 
 

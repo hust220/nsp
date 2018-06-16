@@ -4,20 +4,20 @@
 #include "entity_list_range.hpp"
 #include "rss_res.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class Loop : public Deque<res>
 {
     public:
 
         Str ss() const {
-            STD_ ostringstream stream;
+            std::ostringstream stream;
             for (auto &&res : *this) stream << res.type;
             return stream.str();
         }
 
         Str seq() const {
-            STD_ ostringstream stream;
+            std::ostringstream stream;
             for (auto &&res : *this) {
                 if (res.type != '&') {
                     stream << res.name;
@@ -41,11 +41,11 @@ class Loop : public Deque<res>
             return stream.str();
         }
 
-        friend STD_ ostream &operator <<(STD_ ostream &stream, Loop l) {
+        friend std::ostream &operator <<(std::ostream &stream, Loop l) {
             stream << "Loop: " << ' ' << (Str)l;
             return stream;
         }
 
 };
 
-END_JN
+}

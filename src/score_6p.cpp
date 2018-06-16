@@ -1,6 +1,6 @@
 #include "score_6p.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REG_SCORER("6p", Score6p);
 
@@ -90,4 +90,4 @@ bool Score6p::in_base(int n) {
 	return n > 2;
 }
 
-END_JN
+}

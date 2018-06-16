@@ -6,7 +6,7 @@
 
 #include "pdb.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class CG;
 

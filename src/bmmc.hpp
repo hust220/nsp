@@ -10,7 +10,7 @@
 #define SUM_MEM_EN_MCPSB(a) + a
 #define PRINT_MEM_EN_MCPSB(a) << a << PP_STRING3((a)) << ' '
 
-BEGIN_JN
+namespace jian {
 
 class MCSM : public MCBase {
     public:
@@ -70,5 +70,5 @@ class MCSM : public MCBase {
 
 };
 
-END_JN
+}
 

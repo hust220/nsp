@@ -12,7 +12,7 @@
 #include "pdb.hpp"
 #include "cg.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class TSP {
 public:
@@ -61,5 +61,5 @@ public:
 
 };
 
-END_JN
+}
 

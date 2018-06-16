@@ -4,7 +4,7 @@
 #include <deque>
 #include "nsp.hpp"
 
-BEGIN_JN
+namespace jian {
 
 using align_t = std::deque<std::string>;
 
@@ -81,5 +81,5 @@ REGISTER_NSP_COMPONENT(ssa) {
     SSA::instance().ssa(seq1, seq2, aln);
 }
 
-END_JN
+}
 

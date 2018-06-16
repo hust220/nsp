@@ -1,7 +1,7 @@
 #include "nsp.hpp"
 #include "rtsp_build_loop_raw.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(build_loop_raw) {
     int n = 1;
@@ -21,5 +21,5 @@ REGISTER_NSP_COMPONENT(build_loop_raw) {
     }
 }
 
-END_JN
+}
 

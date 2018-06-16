@@ -4,7 +4,7 @@
 #include "pdb_pdb_parser.hpp"
 #include "string.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REG_MOL_PARSER("pdb", PdbFileParser)
 
@@ -42,5 +42,5 @@ MolParsedLine *PdbFileParser::getline() {
     return NULL;
 }
 
-END_JN
+}
 

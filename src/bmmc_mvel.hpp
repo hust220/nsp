@@ -16,7 +16,7 @@
 
 #pragma once
 
-BEGIN_JN
+namespace jian {
 
 using Frag = Array<int, 2>;
 
@@ -93,5 +93,5 @@ class MvEl {
         static void merge(Deque<MvEl *> &dq);
 };
 
-END_JN
+}
 

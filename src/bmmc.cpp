@@ -2,7 +2,7 @@
 
 #define PRINT_MEM_MCPSB(a) << e.a << PP_STRING3((a)) << ' '
 
-BEGIN_JN
+namespace jian {
 
 void MCSM::init(const Par &par) {
     MCBase::init(par);
@@ -211,4 +211,4 @@ void MCSM::finish_run() {
     print_pairing();
 }
 
-END_JN
+}

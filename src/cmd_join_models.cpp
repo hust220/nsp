@@ -2,7 +2,7 @@
 #include "pdb.hpp"
 #include "rtsp_format.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(join_models) {
     Format format;
@@ -21,5 +21,5 @@ REGISTER_NSP_COMPONENT(join_models) {
     JN_OUT << mol;
 }
 
-END_JN
+}
 

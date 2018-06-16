@@ -7,7 +7,7 @@
 #define JN_MCXP_PAR_SET(a) par.set(PP_CAT(_mc_, a), PP_STRING3(PP_CAT(mc_, a)));
 #define JN_MCXP_TEMP(a) log << PP_STRING3(PP_CAT(mc_, a)) << ' ' << PP_CAT(_mc_, a) << std::endl;
 
-BEGIN_JN
+namespace jian {
 
 void MCBase::set_traj_name() {
 #ifdef JN_PARA
@@ -59,7 +59,7 @@ void MCBase::init(const Par &par) {
     log << std::endl;
     //MolReader reader(to_str(Env::lib(), "/RNA/pars/cg/CG2AA/templates.pdb"));
     //for (auto it = reader.model_begin(); it != reader.model_end(); it++) {
-    //	STD_ cerr << *it << STD_ endl;
+    //	std::cerr << *it << std::endl;
     //	ResConf::extract(m_res_confs, it->residues());
     //}
     for (auto && pair : m_res_confs) { for (auto && conf : pair.second) { conf.res = m_cg->to_cg(conf.res); } }
@@ -108,7 +108,7 @@ void MCBase::init(const Par &par) {
         chain_read_model(_pred_chain, m_init_sfile);
     }
 
-    log << "# Read alignment file" << STD_ endl;
+    log << "# Read alignment file" << std::endl;
     par.set(m_alignfile, "align");
     if (!m_alignfile.empty()) {
         set_align();
@@ -139,9 +139,9 @@ void MCBase::set_align() {
         }
     }
 #ifndef NDEBUG
-    log << "# Print align" << STD_ endl;
+    log << "# Print align" << std::endl;
     for (auto && pair : m_align) {
-        log << pair[0] << ' ' << pair[1] << STD_ endl;
+        log << pair[0] << ' ' << pair[1] << std::endl;
     }
 #endif
 }
@@ -151,7 +151,7 @@ void MCBase::align_to_fixed_areas() {
     for (auto && pair : m_align) {
         v[pair[1]] = true;
     }
-    m_fixed_areas.push_back(STD_ move(v));
+    m_fixed_areas.push_back(std::move(v));
 }
 
 void MCBase::mc_next_step() {
@@ -309,20 +309,25 @@ void MCBase::space_update_item(int i) {
 }
 
 void MCBase::restore_raw() {
-    Mat dist;
-    Int l = size(_seq);
-    dg_dist_init(dist, l);
-    //dg_dist_read_ss(dist, _seq, _ss);
-    Vector<Int> v(l);
-    for (Int i = 0; i < l; i++) {
-        auto it = STD_ find_if(m_align.begin(), m_align.end(), [i](auto &&p) {return p[0] == i; });
-        if (it == m_align.end()) v[i] = -1;
-        else v[i] = it->at(1);
-    }
-    dg_dist_read_chain(dist, _pred_chain, v);
-    Mat && c = DG(dist)();
-    auto cg = CG::fac_t::make("1p");
-    _pred_chain = cg->to_aa(c, 0, c.rows() - 1);
+//    Mat dist;
+//    Int l = size(_seq);
+//    dg_dist_init(dist, l);
+//    Vector<Int> v(l);
+//    for (Int i = 0; i < l; i++) {
+//        auto it = std::find_if(m_align.begin(), m_align.end(), [i](auto &&p) {return p[0] == i; });
+//        if (it == m_align.end()) v[i] = -1;
+//        else v[i] = it->at(1);
+//    }
+//    dg_dist_read_chain(dist, _pred_chain, v);
+
+    // TODO
+//    JN_TODO;
+//    DG dg;
+//    dg.read(l, {5, 999}, dist_constraints);
+//    Mat && c = dg.sample();
+
+//    auto cg = CG::fac_t::make("1p");
+//    _pred_chain = cg->to_aa(c, 0, c.rows() - 1);
 }
 
 void MCBase::score() {
@@ -438,4 +443,4 @@ void MCBase::finish_run() {}
 void MCBase::save_fixed_ranges() {}
 void MCBase::restore_fixed_ranges() {}
 
-END_JN
+}

@@ -1,6 +1,6 @@
 #include "jian.hpp"
 
-BEGIN_JN
+namespace jian {
 
 struct tsdna_ss_info_t {
     Str ss;
@@ -9,5 +9,5 @@ struct tsdna_ss_info_t {
 
 List<tsdna_ss_info_t> tsdna_ssp(Str seq);
 
-END_JN
+}
 

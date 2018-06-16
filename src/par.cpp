@@ -4,7 +4,7 @@
 #include "par.hpp"
 #include "file.hpp"
 
-BEGIN_JN
+namespace jian {
 
 Par::Par(int argc, char **argv) {
     read(argc, argv);
@@ -124,5 +124,5 @@ std::ostream &operator <<(std::ostream &out, const Par &par) {
     return out;
 }
 
-END_JN
+}
 

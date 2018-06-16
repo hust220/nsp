@@ -2,7 +2,7 @@
 
 #include "string.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace os {
 
@@ -10,5 +10,5 @@ namespace os {
 
 }
 
-END_JN
+}
 

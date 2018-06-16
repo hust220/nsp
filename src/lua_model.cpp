@@ -1,7 +1,7 @@
 #include "lua_model.hpp"
 #include "pdb.hpp"
 
-BEGIN_JN
+namespace jian {
 
 static int lua_pushchain(lua_State *L, Chain *p) {
     Chain ** r = new Chain *;
@@ -137,5 +137,5 @@ int lua_openmodel(lua_State *L) {
     return 1;
 }
 
-END_JN
+}
 

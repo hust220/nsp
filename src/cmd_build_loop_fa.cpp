@@ -1,7 +1,7 @@
 #include "nsp.hpp"
 #include "rtsp.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(build_loop_fa) {
     BuildLoopFA build_loop_fa;
@@ -33,5 +33,5 @@ REGISTER_NSP_COMPONENT(build_loop_fa) {
 //    }
 }
 
-END_JN
+}
 

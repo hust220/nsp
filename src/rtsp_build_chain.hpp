@@ -4,7 +4,7 @@
 #include "geom.hpp"
 #include "env.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class BuildChain {
 public:

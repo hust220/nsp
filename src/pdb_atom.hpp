@@ -5,7 +5,7 @@
 #include <map>
 #include "matrix.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class Atom : public std::array<double, 3> {
 public:
@@ -30,5 +30,5 @@ public:
 	refs<Atom> atoms() { return refs<Atom>().append(*this); }\
 	refs<const Atom> atoms() const { return refs<const Atom>().append(*this); }
 
-END_JN
+}
 

@@ -6,7 +6,7 @@
 #include "g4dna.hpp"
 #include "pdb_cluster_chains.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace {
     void jian_3drna_refine(const Par &par, const Chain &chain, int i) {
@@ -135,4 +135,4 @@ namespace {
     }
 }
 
-END_JN
+}

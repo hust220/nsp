@@ -2,7 +2,7 @@
 #include "rtsp_parse_helix.hpp"
 #include "geom.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(helix_par) {
     int n = JN_INT(par[2]);
@@ -13,7 +13,7 @@ REGISTER_NSP_COMPONENT(helix_par) {
     }
 }
 
-END_JN
+}
 
 
 

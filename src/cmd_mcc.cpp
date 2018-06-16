@@ -2,7 +2,7 @@
 #include "rss.hpp"
 #include "dca.hpp"
 
-BEGIN_JN
+namespace jian {
 
 using namespace dca;
 
@@ -107,7 +107,7 @@ REGISTER_NSP_COMPONENT(sort_dis) {
     print_tuples(JN_OUT, tuples_from_file(di_file, size));
 }
 
-END_JN
+}
 
 
 

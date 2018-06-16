@@ -2,7 +2,7 @@
 
 #include "pdb.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class AddPhos {
 public:
@@ -129,5 +129,5 @@ public:
     //	}
     }};
 
-END_JN
+}
 

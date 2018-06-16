@@ -7,7 +7,7 @@
 #include "lua_mol.hpp"
 #include "lua_par.hpp"
 
-BEGIN_JN
+namespace jian {
 
 void stackDump (lua_State *L) {
     int i;
@@ -59,5 +59,5 @@ void lua_cmd(Str cmd, const Par &par) {
     lua_close(L);// close lua
 }
 
-END_JN
+}
 

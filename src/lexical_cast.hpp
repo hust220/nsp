@@ -4,7 +4,7 @@
 #include <sstream>
 #include "jian.hpp"
 
-BEGIN_JN
+namespace jian {
 
 template<typename T, typename U>
 T lexical_cast(U && u) {
@@ -16,5 +16,5 @@ T lexical_cast(U && u) {
     return t;
 }
 
-END_JN
+}
 

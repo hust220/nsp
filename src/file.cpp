@@ -5,7 +5,7 @@
 #include <fstream>
 #include "file.hpp"
 
-BEGIN_JN
+namespace jian {
 
 S file::name(const S &file_path) {
     int pos1 = file_path.find_last_of('/');
@@ -29,9 +29,9 @@ S file::type(const S &file_path) {
 }
 
 void file::clean(const S &file_name) {
-    STD_ ofstream ofile(file_name.c_str());
+    std::ofstream ofile(file_name.c_str());
     ofile.close();
 }
 
-END_JN
+}
 

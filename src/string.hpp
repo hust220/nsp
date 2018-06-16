@@ -15,7 +15,7 @@
 #define JINT JN_INT
 #define JSTR JN_STR
 
-BEGIN_JN
+namespace jian {
 
 using tokenize_v = std::vector<Str>;
 void tokenize(const Str &str, tokenize_v &tokens, const Str &delimiters = " ");
@@ -61,5 +61,5 @@ template<typename... Pars_>
     return std::move(buf);
 }
 
-END_JN
+}
 

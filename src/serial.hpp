@@ -5,7 +5,7 @@
 #include "string.hpp"
 #include "jian.hpp"
 
-BEGIN_JN
+namespace jian {
 
 	template<typename T, JN_ENABLE(std::is_integral<T>::value || std::is_floating_point<T>::value || JN_IS_SAME(T, char))>
 	inline std::ostream &operator <(std::ostream &stream, const T &t) {

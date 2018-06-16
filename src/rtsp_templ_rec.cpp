@@ -3,7 +3,7 @@
 #include "file.hpp"
 #include "rtsp_templ_rec.hpp"
 
-BEGIN_JN
+namespace jian {
 
 static void rec_set_src(TemplRec &rec) {
     int pos = rec.name.find_first_of("-");
@@ -124,5 +124,5 @@ Deque<TemplRec> find_helix_templates(Str seq, Str src) {
     return records;
 }
 
-END_JN
+}
 

@@ -2,9 +2,9 @@
 
 #include "pdb.hpp"
 
-BEGIN_JN
+namespace jian {
 
 Array<Model, 16*4> &bires_models();
 
-END_JN
+}
 

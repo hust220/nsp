@@ -4,7 +4,7 @@
 #include "pdb.hpp"
 #include "score_aa.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REG_SCORER("aa", ScoreAa);
 
@@ -92,5 +92,5 @@ double ScoreAa::en_crash(const Residue &r1, const Residue &r2) {
 }
 
 
-END_JN
+}
 

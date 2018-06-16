@@ -3,7 +3,7 @@
 #include "log.hpp"
 #include "score_cg.hpp"
 
-BEGIN_JN
+namespace jian {
 
 void ScoreCg::init() {
 	int i, j;
@@ -494,5 +494,5 @@ double ScoreCg::en_crash(const Residue &r1, const Residue &r2) {
 	return e;
 }
 
-END_JN
+}
 

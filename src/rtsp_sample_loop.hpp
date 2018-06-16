@@ -3,7 +3,7 @@
 #include "par.hpp"
 #include "pdb.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class DHMC;
 
@@ -17,4 +17,4 @@ public:
 	Chain operator ()();
 };
 
-END_JN
+}

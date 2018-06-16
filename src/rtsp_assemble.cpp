@@ -7,11 +7,11 @@
 #include "rtsp_build_helix.hpp"
 #include "rtsp_build_loop_fa.hpp"
 
-BEGIN_JN
+namespace jian {
 namespace nuc3d {
 
 void chain_read_record(Chain &chain, const record_t &templ_res) {
-    STD_ ostringstream stream;
+    std::ostringstream stream;
     stream << Env::lib() << "/RNA/templates/" << templ_res.name << ".pdb";
     chain_read_model(chain, stream.str());
 }
@@ -28,10 +28,10 @@ void find_loop_records(SSE *l, records_t &records, S name,
 
     int num_sons = l->num_sons();
 
-	STD_ ostringstream stream;
+	std::ostringstream stream;
     stream << Env::lib() << "/RNA/records/" << (l->is_open() ? "open_" : "") << "loop";
 //LOGI << "FIND LOOP RECORDS OF: " << l << ' ' << stream.str() << std::endl;
-	STD_ ifstream ifile;
+	std::ifstream ifile;
 	FOPEN(ifile, stream.str());
 
     record_t templ_rec;
@@ -80,9 +80,9 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
 
     int len = size(l->helix);
 
-	STD_ ostringstream stream;
+	std::ostringstream stream;
     stream << Env::lib() << "/RNA/records/helix";
-	STD_ ifstream ifile;
+	std::ifstream ifile;
     FOPEN(ifile, stream.str());
 
     record_t templ_rec;
@@ -116,9 +116,9 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
     Assemble::Assemble(const Par &par) {
         TSP::init(par);
 
-        log << "# Set disused pdbs..." << STD_ endl;
+        log << "# Set disused pdbs..." << std::endl;
         par.setv(m_disused_pdbs, "disused_pdbs");
-        //for (Str & pdb : m_disused_pdbs) STD_ cout << pdb << STD_ endl;
+        //for (Str & pdb : m_disused_pdbs) std::cout << pdb << std::endl;
 
         m_sample = par.has("sample");
         par.set(m_sample_mode, "sample_mode");
@@ -287,13 +287,13 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
 	}
 
     void Assemble::select_templates() {
-		log << _ss_tree << STD_ endl;
+		log << _ss_tree << std::endl;
 		for (auto && sse : _ss_tree) {
-			log << "# SSE: " << &sse << STD_ endl;
-			log << sse << STD_ endl;
-			log << "# Select template of loop of SSE: " << &sse << STD_ endl;
+			log << "# SSE: " << &sse << std::endl;
+			log << sse << std::endl;
+			log << "# Select template of loop of SSE: " << &sse << std::endl;
 			set_loop_template(&sse, true);
-			log << "# Select template of helix of SSE: " << &sse << STD_ endl;
+			log << "# Select template of helix of SSE: " << &sse << std::endl;
 			set_helix_template(&sse, true);
 		}
     }
@@ -577,5 +577,5 @@ void find_helix_records(SSE *l, records_t &records, S name, S family) {
     }
 
 } // namespace nuc3d
-END_JN
+}
 

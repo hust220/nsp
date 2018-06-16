@@ -7,7 +7,7 @@
 #include "file.hpp"
 #include "score_new.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class NewScore {
 public:
@@ -182,5 +182,5 @@ double scoring::new_score(const Eigen::MatrixXd &mat, int index) {
 	return NewScore::instance().en_bp(mat, index);
 }
 
-END_JN
+}
 

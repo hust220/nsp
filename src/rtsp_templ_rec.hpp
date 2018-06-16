@@ -3,7 +3,7 @@
 #include "jian.hpp"
 #include "rss.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class TemplRec {
 public:
@@ -25,5 +25,5 @@ Deque<TemplRec> find_helix_templates(Str seq, Str src = "");
 
 Deque<TemplRec> find_loop_templates(Str seq, Str ss, Str src = "");
 
-END_JN
+}
 

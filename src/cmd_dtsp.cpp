@@ -1,6 +1,6 @@
 #include "nsp.hpp"
 
-BEGIN_JN
+namespace jian {
 
 std::map<std::string, std::function<void(Par)>> handles
 {
@@ -38,5 +38,5 @@ REGISTER_NSP_COMPONENT(dtsp) {
     handles[mode](par);
 }
 
-END_JN
+}
 

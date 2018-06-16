@@ -11,7 +11,7 @@
 #include "rtsp_build_loop_dg.hpp"
 #include "rtsp_mutate.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class BuildLoopRaw {
 public:
@@ -81,5 +81,5 @@ public:
 
 };
 
-END_JN
+}
 

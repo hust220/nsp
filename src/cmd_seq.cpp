@@ -2,7 +2,7 @@
 #include "nsp.hpp"
 #include "pdb.hpp"
 
-BEGIN_JN
+namespace jian {
 
 static S seq_chain(const Chain &c) {
     S seq(c.size(), 'X');
@@ -43,5 +43,5 @@ REGISTER_NSP_COMPONENT(seq) {
     }
 }
 
-END_JN
+}
 

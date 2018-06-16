@@ -3,7 +3,7 @@
 #include "dca.hpp"
 #include "rss_get_ss.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace {
     REGISTER_NSP_COMPONENT(ss) {
@@ -25,7 +25,7 @@ namespace {
            */
     }
 }
-END_JN
+}
 
 
 

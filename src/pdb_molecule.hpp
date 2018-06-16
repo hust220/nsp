@@ -4,7 +4,7 @@
 #include <deque>
 #include "pdb_model.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class Molecule : public std::deque<Model> {
 public:

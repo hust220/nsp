@@ -3,7 +3,7 @@
 #include "pdb_molecule.hpp"
 #include "jian.hpp"
 
-BEGIN_JN
+namespace jian {
 
 #define JN_IS_ATOM(T)     std::is_same<std::decay_t<T>, Atom    >::value
 #define JN_IS_RESIDUE(T)  std::is_same<std::decay_t<T>, Residue >::value
@@ -25,7 +25,7 @@ inline void chain_append(Chain &chain, const Chain &c) {
 
 inline void chain_append(Chain &chain, Chain &&c) {
 	for (auto && r : c) {
-		chain.push_back(STD_ move(r));
+		chain.push_back(std::move(r));
 	}
 }
 
@@ -40,7 +40,7 @@ inline void chain_append(Chain &chain, const Model &model) {
 inline void chain_append(Chain &chain, Model &&model) {
 	for (auto && c : model) {
 		for (auto && r : c) {
-			chain.push_back(STD_ move(r));
+			chain.push_back(std::move(r));
 		}
 	}
 }
@@ -149,6 +149,6 @@ auto residues_to_model(T &&ls) {
 	return model;
 }
 
-END_JN
+}
 
 

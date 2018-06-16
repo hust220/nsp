@@ -2,11 +2,11 @@
 
 #include "score_cg.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class ScorePsb : public ScoreCg {
 public:
 	ScorePsb();
 };
 
-END_JN
+}

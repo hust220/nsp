@@ -37,7 +37,7 @@
 
 #endif
 
-BEGIN_JN
+namespace jian {
 
 	class Socket {
 	public:

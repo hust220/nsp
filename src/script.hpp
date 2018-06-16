@@ -6,7 +6,7 @@
 #include "pdb_model.hpp"
 #include "geom.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class Script {
 public:

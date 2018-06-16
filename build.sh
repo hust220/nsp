@@ -1,6 +1,6 @@
 ##################################################################################################
 
-PROJ="serial_release"
+PROJ="serial_debug"
 
 SD=$(cd $(dirname ${0}); pwd) # source directory
 BD=$SD/.build # building directory

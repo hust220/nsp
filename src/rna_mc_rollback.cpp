@@ -2,7 +2,7 @@
 #include "rna_mc_rollback.hpp"
 #include "rna_mc_select.hpp"
 
-BEGIN_JN
+namespace jian {
 
 void dhmc_rollback(DHMC &m) {
     Int l = size(m._seq);
@@ -18,4 +18,4 @@ void dhmc_rollback(DHMC &m) {
     }
 }
 
-END_JN
+}

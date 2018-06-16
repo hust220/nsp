@@ -2,7 +2,7 @@
 #include "env.hpp"
 #include "cg_complete_res.hpp"
 
-BEGIN_JN
+namespace jian {
 
 CompleteResidue::CompleteResidue() {
     S path = Env::lib() + "/RNA/pars/cg/CompleteResidue/";

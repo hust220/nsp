@@ -3,10 +3,9 @@
 #include <random>
 #include <vector>
 
-BEGIN_JN
-namespace dg {
+namespace jian {
 
-class Move {
+class DgMove {
 public:
     std::random_device rd;
     std::uniform_real_distribution<double> distr;
@@ -14,7 +13,7 @@ public:
     int _index;
     std::vector<double> _shift;
 
-    Move() : distr(0, 1), _shift(3, 0) {}
+    DgMove() : distr(0, 1), _shift(3, 0) {}
 
     auto rand_shift() -> decltype(_shift) {
         return decltype(_shift) {distr(rd)-0.5,distr(rd)-0.5,distr(rd)-0.5};
@@ -36,7 +35,6 @@ public:
 };
 
 
-} // namespace dg
-END_JN
+}
 
 

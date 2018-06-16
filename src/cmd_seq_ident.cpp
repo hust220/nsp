@@ -1,7 +1,7 @@
 #include "nsp.hpp"
 #include "pdb.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(seq_ident) {
     auto g = par.getv("global");
@@ -17,5 +17,5 @@ REGISTER_NSP_COMPONENT(seq_ident) {
     JN_OUT << Num(n) / l1 << std::endl;
 }
 
-END_JN
+}
 

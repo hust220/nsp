@@ -9,7 +9,7 @@
 #include "geom.hpp"
 #include "rand.hpp"
 
-BEGIN_JN
+namespace jian {
 
 Chain build_loop(Str seq, Str ss);
 
@@ -32,7 +32,7 @@ inline auto sp_bp(const Residue &res1, const Residue &res2) {
 }
 
 inline void sample_loop(Chain &chain, Str ss, Int n) {
-    Str seq = JN_ seq(chain);
+    Str seq = jian::seq(chain);
     Int l = size(seq);
     Chain c = bires_chain(seq[n], seq[n+1], ss[n], ss[n+1]);
     if (n < l/2) {
@@ -54,7 +54,7 @@ inline void sample_loop(Chain &chain, Str ss, Int n) {
 }
 
 inline void sample_loop_local(Chain &chain, Str ss, Int n) {
-    Str seq = JN_ seq(chain);
+    Str seq = jian::seq(chain);
     Int l = size(seq);
     Chain c = bires_chain(seq[n], seq[n+1], ss[n], ss[n+1]);
 
@@ -65,12 +65,12 @@ inline void sample_loop_local(Chain &chain, Str ss, Int n) {
 }
 
 inline void sample_loop(Chain &chain, Str ss) {
-    Int n = Int(JN_ rand() * (size(ss)-1));
+    Int n = Int(jian::rand() * (size(ss)-1));
     sample_loop(chain, ss, n);
 }
 
 inline void sample_loop_local(Chain &chain, Str ss) {
-    Int n = Int(JN_ rand() * (size(ss)-1));
+    Int n = Int(jian::rand() * (size(ss)-1));
     sample_loop_local(chain, ss, n);
 }
 
@@ -105,7 +105,7 @@ public:
         for (auto && it : FileLines(to_str(Env::lib(), "/RNA/pars/nuc3d/bp_distances.txt"))) {
             if (size(it.arr) == 7) {
                 for (int i = 0; i < 6; i++) {
-                    bp_dists[it.arr[0]][i] = JN_ lexical_cast<Num>(it.arr[i+1]);
+                    bp_dists[it.arr[0]][i] = jian::lexical_cast<Num>(it.arr[i+1]);
                 }
             }
         }
@@ -135,10 +135,10 @@ public:
 //        const auto & dists = bp_dists[seq];
 //
 //        Num d = geom::distance(r1[0], r2[0]);
-//        Num e1 = JN_ square(d - dists[0]);
+//        Num e1 = jian::square(d - dists[0]);
 //
 //        d = geom::distance(r1[2], r2[2]);
-//        e1 += JN_ square(d - dists[2]);
+//        e1 += jian::square(d - dists[2]);
 //
 //        scorer->en_bp(r1, r2);
 //        Num e2 = scorer->m_en_pairing;
@@ -155,7 +155,7 @@ public:
         Num e = 0;
         for (Int i = 0; i < 6; i++) {
             Num d = geom::distance(r1[i], r2[i]);
-            e += JN_ square(d - dists[i]);
+            e += jian::square(d - dists[i]);
         }
         return 0.1*e;
 
@@ -236,7 +236,7 @@ public:
     }
 
     virtual void mc_select() {
-        ind = Int(JN_ rand() * (size(ss)-1));
+        ind = Int(jian::rand() * (size(ss)-1));
     }
 
     virtual void mc_sample() {
@@ -257,5 +257,5 @@ public:
     }
 };
 
-END_JN
+}
 

@@ -18,7 +18,7 @@
 #include "rtsp.hpp"
 #include "rna_mc_mvel.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class DHMC : public MCSM {
 public:
@@ -57,7 +57,7 @@ public:
 	~DHMC();
 
 	static SP<DHMC> make(const Par &par) {
-		SP<DHMC> dhmc = STD_ make_shared<DHMC>();
+		SP<DHMC> dhmc = std::make_shared<DHMC>();
 		dhmc->init(par);
 		return dhmc;
 	}
@@ -126,5 +126,5 @@ public:
 //	chain = mc._pred_chain;
 //}
 //
-END_JN
+}
 

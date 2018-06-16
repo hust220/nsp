@@ -7,7 +7,7 @@
 #include "env.hpp"
 #include "jian.hpp"
 
-BEGIN_JN
+namespace jian {
 
 HelixPar::HelixPar() {
 	S path = Env::lib() + "/RNA/pars/nuc3d/HelixPar/helix.pars";
@@ -40,5 +40,5 @@ double HelixPar::dih(int n) const {
 	return dihs[n - 1];
 }
 
-END_JN
+}
 

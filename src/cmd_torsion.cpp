@@ -3,7 +3,7 @@
 #include "geom.hpp"
 #include "rss_get_ss.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace {
 
@@ -59,5 +59,5 @@ namespace {
 
 }
 
-END_JN
+}
 

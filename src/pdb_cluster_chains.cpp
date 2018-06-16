@@ -1,7 +1,7 @@
 #include "geom.hpp"
 #include "pdb_cluster_chains.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace pdb {
 
@@ -46,4 +46,4 @@ namespace pdb {
 
 
 } // namespace pdb
-END_JN
+}

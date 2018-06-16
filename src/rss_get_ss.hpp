@@ -3,7 +3,7 @@
 #include "score_par_bp.hpp"
 #include "dca.hpp"
 
-BEGIN_JN
+namespace jian {
 
 template<typename _Chain>
 Str get_ss(const _Chain &chain) {
@@ -23,5 +23,5 @@ Str get_ss(const _Chain &chain) {
     return ::jian::dca::pairs_to_ss(pairs, chain.size());
 }
 
-END_JN
+}
 

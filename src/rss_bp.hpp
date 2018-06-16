@@ -2,7 +2,7 @@
 
 #include "rss_res.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class bp {
 public:
@@ -41,5 +41,5 @@ public:
 
 };
 
-END_JN
+}
 

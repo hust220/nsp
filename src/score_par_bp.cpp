@@ -1,7 +1,7 @@
 #include "score_par_bp.hpp"
 #include "geom.hpp"
 
-BEGIN_JN
+namespace jian {
 
 Bool is_bp(const Residue &r1, const Residue &r2) {
     if (geom::distance(r1[0], r2[0]) < 20) {
@@ -131,4 +131,4 @@ ParBp &ParBp::anal(const Residue &res1, const Residue &res2) {
 	return *this;
 }
 
-END_JN
+}

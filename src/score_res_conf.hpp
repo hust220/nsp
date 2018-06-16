@@ -3,7 +3,7 @@
 #include "geom.hpp"
 #include "pdb.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class ResConf {
 public:
@@ -46,4 +46,4 @@ public:
 
 };
 
-END_JN
+}

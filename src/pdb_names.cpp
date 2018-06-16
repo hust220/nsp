@@ -5,7 +5,7 @@
 #include "env.hpp"
 #include "pdb_names.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace pdb {
 
@@ -96,5 +96,5 @@ const Names & Names::instance(S mol_type) {
 
 } // namespace pdb
 
-END_JN
+}
 

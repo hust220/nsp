@@ -44,7 +44,7 @@
 #define EACH_ATOM4(m, c) EACH_ATOM_HELPER(4, m, c)
 #define EACH_ATOM(m, c)  EACH_ATOM_HELPER( , m, c)
 
-BEGIN_JN
+namespace jian {
 
 	class Model : public std::deque<Chain> {
 	public:
@@ -62,5 +62,5 @@ BEGIN_JN
 	refs<Model> models() { return refs<Model>().append(*this); }\
 	refs<const Model> models() const { return refs<const Model>().append(*this); }
 
-END_JN
+}
 

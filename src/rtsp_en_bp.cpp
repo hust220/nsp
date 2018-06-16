@@ -4,7 +4,7 @@
 #include "cg.hpp"
 #include "geom.hpp"
 
-BEGIN_JN
+namespace jian {
 
 static Mat mat_bp(const Residue &res1, const Residue &res2) {
     auto cg = CG::fac_t::make("6p");
@@ -47,5 +47,5 @@ Num en_bp(const Residue &r1, const Residue &r2) {
     return d*d;
 }
 
-END_JN
+}
 

@@ -4,7 +4,7 @@
 #include "mat_base.hpp"
 #include "fftw3.h"
 
-BEGIN_JN
+namespace jian {
 
 #define JN_MAT3_EACH(mat, i, j, k) for (int i = 0; i < (mat).size[0]; i++) for (int j = 0; j < (mat).size[1]; j++) for (int k = 0; k < (mat).size[2]; k++)
 
@@ -179,6 +179,6 @@ using Mat3i = Matrix<3, int>;
 using Mat3u = Matrix<3, unsigned>;
 using Mat3c = Matrix<3, std::complex<Num>>;
 
-END_JN
+}
 
 

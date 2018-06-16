@@ -1,7 +1,7 @@
 #include "nsp.hpp"
 #include "matrix.hpp"
 
-BEGIN_JN
+namespace jian {
 	namespace {
 		double alpha(double max, double min, double beta) {
 			if (max > 0 && min >= 0) {
@@ -94,5 +94,5 @@ BEGIN_JN
 			//    }
 		}
 	}
-END_JN
+}
 

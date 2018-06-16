@@ -12,7 +12,7 @@
 #include "factory.hpp"
 #include "cluster.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class KMeans : public Cluster {
 public:
@@ -27,5 +27,5 @@ public:
 
 };
 
-END_JN
+}
 

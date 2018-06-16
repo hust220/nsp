@@ -3,7 +3,7 @@
 #include <deque>
 #include "jian.hpp"
 
-BEGIN_JN
+namespace jian {
 
 struct HelixPar {
 	double dih_backbone;
@@ -24,5 +24,5 @@ struct HelixPar {
 	double dih(int n) const;
 };
 
-END_JN
+}
 

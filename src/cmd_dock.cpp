@@ -5,7 +5,7 @@
 #include "fftw3.h"
 //#include "simple_fft/fft.h"
 
-BEGIN_JN
+namespace jian {
 
 struct Dock {
     // parameters
@@ -267,5 +267,5 @@ REGISTER_NSP_COMPONENT(dock) {
     dock(par);
 }
 
-END_JN
+}
 

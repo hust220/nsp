@@ -3,7 +3,7 @@
 #include <string>
 #include <array>
 
-BEGIN_JN
+namespace jian {
 
 class Chain;
 
@@ -38,5 +38,5 @@ public:
     double score;
 };
 
-END_JN
+}
 

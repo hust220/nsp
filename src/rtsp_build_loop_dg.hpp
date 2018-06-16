@@ -8,14 +8,27 @@
 #include "geom.hpp"
 #include "rtsp_helix_par.hpp"
 
-BEGIN_JN
+namespace jian {
 
 /**
  * Build chain by distance geometry.
  */
 Chain *build_chain_dg(Str seq, Str ss);
 
+void dg_dist_init(DgConstraints &constraints, int l);
+
 void dg_dist_init(Mat &dist, int l);
+
+template<typename _Ls>
+void dg_constraints_read_brokens(DgConstraints &constraints, _Ls &&brokens) {
+    JN_TODO;
+//    Int l = dist.rows();
+//    for (auto && i : brokens) {
+//        if (i + 1 < l) {
+//            dist(i, i + 1) = 999;
+//        }
+//    }
+}
 
 template<typename _Ls>
 void dg_dist_read_brokens(Mat &dist, _Ls &&brokens) {
@@ -25,6 +38,19 @@ void dg_dist_read_brokens(Mat &dist, _Ls &&brokens) {
             dist(i, i + 1) = 999;
         }
     }
+}
+
+void dg_constraints_read_loop(DgConstraints &, const SSE &sse);
+
+void dg_constraints_read_helix(DgConstraints &, const SSE &sse);
+
+void dg_constraints_read_ss(DgConstraints &, Str seq, Str ss);
+
+void dg_constraints_read_chain(DgConstraints &, const Chain &chain);
+
+template<typename _Ls>
+void dg_constraints_read_chain(DgConstraints &constraints, const Chain &c, _Ls &&indices) {
+    JN_TODO;
 }
 
 void dg_dist_read_loop(Mat &dist, const SSE &sse);
@@ -55,12 +81,12 @@ void dg_dist_read_chain(Mat &dist, const Chain &c, _Ls &&indices) {
 
 class BuildLoopDG {
 public:
-    Mat _dist_bound;
-    DihBound _dih_bound;
+//    Mat _dist_bound;
+    DgConstraints distance_constraints;
 
-    DG m_dg;
     HelixPar helix_par;
     std::shared_ptr<CG> m_cg;
+    int len;
 
     BuildLoopDG();
 
@@ -72,5 +98,5 @@ public:
 
 };
 
-END_JN
+}
 

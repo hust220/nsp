@@ -1,7 +1,7 @@
 #include <string>
 #include "pdb_parser.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class PdbFileParser : public MolParser {
 public:
@@ -9,5 +9,5 @@ public:
     MolParsedLine *getline();
 };
 
-END_JN
+}
 

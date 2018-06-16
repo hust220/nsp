@@ -6,7 +6,7 @@
 
 #define REG_SCORER(name, type) REGISTER_FACTORY(jian::Score::Constructor, name, type)
 
-BEGIN_JN
+namespace jian {
 
 /**
  * Energy of radius of gyration
@@ -153,6 +153,6 @@ class Score {
 
 };
 
-END_JN
+}
 
 

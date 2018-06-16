@@ -1,6 +1,6 @@
 #include "env.hpp"
 
-BEGIN_JN
+namespace jian {
 
 int g_argc;
 
@@ -8,4 +8,4 @@ char **g_argv;
 
 Par g_par;
 
-END_JN
+}

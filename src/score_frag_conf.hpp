@@ -3,7 +3,7 @@
 #include "geom.hpp"
 #include "pdb.hpp"
 
-BEGIN_JN
+namespace jian {
 
 template<int N>
 class FragConf {
@@ -66,5 +66,5 @@ public:
 
 };
 
-END_JN
+}
 

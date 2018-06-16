@@ -5,7 +5,7 @@
 #include <string>
 #include "jian.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace lrsp {
 
@@ -18,5 +18,5 @@ Str ss_complete(Str seq, Str ss);
 void ss_complete(pairs_t & pairs, const seq_t & seq);
 
 } // namespace lrsp
-END_JN
+}
 

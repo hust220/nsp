@@ -3,7 +3,7 @@
 #include <memory>
 #include "mpi.hpp"
 
-BEGIN_JN
+namespace jian {
 
 void mpi_init(int *argc, char ***argv) {
     MPI_Init(argc, argv);
@@ -38,7 +38,7 @@ void mpi_free() {
     MPI_Finalize();
 }
 
-END_JN
+}
 
 #endif
 

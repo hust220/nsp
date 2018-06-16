@@ -7,7 +7,7 @@
 
 #define REG_CG(name, type) REGISTER_FACTORY(jian::CG::constructor_t, name, type)
 
-BEGIN_JN
+namespace jian {
 
 	class CG {
 	public:

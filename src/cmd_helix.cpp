@@ -1,7 +1,7 @@
 #include "nsp.hpp"
 #include "rtsp_build_helix.hpp"
 
-BEGIN_JN
+namespace jian {
 
 namespace {
 
@@ -108,5 +108,5 @@ namespace {
 
 }
 
-END_JN
+}
 

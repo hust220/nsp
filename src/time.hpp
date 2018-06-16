@@ -3,7 +3,7 @@
 #include <string>
 #include <ctime>
 
-BEGIN_JN
+namespace jian {
 
 class Time {
 public:

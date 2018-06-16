@@ -1,7 +1,7 @@
 #include "string.hpp"
 #include <algorithm>
 
-BEGIN_JN
+namespace jian {
 
 void tokenize(const Str &str, tokenize_v &tokens, const Str &delimiters) {
     tokens.clear();
@@ -106,5 +106,5 @@ Str trim_copy(const Str &s) {
     }
 }
 
-END_JN
+}
 

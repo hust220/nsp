@@ -5,7 +5,7 @@
 #include "jian.hpp"
 #include "pdb_atom.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class Residue : public std::deque<Atom> {
 public:
@@ -70,5 +70,5 @@ auto atoms(const Residue &r, T &&ls) {
 	return v;
 }
 
-END_JN
+}
 

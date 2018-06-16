@@ -5,7 +5,7 @@
 #include <array>
 #include "string.hpp"
 
-BEGIN_JN
+namespace jian {
 namespace dca {
 
 struct tuple_t {
@@ -24,9 +24,9 @@ pairs_t pairs_from_ss(const ss_t &ss);
 ss_t pairs_to_ss(const pairs_t &pairs, int size);
 
 void pairs_sort(pairs_t &pairs);
-void print_pairs(STD_ ostream &stream, const pairs_t & pairs);
-void print_tuples(STD_ ostream &stream, const tuples_t & tuples);
+void print_pairs(std::ostream &stream, const pairs_t & pairs);
+void print_tuples(std::ostream &stream, const tuples_t & tuples);
 
 } // namespace lrsp
-END_JN
+}
 

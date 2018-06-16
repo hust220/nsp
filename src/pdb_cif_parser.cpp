@@ -1,7 +1,7 @@
 #include "log.hpp"
 #include "pdb_cif_parser.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REG_MOL_PARSER("cif", CifFileParser)
 
@@ -177,5 +177,5 @@ MolParsedLine *CifFileParser::getline() {
     return _cif->line();
 }
 
-END_JN
+}
 

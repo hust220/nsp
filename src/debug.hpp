@@ -6,7 +6,7 @@
 #define DEBUG_IN Debug::enter_function(__FUNCTION__)
 #define DEBUG_OUT Debug::exit_function(__FUNCTION__)
 
-BEGIN_JN
+namespace jian {
 
 class Debug {
 public:

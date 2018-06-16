@@ -8,7 +8,7 @@
 #include "geom.hpp"
 #include "cg.hpp"
 
-BEGIN_JN
+namespace jian {
 
 class BuildStrand {
     using Mat = Eigen::MatrixXd;
@@ -16,7 +16,6 @@ class BuildStrand {
     public:
 
     std::set<std::string> _coarse_atoms {"C4*"};
-    DG dg;
 
     Chain operator ()(int n, const Mat &a, const Mat &b) {
         return build_strand(n, a, b);
@@ -29,7 +28,9 @@ class BuildStrand {
         }
         Debug::print("build strand:\n");
         auto bound = make_bound(n, a, b);
-        auto scaffold = dg(bound);
+        JN_TODO;
+        auto dg = create_dg();
+        auto scaffold = dg->sample(bound);
         superpose_scaffold(scaffold, a, b);
         std::shared_ptr<CG> cg(CG::fac_t::create("1p"));
         auto residues = cg->to_aa(scaffold, 0, int(scaffold.rows())-1);
@@ -82,5 +83,5 @@ class BuildStrand {
 
 };
 
-END_JN
+}
 

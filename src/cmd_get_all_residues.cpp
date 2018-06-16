@@ -3,7 +3,7 @@
 #include "pdb.hpp"
 #include "file.hpp"
 
-BEGIN_JN
+namespace jian {
 
 REGISTER_NSP_COMPONENT(get_all_residues) {
     auto && m = mol_read_to<Model>(par.get("s"));
@@ -17,5 +17,5 @@ REGISTER_NSP_COMPONENT(get_all_residues) {
     }
 }
 
-END_JN
+}
 

@@ -2,7 +2,7 @@
 #include "pdb.hpp"
 #include "g4dna.hpp"
 
-BEGIN_JN
+namespace jian {
 
 static void handle_g4dna_ssp(Str seq) {
     auto infos = g4dna_ssp(seq);
@@ -28,5 +28,5 @@ REGISTER_NSP_COMPONENT(g4dna) {
     }
 }
 
-END_JN
+}
 
