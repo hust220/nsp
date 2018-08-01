@@ -8,7 +8,17 @@
 
 namespace jian {
 
-class DG {
+struct DgEnergy {
+    double bound;
+    double distance;
+    double dihedral;
+
+    double sum() const {
+        return bound + distance + dihedral;
+    }
+};
+
+class DgImpl {
 public:
     int len = 0;
 
@@ -90,7 +100,7 @@ private:
         bound.resize(len, len);
         for (int i = 0; i < len; i++) {
             for (int j = i; j < len; j++) {
-                if (i = j) {
+                if (i == j) {
                     bound(i, j) = 0;
                 }
                 else {
@@ -127,9 +137,8 @@ private:
     }
 
     void cg() {
-        double en_t; // total energy
-        en_t = total_energy(c);
-        double oldE = en_t;
+        auto en_t = total_energy(c);
+        double oldE = en_t.sum();
 
         gradient();
         double oldG2 = g2;
@@ -140,9 +149,14 @@ private:
         double a = 0.0001;
         double beta = 0;
         int upd = 0;
+        int step = 0;
 
         while (upd < 500) {
-            double tempG2 = g2, tempE = en_t;
+            double tempG2 = g2, tempE = en_t.sum();
+            step++;
+
+            std::cout << format("Step: %05d, TotalEnergy: %8.3f, BoundEnergy: %8.3f, DistanceEnergy: %8.3f, DihedralEnergy: %8.3f",
+                                step, en_t.sum(), en_t.bound, en_t.distance, en_t.dihedral) << std::endl;
 
             if (upd != 0) beta = g2 / oldG2;
             if (upd % 10 == 0) beta = 0;
@@ -154,7 +168,7 @@ private:
             en_t = total_energy(c);
             gradient();
 
-            if (en_t >= tempE || g2 >= tempG2) {
+            if (en_t.sum() >= tempE || g2 >= tempG2) {
                 for (int i = 0; i < len; i++) for (int j = 0; j < 3; j++) c(i, j) -= a * d_n(i, j);
                 en_t = total_energy(c);
                 gradient();
@@ -166,7 +180,7 @@ private:
                 for (int i = 0; i < len; i++) for (int j = 0; j < 3; j++) d_o(i, j) = d_n(i, j);
                 oldG2 = tempG2;
                 oldE = tempE;
-                if (en_t < 1.e-12 || g2 < 1.e-12) break;
+                if (en_t.sum() < 1.e-12 || g2 < 1.e-12) break;
             }
         }
     }
@@ -273,7 +287,7 @@ private:
     void base_mc(int steps, Fn &&ctrl_tempr) {
         DgMove mv;
         int cycle_steps = 10, len = c.rows(), local_succ_num = 0;
-        double en = total_energy(c);
+        double en = total_energy(c).sum();
         double min_en = en;
         auto min_coord = c;
         for (int i = 0; i < steps; i++) {
@@ -292,7 +306,7 @@ private:
             if (i % cycle_steps == cycle_steps - 1) {
                 double local_succ_rate = double(local_succ_num) / cycle_steps;
                 local_succ_num = 0;
-                log << i + 1 << ": " << mc_tempr << "(temprature) " << local_succ_rate << "(success rate)" << std::endl;
+                log << format("Step: %05d, temperature: %8.3f, success rate: %8.3f, energy: %8.3f", i+1, mc_tempr, local_succ_rate, en) << std::endl;
                 if (! ctrl_tempr(local_succ_rate)) break;
             }
         }
@@ -328,8 +342,10 @@ private:
         log << "Finish MC.\n" << std::endl;
     }
 
-    double total_energy(const Mat &coord) {
-        return total_bound_energy(coord) + total_distance_energy(coord) + total_dihedral_energy(coord);
+    DgEnergy total_energy(const Mat &coord) {
+        return {
+            total_bound_energy(coord), total_distance_energy(coord), total_dihedral_energy(coord)
+        };
     }
 
     double total_bound_energy(const Mat &coord) {
@@ -425,8 +441,32 @@ private:
 
 };
 
-SP<DG> create_dg() {
-    return std::make_shared<DG>();
+DG::DG()
+{
+    impl = new DgImpl;
+}
+
+void DG::read(int len_,
+              const std::array<double, 2> &default_range_,
+              const std::vector<DgConstraint> &distance_constraints_,
+              const std::vector<DgConstraint> &dihedral_constraints_)
+{
+    impl->read(len_, default_range_, distance_constraints_, dihedral_constraints_);
+}
+
+Mat DG::sample()
+{
+    return impl->sample();
+}
+
+void DG::log_file(std::string filename)
+{
+    impl->log.file(filename);
+}
+
+DG::~DG()
+{
+    delete impl;
 }
 
 }

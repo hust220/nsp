@@ -68,7 +68,7 @@ void dg_constraints_read_helix(DgConstraints &b, const SSE &sse) {
             s1.push_back(bp.res1.num - 1);
             s2.push_back(bp.res2.num - 1);
         }
-        for (int i = 0; i < len; i++) for (int j = i + 1; j <= i + 2 && j < len; j++) {
+        for (int i = 0; i < len; i++) for (int j = i + 1; j < len; j++) {
             b.append(DgConstraint{{s1[i], s1[j]}, {helix_par.dist_a(j - i)}});
             b.append(DgConstraint{{s2[i], s2[j]}, {helix_par.dist_b(j - i)}});
             b.append(DgConstraint{{s1[i], s2[j]}, {helix_par.dist_c(j - i)}});
@@ -177,10 +177,10 @@ static void print_constraints(const T &constraints) {
 Chain BuildLoopDG::operator ()() {
     std::cout << 221 << std::endl;
     print_constraints(distance_constraints);
-    auto dg = create_dg();
-    dg->log.file("std.out");
-    dg->read(len, {5, 999}, distance_constraints);
-    Mat &&c = dg->sample();
+    DG dg;
+    dg.log_file("std.out");
+    dg.read(len, {5, 999}, distance_constraints);
+    Mat &&c = dg.sample();
     std::cout << c << std::endl;
     return m_cg->to_aa(c, 0, c.rows() - 1);
 }

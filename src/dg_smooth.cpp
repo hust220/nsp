@@ -41,7 +41,7 @@ void dg_smooth(Eigen::MatrixXd &b, double min_dist) {
     }
 
     // Main Loop
-    int max_step = 100;
+    int max_step = 300;
     while (dg_triangle_smoothing(b) + dg_tetrangle_smoothing(b) != 0 && max_step-- > 0);
 }
 

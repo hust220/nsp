@@ -1,5 +1,4 @@
 #include "nsp.hpp"
-#include "lua.hpp"
 
 namespace jian {
 
@@ -48,14 +47,7 @@ void NSP::run(int argc, char **argv) {
             m[par[1]](par);
         }
         else {
-            Str filename = to_str(Env::lib(), "/RNA/scripts/", par[1], ".lua");
-            std::ifstream ifile(filename.c_str());
-            if (ifile) {
-                lua_run(filename, par);
-            }
-            else {
-                show_help(path + "nsp.md", m);
-            }
+            show_help(path + "nsp.md", m);
         }
 	}
 }
