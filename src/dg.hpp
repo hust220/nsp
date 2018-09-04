@@ -32,13 +32,25 @@ public:
     }
 };
 
+class DgImpl;
+
 class DG {
-    
-}
+    DgImpl *impl;
+public:
+    DG();
 
-SP<DG> create_dg();
+    void read(int len_,
+              const std::array<double, 2> &default_range_,
+              const std::vector<DgConstraint> &distance_constraints_,
+              const std::vector<DgConstraint> &dihedral_constraints_ = {});
 
-Mat dg_sample();
+    Mat sample();
+
+    void log_file(std::string);
+
+    ~DG();
+
+};
 
 }
 
