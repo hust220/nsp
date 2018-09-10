@@ -1,0 +1,64 @@
+##### Please set the BIN_DIR variable #####
+BIN_DIR   := bin
+###########################################
+FLAGS     := -std=c++14 -pthread -lm -Isrc -MMD
+CC        := g++
+
+ifeq (true,${MPI})
+	FLAGS        := $(FLAGS) -DUSEMPI
+endif
+
+ifeq (true,${DEBUG})
+	BUILD_PREFIX := build/debug
+	FLAGS        := $(FLAGS) -g -gdwarf-2
+else
+	BUILD_PREFIX := build/release
+	FLAGS        := $(FLAGS) -DNDEBUG -O3
+endif
+
+SRC_DIR   := src
+APPS_DIR  := apps
+
+vpath %.cpp $(SRC_DIR) $(APPS_DIR)
+
+BUILD_DIR := $(addprefix $(BUILD_PREFIX)/, $(SRC_DIR) $(APPS_DIR))
+#FLAGS     := $(FLAGS) $(foreach sdir, $(SRC_DIR) $(APPS_DIR), -I$(sdir))
+
+SRC_CPP   := $(foreach sdir,$(SRC_DIR), $(notdir $(wildcard $(sdir)/*.cpp)))
+APPS_CPP  := $(foreach sdir,$(APPS_DIR), $(notdir $(wildcard $(sdir)/*.cpp)))
+
+SRC_OBJ   := $(patsubst %.cpp, $(BUILD_PREFIX)/%.o, $(SRC_CPP))
+APPS_OBJ  := $(patsubst %.cpp, $(BUILD_PREFIX)/%.o, $(APPS_CPP))
+
+APPS      := $(patsubst %.cpp, $(notdir %), $(APPS_CPP))
+
+define make-apps
+
+$1: checkdirs $(BIN_DIR)/$1
+
+$(BIN_DIR)/$1: $(BUILD_PREFIX)/$(notdir $1).o $(SRC_OBJ)
+	$(CC) $(FLAGS) $$^ -o $$@
+
+endef
+
+all: checkdirs $(SRC_OBJ) $(APPS_OBJ)
+
+install: checkdirs $(APPS)
+
+$(foreach app, $(APPS), $(eval $(call make-apps,$(app))))
+
+$(BUILD_PREFIX)/%.o: %.cpp
+	$(CC) $(FLAGS) -c $< -o $@
+
+.PHONY: all install checkdirs clean $(APPS)
+
+checkdirs: $(BUILD_DIR) $(BIN_DIR) $(BUILD_PREFIX)
+
+$(BUILD_DIR) $(BIN_DIR) $(BUILD_PREFIX):
+	@mkdir -p $@
+
+clean:
+	@rm -rf bin build
+
+-include $(BUILD_PREFIX)/*.d
+

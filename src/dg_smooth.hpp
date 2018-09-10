@@ -1,8 +1,10 @@
 #pragma once
 
+#include <array>
+
 namespace jian {
 
-void dg_smooth(Eigen::MatrixXd &b, double min_dist = 5);
+void dg_smooth(Eigen::MatrixXd &b, std::array<int, 2> &pair);
 
 }
 

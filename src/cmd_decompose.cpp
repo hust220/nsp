@@ -37,7 +37,7 @@ struct Decompose {
         is_full = par.has("full");
 
         // Set sequence
-        seq = JN_ seq(m);
+        seq = jian::seq(m);
 
         // Set secondary structure
         if (par.has("ss")) {

@@ -28,17 +28,9 @@ int dg_tetrangle_smoothing(T &&b) {
     return 0;
 }
 
-void dg_smooth(Eigen::MatrixXd &b, double min_dist) {
+void dg_smooth(Eigen::MatrixXd &b, std::array<int, 2> &pair) {
     // check bound matrix
     if (b.rows() == 0 || b.cols() == 0 || b.rows() != b.cols()) throw "Wrong bound matrix!";
-
-    // check minimum distance
-    int len = b.rows();
-    for (int i = 0; i < b.rows(); i++) for (int j = 0; j < b.cols(); j++) {
-        if (i != j && b(i, j) < min_dist) {
-            b(i, j) = min_dist;
-        }
-    }
 
     // Main Loop
     int max_step = 300;
