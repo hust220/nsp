@@ -28,13 +28,28 @@ int dg_tetrangle_smoothing(T &&b) {
     return 0;
 }
 
-void dg_smooth(Eigen::MatrixXd &b, std::array<int, 2> &pair) {
+bool dg_smooth(Eigen::MatrixXd &b, std::array<int, 2> &pair) {
     // check bound matrix
     if (b.rows() == 0 || b.cols() == 0 || b.rows() != b.cols()) throw "Wrong bound matrix!";
 
     // Main Loop
     int max_step = 300;
     while (dg_triangle_smoothing(b) + dg_tetrangle_smoothing(b) != 0 && max_step-- > 0);
+
+    // Find out the pair that has the maximum distance
+    double max = -1;
+    double d;
+    int len = b.rows();
+    for (int i = 0; i < len; i++) for (int j = i + 1; j < len; j++) {
+        d = b(i, j) - b(j, i);
+        if (d > max) {
+            max = d;
+            pair[0] = i;
+            pair[1] = j;
+        }
+    }
+
+    return max == 0;
 }
 
 }

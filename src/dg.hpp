@@ -68,11 +68,13 @@ public:
  */
 class Dg {
 public:
-    int len = 0;
-
     Log log;
 
     Mat bound; // distance bound matrix.
+    double min_dist = 0;
+
+    int len = 0; // must be initialized
+
     Mat d; // distance matrix
     Mat m; // metrix matrix
     Mat c; // coordinate matrix
@@ -82,8 +84,6 @@ public:
     int num_mc_steps = 2000; // number mc steps
     double mc_tempr = 20; // mc temperature
 
-    double min_dist = 3;
-
     std::array<double, 2> default_range;
 
     std::vector<DgConstraint> distance_constraints;
@@ -91,10 +91,23 @@ public:
     std::vector<std::vector<int>> involved_distance_constraints;
     std::vector<std::vector<int>> involved_dihedral_constraints;
 
-    void Dg(int len_,
-              const std::array<double, 2> &default_range_,
-              const std::vector<DgConstraint> &distance_constraints_,
-              const std::vector<DgConstraint> &dihedral_constraints_ = {})
+    Dg(const Mat &bound_, double min_dist_ = 0) : bound(bound_), min_dist(min_dist_) {
+        // Set length
+        len = bound.rows();
+
+        // check minimum distance
+        int len = bound.rows();
+        for (int i = 0; i < bound.rows(); i++) for (int j = 0; j < bound.cols(); j++) {
+            if (i != j && bound(i, j) < min_dist) {
+                bound(i, j) = min_dist;
+            }
+        }
+    }
+
+    Dg(int len_,
+       const std::array<double, 2> &default_range_,
+       const std::vector<DgConstraint> &distance_constraints_,
+       const std::vector<DgConstraint> &dihedral_constraints_ = {})
     {
         len = len_;
         default_range = default_range_;
@@ -111,12 +124,12 @@ public:
         set_involved_constraints(distance_constraints, involved_distance_constraints);
         set_involved_constraints(dihedral_constraints, involved_dihedral_constraints);
 
-        std::cout << bound << std::endl;
+//        std::cout << bound << std::endl;
 
         log << "[*] DG: Set Bound." << std::endl;
         init_bound();
 
-        std::cout << bound << std::endl;
+//        std::cout << bound << std::endl;
 
         // check minimum distance
         int len = bound.rows();
@@ -128,25 +141,50 @@ public:
     }
 
     /**
+     * Sample the distance once at one time.
+     */
+    void sample_distance(Mat &b, const std::array<int, 2> &pair) {
+        int i = pair[0];
+        int j = pair[1];
+        double u = b(i, j);
+        double l = b(j, i);
+        b(i, j) = b(j, i) = rand() * (u - l) + l;
+    }
+
+    /**
      * Sample the matrix by a iterative method.
      */
     Mat sample_it() {
+        // Make a copy of the bound
+        Mat b = bound;
+
         log << "[*] Start DG Sampling by a iterative method..." << std::endl;
 
         std::array<int, 2> pair;
 
-        while (!dg_smooth(bound, pair)) {
-            sample_distance(bound, pair);
+        while (!dg_smooth(b, pair)) {
+//            std::cout << "Bound:" << std::endl;
+//            std::cout << b << std::endl;
+//
+//            std::cout << "Maximum distance pair:" << std::endl;
+//            std::cout << pair[0] << ' ' << pair[1] << std::endl;
+
+            sample_distance(b, pair);
+
+//            std::cout << "Sample distance:" << std::endl;
+//            std::cout << b << std::endl;
         }
 
-        log << "[*] DG: Randomly build a distance matrix." << std::endl;
-        b2d();
+//        std::cout << "[*] DG: Randomly build a distance matrix." << std::endl;
+        b2d(b);
+//        std::cout << d << std::endl;
 
         log << "[*] DG: Construct metric matrix." << std::endl;
         metric();
 
-        log << "[*] DG: Embed." << std::endl;
+//        std::cout << "[*] DG: Embed." << std::endl;
         embed();
+//        std::cout << c << std::endl;
 
 //        log << "[*] DG: Conjugate Gradient Optimization." << std::endl;
 //        cg();
@@ -161,7 +199,7 @@ public:
         log << "[*] Start DG Sampling..." << std::endl;
 
         log << "[*] DG: Randomly build a distance matrix." << std::endl;
-        b2d();
+        b2d(bound);
 
         log << "[*] DG: Construct metric matrix." << std::endl;
         metric();
@@ -181,6 +219,20 @@ public:
     void set_log_file(std::string filename)
     {
         log.file(filename);
+    }
+
+    /*
+     * Transform coordiantes to distance matrix.
+     */
+    Mat c2d(const Mat &coord) {
+        int len = coord.rows();
+
+        Mat dist(len, len);
+        for (int i = 0; i < len; i++) for (int j = i; j < len; j++) {
+            if (i == j) dist(i, j) = 0;
+            else dist(i, j) = dist(j, i) = geom::distance(coord.row(i), coord.row(j));
+        }
+        return dist;
     }
 
 private:
@@ -276,11 +328,19 @@ private:
     /**
      * Randomly assign values to the boundance matrix.
      */
-    void b2d() {
+    void b2d(Mat &b) {
+        int len = b.rows();
+
         d.resize(len, len);
-        for (int i = 0; i < len; i++) for (int j = i; j < len; j++) {
-            if (j == i) d(i, j) = 0;
-            else d(i, j) = d(j, i) = rand() * (bound(i, j) - bound(j, i)) + bound(j, i);
+        for (int i = 0; i < len; i++) {
+            for (int j = i; j < len; j++) {
+                if (j == i) {
+                    d(i, j) = 0;
+                }
+                else {
+                    d(i, j) = d(j, i) = rand() * (b(i, j) - b(j, i)) + b(j, i);
+                }
+            }
         }
     }
 
@@ -305,48 +365,61 @@ private:
     }
 
     /*
-     * transform bounds matrix to coordinates matrix
+     * transform metric matrix to coordinates matrix
      */
     void embed() {
         Mat A(len, len);
         for (int i = 0; i < len; i++) for (int j = 0; j < len; j++) A(i, j) = m(i, j);
+//        Mat A = m;
+
         Eigen::SelfAdjointEigenSolver<Mat> eigensolver(A);
-        double max1 = 0, max2 = 0, max3 = 0;
-        int m1 = 0, m2 = 0, m3 = 0;
-        for (int i = 0; i < len; i++) {
-            double temp = abs(eigensolver.eigenvalues()[i]);
-            if (temp > max1) {
-                max3 = max2; m3 = m2; max2 = max1; m2 = m1; max1 = temp; m1 = i;
-            } else if (temp > max2) {
-                max3 = max2; m3 = m2; max2 = temp; m2 = i;
-            } else if (temp > max3) {
-                max3 = temp; m3 = i;
-            }
+
+//        std::cout << "Eigen vectors:" << std::endl;
+//        std::cout << eigensolver.eigenvectors() << std::endl;
+//
+//        std::cout << "Eigen values:" << std::endl;
+//        std::cout << eigensolver.eigenvalues() << std::endl;
+
+        auto & v = eigensolver.eigenvalues();
+
+        std::vector<int> inds(len);
+        std::iota(inds.begin(), inds.end(), 0);
+//        std::sort(inds.begin(), inds.end(), [&eigensolver](int i, int j){ return std::fabs(eigensolver.eigenvalues[i]) > std::fabs(eigensolver.eigenvalues[j]); });
+        std::sort(inds.begin(), inds.end(), [&v](int i, int j){ return std::fabs(v[i]) > std::fabs(v[j]); });
+
+        std::cout << "EigenValues: ";
+        for (auto && i : inds) {
+            std::cout << std::fabs(v[i]) << ' ';
         }
+        std::cout << std::endl;
+
+//        double max1 = 0, max2 = 0, max3 = 0;
+//        int m1 = 0, m2 = 0, m3 = 0;
+//        for (int i = 0; i < len; i++) {
+//            double temp = abs(eigensolver.eigenvalues()[i]);
+//            if (temp > max1) {
+//                max3 = max2; m3 = m2; max2 = max1; m2 = m1; max1 = temp; m1 = i;
+//            } else if (temp > max2) {
+//                max3 = max2; m3 = m2; max2 = temp; m2 = i;
+//            } else if (temp > max3) {
+//                max3 = temp; m3 = i;
+//            }
+//        }
+
+//        std::cout << m1 << ' ' << m2 << ' ' << m3 << std::endl;
+
         c.resize(len, 3);
         for (int i = 0; i < len; i++) {
-            double temp = eigensolver.eigenvalues()[m1];
+            double temp = eigensolver.eigenvalues()[inds[0]];
             if (temp > 0) temp = sqrt(temp); else if (temp < 0) temp = -sqrt(-temp);
-            c(i, 0) = temp * eigensolver.eigenvectors()(i, m1);
-            temp = eigensolver.eigenvalues()[m2];
+            c(i, 0) = temp * eigensolver.eigenvectors()(i, inds[0]);
+            temp = eigensolver.eigenvalues()[inds[1]];
             if (temp > 0) temp = sqrt(temp); else if (temp < 0) temp = -sqrt(-temp);
-            c(i, 1) = temp * eigensolver.eigenvectors()(i, m2);
-            temp = eigensolver.eigenvalues()[m3];
+            c(i, 1) = temp * eigensolver.eigenvectors()(i, inds[1]);
+            temp = eigensolver.eigenvalues()[inds[2]];
             if (temp > 0) temp = sqrt(temp); else if (temp < 0) temp = -sqrt(-temp);
-            c(i, 2) = temp * eigensolver.eigenvectors()(i, m3);
+            c(i, 2) = temp * eigensolver.eigenvectors()(i, inds[2]);
         }
-    }
-
-    /*
-     * Transform coordiantes to distance matrix.
-     */
-    Mat c2d(const Mat &coord) {
-        Mat dist(coord.rows(), coord.cols());
-        for (int i = 0; i < len; i++) for (int j = i; j < len; j++) {
-            if (i == j) dist(i, j) = 0;
-            else dist(i, j) = dist(j, i) = geom::distance(coord.row(i), coord.row(j));
-        }
-        return dist;
     }
 
     /**

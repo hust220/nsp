@@ -265,3 +265,5 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+
+mat.txt

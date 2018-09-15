@@ -177,10 +177,9 @@ static void print_constraints(const T &constraints) {
 Chain BuildLoopDG::operator ()() {
     std::cout << 221 << std::endl;
     print_constraints(distance_constraints);
-    DG dg;
-    dg.log_file("std.out");
-    dg.read(len, {5, 999}, distance_constraints);
-    Mat &&c = dg.sample();
+    auto dg = std::make_unique<Dg>(len, std::array<double, 2>{5, 999}, distance_constraints);
+    dg->set_log_file("std.out");
+    Mat &&c = dg->sample();
     std::cout << c << std::endl;
     return m_cg->to_aa(c, 0, c.rows() - 1);
 }

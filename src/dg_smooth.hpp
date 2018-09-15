@@ -4,7 +4,7 @@
 
 namespace jian {
 
-void dg_smooth(Eigen::MatrixXd &b, std::array<int, 2> &pair);
+bool dg_smooth(Eigen::MatrixXd &b, std::array<int, 2> &pair);
 
 }
 

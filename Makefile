@@ -1,7 +1,7 @@
 ##### Please set the BIN_DIR variable #####
 BIN_DIR   := bin
 ###########################################
-FLAGS     := -std=c++14 -pthread -lm -Isrc -MMD
+FLAGS     := -std=c++14 -pthread -lm -Isrc -MMD -lfftw3
 CC        := g++
 
 ifeq (true,${MPI})
@@ -32,12 +32,14 @@ APPS_OBJ  := $(patsubst %.cpp, $(BUILD_PREFIX)/%.o, $(APPS_CPP))
 
 APPS      := $(patsubst %.cpp, $(notdir %), $(APPS_CPP))
 
+#$(BIN_DIR)/$1: $(BUILD_PREFIX)/$(notdir $1).o $(SRC_OBJ)
+
 define make-apps
 
 $1: checkdirs $(BIN_DIR)/$1
 
-$(BIN_DIR)/$1: $(BUILD_PREFIX)/$(notdir $1).o $(SRC_OBJ)
-	$(CC) $(FLAGS) $$^ -o $$@
+$(BIN_DIR)/$1: $(APPS_DIR)/$(notdir $1).cpp $(SRC_OBJ)
+	$(CC) $$^ $(FLAGS) -o $$@ 
 
 endef
 
@@ -48,7 +50,7 @@ install: checkdirs $(APPS)
 $(foreach app, $(APPS), $(eval $(call make-apps,$(app))))
 
 $(BUILD_PREFIX)/%.o: %.cpp
-	$(CC) $(FLAGS) -c $< -o $@
+	$(CC) $(FLAGS) -nostartfiles -c $< -o $@
 
 .PHONY: all install checkdirs clean $(APPS)
 

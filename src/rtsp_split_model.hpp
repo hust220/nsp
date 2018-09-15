@@ -21,10 +21,10 @@ public:
     SplitModel(const S &name, const S &seq, const S &ss) {
         _model = std::make_shared<Model>(name);
         _ss_tree.make(seq, ss);
-		for (auto &&sse : pretree(ss_tree.head())) {
-			SSE *_l = &sse;
-			parse_helix(_l).parse_loop(_l);
-		}
+        for (auto &&sse : pretree(ss_tree.head())) {
+            SSE *_l = &sse;
+            parse_helix(_l).parse_loop(_l);
+        }
     }
 
     SplitModel &parse_helix(SSE *l) {
