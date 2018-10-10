@@ -1,9 +1,11 @@
 #include "nsp.hpp"
 #include "pdb.hpp"
 #include "dg.hpp"
-#include "topology.hpp"
+//#include "topology.hpp"
 
 namespace jian {
+
+/*
 
 static Mat make_bound(Topology *top, const std::string &seq, const std::string &ss) {
     // Make the secondary structure tree
@@ -67,6 +69,8 @@ REGISTER_NSP_COMPONENT(dg) {
     // Free topology
     delete top;
 }
+
+*/
 
 }
 

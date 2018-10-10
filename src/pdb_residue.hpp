@@ -12,6 +12,7 @@ public:
 	int num = -1;
 	S name = "X";
 	S m_cg = "aa";
+    bool is_std = true;
 
 	JN_DEFAULT_CONSTRUCTORS(Residue);
 

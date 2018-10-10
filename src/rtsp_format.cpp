@@ -56,6 +56,8 @@ Residue Format::operator ()(const Residue &res) {
     Str name_std = pdb::res_name(res.name, "std");
     Residue new_res;
     new_res.name = name_std;
+
+    // Add phosphate group
     std::vector<std::string> v{"P", "O1P", "O2P"};
     if (std::all_of(v.begin(), v.end(), [&](S s){
 		return std::any_of(res.begin(), res.end(), [&](const Atom &atom){
@@ -66,6 +68,8 @@ Residue Format::operator ()(const Residue &res) {
         new_res.push_back(atom(res, "O1P"));
         new_res.push_back(atom(res, "O2P"));
     }
+
+    // Add other atoms
     for (auto &&name_pair: _atom_rank[name_std]) {
         if (std::count(v.begin(), v.end(), name_pair.first)) continue;
         if (std::none_of(res.begin(), res.end(), [&](const Atom &atom){
@@ -77,6 +81,7 @@ Residue Format::operator ()(const Residue &res) {
         }
     }
     sort(new_res);
+
     return new_res;
 }
 

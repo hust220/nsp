@@ -21,8 +21,8 @@ MolParsedLine *MolParser::parse_line() {
         l = getline();
         if (l == NULL) {
             break;
-        } else if (l->atom_name[0] == 'H') {
-            delete l;
+//        } else if (l->atom_name[0] == 'H') {
+//            delete l;
         } else {
             break;
         }

@@ -12,6 +12,8 @@ public:
 	S name;
 	int num;
 	double mass;
+    bool is_std = true;
+    S type;
 
 	JN_DEFAULT_CONSTRUCTORS(Atom);
 
