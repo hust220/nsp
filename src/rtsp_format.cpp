@@ -60,10 +60,10 @@ Residue Format::operator ()(const Residue &res) {
     // Add phosphate group
     std::vector<std::string> v{"P", "O1P", "O2P"};
     if (std::all_of(v.begin(), v.end(), [&](S s){
-		return std::any_of(res.begin(), res.end(), [&](const Atom &atom){
-			return atom.name == s;
-		});
-	})) {
+        return std::any_of(res.begin(), res.end(), [&](const Atom &atom){
+            return atom.name == s;
+        });
+    })) {
         new_res.push_back(atom(res, "P"));
         new_res.push_back(atom(res, "O1P"));
         new_res.push_back(atom(res, "O2P"));
@@ -73,9 +73,10 @@ Residue Format::operator ()(const Residue &res) {
     for (auto &&name_pair: _atom_rank[name_std]) {
         if (std::count(v.begin(), v.end(), name_pair.first)) continue;
         if (std::none_of(res.begin(), res.end(), [&](const Atom &atom){
-			return atom.name == name_pair.first;
-		})) {
-            return Residue();
+            return atom.name == name_pair.first;
+        })) {
+            std::cerr << "Lack of " << name_pair.first << " in Residue " << res.name << res.num << std::endl;
+//            return Residue();
         } else {
             new_res.push_back(atom(res, name_pair.first));
         }

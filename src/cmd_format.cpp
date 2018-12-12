@@ -67,6 +67,7 @@ void m_format(const Par &par, S mol_type) {
             int chain_index = 0;
             for (auto && chain : model) {
                 chain.name = chain_names[chain_index];
+//                chain.name = "";
                 for (auto && res : chain) {
                     if      (res.name == "A5" || res.name == "A3") res.name = "A";
                     else if (res.name == "U5" || res.name == "U3") res.name = "U";
@@ -86,6 +87,27 @@ void m_format(const Par &par, S mol_type) {
         for (auto && model : mol) {
             for (auto && chain : model) {
                 remove_phos_group(chain[0]);
+            }
+        }
+    }
+    else if (par.has("dmd")) {
+        mol_read(mol, in, mol_type);
+        for (auto && model : mol) {
+            for (auto && chain : model) {
+                for (auto && res : chain) {
+                    if (res.name == "A") {
+                        res.name = "ADE";
+                    }
+                    else if (res.name == "U") {
+                        res.name = "URI";
+                    }
+                    else if (res.name == "G") {
+                        res.name = "GUA";
+                    }
+                    else if (res.name == "C") {
+                        res.name = "CYT";
+                    }
+                }
             }
         }
     }

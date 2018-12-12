@@ -39,7 +39,7 @@ define make-apps
 $1: checkdirs $(BIN_DIR)/$1
 
 $(BIN_DIR)/$1: $(APPS_DIR)/$(notdir $1).cpp $(SRC_OBJ)
-	$(CC) $$^ $(FLAGS) -o $$@ 
+	$(CC) $$^ -o $$@ $(FLAGS) -L/hpc/home/juw1179/programs/fftw/3.3.8/lib
 
 endef
 

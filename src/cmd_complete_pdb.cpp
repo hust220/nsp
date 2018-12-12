@@ -2,6 +2,7 @@
 #include "pdb.hpp"
 #include "geom.hpp"
 #include "env.hpp"
+#include "pdb_reader.hpp"
 
 namespace jian {
 
@@ -73,8 +74,10 @@ static void complete_pdb(Molecule &mol) {
     for (auto && model : mol) {
         for (auto && chain : model) {
             for (auto && res : chain) {
-                if (!res_is_complete(res)) {
-                    res = complete_res(res);
+                if (res.name == "A" || res.name == "U" || res.name == "G" || res.name == "C") {
+                    if (!res_is_complete(res)) {
+                        res = complete_res(res);
+                    }
                 }
             }
         }
@@ -83,7 +86,11 @@ static void complete_pdb(Molecule &mol) {
 
 REGISTER_NSP_COMPONENT(complete_pdb) {
     auto g = par.getv("global");
-    auto && mol = mol_read_to<Molecule>(g[1]);
+
+    Molecule mol;
+    PdbReader reader(mol);
+    reader.read(g[1]);
+
     complete_pdb(mol);
     JN_OUT << mol << std::endl;
 }

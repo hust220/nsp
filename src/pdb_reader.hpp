@@ -38,7 +38,12 @@ public:
         pl.y          = JN_DBL(string_trim_c(line.substr(38, 8)));
         pl.z          = JN_DBL(string_trim_c(line.substr(46, 8)));
 
-        pl.atom_type  = string_trim_c(line.substr(76, 2));
+        if (line.size() >= 78) {
+            pl.atom_type  = string_trim_c(line.substr(76, 2));
+        }
+        else {
+            pl.atom_type  = "X";
+        }
 
 //        std::replace(pl.atom_name.begin(), pl.atom_name.end(), '*', '\'');
 //        if (pl.atom_name == "O1P") pl.atom_name = "OP1";
