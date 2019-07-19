@@ -1,6 +1,7 @@
 ##### Please set the BIN_DIR variable #####
-BIN_DIR   := $(HOME)/programs/nsp/1.8.0/bin
+BIN_DIR   := /home/share/apps/nsp/1.8.0
 ###########################################
+
 FLAGS     := -std=c++14 -pthread -lm -Isrc -MMD -lfftw3
 CC        := g++
 
@@ -34,12 +35,14 @@ APPS      := $(patsubst %.cpp, $(notdir %), $(APPS_CPP))
 
 #$(BIN_DIR)/$1: $(BUILD_PREFIX)/$(notdir $1).o $(SRC_OBJ)
 
+#$(CC) $$^ -o $$@ $(FLAGS) -L/hpc/home/juw1179/programs/fftw/3.3.8/lib
+
 define make-apps
 
 $1: checkdirs $(BIN_DIR)/$1
 
 $(BIN_DIR)/$1: $(APPS_DIR)/$(notdir $1).cpp $(SRC_OBJ)
-	$(CC) $$^ -o $$@ $(FLAGS) -L/hpc/home/juw1179/programs/fftw/3.3.8/lib
+	$(CC) $$^ -o $$@ $(FLAGS)
 
 endef
 
