@@ -69,10 +69,10 @@ void m_format(const Par &par, S mol_type) {
                 chain.name = chain_names[chain_index];
 //                chain.name = "";
                 for (auto && res : chain) {
-                    if      (res.name == "A5" || res.name == "A3") res.name = "A";
-                    else if (res.name == "U5" || res.name == "U3") res.name = "U";
-                    else if (res.name == "G5" || res.name == "G3") res.name = "G";
-                    else if (res.name == "C5" || res.name == "C3") res.name = "C";
+                    if      (res.name == "A5" || res.name == "A3" || res.name == "ADE") res.name = "A";
+                    else if (res.name == "U5" || res.name == "U3" || res.name == "URI") res.name = "U";
+                    else if (res.name == "G5" || res.name == "G3" || res.name == "GUA") res.name = "G";
+                    else if (res.name == "C5" || res.name == "C3" || res.name == "CYT") res.name = "C";
 
                     if (res.name == "A" || res.name == "U" || res.name == "G" || res.name == "C") {
                         res = format(res);
@@ -83,7 +83,9 @@ void m_format(const Par &par, S mol_type) {
         }
     }
     else if (par.has("amber")) {
-        mol_read(mol, in, mol_type);
+//        mol_read(mol, in, mol_type);
+        PdbReader reader(mol);
+        reader.read(in);
         for (auto && model : mol) {
             for (auto && chain : model) {
                 remove_phos_group(chain[0]);
@@ -133,4 +135,5 @@ REGISTER_NSP_COMPONENT(protein) {
 } // namespace
 
 }
+
 

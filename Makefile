@@ -1,5 +1,5 @@
 ##### Please set the BIN_DIR variable #####
-BIN_DIR   := bin
+BIN_DIR   := $(HOME)/programs/nsp/1.8.0/bin
 ###########################################
 FLAGS     := -std=c++14 -pthread -lm -Isrc -MMD -lfftw3
 CC        := g++
