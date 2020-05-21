@@ -6,7 +6,7 @@
 #include "file.hpp"
 #include "rtsp_format.hpp"
 #include "log.hpp"
-#include "cmd_en6p.hpp"
+#include "en6p.hpp"
 
 namespace jian {
 

@@ -1,66 +1,106 @@
 ##### Please set the BIN_DIR variable #####
-BIN_DIR   := $(HOME)/programs/nsp/1.8.0/bin
+#BIN_DIR   := /nas/longleaf/home/jianopt/work/programs/medusa/bin
+PREFIX    := $(shell cat .prefix)
 ###########################################
+
+BIN_DIR   := $(PREFIX)/bin
+LIB_DIR   := $(PREFIX)/lib
+INC_DIR   := $(PREFIX)/include
+
 FLAGS     := -std=c++14 -pthread -lm -Isrc -MMD -lfftw3
+TAIL_FLAGS := -lz
 CC        := g++
 
 ifeq (true,${MPI})
 	FLAGS        := $(FLAGS) -DUSEMPI
 endif
 
+ifeq (true,${INFO})
+	FLAGS        := $(FLAGS) -DJN_SHOW_INFO
+endif
+
+BUILD_TOP_PREFIX := build
+
 ifeq (true,${DEBUG})
-	BUILD_PREFIX := build/debug
+	BUILD_PREFIX := $(BUILD_TOP_PREFIX)/debug
 	FLAGS        := $(FLAGS) -g -gdwarf-2
 else
-	BUILD_PREFIX := build/release
+	BUILD_PREFIX := $(BUILD_TOP_PREFIX)/release
 	FLAGS        := $(FLAGS) -DNDEBUG -O3
 endif
 
-SRC_DIR   := src
-APPS_DIR  := apps
+SRC_DIR     := src
+APPS_DIR    := apps
 
-vpath %.cpp $(SRC_DIR) $(APPS_DIR)
+HEAD_DIR     := $(shell find $(SRC_DIR)/jnc -type d)
+$(info $(HEAD_DIR))
+FLAGS := $(FLAGS) $(addprefix -I, $(HEAD_DIR))
+#vpath %.h   $(SRC_DIR) $(APPS_DIR)
+#vpath %.hpp $(SRC_DIR) $(APPS_DIR)
+#vpath %.c   $(SRC_DIR) $(APPS_DIR)
+#vpath %.cpp $(SRC_DIR) $(APPS_DIR)
 
-BUILD_DIR := $(addprefix $(BUILD_PREFIX)/, $(SRC_DIR) $(APPS_DIR))
-#FLAGS     := $(FLAGS) $(foreach sdir, $(SRC_DIR) $(APPS_DIR), -I$(sdir))
+BUILD_DIRS  := $(addprefix $(BUILD_PREFIX)/, $(shell find $(SRC_DIR) $(APPS_DIR) -type d))
 
-SRC_CPP   := $(foreach sdir,$(SRC_DIR), $(notdir $(wildcard $(sdir)/*.cpp)))
-APPS_CPP  := $(foreach sdir,$(APPS_DIR), $(notdir $(wildcard $(sdir)/*.cpp)))
+SRC_CPP     := $(shell find $(SRC_DIR)  -name "*.cpp" -or -name "*.c" -or -name "*.cc" -or -name "*.cxx")
+APPS_CPP    := $(shell find $(APPS_DIR) -name "*.cpp" -or -name "*.c" -or -name "*.cc" -or -name "*.cxx")
 
-SRC_OBJ   := $(patsubst %.cpp, $(BUILD_PREFIX)/%.o, $(SRC_CPP))
-APPS_OBJ  := $(patsubst %.cpp, $(BUILD_PREFIX)/%.o, $(APPS_CPP))
+HEAD_SRC    := $(shell find $(SRC_DIR) -type f ! -name "*.cpp" ! -name "*.c" ! -name "*.cc" ! -name "*.cxx")
+HEAD_TARGET := $(patsubst $(SRC_DIR)/%, $(INC_DIR)/%, $(HEAD_SRC))
+#$(info $$HEAD_TARGET is [${HEAD_TARGET}])
 
-APPS      := $(patsubst %.cpp, $(notdir %), $(APPS_CPP))
+SRC_OBJ     := $(patsubst %, $(BUILD_PREFIX)/%.o, $(SRC_CPP))
+APPS_OBJ    := $(patsubst %, $(BUILD_PREFIX)/%.o, $(APPS_CPP))
+DEPS        := $(patsubst %, $(BUILD_PREFIX)/%.d, $(APPS_CPP) $(SRC_CPP))
 
-#$(BIN_DIR)/$1: $(BUILD_PREFIX)/$(notdir $1).o $(SRC_OBJ)
-
-define make-apps
-
-$1: checkdirs $(BIN_DIR)/$1
-
-$(BIN_DIR)/$1: $(APPS_DIR)/$(notdir $1).cpp $(SRC_OBJ)
-	$(CC) $$^ -o $$@ $(FLAGS) -L/hpc/home/juw1179/programs/fftw/3.3.8/lib
-
-endef
+#APPS        := $(patsubst %, $(basename $(notdir %)), $(APPS_CPP))
+#APPS      := $(notdir $(APPS))
+APPS      := $(foreach cpp, $(APPS_CPP), $(basename $(notdir $(cpp))))
 
 all: checkdirs $(SRC_OBJ) $(APPS_OBJ)
 
-install: checkdirs $(APPS)
+install: checkdirs _lib _include $(APPS)
 
-$(foreach app, $(APPS), $(eval $(call make-apps,$(app))))
+_lib: checkdirs $(LIB_DIR)/liball.a
 
-$(BUILD_PREFIX)/%.o: %.cpp
-	$(CC) $(FLAGS) -nostartfiles -c $< -o $@
+_include: checkdirs $(HEAD_TARGET)
+#_include: checkdirs
 
-.PHONY: all install checkdirs clean $(APPS)
+#$(info $(SRC_OBJ))
 
-checkdirs: $(BUILD_DIR) $(BIN_DIR) $(BUILD_PREFIX)
+$(LIB_DIR)/liball.a: $(SRC_OBJ)
+	ar rcs $@ $(SRC_OBJ)
+#	ar ru $@ $(SRC_OBJ)
+#	ranlib $@
 
-$(BUILD_DIR) $(BIN_DIR) $(BUILD_PREFIX):
+define make-apps
+
+app := $(notdir $(basename $(basename $(1))))
+
+$$(app): checkdirs $(BIN_DIR)/$$(app)
+
+$(BIN_DIR)/$$(app): $1 $(SRC_OBJ)
+	$(CC) $(FLAGS) $$^ -o $$@ $(TAIL_FLAGS)
+
+endef
+
+$(foreach obj, $(APPS_OBJ), $(eval $(call make-apps,$(obj))))
+
+$(BUILD_PREFIX)/%.o: %
+	$(CC) $(FLAGS) -c $< -o $@ $(TAIL_FLAGS)
+
+$(INC_DIR)/%: $(SRC_DIR)/%
+	mkdir -p $(dir $@)
+	cp $< $@
+
+checkdirs: $(BIN_DIR) $(LIB_DIR) $(INC_DIR) $(BUILD_PREFIX) $(BUILD_DIRS)
+
+$(BIN_DIR) $(LIB_DIR) $(INC_DIR) $(BUILD_PREFIX) $(BUILD_DIRS):
 	@mkdir -p $@
 
 clean:
-	@rm -rf bin build
+	@rm -rf $(LIB_DIR) $(BIN_DIR) $(INC_DIR) $(BUILD_TOP_PREFIX)
 
--include $(BUILD_PREFIX)/*.d
+.PHONY: all install _lib _include checkdirs clean $(APPS)
 
+-include $(DEPS)

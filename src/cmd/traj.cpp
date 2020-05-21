@@ -3,7 +3,7 @@
 #include <array>
 #include <iostream>
 #include "nsp.hpp"
-#include "cmd_en6p.hpp"
+#include "en6p.hpp"
 #include "pdb.hpp"
 #include "geom.hpp"
 #include "string.hpp"
