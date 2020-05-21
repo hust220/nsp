@@ -5,6 +5,9 @@
 
 namespace jian {
 
+/**
+ * Finite state machine
+ */
 template <typename T>
 class FSM {
 public:
