@@ -1,11 +1,12 @@
 ##### Please set the BIN_DIR variable #####
-#BIN_DIR   := /nas/longleaf/home/jianopt/work/programs/medusa/bin
 PREFIX    := $(shell cat .prefix)
 ###########################################
 
 BIN_DIR   := $(PREFIX)/bin
 LIB_DIR   := $(PREFIX)/lib
 INC_DIR   := $(PREFIX)/include
+
+###########################################
 
 FLAGS     := -std=c++14 -pthread -lm -Isrc -MMD -lfftw3
 TAIL_FLAGS := -lz
@@ -33,7 +34,6 @@ SRC_DIR     := src
 APPS_DIR    := apps
 
 HEAD_DIR     := $(shell find $(SRC_DIR)/jnc -type d)
-$(info $(HEAD_DIR))
 FLAGS := $(FLAGS) $(addprefix -I, $(HEAD_DIR))
 #vpath %.h   $(SRC_DIR) $(APPS_DIR)
 #vpath %.hpp $(SRC_DIR) $(APPS_DIR)
@@ -47,7 +47,6 @@ APPS_CPP    := $(shell find $(APPS_DIR) -name "*.cpp" -or -name "*.c" -or -name 
 
 HEAD_SRC    := $(shell find $(SRC_DIR) -type f ! -name "*.cpp" ! -name "*.c" ! -name "*.cc" ! -name "*.cxx")
 HEAD_TARGET := $(patsubst $(SRC_DIR)/%, $(INC_DIR)/%, $(HEAD_SRC))
-#$(info $$HEAD_TARGET is [${HEAD_TARGET}])
 
 SRC_OBJ     := $(patsubst %, $(BUILD_PREFIX)/%.o, $(SRC_CPP))
 APPS_OBJ    := $(patsubst %, $(BUILD_PREFIX)/%.o, $(APPS_CPP))
@@ -58,20 +57,7 @@ DEPS        := $(patsubst %, $(BUILD_PREFIX)/%.d, $(APPS_CPP) $(SRC_CPP))
 APPS      := $(foreach cpp, $(APPS_CPP), $(basename $(notdir $(cpp))))
 
 all: checkdirs $(SRC_OBJ) $(APPS_OBJ)
-
-install: checkdirs _lib _include $(APPS)
-
-_lib: checkdirs $(LIB_DIR)/liball.a
-
-_include: checkdirs $(HEAD_TARGET)
-#_include: checkdirs
-
-#$(info $(SRC_OBJ))
-
-$(LIB_DIR)/liball.a: $(SRC_OBJ)
-	ar rcs $@ $(SRC_OBJ)
-#	ar ru $@ $(SRC_OBJ)
-#	ranlib $@
+#$(CC) $$^ -o $$@ $(FLAGS) -L/hpc/home/juw1179/programs/fftw/3.3.8/lib
 
 define make-apps
 
